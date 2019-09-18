@@ -9,13 +9,8 @@ public class CardScript : MonoBehaviour
     public Sprite cardBackSprite;
     public int cardNum;
     public string cardSuit;
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
+    public bool isSelected;
+   
     void Update()
     {
         if(hidden == true)
@@ -26,6 +21,16 @@ public class CardScript : MonoBehaviour
         if (hidden == false)
         {
             gameObject.GetComponent<SpriteRenderer>().sprite = cardSprite;
+        }
+
+        if(isSelected == true)
+        {
+            gameObject.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
+        }
+
+        if (isSelected == false)
+        {
+            gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
         }
     }
 }

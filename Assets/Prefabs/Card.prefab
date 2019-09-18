@@ -93,6 +93,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff4ebf0a934f24ddd9bea9eb2f8f7888, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hidden: 0
   cardSprite: {fileID: 0}
+  cardBackSprite: {fileID: 848148953277957218, guid: 683e7f20d28c948108926206e6bd788f,
+    type: 3}
   cardNum: 0
   cardSuit: 
