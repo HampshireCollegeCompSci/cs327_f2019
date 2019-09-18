@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class CardScript : MonoBehaviour
 {
-    public Sprite card;
+    public bool hidden;
+    public Sprite cardSprite;
+    public Sprite cardBackSprite;
+    public int cardNum;
+    public string cardSuit;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,6 +18,14 @@ public class CardScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(hidden == true)
+        {
+            gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
+        }
+
+        if (hidden == false)
+        {
+            gameObject.GetComponent<SpriteRenderer>().sprite = cardSprite;
+        }
     }
 }
