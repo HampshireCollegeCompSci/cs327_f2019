@@ -1,5 +1,5 @@
 
-=== Tue Sep 17 17:09:01 2019
+=== Tue Sep 17 22:55:15 2019
 
 Packages were changed.
 Update Mode: mergeDefaultDependencies
@@ -8,8 +8,8 @@ The following packages were added:
   com.unity.package-manager-ui@2.2.0
   com.unity.ext.nunit@1.0.0
   com.unity.test-framework@1.0.13
-  com.unity.ide.vscode@1.1.0
-  com.unity.ide.rider@1.1.0
+  com.unity.ide.vscode@1.0.7
+  com.unity.ide.rider@1.0.8
   com.unity.ugui@1.0.0
   com.unity.modules.androidjni@1.0.0
 The following packages were updated:
