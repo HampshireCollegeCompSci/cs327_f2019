@@ -7,13 +7,16 @@ public class CardScript : MonoBehaviour
     public bool hidden;
     public Sprite cardSprite;
     public Sprite cardBackSprite;
-    public int cardNum;
+    public int cardVal;
+    //cardVal is what the card is worth to the reactor jack, queen, king are all 10
     public string cardSuit;
+    public string cardNum;
+    //cardNum is the number on the card, ace is 1 jack is 11 queen is 12 king is 13
     public bool isSelected;
    
     void Update()
     {
-        if(hidden == true)
+        if (hidden == true)
         {
             gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
         }
@@ -23,7 +26,7 @@ public class CardScript : MonoBehaviour
             gameObject.GetComponent<SpriteRenderer>().sprite = cardSprite;
         }
 
-        if(isSelected == true)
+        if (isSelected == true)
         {
             gameObject.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
         }
