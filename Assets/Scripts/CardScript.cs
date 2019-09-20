@@ -12,7 +12,7 @@ public class CardScript : MonoBehaviour
     public string cardSuit;
     public string cardNum;
     //cardNum is the number on the card, ace is 1 jack is 11 queen is 12 king is 13
-    public bool isSelected;
+    public bool apearSelected;
 
     void Update()
     {
@@ -34,14 +34,14 @@ public class CardScript : MonoBehaviour
         }
 
         //makes card larger and first in sorting order if the card is selected
-        if (isSelected == true)
+        if (apearSelected == true)
         {
             gameObject.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
             gameObject.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCard";
         }
 
         //makes card normal if not selected
-        if (isSelected == false)
+        if (apearSelected == false)
         {
             gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
             gameObject.GetComponent<SpriteRenderer>().sortingLayerName = "Default";
