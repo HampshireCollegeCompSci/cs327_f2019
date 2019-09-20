@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GlobalScript : MonoBehaviour
+public class UtilsScript : MonoBehaviour
 {
     public GameObject[] selectedCards;
     // Start is called before the first frame update
