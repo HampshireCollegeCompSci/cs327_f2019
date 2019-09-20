@@ -8,6 +8,11 @@ public class FoundationScript : MonoBehaviour
     int counter;
     int cardMax;
 
+    void Update()
+    {
+        SetCardPositions();
+    }
+
     //adds a card to the list of cards on the foundation
     public void AddCard(GameObject cardToAdd, int locationInList)
     {
@@ -40,9 +45,6 @@ public class FoundationScript : MonoBehaviour
         }
     }
 
-   
-    void Update()
-    {
-        SetCardPositions();
-    }
+
+
 }

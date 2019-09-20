@@ -5,7 +5,7 @@ using UnityEngine;
 public class CardScript : MonoBehaviour
 {
     public bool hidden;
-    public Sprite cardSprite;
+    public Sprite cardFrontSprite;
     public Sprite cardBackSprite;
     public int cardVal;
     //cardVal is what the card is worth to the reactor jack, queen, king are all 10
@@ -13,6 +13,11 @@ public class CardScript : MonoBehaviour
     public string cardNum;
     //cardNum is the number on the card, ace is 1 jack is 11 queen is 12 king is 13
     public bool isSelected;
+
+    void Update()
+    {
+        SetCardAppearance();
+    }
 
     void SetCardAppearance()
     {
@@ -25,7 +30,7 @@ public class CardScript : MonoBehaviour
         //shows card if it's not hidden
         if (hidden == false)
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = cardSprite;
+            gameObject.GetComponent<SpriteRenderer>().sprite = cardFrontSprite;
         }
 
         //makes card larger and first in sorting order if the card is selected
@@ -42,9 +47,6 @@ public class CardScript : MonoBehaviour
             gameObject.GetComponent<SpriteRenderer>().sortingLayerName = "Default";
         }
     }
-   
-    void Update()
-    {
-        SetCardAppearance();
-    }
+
+
 }
