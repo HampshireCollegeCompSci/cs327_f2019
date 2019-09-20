@@ -4,6 +4,24 @@ using UnityEngine;
 
 public class UtilsScript : MonoBehaviour
 {
+    public static UtilsScript global; //Creates a new instance if one does not yet exist
+
+    void Awake()
+    {
+        if (global == null)
+        {
+            DontDestroyOnLoad(gameObject); //makes instance persist across scenes
+            global = this;
+        }
+        else if (global != this)
+        {
+            Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
+        }
+    }
+
+
+
+
     public GameObject[] selectedCards;
     // Start is called before the first frame update
     void Start()
