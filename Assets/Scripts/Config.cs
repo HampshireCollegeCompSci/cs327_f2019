@@ -7,9 +7,7 @@ public class Config : MonoBehaviour
     public static Config config; //Creates a new instance if one does not yet exist
 
     //Variables go here
-
-
-
+    public Stack<Move> moveLog = new Stack<Move>();
 
     void Awake()
     {
