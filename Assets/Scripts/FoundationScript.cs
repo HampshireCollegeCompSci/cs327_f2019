@@ -22,7 +22,7 @@ public class FoundationScript : MonoBehaviour
     //removes a card from the list of cards on the foundation
     public void RemoveCard(int locationInList)
     {
-        if (cardList[locationInList].gameObject.transform.parent = gameObject.transform)
+        if (cardList[locationInList].gameObject.transform.parent == gameObject.transform)
         {
             cardList[locationInList].gameObject.transform.parent = null;
         }
@@ -39,7 +39,7 @@ public class FoundationScript : MonoBehaviour
         while (counter < cardMax)
         {
             cardList[counter].transform.parent = gameObject.transform;
-            cardList[counter].transform.localPosition = new Vector3(0, -0.5f * counter, 0);
+            cardList[counter].transform.localPosition = new Vector3(0, 0.5f * counter, 0);
             cardList[counter].gameObject.GetComponent<SpriteRenderer>().sortingOrder = cardMax - counter;
             counter += 1;
         }

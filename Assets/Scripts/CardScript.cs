@@ -22,26 +22,26 @@ public class CardScript : MonoBehaviour
     void SetCardAppearance()
     {
         //shows card back if it's hidden
-        if (hidden == true)
+        if (hidden)
         {
             gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
         }
 
         //shows card if it's not hidden
-        if (hidden == false)
+        else if (hidden == false)
         {
             gameObject.GetComponent<SpriteRenderer>().sprite = cardFrontSprite;
         }
 
         //makes card larger and first in sorting order if the card is selected
-        if (apearSelected == true)
+        if (apearSelected)
         {
             gameObject.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
             gameObject.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCard";
         }
 
         //makes card normal if not selected
-        if (apearSelected == false)
+        else if (apearSelected == false)
         {
             gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
             gameObject.GetComponent<SpriteRenderer>().sortingLayerName = "Default";
