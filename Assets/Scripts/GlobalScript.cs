@@ -16,7 +16,7 @@ public class GlobalScript : MonoBehaviour
     {
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Vector2.zero);
 
-        if (hit.collider.transform.CompareTag("Foundation"))
+        if (hit.collider.CompareTag("Foundation"))
         {
             HitFoundation(hit);
         }
@@ -31,12 +31,12 @@ public class GlobalScript : MonoBehaviour
             SelectCard(hit);
         }
 
-        else if (selectedCards[0] == hit.collider.transform.gameObject.GetComponent<FoundationScript>().cardList[0])
+        else if (selectedCards[0] == hit.collider.GetComponent<FoundationScript>().cardList[0])
         {
             DeselectCard(hit);
         }
 
-        else if (selectedCards[0] != hit.collider.transform.gameObject.GetComponent<FoundationScript>().cardList[0])
+        else if (selectedCards[0] != hit.collider.GetComponent<FoundationScript>().cardList[0])
         {
             MoveCard(hit);
         }
@@ -45,22 +45,22 @@ public class GlobalScript : MonoBehaviour
     //sets selected card to the top card of the selected foundation
     void SelectCard(RaycastHit2D hit)
     {
-        selectedCards[0] = hit.collider.transform.gameObject.GetComponent<FoundationScript>().cardList[0];
-        hit.collider.transform.gameObject.GetComponent<FoundationScript>().cardList[0].gameObject.GetComponent<CardScript>().apearSelected = true;
+        selectedCards[0] = hit.collider.GetComponent<FoundationScript>().cardList[0];
+        hit.collider.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().apearSelected = true;
     }
 
     //deselects selected card
     void DeselectCard(RaycastHit2D hit)
     {
         selectedCards[0] = null;
-        hit.collider.transform.gameObject.GetComponent<FoundationScript>().cardList[0].gameObject.GetComponent<CardScript>().apearSelected = false;
+        hit.collider.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().apearSelected = false;
     }
 
     //moves selected card from one foundation to another
     void MoveCard(RaycastHit2D hit)
     {
-        hit.collider.transform.gameObject.GetComponent<FoundationScript>().AddCard(selectedCards[0], 0);
-        selectedCards[0].transform.parent.transform.gameObject.GetComponent<FoundationScript>().RemoveCard(0);
+        hit.collider.GetComponent<FoundationScript>().AddCard(selectedCards[0], 0);
+        selectedCards[0].transform.parent.GetComponent<FoundationScript>().RemoveCard(0);
         selectedCards[0].gameObject.GetComponent<CardScript>().apearSelected = false;
     }
 
@@ -70,6 +70,6 @@ public class GlobalScript : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             Click();
-        } 
+        }
     }
 }
