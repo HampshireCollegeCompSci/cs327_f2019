@@ -46,14 +46,14 @@ public class GlobalScript : MonoBehaviour
     void SelectCard(RaycastHit2D hit)
     {
         selectedCards[0] = hit.collider.transform.gameObject.GetComponent<FoundationScript>().cardList[0];
-        hit.collider.transform.gameObject.GetComponent<FoundationScript>().cardList[0].gameObject.GetComponent<CardScript>().isSelected = true;
+        hit.collider.transform.gameObject.GetComponent<FoundationScript>().cardList[0].gameObject.GetComponent<CardScript>().apearSelected = true;
     }
 
     //deselects selected card
     void DeselectCard(RaycastHit2D hit)
     {
         selectedCards[0] = null;
-        hit.collider.transform.gameObject.GetComponent<FoundationScript>().cardList[0].gameObject.GetComponent<CardScript>().isSelected = false;
+        hit.collider.transform.gameObject.GetComponent<FoundationScript>().cardList[0].gameObject.GetComponent<CardScript>().apearSelected = false;
     }
 
     //moves selected card from one foundation to another
@@ -61,7 +61,7 @@ public class GlobalScript : MonoBehaviour
     {
         hit.collider.transform.gameObject.GetComponent<FoundationScript>().AddCard(selectedCards[0], 0);
         selectedCards[0].transform.parent.transform.gameObject.GetComponent<FoundationScript>().RemoveCard(0);
-        selectedCards[0].gameObject.GetComponent<CardScript>().isSelected = false;
+        selectedCards[0].gameObject.GetComponent<CardScript>().apearSelected = false;
     }
 
     // Update is called once per frame
