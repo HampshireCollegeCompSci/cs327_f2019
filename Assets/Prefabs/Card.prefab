@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5176008346855944175}
   - component: {fileID: -6604757475557862161}
   - component: {fileID: -1626085816929887301}
+  - component: {fileID: 5589543899514788396}
   m_Layer: 0
   m_Name: Card
   m_TagString: Untagged
@@ -70,15 +71,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 848148953277957218, guid: 683e7f20d28c948108926206e6bd788f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.4, y: 1.9}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &-1626085816929887301
@@ -94,8 +95,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hidden: 0
-  cardSprite: {fileID: 0}
+  cardFrontSprite: {fileID: 0}
   cardBackSprite: {fileID: 848148953277957218, guid: 683e7f20d28c948108926206e6bd788f,
     type: 3}
-  cardNum: 0
+  cardVal: 0
   cardSuit: 
+  cardNum: 0
+  apearSelected: 0
+--- !u!61 &5589543899514788396
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5176008346855944174}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.0033667684, y: 0.0039765835}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.4, y: 1.9}
+    newSize: {x: 1.4, y: 1.9}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.40684, y: 1.8987279}
+  m_EdgeRadius: 0
