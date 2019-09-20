@@ -120,6 +120,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &49480068 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5176008346855944174, guid: 7232864c537dd463a882601b8089390d,
+    type: 3}
+  m_PrefabInstance: {fileID: 2027948037}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &602213199
 GameObject:
   m_ObjectHideFlags: 0
@@ -219,6 +225,12 @@ MonoBehaviour:
   selectedCards:
   - {fileID: 0}
   - {fileID: 0}
+--- !u!1 &606588969 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5176008346855944174, guid: 7232864c537dd463a882601b8089390d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1375409532}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &667196824 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5176008346855944174, guid: 7232864c537dd463a882601b8089390d,
@@ -447,7 +459,7 @@ PrefabInstance:
     - target: {fileID: 9111740273138036393, guid: f5fc92aa9a70b4cc79fa61a60a0497d0,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -3.6
       objectReference: {fileID: 0}
     - target: {fileID: 9111740273138036393, guid: f5fc92aa9a70b4cc79fa61a60a0497d0,
         type: 3}
@@ -508,19 +520,25 @@ PrefabInstance:
         type: 3}
       propertyPath: cardList.Array.data[0]
       value: 
-      objectReference: {fileID: 667196824}
+      objectReference: {fileID: 1374353621}
     - target: {fileID: 9111740273138036398, guid: f5fc92aa9a70b4cc79fa61a60a0497d0,
         type: 3}
       propertyPath: cardList.Array.data[1]
       value: 
-      objectReference: {fileID: 745445124}
+      objectReference: {fileID: 606588969}
     - target: {fileID: 9111740273138036398, guid: f5fc92aa9a70b4cc79fa61a60a0497d0,
         type: 3}
       propertyPath: cardList.Array.data[2]
       value: 
-      objectReference: {fileID: 1077813141}
+      objectReference: {fileID: 49480068}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f5fc92aa9a70b4cc79fa61a60a0497d0, type: 3}
+--- !u!1 &1374353621 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5176008346855944174, guid: 7232864c537dd463a882601b8089390d,
+    type: 3}
+  m_PrefabInstance: {fileID: 948523563}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1375409532
 PrefabInstance:
   m_ObjectHideFlags: 0
