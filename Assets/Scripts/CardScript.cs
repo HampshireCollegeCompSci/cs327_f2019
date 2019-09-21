@@ -13,10 +13,12 @@ public class CardScript : MonoBehaviour
     public string cardNum;
     //cardNum is the number on the card, ace is 1 jack is 11 queen is 12 king is 13
     public bool apearSelected;
+    public GameObject container;
 
     void Update()
     {
         SetCardAppearance();
+        container = transform.parent.gameObject;
     }
 
     void SetCardAppearance()

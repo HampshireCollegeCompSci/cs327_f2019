@@ -5,6 +5,8 @@ using UnityEngine;
 public class UtilsScript : MonoBehaviour
 {
     public static UtilsScript global; //Creates a new instance if one does not yet exist
+    public List<GameObject> selectedCards;
+    public GameObject clcikedCard;
 
     void Awake()
     {
@@ -20,27 +22,51 @@ public class UtilsScript : MonoBehaviour
     }
 
 
-
-
-    public GameObject[] selectedCards;
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     //sends out a raycast to see you selected something
-    void Click()
+    public void Click()
     {
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Vector2.zero);
 
-        if (hit.collider.CompareTag("Foundation"))
+        if (hit.collider.GetComponent<CardScript>().container.CompareTag("Foundation"))
         {
-            HitFoundation(hit.collider.GetComponent<FoundationScript>());
+            hit.collider.GetComponent<CardScript>().container.GetComponent<FoundationScript>().Clicked();
+        }
+
+        else if (hit.collider.GetComponent<CardScript>().container.CompareTag("Reactor"))
+        {
+            hit.collider.GetComponent<CardScript>().container.GetComponent<ReactorScript>().Clicked();
+        }
+
+        else if (hit.collider.GetComponent<CardScript>().container.CompareTag("Wastepile"))
+        {
+            hit.collider.GetComponent<CardScript>().container.GetComponent<WastepileScript>().Clicked();
+        }
+
+        else if (hit.collider.GetComponent<CardScript>().container.CompareTag("Deck"))
+        {
+            hit.collider.GetComponent<CardScript>().container.GetComponent<DeckScript>().Clicked();
         }
     }
 
+
+    void Match()
+    {
+
+    }
+    
+    
+    void Update()
+    {
+        if (Input.GetMouseButtonUp(0))
+        {
+            Click();
+        }
+    }
+
+    /*
+    This is old code that should be removed but it has pieces that could be helpful when building scripts for Countainers and Card
     //changes selections if you hit a foundation
+
     void HitFoundation(FoundationScript foundationScript)
     {
 
@@ -82,14 +108,6 @@ public class UtilsScript : MonoBehaviour
         selectedCards[0].gameObject.GetComponent<CardScript>().apearSelected = false;
         selectedCards[0] = null;
     }
+    */
 
-    
-    void Update()
-    {
-        if (Input.GetMouseButtonUp(0))
-        {
-            Click();
-        }
-    }
-    
 }

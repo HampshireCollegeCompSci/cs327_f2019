@@ -8,6 +8,11 @@ public class FoundationScript : MonoBehaviour
     int counter;
     int cardMax;
 
+    public void Clicked()
+    {
+        return;
+    }
+
     void Update()
     {
         SetCardPositions();
