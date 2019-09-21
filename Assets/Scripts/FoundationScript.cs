@@ -8,35 +8,13 @@ public class FoundationScript : MonoBehaviour
     int counter;
     int cardMax;
 
-    public void Clicked()
-    {
-        return;
-    }
-
     void Update()
     {
         SetCardPositions();
     }
 
-    //adds a card to the list of cards on the foundation
-    public void AddCard(GameObject cardToAdd, int locationInList)
-    {
-        cardList.Insert(locationInList, cardToAdd);
-    }
-
-    //removes a card from the list of cards on the foundation
-    public void RemoveCard(int locationInList)
-    {
-        if (cardList[locationInList].gameObject.transform.parent == gameObject.transform)
-        {
-            cardList[locationInList].gameObject.transform.parent = null;
-        }
-
-        cardList.Remove(cardList[locationInList]);
-    }
-
     //assigns card positions and render order and sets this foundation as the cards parents
-    void SetCardPositions()
+    public void SetCardPositions()
     {
         counter = 0;
         cardMax = cardList.Count;
@@ -50,6 +28,9 @@ public class FoundationScript : MonoBehaviour
         }
     }
 
-
+    public void Clicked()
+    {
+        return;
+    }
 
 }

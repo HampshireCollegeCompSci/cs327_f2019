@@ -522,6 +522,11 @@ PrefabInstance:
       propertyPath: cardList.Array.data[3]
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 9111740273138036392, guid: f5fc92aa9a70b4cc79fa61a60a0497d0,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f5fc92aa9a70b4cc79fa61a60a0497d0, type: 3}
 --- !u!1 &1374353621 stripped
@@ -1068,6 +1073,11 @@ PrefabInstance:
         type: 3}
       propertyPath: cardList.Array.data[3]
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 9111740273138036392, guid: f5fc92aa9a70b4cc79fa61a60a0497d0,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f5fc92aa9a70b4cc79fa61a60a0497d0, type: 3}

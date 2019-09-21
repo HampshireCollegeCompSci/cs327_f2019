@@ -4,14 +4,11 @@ using UnityEngine;
 
 public class DeckScript : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public List<GameObject> cardList;
+    int counter;
+    int cardMax;
 
-    // Update is called once per frame
-    void Update()
+    void Start()
     {
         
     }
@@ -19,5 +16,15 @@ public class DeckScript : MonoBehaviour
     public void Clicked()
     {
         return;
+    }
+
+    public void Deal()
+    {
+
+    }
+
+    public void Shuffle()
+    {
+
     }
 }

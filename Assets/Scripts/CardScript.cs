@@ -4,17 +4,15 @@ using UnityEngine;
 
 public class CardScript : MonoBehaviour
 {
-    public bool hidden;
+    public GameObject container;
     public Sprite cardFrontSprite;
     public Sprite cardBackSprite;
-    public int cardVal;
-    //cardVal is what the card is worth to the reactor jack, queen, king are all 10
+    public int cardVal; //cardVal is what the card is worth to the reactor jack, queen, king are all 10
+    public int cardNum; //cardNum is the number on the card, ace is 1 jack is 11 queen is 12 king is 13
     public string cardSuit;
-    public string cardNum;
-    //cardNum is the number on the card, ace is 1 jack is 11 queen is 12 king is 13
+    public bool hidden;
     public bool apearSelected;
-    public GameObject container;
-
+        
     void Update()
     {
         SetCardAppearance();
@@ -48,6 +46,21 @@ public class CardScript : MonoBehaviour
             gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
             gameObject.GetComponent<SpriteRenderer>().sortingLayerName = "Default";
         }
+    }
+
+    public void AddCard()
+    {
+        return;
+    }
+
+    public void RemoveCard()
+    {
+        return;
+    }
+
+    public void MoveCard()
+    {
+        return;
     }
 
 
