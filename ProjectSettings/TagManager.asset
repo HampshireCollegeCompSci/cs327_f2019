@@ -8,6 +8,7 @@ TagManager:
   - Reactor
   - Deck
   - Wastepile
+  - Utils
   layers:
   - Default
   - TransparentFX

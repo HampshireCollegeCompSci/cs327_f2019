@@ -22,36 +22,42 @@ public class UtilsScript : MonoBehaviour
     }
 
 
-    //sends out a raycast to see you selected something
+    //sends out a raycast to see you selected something, if you seleced something it tells that thing it was clikced
     public void Click()
     {
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Vector2.zero);
 
         if (hit.collider.GetComponent<CardScript>().container.CompareTag("Foundation"))
         {
-            hit.collider.GetComponent<CardScript>().container.GetComponent<FoundationScript>().Clicked();
+            hit.collider.GetComponent<CardScript>().container.GetComponent<FoundationScript>().Clicked(hit.collider.gameObject);
         }
 
-        else if (hit.collider.GetComponent<CardScript>().container.CompareTag("Reactor"))
+        else if (selectedCards.Count <= 1)
         {
-            hit.collider.GetComponent<CardScript>().container.GetComponent<ReactorScript>().Clicked();
-        }
+            if (hit.collider.GetComponent<CardScript>().container.CompareTag("Reactor"))
+            {
+                hit.collider.GetComponent<CardScript>().container.GetComponent<ReactorScript>().Clicked();
+            }
 
-        else if (hit.collider.GetComponent<CardScript>().container.CompareTag("Wastepile"))
-        {
-            hit.collider.GetComponent<CardScript>().container.GetComponent<WastepileScript>().Clicked();
-        }
+            else if (hit.collider.GetComponent<CardScript>().container.CompareTag("Wastepile"))
+            {
+                hit.collider.GetComponent<CardScript>().container.GetComponent<WastepileScript>().Clicked();
+            }
 
-        else if (hit.collider.GetComponent<CardScript>().container.CompareTag("Deck"))
-        {
-            hit.collider.GetComponent<CardScript>().container.GetComponent<DeckScript>().Clicked();
+            else if (hit.collider.GetComponent<CardScript>().container.CompareTag("Deck"))
+            {
+                hit.collider.GetComponent<CardScript>().container.GetComponent<DeckScript>().Clicked();
+            }
         }
     }
 
 
     void Match()
     {
-        
+        selectedCards[0].GetComponent<CardScript>().RemoveCard();
+        selectedCards[0].GetComponent<CardScript>().AddCard();
+        clcikedCard.GetComponent<CardScript>().RemoveCard();
+        clcikedCard.GetComponent<CardScript>().AddCard();
     }
     
     
@@ -62,52 +68,5 @@ public class UtilsScript : MonoBehaviour
             Click();
         }
     }
-
-    /*
-    This is old code that should be removed but it has pieces that could be helpful when building scripts for Countainers and Card
-    //changes selections if you hit a foundation
-
-    void HitFoundation(FoundationScript foundationScript)
-    {
-
-        if (selectedCards[0] == null)
-        {
-            SelectCard(foundationScript);
-        }
-
-        else if (selectedCards[0] == foundationScript.cardList[0])
-        {
-            DeselectCard(foundationScript);
-        }
-
-        else if (selectedCards[0] != foundationScript.cardList[0])
-        {
-            MoveCard(foundationScript);
-        }
-    }
-
-    //sets selected card to the top card of the selected foundation
-    void SelectCard(FoundationScript foundationScript)
-    {
-        selectedCards[0] = foundationScript.cardList[0];
-        foundationScript.cardList[0].GetComponent<CardScript>().apearSelected = true;
-    }
-
-    //deselects selected card
-    void DeselectCard(FoundationScript foundationScript)
-    {
-        selectedCards[0] = null;
-        foundationScript.cardList[0].GetComponent<CardScript>().apearSelected = false;
-    }
-
-    //moves selected card from one foundation to another
-    void MoveCard(FoundationScript foundationScript)
-    {
-        foundationScript.AddCard(selectedCards[0], 0);
-        selectedCards[0].transform.parent.GetComponent<FoundationScript>().RemoveCard(0);
-        selectedCards[0].gameObject.GetComponent<CardScript>().apearSelected = false;
-        selectedCards[0] = null;
-    }
-    */
 
 }

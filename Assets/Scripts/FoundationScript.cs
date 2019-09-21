@@ -28,7 +28,7 @@ public class FoundationScript : MonoBehaviour
         }
     }
 
-    public void Clicked()
+    public void Clicked(GameObject cardClciked)
     {
         return;
     }
