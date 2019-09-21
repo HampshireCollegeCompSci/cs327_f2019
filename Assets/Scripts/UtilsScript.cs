@@ -51,7 +51,7 @@ public class UtilsScript : MonoBehaviour
 
     void Match()
     {
-        //clcikedCard.GetComponent<CardScript>().container = 
+        
     }
     
     
