@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ReactorScript : MonoBehaviour
 {
+    //helloWorld
     public List<GameObject> cardList;
     int counter;
     int cardMax;
