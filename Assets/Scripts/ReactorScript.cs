@@ -6,7 +6,7 @@ public class ReactorScript : MonoBehaviour
 {
     //helloWorld
     public List<GameObject> cardList;
-    public UtilsScript utils;
+    public UtilsScript utils = UtilsScript.global;
     int counter;
     int cardMax;
     int ReactorVal;
