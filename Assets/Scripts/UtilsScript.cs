@@ -48,8 +48,12 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
+    public bool isMatch(GameObject card1, GameObject card2)
+    {
+        //chechs if two cards are a valid match
+    }
 
-    void Match()
+    public void Match(GameObject card1, GameObject card2)
     {
         //clcikedCard.GetComponent<CardScript>().container = 
     }

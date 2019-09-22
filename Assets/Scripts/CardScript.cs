@@ -16,7 +16,6 @@ public class CardScript : MonoBehaviour
     void Update()
     {
         SetCardAppearance();
-        container = transform.parent.gameObject;
     }
 
     void SetCardAppearance()
@@ -48,20 +47,27 @@ public class CardScript : MonoBehaviour
         }
     }
 
-    public void AddCard()
+    public void MoveCard(GameObject destination)
     {
-        return;
-    }
+        if (destination.CompareTag("Foundation"))
+        {
+            container.GetComponent<FoundationScript>().cardList.Remove(gameObject);
+            destination.GetComponent<FoundationScript>().cardList.Insert(0, gameObject);
+        }
 
-    public void RemoveCard()
-    {
-        return;
-    }
+        else if (destination.CompareTag("Reactor"))
+        {
+            container.GetComponent<ReactorScript>().cardList.Remove(gameObject);
+            destination.GetComponent<ReactorScript>().cardList.Insert(0, gameObject);
+        }
 
-    public void MoveCard()
-    {
-        return;
+        else if (destination.CompareTag("Wastepile"))
+        {
+            container.GetComponent<WastepileScript>().cardList.Remove(gameObject);
+            destination.GetComponent<WastepileScript>().cardList.Insert(0, gameObject);
+        }
+        container = destination;
+        destination.SendMessage("SetCardPositions");
     }
-
 
 }
