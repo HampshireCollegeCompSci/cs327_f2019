@@ -58,7 +58,7 @@ public class CardScript : MonoBehaviour
         return;
     }
 
-    public void MoveCard()
+    public void MoveCard(GameObject newCardLocation, List<GameObject> cardList)
     {
         return;
     }
