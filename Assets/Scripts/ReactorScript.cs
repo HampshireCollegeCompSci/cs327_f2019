@@ -6,7 +6,7 @@ public class ReactorScript : MonoBehaviour
 {
     //helloWorld
     public List<GameObject> cardList;
-    public UtilsScript utils = UtilsScript.global;
+    public GameObject utils;
     int counter;
     int cardMax;
     int ReactorVal;
@@ -42,15 +42,25 @@ public class ReactorScript : MonoBehaviour
     public void Clicked()
     {
 
-        //change later, just using so the code block isn't ugly
-        //if the card numbers match
-        if (utils.selectedCards[0].GetComponent<CardScript>().cardNum == utils.clcikedCard.GetComponent<CardScript>().cardNum && MatchSuit())
+        //this is the double clicking part I guess 
+        if (utils.GetComponent<UtilsScript>().clcikedCard == cardList[0])
         {
-            utils.Match();
-           
+            //utils.GetComponent<UtilsScript>().clcikedCard = null;
+            //this was Jona's I'm just leaving it in case I forget wtf I'm doing
+            cardList.Insert(0, utils.GetComponent<UtilsScript>().clcikedCard);
+            //in theory make it null, e.g. deselecting? 
+            utils.GetComponent<UtilsScript>().clcikedCard = null;
         }
-            
-            //this will work once Max updates it to be public
+        else // select the top of the waste pile
+        {
+            //if the card numbers match
+            if (utils.GetComponent<UtilsScript>().selectedCards[0].GetComponent<CardScript>().cardNum == utils.GetComponent<UtilsScript>().clcikedCard.GetComponent<CardScript>().cardNum && MatchSuit())
+            {
+                utils.GetComponent<UtilsScript>().Match();
+
+            }
+        }
+       
         
         
         return;
@@ -65,8 +75,8 @@ public class ReactorScript : MonoBehaviour
     {
         //just to make it cleaner because this utils.blah blah blah is yucky
         //basically a string of if/else cases for matching
-        string selectedCardSuit = utils.selectedCards[0].GetComponent<CardScript>().cardSuit;
-        string clickedCardSuit = utils.clcikedCard.GetComponent<CardScript>().cardSuit;
+        string selectedCardSuit = utils.GetComponent<UtilsScript>().selectedCards[0].GetComponent<CardScript>().cardSuit;
+        string clickedCardSuit = utils.GetComponent<UtilsScript>().clcikedCard.GetComponent<CardScript>().cardSuit;
         if (selectedCardSuit.Equals("hearts") && clickedCardSuit.Equals("diamonds"))
         {
             
