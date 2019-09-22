@@ -44,12 +44,10 @@ public class ReactorScript : MonoBehaviour
 
         //change later, just using so the code block isn't ugly
         //if the card numbers match
-        if (utils.selectedCards[0].GetComponent<CardScript>().cardNum == utils.clcikedCard.GetComponent<CardScript>().cardNum)
+        if (utils.selectedCards[0].GetComponent<CardScript>().cardNum == utils.clcikedCard.GetComponent<CardScript>().cardNum && MatchSuit())
         {
-            if (MatchSuit())
-            {
-                utils.Match();
-            }
+            utils.Match();
+           
         }
             
             //this will work once Max updates it to be public
