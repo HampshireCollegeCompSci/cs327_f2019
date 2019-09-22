@@ -61,7 +61,6 @@ public class CardScript : MonoBehaviour
             destination.GetComponent<ReactorScript>().cardList.Insert(0, gameObject);
         }
 
-<<<<<<< HEAD
         else if (destination.CompareTag("Wastepile"))
         {
             container.GetComponent<WastepileScript>().cardList.Remove(gameObject);
@@ -69,11 +68,6 @@ public class CardScript : MonoBehaviour
         }
         container = destination;
         destination.SendMessage("SetCardPositions");
-=======
-    public void MoveCard(GameObject newCardLocation, List<GameObject> cardList)
-    {
-        return;
->>>>>>> origin/FirstBuild
     }
 
 }

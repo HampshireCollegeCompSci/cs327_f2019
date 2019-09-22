@@ -54,29 +54,18 @@ public class UtilsScript : MonoBehaviour
         //chechs if two cards are a valid match
     }
 
-<<<<<<< HEAD
     public void Match(GameObject card1, GameObject card2)
     {
         //clcikedCard.GetComponent<CardScript>().container = 
     }
     
     
-=======
-    public void Match()
-    {
-        selectedCards[0].GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
-        clcikedCard.GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
-    }
-
-
->>>>>>> origin/FirstBuild
     void Update()
     {
         if (Input.GetMouseButtonUp(0))
         {
             Click();
         }
-<<<<<<< HEAD
     }
 
     /*
@@ -126,7 +115,4 @@ public class UtilsScript : MonoBehaviour
     }
     */
 
-=======
-    }
->>>>>>> origin/FirstBuild
 }
