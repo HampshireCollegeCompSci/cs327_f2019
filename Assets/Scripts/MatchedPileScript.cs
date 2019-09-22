@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WastepileScript : MonoBehaviour
+public class MatchedPileScript : MonoBehaviour
 {
-    public GameObject utils;
     public List<GameObject> cardList;
     int counter;
     int cardMax;
 
     void Update()
     {
-        
+        SetCardPositions();
     }
 
+    //assigns card positions and render order and sets this foundation as the cards parents
     public void SetCardPositions()
     {
         counter = 0;
@@ -26,24 +26,5 @@ public class WastepileScript : MonoBehaviour
             cardList[counter].gameObject.GetComponent<SpriteRenderer>().sortingOrder = cardMax - counter;
             counter += 1;
         }
-    }
-
-    public void Clicked()
-    {
-        // has the waste pile been selected twice?
-        if (utils.GetComponent<UtilsScript>().clcikedCard == cardList[cardList.Count - 1])
-        {
-            utils.GetComponent<UtilsScript>().clcikedCard = null;
-        }
-        else // select the top of the waste pile
-        {
-            utils.GetComponent<UtilsScript>().clcikedCard = cardList[cardList.Count - 1];
-        }
-        return;
-    }
-
-    public List<GameObject> GetCardList()
-    {
-        return cardList;
     }
 }
