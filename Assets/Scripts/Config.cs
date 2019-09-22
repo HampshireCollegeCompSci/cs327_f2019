@@ -17,8 +17,8 @@ public class Config : MonoBehaviour
 
     public GameObject[] foundationList;
 
-    int foundationCount = 0;
-    void Awake()
+    private int foundationCount = 0;
+    private void Awake()
     {
         if (config == null)
         {
