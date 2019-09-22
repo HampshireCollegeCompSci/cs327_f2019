@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class WastepileScript : MonoBehaviour
 {
+    public GameObject utils;
     public List<GameObject> cardList;
     int counter;
     int cardMax;
@@ -29,6 +30,20 @@ public class WastepileScript : MonoBehaviour
 
     public void Clicked()
     {
+        // has the waste pile been selected twice?
+        if (utils.GetComponent<UtilsScript>().clcikedCard == cardList[cardList.Count - 1])
+        {
+            utils.GetComponent<UtilsScript>().clcikedCard = null;
+        }
+        else // select the top of the waste pile
+        {
+            utils.GetComponent<UtilsScript>().clcikedCard = cardList[cardList.Count - 1];
+        }
         return;
+    }
+
+    public List<GameObject> GetCardList()
+    {
+        return cardList;
     }
 }
