@@ -50,7 +50,7 @@ public class UtilsScript : MonoBehaviour
     }
 
 
-    void Match()
+    public void Match()
     {
         selectedCards[0].GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
         clcikedCard.GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
