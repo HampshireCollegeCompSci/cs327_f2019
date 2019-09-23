@@ -68,18 +68,19 @@ public class DeckScript : MonoBehaviour
         cardList = Shuffle(cardList);
 
         // moving cards into foundations
-        foreach (GameObject foundation in foundations)
+        for (int i = 0; i < foundations.Count; i++)
         {
-            for (int n = 0; n < foundationStartSize; n++)
+            for (int n = 0; n < foundationStartSize - 1; n++)
             {
                 // set to hidden as they might be unhidden
                 cardList[0].GetComponent<CardScript>().hidden = true;
                 // MoveCard() should be removing the card from its current cardList so taking index 0 should work
-                cardList[0].GetComponent<CardScript>().MoveCard(foundation);
+                cardList[0].GetComponent<CardScript>().MoveCard(foundations[i]);
             }
 
-            // revealing the top card of the foundation
-            foundation.GetComponent<FoundationScript>().cardList[foundationStartSize - 1].GetComponent<CardScript>().hidden = false;
+            // adding and revealing the top card of the foundation
+            cardList[0].GetComponent<CardScript>().hidden = false;
+            cardList[0].GetComponent<CardScript>().MoveCard(foundations[i]);
         }
 
         gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
