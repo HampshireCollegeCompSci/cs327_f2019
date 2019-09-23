@@ -12,10 +12,11 @@ public class CardScript : MonoBehaviour
     public string cardSuit;
     public bool hidden;
     public bool apearSelected;
-        
+
     void Update()
     {
         SetCardAppearance();
+        //when does the card set the parent?
         container = transform.parent.gameObject;
     }
 

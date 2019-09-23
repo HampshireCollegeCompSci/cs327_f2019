@@ -6,7 +6,7 @@ public class UtilsScript : MonoBehaviour
 {
     public static UtilsScript global; //Creates a new instance if one does not yet exist
     public List<GameObject> selectedCards;
-    public GameObject clcikedCard;
+    public GameObject clickedCard;
     public GameObject matchedPile;
 
     void Awake()
@@ -28,24 +28,30 @@ public class UtilsScript : MonoBehaviour
     {
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Vector2.zero);
 
-        if (hit.collider.GetComponent<CardScript>().container.CompareTag("Foundation"))
+        //check if collider is null
+        if (hit.collider != null)
         {
-            hit.collider.GetComponent<CardScript>().container.GetComponent<FoundationScript>().Clicked();
-        }
+            GameObject container = hit.collider.GetComponent<CardScript>().container;
 
-        else if (hit.collider.GetComponent<CardScript>().container.CompareTag("Reactor"))
-        {
-            hit.collider.GetComponent<CardScript>().container.GetComponent<ReactorScript>().Clicked();
-        }
+            if (container.CompareTag("Foundation"))
+            {
+                container.GetComponent<FoundationScript>().Clicked();
+            }
 
-        else if (hit.collider.GetComponent<CardScript>().container.CompareTag("Wastepile"))
-        {
-            hit.collider.GetComponent<CardScript>().container.GetComponent<WastepileScript>().Clicked();
-        }
+            else if (container.CompareTag("Reactor"))
+            {
+                container.GetComponent<ReactorScript>().Clicked();
+            }
 
-        else if (hit.collider.GetComponent<CardScript>().container.CompareTag("Deck"))
-        {
-            hit.collider.GetComponent<CardScript>().container.GetComponent<DeckScript>().Clicked();
+            else if (container.CompareTag("Wastepile"))
+            {
+                container.GetComponent<WastepileScript>().Clicked();
+            }
+
+            else if (container.CompareTag("Deck"))
+            {
+                container.GetComponent<DeckScript>().Clicked();
+            }
         }
     }
 
@@ -53,7 +59,7 @@ public class UtilsScript : MonoBehaviour
     public void Match()
     {
         selectedCards[0].GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
-        clcikedCard.GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
+        clickedCard.GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
     }
 
 
