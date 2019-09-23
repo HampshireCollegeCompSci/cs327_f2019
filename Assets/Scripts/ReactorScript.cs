@@ -77,40 +77,7 @@ public class ReactorScript : MonoBehaviour
     }
 
     //this will need to be changed once I know what the actual string names are 
-    public bool MatchSuit()
-    {
-        //just to make it cleaner because this utils.blah blah blah is yucky
-        //basically a string of if/else cases for matching
-        string selectedCardSuit = utils.selectedCards[0].GetComponent<CardScript>().cardSuit;
-        string clickedCardSuit = utils.clcikedCard.GetComponent<CardScript>().cardSuit;
-        //hearts diamond combo #1
-        if (selectedCardSuit.Equals("hearts") && clickedCardSuit.Equals("diamonds"))
-        {    
-            return true;
-        }
-        //hearts diamond combo #2
-        else if (selectedCardSuit.Equals("diamonds") && clickedCardSuit.Equals("hearts"))
-        {
-            return true;
-        }
-        //spades clubs combo #1
-        else if (selectedCardSuit.Equals("spades") && clickedCardSuit.Equals("clubs"))
-        {
-            return true;
-        }
-        //spades clubs combo #2
-        else if (selectedCardSuit.Equals("clubs") && clickedCardSuit.Equals("spades"))
-        {
-            return true;
-        }
-        //otherwise not a match 
-        else
-        {
-            return false;
-        }
-      
-
-    }
+    
 
     //this is just meant to iterate through the list of cards in the stack
     //sum the amounts of them, and then return whatever that sum is
