@@ -55,7 +55,7 @@ public class UtilsScript : MonoBehaviour
         //clcikedCard.GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
     }
 
-    public bool MatchSuit()
+    public bool IsSuitMatch()
     {
         //just to make it cleaner because this utils.blah blah blah is yucky
         //basically a string of if/else cases for matching

@@ -61,9 +61,9 @@ public class ReactorScript : MonoBehaviour
         }
         else // if not double clicked, they aren't adding, whcih means they are trying to match
         {
-            //if the card numbers match and the suits match (MatchSuit)
+            //if the card numbers match and the suits match (IsSuitMatch)
             if (utils.selectedCards[0].GetComponent<CardScript>().cardNum ==
-                utils.clickedCard.GetComponent<CardScript>().cardNum && utils.MatchSuit())
+                utils.clickedCard.GetComponent<CardScript>().cardNum && utils.IsSuitMatch())
             {
                 utils.Match();
 
