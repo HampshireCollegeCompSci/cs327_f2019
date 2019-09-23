@@ -10,6 +10,7 @@ public class DeckScript : MonoBehaviour
     private List<GameObject> reactors;
 
     public Sprite cardBackSprite;
+    public Sprite placeHolderSprite;
     public List<GameObject> cardList;
     public bool shuffleOnDeckReset = true;
     public bool dealOnDeckReset = true;
@@ -184,7 +185,7 @@ public class DeckScript : MonoBehaviour
         {
             if (cardList.Count == 0) // are there no more cards in the deck?
             {
-                gameObject.GetComponent<SpriteRenderer>().sprite = null;
+                gameObject.GetComponent<SpriteRenderer>().sprite = placeHolderSprite;
                 break;
             }
 
