@@ -68,18 +68,19 @@ public class DeckScript : MonoBehaviour
         cardList = Shuffle(cardList);
 
         // moving cards into foundations
-        foreach (GameObject foundation in foundations)
+        for (int i = 0; i < foundations.Count; i++)
         {
-            for (int n = 0; n < foundationStartSize; n++)
+            for (int n = 0; n < foundationStartSize - 1; n++)
             {
                 // set to hidden as they might be unhidden
                 cardList[0].GetComponent<CardScript>().hidden = true;
                 // MoveCard() should be removing the card from its current cardList so taking index 0 should work
-                cardList[0].GetComponent<CardScript>().MoveCard(foundation);
+                cardList[0].GetComponent<CardScript>().MoveCard(foundations[i]);
             }
 
-            // revealing the top card of the foundation
-            foundation.GetComponent<FoundationScript>().cardList[foundationStartSize - 1].GetComponent<CardScript>().hidden = false;
+            // adding and revealing the top card of the foundation
+            cardList[0].GetComponent<CardScript>().hidden = false;
+            cardList[0].GetComponent<CardScript>().MoveCard(foundations[i]);
         }
 
         gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
@@ -114,10 +115,10 @@ public class DeckScript : MonoBehaviour
 
     public void NextCycle()
     {
-        foreach (GameObject foundation in foundations)
+        for (int f = 0; f < foundations.Count; f++)
         {
             // get the list of cards in a foundation
-            List<GameObject> foundationCardList = foundation.GetComponent<FoundationScript>().cardList;
+            List<GameObject> foundationCardList = foundations[f].GetComponent<FoundationScript>().cardList;
             if (foundationCardList.Count != 0) // is it not empty?
             {
                 GameObject topFoundationCard = foundationCardList[foundationCardList.Count - 1];
@@ -125,22 +126,22 @@ public class DeckScript : MonoBehaviour
                 // trackers for first time reactor suits
                 GameObject emptyReactor = null;
                 bool placed = false;
-                foreach (GameObject reactor in reactors)
+                for (int r = 0; r < reactors.Count; r++)
                 {
                     // get the reactor's card list
-                    List<GameObject> reactorCardList = reactor.GetComponent<ReactorScript>().cardList;
+                    List<GameObject> reactorCardList = reactors[r].GetComponent<ReactorScript>().cardList;
                     if (reactorCardList.Count == 0) // is this reactor empty?
                     {
                         if (emptyReactor == null) // is this the first empty reactor found for this card?
                         {
                             // save for possible use
-                            emptyReactor = reactor;
+                            emptyReactor = reactors[r];
                         }
                     }
                     // otherwise see if this top card's suit matches the reactor cards suit
                     else if (topFoundationCard.GetComponent<CardScript>().cardSuit == reactorCardList[0].GetComponent<CardScript>().cardSuit)
                     {
-                        topFoundationCard.GetComponent<CardScript>().MoveCard(reactor);
+                        topFoundationCard.GetComponent<CardScript>().MoveCard(reactors[r]);
                         placed = true;
                         break;
                     }

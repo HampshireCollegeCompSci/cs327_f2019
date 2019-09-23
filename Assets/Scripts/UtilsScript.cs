@@ -77,7 +77,50 @@ public class UtilsScript : MonoBehaviour
             return false;
         }
     }
+<<<<<<< HEAD
 
+=======
+
+    public void Match()
+    {
+        //selectedCards[0].GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
+        //clcikedCard.GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
+    }
+
+    public bool IsSuitMatch()
+    {
+        //just to make it cleaner because this utils.blah blah blah is yucky
+        //basically a string of if/else cases for matching
+        string selectedCardSuit = selectedCards[0].GetComponent<CardScript>().cardSuit;
+        string clickedCardSuit = clickedCard.GetComponent<CardScript>().cardSuit;
+        //hearts diamond combo #1
+        if (selectedCardSuit.Equals("hearts") && clickedCardSuit.Equals("diamonds"))
+        {
+            return true;
+        }
+        //hearts diamond combo #2
+        else if (selectedCardSuit.Equals("diamonds") && clickedCardSuit.Equals("hearts"))
+        {
+            return true;
+        }
+        //spades clubs combo #1
+        else if (selectedCardSuit.Equals("spades") && clickedCardSuit.Equals("clubs"))
+        {
+            return true;
+        }
+        //spades clubs combo #2
+        else if (selectedCardSuit.Equals("clubs") && clickedCardSuit.Equals("spades"))
+        {
+            return true;
+        }
+        //otherwise not a match 
+        else
+        {
+            return false;
+        }
+    }
+
+>>>>>>> origin/FirstBuild
     void Update()
     {
         if (Input.GetMouseButtonUp(0))

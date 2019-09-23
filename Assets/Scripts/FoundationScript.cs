@@ -39,7 +39,7 @@ public class FoundationScript : MonoBehaviour
     {
          if (utils.selectedCards[0].GetComponent<CardScript>().container.CompareTag("Foundation")) //checking where selected card is from
         {
-            if (utils.MatchSuit() && utils.selectedCards.Count == 1) //check if selectedCards and the clicked card match and that selesctedCards is only one card
+            if (utils.IsSuitMatch() && utils.selectedCards.Count == 1) //check if selectedCards and the clicked card match and that selesctedCards is only one card
             {
                 utils.Match(); //removes the two matched cards
             }
@@ -55,7 +55,7 @@ public class FoundationScript : MonoBehaviour
 
         else if (utils.selectedCards[0].GetComponent<CardScript>().container.CompareTag("Reactor") && utils.selectedCards.Count == 1) //checking if selectedcards is from a reactor and that it is only one card
         {
-            if (utils.MatchSuit()) //check if selectedCards and the clicked card match
+            if (utils.IsSuitMatch()) //check if selectedCards and the clicked card match
             {
                 utils.Match(); //removes the two matched cards
             }
@@ -63,7 +63,7 @@ public class FoundationScript : MonoBehaviour
 
         else if (utils.selectedCards[0].GetComponent<CardScript>().container.CompareTag("Wastepile") && utils.selectedCards.Count == 1) //checking if selectedcards is from a wastepile and that it is only one card
         {
-            if (utils.MatchSuit()) //check if selectedCards and the clicked card match
+            if (utils.IsSuitMatch()) //check if selectedCards and the clicked card match
             {
                 utils.Match(); //removes the two matched cards
             }
