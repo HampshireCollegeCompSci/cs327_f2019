@@ -36,40 +36,40 @@ public class FoundationScript : MonoBehaviour
 
     public void Clicked()
     {
-         if (utils.GetComponent<UtilsScript>().selectedCards[0].GetComponent<CardScript>().container.CompareTag("Foundation")) //checking where selected card is from
+         if (utils.selectedCards[0].GetComponent<CardScript>().container.CompareTag("Foundation")) //checking where selected card is from
         {
-            if (utils.GetComponent<UtilsScript>().isMatch(cardList[0], utils.GetComponent<UtilsScript>().selectedCards[0]) && utils.GetComponent<UtilsScript>().selectedCards.Count == 1) //check if selectedCards and the clicked card match and that selesctedCards is only one card
+            if (utils.MatchSuit() && utils.selectedCards.Count == 1) //check if selectedCards and the clicked card match and that selesctedCards is only one card
             {
-                utils.GetComponent<UtilsScript>().Match(cardList[0], utils.GetComponent<UtilsScript>().selectedCards[0]); //removes the two matched cards
+                utils.Match(); //removes the two matched cards
             }
 
-            else if ((cardList[0].GetComponent<CardScript>().cardNum - 1) == utils.GetComponent<UtilsScript>().selectedCards[0].GetComponent<CardScript>().cardNum) //checks card destination is one higher
+            else if ((cardList[0].GetComponent<CardScript>().cardNum - 1) == utils.selectedCards[0].GetComponent<CardScript>().cardNum) //checks card destination is one higher
             {
-                foreach (GameObject card in utils.GetComponent<UtilsScript>().selectedCards) //goes through and moves all selesctedCards to clicked location
+                foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
                 {
                     card.GetComponent<CardScript>().MoveCard(cardList[0].GetComponent<CardScript>().container);
                 }
             }
         }
 
-        else if (utils.GetComponent<UtilsScript>().selectedCards[0].GetComponent<CardScript>().container.CompareTag("Reactor") && utils.GetComponent<UtilsScript>().selectedCards.Count == 1) //checking if selectedcards is from a reactor and that it is only one card
+        else if (utils.selectedCards[0].GetComponent<CardScript>().container.CompareTag("Reactor") && utils.selectedCards.Count == 1) //checking if selectedcards is from a reactor and that it is only one card
         {
-            if (utils.GetComponent<UtilsScript>().isMatch(cardList[0], utils.GetComponent<UtilsScript>().selectedCards[0])) //check if selectedCards and the clicked card match
+            if (utils.MatchSuit()) //check if selectedCards and the clicked card match
             {
-                utils.GetComponent<UtilsScript>().Match(cardList[0], utils.GetComponent<UtilsScript>().selectedCards[0]); //removes the two matched cards
+                utils.Match(); //removes the two matched cards
             }
         }
 
-        else if (utils.GetComponent<UtilsScript>().selectedCards[0].GetComponent<CardScript>().container.CompareTag("Wastepile") && utils.GetComponent<UtilsScript>().selectedCards.Count == 1) //checking if selectedcards is from a wastepile and that it is only one card
+        else if (utils.selectedCards[0].GetComponent<CardScript>().container.CompareTag("Wastepile") && utils.selectedCards.Count == 1) //checking if selectedcards is from a wastepile and that it is only one card
         {
-            if (utils.GetComponent<UtilsScript>().isMatch(cardList[0], utils.GetComponent<UtilsScript>().selectedCards[0])) //check if selectedCards and the clicked card match
+            if (utils.MatchSuit()) //check if selectedCards and the clicked card match
             {
-                utils.GetComponent<UtilsScript>().Match(cardList[0], utils.GetComponent<UtilsScript>().selectedCards[0]); //removes the two matched cards
+                utils.Match(); //removes the two matched cards
             }
 
-            else if ((cardList[0].GetComponent<CardScript>().cardNum - 1) == utils.GetComponent<UtilsScript>().selectedCards[0].GetComponent<CardScript>().cardNum) //checks card destination is one higher
+            else if ((cardList[0].GetComponent<CardScript>().cardNum - 1) == utils.selectedCards[0].GetComponent<CardScript>().cardNum) //checks card destination is one higher
             {
-                utils.GetComponent<UtilsScript>().selectedCards[0].GetComponent<CardScript>().MoveCard(cardList[0].GetComponent<CardScript>().container); //moves card in selectedCards to clicked location
+                utils.selectedCards[0].GetComponent<CardScript>().MoveCard(cardList[0].GetComponent<CardScript>().container); //moves card in selectedCards to clicked location
             }
         }
         return;
