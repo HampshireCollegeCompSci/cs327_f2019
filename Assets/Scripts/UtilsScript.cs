@@ -28,24 +28,14 @@ public class UtilsScript : MonoBehaviour
     {
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Vector2.zero);
 
-        if (hit.collider.GetComponent<CardScript>().container.CompareTag("Foundation"))
+        if (selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().hidden)
         {
-            hit.collider.GetComponent<CardScript>().container.GetComponent<FoundationScript>().Clicked();
+            selectedCards.Add(hit.collider.gameObject);
         }
 
-        else if (hit.collider.GetComponent<CardScript>().container.CompareTag("Reactor"))
+        else
         {
-            hit.collider.GetComponent<CardScript>().container.GetComponent<ReactorScript>().Clicked();
-        }
-
-        else if (hit.collider.GetComponent<CardScript>().container.CompareTag("Wastepile"))
-        {
-            hit.collider.GetComponent<CardScript>().container.GetComponent<WastepileScript>().Clicked();
-        }
-
-        else if (hit.collider.GetComponent<CardScript>().container.CompareTag("Deck"))
-        {
-            hit.collider.GetComponent<CardScript>().container.GetComponent<DeckScript>().Clicked();
+            selectedCards[0].GetComponent<CardScript>().container.SendMessage("Clicked", hit.collider.gameObject);
         }
     }
 
