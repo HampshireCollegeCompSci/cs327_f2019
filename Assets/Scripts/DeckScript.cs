@@ -75,7 +75,7 @@ public class DeckScript : MonoBehaviour
                 // set to hidden as they might be unhidden
                 cardList[0].GetComponent<CardScript>().hidden = true;
                 // MoveCard() should be removing the card from its current cardList so taking index 0 should work
-                cardList[0].GetComponent<CardScript>().MoveCard(foundation, null);
+                cardList[0].GetComponent<CardScript>().MoveCard(foundation);
             }
 
             // revealing the top card of the foundation
@@ -140,7 +140,7 @@ public class DeckScript : MonoBehaviour
                     // otherwise see if this top card's suit matches the reactor cards suit
                     else if (topFoundationCard.GetComponent<CardScript>().cardSuit == reactorCardList[0].GetComponent<CardScript>().cardSuit)
                     {
-                        topFoundationCard.GetComponent<CardScript>().MoveCard(reactor, null);
+                        topFoundationCard.GetComponent<CardScript>().MoveCard(reactor);
                         placed = true;
                         break;
                     }
@@ -150,7 +150,7 @@ public class DeckScript : MonoBehaviour
                     if (emptyReactor != null) // reactors with the same suit may not fulfill this
                     {
                         // place this top card into the first empty reactor that was found
-                        topFoundationCard.GetComponent<CardScript>().MoveCard(emptyReactor, null);
+                        topFoundationCard.GetComponent<CardScript>().MoveCard(emptyReactor);
                     }
                 }
             }
@@ -165,7 +165,7 @@ public class DeckScript : MonoBehaviour
         // move all the cards from waste to deck, preserves reveal order
         for (int i = wasteCardList.Count - 1; i > -1; i--)
         {
-            wasteCardList[i].GetComponent<CardScript>().MoveCard(this.gameObject, null);
+            wasteCardList[i].GetComponent<CardScript>().MoveCard(gameObject);
         }
 
         if (shuffleOnDeckReset)
@@ -190,7 +190,7 @@ public class DeckScript : MonoBehaviour
             }
 
             // move card from deck list top into waste
-            cardList[cardList.Count - 1].GetComponent<CardScript>().MoveCard(wastePile, null);
+            cardList[cardList.Count - 1].GetComponent<CardScript>().MoveCard(wastePile);
         }
     }
 

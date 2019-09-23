@@ -11,20 +11,14 @@ public class CardScript : MonoBehaviour
     public int cardNum; //cardNum is the number on the card, ace is 1 jack is 11 queen is 12 king is 13
     public string cardSuit;
     public bool hidden;
-<<<<<<< HEAD
     public bool apearSelected;
-        
-    void Update()
-    {
-        SetCardAppearance();
-=======
-    public bool apearSelected;
-        
+
+
+
     void Update()
     {
         SetCardAppearance();
         container = transform.parent.gameObject;
->>>>>>> origin/FirstBuild
     }
 
     public void SetCardAppearance()
@@ -79,9 +73,6 @@ public class CardScript : MonoBehaviour
         destination.SendMessage("SetCardPositions");
     }
 
-<<<<<<< HEAD
-}
-=======
 
 }
->>>>>>> origin/FirstBuild
+

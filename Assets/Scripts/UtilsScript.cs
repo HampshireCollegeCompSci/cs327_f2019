@@ -49,91 +49,30 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    public bool isMatch(GameObject card1, GameObject card2)
-    {
-        //chechs if two cards are a valid match
-    }
-
-<<<<<<< HEAD
-    public void Match(GameObject card1, GameObject card2)
-    {
-        //clcikedCard.GetComponent<CardScript>().container = 
-    }
-    
-    
-=======
     public void Match()
     {
-        selectedCards[0].GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
-        clcikedCard.GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
+        //selectedCards[0].GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
+        //clcikedCard.GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
     }
 
 
->>>>>>> origin/FirstBuild
+
     void Update()
     {
         if (Input.GetMouseButtonUp(0))
         {
             Click();
         }
-<<<<<<< HEAD
+
     }
 
-    /*
-    This is old code that should be removed but it has pieces that could be helpful when building scripts for Countainers and Card
-    //changes selections if you hit a foundation
 
-    void HitFoundation(FoundationScript foundationScript)
-    {
 
-        if (selectedCards[0] == null)
-        {
-            SelectCard(foundationScript);
-        }
+    //int forCounter;
+    //for (forCounter = 0; forCounter < selectedCards.Count; forCounter++)
+    //{
+    //    selectedCards[forCounter].GetComponent<CardScript>().apearSelected = true;
+    //    selectedCards[forCounter].GetComponent<CardScript>().SetCardAppearance();
+    //}
 
-        else if (selectedCards[0] == foundationScript.cardList[0])
-        {
-            DeselectCard(foundationScript);
-        }
-
-        else if (selectedCards[0] != foundationScript.cardList[0])
-        {
-            MoveCard(foundationScript);
-        }
-    }
-
-    //sets selected card to the top card of the selected foundation
-    void SelectCard(FoundationScript foundationScript)
-    {
-        selectedCards[0] = foundationScript.cardList[0];
-        foundationScript.cardList[0].GetComponent<CardScript>().apearSelected = true;
-    }
-
-    //deselects selected card
-    void DeselectCard(FoundationScript foundationScript)
-    {
-        selectedCards[0] = null;
-        foundationScript.cardList[0].GetComponent<CardScript>().apearSelected = false;
-    }
-
-    //moves selected card from one foundation to another
-    void MoveCard(FoundationScript foundationScript)
-    {
-        foundationScript.AddCard(selectedCards[0], 0);
-        selectedCards[0].transform.parent.GetComponent<FoundationScript>().RemoveCard(0);
-        selectedCards[0].gameObject.GetComponent<CardScript>().apearSelected = false;
-        selectedCards[0] = null;
-    }
-    */
-
-=======
-
-        int forCounter;
-        for (forCounter = 0; forCounter < selectedCards.Count; forCounter++)
-        {
-            selectedCards[forCounter].GetComponent<CardScript>().apearSelected = true;
-            selectedCards[forCounter].GetComponent<CardScript>().SetCardAppearance();
-        }
-    }
->>>>>>> origin/FirstBuild
 }
