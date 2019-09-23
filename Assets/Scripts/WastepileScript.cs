@@ -38,6 +38,7 @@ public class WastepileScript : MonoBehaviour
         else // select the top of the waste pile
         {
             utils.GetComponent<UtilsScript>().clcikedCard = cardList[cardList.Count - 1];
+            cardList[cardList.Count - 1].GetComponent<CardScript>().apearSelected = true;
         }
         return;
     }
