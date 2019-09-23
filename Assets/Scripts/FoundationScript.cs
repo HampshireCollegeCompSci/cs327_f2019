@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class FoundationScript : MonoBehaviour
 {
-    public GameObject utils;
+    public UtilsScript utils;
     public List<GameObject> cardList;
     int counter;
     int cardMax;
 
     void Start()
     {
-        //TODO: have something that finds the Utils object and sets it
+        utils = UtilsScript.global;
     }
 
     void Update()
