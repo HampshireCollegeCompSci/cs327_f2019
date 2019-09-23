@@ -6,7 +6,7 @@ public class UtilsScript : MonoBehaviour
 {
     public static UtilsScript global; //Creates a new instance if one does not yet exist
     public List<GameObject> selectedCards;
-    public GameObject clcikedCard;
+    public GameObject clickedCard;
     public GameObject matchedPile;
 
     void Awake()
@@ -60,7 +60,7 @@ public class UtilsScript : MonoBehaviour
         //just to make it cleaner because this utils.blah blah blah is yucky
         //basically a string of if/else cases for matching
         string selectedCardSuit = selectedCards[0].GetComponent<CardScript>().cardSuit;
-        string clickedCardSuit = clcikedCard.GetComponent<CardScript>().cardSuit;
+        string clickedCardSuit = clickedCard.GetComponent<CardScript>().cardSuit;
         //hearts diamond combo #1
         if (selectedCardSuit.Equals("hearts") && clickedCardSuit.Equals("diamonds"))
         {
@@ -88,7 +88,7 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-        void Update()
+    void Update()
     {
         if (Input.GetMouseButtonUp(0))
         {

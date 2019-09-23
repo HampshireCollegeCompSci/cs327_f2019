@@ -23,7 +23,7 @@ public class ReactorScript : MonoBehaviour
         if (CountReactorCard() >= 18)
         {
             //TODO: game over
-            
+
 
         }
     }
@@ -50,20 +50,20 @@ public class ReactorScript : MonoBehaviour
         //compared for double clicking so if it's wrong my bad
         //I did modify the index though because I thought it's the first
         //if it's not the first index, I will change it back
-        if (utils.clcikedCard == cardList[0])
+        if (utils.cilckedCard == cardList[0])
         {
             //insert the clicked card into the list because in theory that's what we want?
             //unless it's selected card, honestly not sure
-            cardList.Insert(0, utils.clcikedCard);
+            cardList.Insert(0, utils.cilckedCard);
             //this was Jona's code initially, I'm just leaving it in case I forget wtf I'm doing
             //in theory make it null, e.g. deselecting? 
-            utils.clcikedCard = null;
+            utils.cilckedCard = null;
         }
         else // if not double clicked, they aren't adding, whcih means they are trying to match
         {
             //if the card numbers match and the suits match (MatchSuit)
             if (utils.selectedCards[0].GetComponent<CardScript>().cardNum ==
-                utils.clcikedCard.GetComponent<CardScript>().cardNum && MatchSuit())
+                utils.cilckedCard.GetComponent<CardScript>().cardNum && utils.MatchSuit())
             {
                 utils.Match();
 
@@ -71,13 +71,13 @@ public class ReactorScript : MonoBehaviour
         }
         //this is just the return call to end after having clicked
         return;
-        
-        
+
+
 
     }
 
     //this will need to be changed once I know what the actual string names are 
-    
+
 
     //this is just meant to iterate through the list of cards in the stack
     //sum the amounts of them, and then return whatever that sum is
