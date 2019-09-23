@@ -19,11 +19,10 @@ public class CardScript : MonoBehaviour
         SetCardAppearance();
 =======
     public bool apearSelected;
-
+        
     void Update()
     {
         SetCardAppearance();
-        //when does the card set the parent?
         container = transform.parent.gameObject;
 >>>>>>> origin/FirstBuild
     }

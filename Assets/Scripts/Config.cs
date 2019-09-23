@@ -17,8 +17,7 @@ public class Config : MonoBehaviour
 
     public GameObject[] foundationList;
 
-    private int foundationCount;
-
+    private int foundationCount = 0;
     private void Awake()
     {
         if (config == null)
@@ -41,7 +40,7 @@ public class Config : MonoBehaviour
     {
         //every frame, check to see if all foundations are empty.
         foreach (GameObject foundation in foundationList)
-        {
+        {  
             if (foundation.GetComponent<FoundationScript>().cardList.Count == 0)
             {
                 foundationCount++;
