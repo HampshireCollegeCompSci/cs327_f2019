@@ -6,13 +6,17 @@ public class ReactorScript : MonoBehaviour
 {
     //helloWorld
     public List<GameObject> cardList;
-    public GameObject utils;
+    public UtilsScript utils;
     int counter;
     int cardMax;
     int ReactorVal;
 
-    
-    
+    void Start()
+    {
+        utils = UtilsScript.global;
+    }
+
+
     void Update()
     {
         //constantly checking to see if reactor score is below
@@ -46,21 +50,22 @@ public class ReactorScript : MonoBehaviour
         //compared for double clicking so if it's wrong my bad
         //I did modify the index though because I thought it's the first
         //if it's not the first index, I will change it back
-        if (utils.GetComponent<UtilsScript>().clcikedCard == cardList[0])
+        if (utils.clcikedCard == cardList[0])
         {
             //insert the clicked card into the list because in theory that's what we want?
             //unless it's selected card, honestly not sure
-            cardList.Insert(0, utils.GetComponent<UtilsScript>().clcikedCard);
+            cardList.Insert(0, utils.clcikedCard);
             //this was Jona's code initially, I'm just leaving it in case I forget wtf I'm doing
             //in theory make it null, e.g. deselecting? 
-            utils.GetComponent<UtilsScript>().clcikedCard = null;
+            utils.clcikedCard = null;
         }
         else // if not double clicked, they aren't adding, whcih means they are trying to match
         {
             //if the card numbers match and the suits match (MatchSuit)
-            if (utils.GetComponent<UtilsScript>().selectedCards[0].GetComponent<CardScript>().cardNum == utils.GetComponent<UtilsScript>().clcikedCard.GetComponent<CardScript>().cardNum && MatchSuit())
+            if (utils.selectedCards[0].GetComponent<CardScript>().cardNum ==
+                utils.clcikedCard.GetComponent<CardScript>().cardNum && MatchSuit())
             {
-                utils.GetComponent<UtilsScript>().Match();
+                utils.Match();
 
             }
         }
@@ -76,12 +81,11 @@ public class ReactorScript : MonoBehaviour
     {
         //just to make it cleaner because this utils.blah blah blah is yucky
         //basically a string of if/else cases for matching
-        string selectedCardSuit = utils.GetComponent<UtilsScript>().selectedCards[0].GetComponent<CardScript>().cardSuit;
-        string clickedCardSuit = utils.GetComponent<UtilsScript>().clcikedCard.GetComponent<CardScript>().cardSuit;
+        string selectedCardSuit = utils.selectedCards[0].GetComponent<CardScript>().cardSuit;
+        string clickedCardSuit = utils.clcikedCard.GetComponent<CardScript>().cardSuit;
         //hearts diamond combo #1
         if (selectedCardSuit.Equals("hearts") && clickedCardSuit.Equals("diamonds"))
-        {
-            
+        {    
             return true;
         }
         //hearts diamond combo #2
