@@ -115,10 +115,10 @@ public class DeckScript : MonoBehaviour
 
     public void NextCycle()
     {
-        foreach (GameObject foundation in foundations)
+        for (int f = 0; f < foundations.Count; f++)
         {
             // get the list of cards in a foundation
-            List<GameObject> foundationCardList = foundation.GetComponent<FoundationScript>().cardList;
+            List<GameObject> foundationCardList = foundations[f].GetComponent<FoundationScript>().cardList;
             if (foundationCardList.Count != 0) // is it not empty?
             {
                 GameObject topFoundationCard = foundationCardList[foundationCardList.Count - 1];
@@ -126,22 +126,22 @@ public class DeckScript : MonoBehaviour
                 // trackers for first time reactor suits
                 GameObject emptyReactor = null;
                 bool placed = false;
-                foreach (GameObject reactor in reactors)
+                for (int r = 0; r < reactors.Count; r++)
                 {
                     // get the reactor's card list
-                    List<GameObject> reactorCardList = reactor.GetComponent<ReactorScript>().cardList;
+                    List<GameObject> reactorCardList = reactors[r].GetComponent<ReactorScript>().cardList;
                     if (reactorCardList.Count == 0) // is this reactor empty?
                     {
                         if (emptyReactor == null) // is this the first empty reactor found for this card?
                         {
                             // save for possible use
-                            emptyReactor = reactor;
+                            emptyReactor = reactors[r];
                         }
                     }
                     // otherwise see if this top card's suit matches the reactor cards suit
                     else if (topFoundationCard.GetComponent<CardScript>().cardSuit == reactorCardList[0].GetComponent<CardScript>().cardSuit)
                     {
-                        topFoundationCard.GetComponent<CardScript>().MoveCard(reactor);
+                        topFoundationCard.GetComponent<CardScript>().MoveCard(reactors[r]);
                         placed = true;
                         break;
                     }
