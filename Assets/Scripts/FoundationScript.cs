@@ -12,6 +12,7 @@ public class FoundationScript : MonoBehaviour
     void Start()
     {
         utils = UtilsScript.global;
+        SetCardPositions();
     }
 
     void Update()

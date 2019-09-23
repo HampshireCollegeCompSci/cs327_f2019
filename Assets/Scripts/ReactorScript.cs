@@ -50,20 +50,20 @@ public class ReactorScript : MonoBehaviour
         //compared for double clicking so if it's wrong my bad
         //I did modify the index though because I thought it's the first
         //if it's not the first index, I will change it back
-        if (utils.cilckedCard == cardList[0])
+        if (utils.clickedCard == cardList[0])
         {
             //insert the clicked card into the list because in theory that's what we want?
             //unless it's selected card, honestly not sure
-            cardList.Insert(0, utils.cilckedCard);
+            cardList.Insert(0, utils.clickedCard);
             //this was Jona's code initially, I'm just leaving it in case I forget wtf I'm doing
             //in theory make it null, e.g. deselecting? 
-            utils.cilckedCard = null;
+            utils.clickedCard = null;
         }
         else // if not double clicked, they aren't adding, whcih means they are trying to match
         {
             //if the card numbers match and the suits match (MatchSuit)
             if (utils.selectedCards[0].GetComponent<CardScript>().cardNum ==
-                utils.cilckedCard.GetComponent<CardScript>().cardNum && utils.MatchSuit())
+                utils.clickedCard.GetComponent<CardScript>().cardNum && utils.MatchSuit())
             {
                 utils.Match();
 
