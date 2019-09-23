@@ -22,6 +22,15 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        if (Input.GetMouseButtonUp(0))
+        {
+            Click();
+        }
+
+    }
+
 
     //sends out a raycast to see you selected something
     public void Click()
@@ -31,6 +40,8 @@ public class UtilsScript : MonoBehaviour
         if (selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().hidden)
         {
             selectedCards.Add(hit.collider.gameObject);
+            selectedCards[0].GetComponent<CardScript>().apearSelected = true;
+            selectedCards[0].GetComponent<CardScript>().SetCardAppearance();
         }
 
         else
@@ -39,77 +50,36 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    public void Match()
+
+    public void Match(GameObject card1, GameObject card2)
     {
-        //selectedCards[0].GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
-        //clcikedCard.GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
+        card1.GetComponent<CardScript>().MoveCard(matchedPile);
+        card2.GetComponent<CardScript>().MoveCard(matchedPile);
     }
 
-    public bool MatchSuit()
+    public bool IsSuitMatch(GameObject card1, GameObject card2)
     {
         //just to make it cleaner because this utils.blah blah blah is yucky
         //basically a string of if/else cases for matching
-        string selectedCardSuit = selectedCards[0].GetComponent<CardScript>().cardSuit;
-        string clickedCardSuit = clickedCard.GetComponent<CardScript>().cardSuit;
+        string card1Suit = card1.GetComponent<CardScript>().cardSuit;
+        string card2Suit = card2.GetComponent<CardScript>().cardSuit;
         //hearts diamond combo #1
-        if (selectedCardSuit.Equals("hearts") && clickedCardSuit.Equals("diamonds"))
+        if (card1Suit.Equals("hearts") && card2Suit.Equals("diamonds"))
         {
             return true;
         }
         //hearts diamond combo #2
-        else if (selectedCardSuit.Equals("diamonds") && clickedCardSuit.Equals("hearts"))
+        else if (card1Suit.Equals("diamonds") && card2Suit.Equals("hearts"))
         {
             return true;
         }
         //spades clubs combo #1
-        else if (selectedCardSuit.Equals("spades") && clickedCardSuit.Equals("clubs"))
+        else if (card1Suit.Equals("spades") && card2Suit.Equals("clubs"))
         {
             return true;
         }
         //spades clubs combo #2
-        else if (selectedCardSuit.Equals("clubs") && clickedCardSuit.Equals("spades"))
-        {
-            return true;
-        }
-        //otherwise not a match 
-        else
-        {
-            return false;
-        }
-    }
-<<<<<<< HEAD
-
-=======
-
-    public void Match()
-    {
-        //selectedCards[0].GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
-        //clcikedCard.GetComponent<CardScript>().MoveCard(matchedPile, matchedPile.GetComponent<MatchedPileScript>().cardList);
-    }
-
-    public bool IsSuitMatch()
-    {
-        //just to make it cleaner because this utils.blah blah blah is yucky
-        //basically a string of if/else cases for matching
-        string selectedCardSuit = selectedCards[0].GetComponent<CardScript>().cardSuit;
-        string clickedCardSuit = clickedCard.GetComponent<CardScript>().cardSuit;
-        //hearts diamond combo #1
-        if (selectedCardSuit.Equals("hearts") && clickedCardSuit.Equals("diamonds"))
-        {
-            return true;
-        }
-        //hearts diamond combo #2
-        else if (selectedCardSuit.Equals("diamonds") && clickedCardSuit.Equals("hearts"))
-        {
-            return true;
-        }
-        //spades clubs combo #1
-        else if (selectedCardSuit.Equals("spades") && clickedCardSuit.Equals("clubs"))
-        {
-            return true;
-        }
-        //spades clubs combo #2
-        else if (selectedCardSuit.Equals("clubs") && clickedCardSuit.Equals("spades"))
+        else if (card1Suit.Equals("clubs") && card2Suit.Equals("spades"))
         {
             return true;
         }
@@ -120,15 +90,6 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
->>>>>>> origin/FirstBuild
-    void Update()
-    {
-        if (Input.GetMouseButtonUp(0))
-        {
-            Click();
-        }
-
-    }
 
 
 

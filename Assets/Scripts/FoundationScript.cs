@@ -37,6 +37,7 @@ public class FoundationScript : MonoBehaviour
 
     public void Clicked()
     {
+        Debug.Log("foo");
          if (utils.selectedCards[0].GetComponent<CardScript>().container.CompareTag("Foundation")) //checking where selected card is from
         {
             if (utils.IsSuitMatch() && utils.selectedCards.Count == 1) //check if selectedCards and the clicked card match and that selesctedCards is only one card
