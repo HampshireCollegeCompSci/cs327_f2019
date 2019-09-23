@@ -31,13 +31,13 @@ public class WastepileScript : MonoBehaviour
     public void Clicked()
     {
         // has the waste pile been selected twice?
-        if (utils.GetComponent<UtilsScript>().clcikedCard == cardList[cardList.Count - 1])
+        if (utils.GetComponent<UtilsScript>().clickedCard == cardList[cardList.Count - 1])
         {
-            utils.GetComponent<UtilsScript>().clcikedCard = null;
+            utils.GetComponent<UtilsScript>().clickedCard = null;
         }
         else // select the top of the waste pile
         {
-            utils.GetComponent<UtilsScript>().clcikedCard = cardList[cardList.Count - 1];
+            utils.GetComponent<UtilsScript>().clickedCard = cardList[cardList.Count - 1];
             cardList[cardList.Count - 1].GetComponent<CardScript>().apearSelected = true;
         }
         return;
