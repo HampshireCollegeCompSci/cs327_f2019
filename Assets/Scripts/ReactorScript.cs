@@ -63,7 +63,7 @@ public class ReactorScript : MonoBehaviour
         {
             //if the card numbers match and the suits match (MatchSuit)
             if (utils.selectedCards[0].GetComponent<CardScript>().cardNum ==
-                utils.clcikedCard.GetComponent<CardScript>().cardNum && MatchSuit())
+                utils.clcikedCard.GetComponent<CardScript>().cardNum && utils.MatchSuit())
             {
                 utils.Match();
 
