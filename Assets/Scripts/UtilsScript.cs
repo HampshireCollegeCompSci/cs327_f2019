@@ -63,5 +63,12 @@ public class UtilsScript : MonoBehaviour
         {
             Click();
         }
+
+        int forCounter;
+        for (forCounter = 0; forCounter < selectedCards.Count; forCounter++)
+        {
+            selectedCards[forCounter].GetComponent<CardScript>().apearSelected = true;
+            selectedCards[forCounter].GetComponent<CardScript>().SetCardAppearance();
+        }
     }
 }

@@ -19,7 +19,7 @@ public class CardScript : MonoBehaviour
         container = transform.parent.gameObject;
     }
 
-    void SetCardAppearance()
+    public void SetCardAppearance()
     {
         //shows card back if it's hidden
         if (hidden)
