@@ -12,8 +12,8 @@ public class Config : MonoBehaviour
     //foundations
     public GameObject foundation1;
     public GameObject foundation2;
-    //public GameObject foundation3;
-    //public GameObject foundation4;
+    public GameObject foundation3;
+    public GameObject foundation4;
 
     public GameObject[] foundationList;
 
@@ -33,7 +33,7 @@ public class Config : MonoBehaviour
 
     private void Start()
     {
-        foundationList = new GameObject[] { foundation1, foundation2/*, foundation3, foundation4*/ };
+        foundationList = new GameObject[] { foundation1, foundation2, foundation3, foundation4 };
     }
 
     private void Update()
