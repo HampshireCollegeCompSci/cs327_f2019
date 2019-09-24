@@ -17,7 +17,7 @@ public class CardScript : MonoBehaviour
 
     void Update()
     {
-        container = transform.parent.gameObject;
+        
         SetCardAppearance();
     }
 
