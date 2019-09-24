@@ -69,6 +69,16 @@ public class CardScript : MonoBehaviour
             container.GetComponent<WastepileScript>().cardList.Remove(gameObject);
             destination.GetComponent<WastepileScript>().cardList.Insert(0, gameObject);
         }
+        else if (destination.CompareTag("Deck"))
+        {
+            container.GetComponent<DeckScript>().cardList.Remove(gameObject);
+            destination.GetComponent<DeckScript>().cardList.Insert(0, gameObject);
+        }
+        else if (destination.CompareTag("MatchedPile"))
+        {
+            container.GetComponent<MatchedPileScript>().cardList.Remove(gameObject);
+            destination.GetComponent<MatchedPileScript>().cardList.Insert(0, gameObject);
+        }
         container = destination;
         destination.SendMessage("SetCardPositions");
     }
