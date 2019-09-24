@@ -46,7 +46,7 @@ public class FoundationScript : MonoBehaviour
     {
         if (!input.CompareTag("Card"))
         {
-            if ((input.CompareTag("Foundation") || input.CompareTag("Reactor")) && selectedCards.Count != 0)
+            if ((input.CompareTag("Foundation") || input.CompareTag("Reactor")) && utils.selectedCards.Count != 0)
             {
                 foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
                 {
