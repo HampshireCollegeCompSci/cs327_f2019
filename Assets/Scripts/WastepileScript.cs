@@ -4,10 +4,16 @@ using UnityEngine;
 
 public class WastepileScript : MonoBehaviour
 {
-    public GameObject utils;
+    public UtilsScript utils;
     public List<GameObject> cardList;
     int counter;
     int cardMax;
+
+    private void Start()
+    {
+        utils = UtilsScript.global;
+    }
+
 
     void Update()
     {
@@ -28,21 +34,38 @@ public class WastepileScript : MonoBehaviour
         }
     }
 
-    public void Clicked()
+    //this function is run on selected card's container
+    //if click reactor then click other card,
+    //click method gets run on container of first card clicked
+    //know first card is from reactor
+    //selectedCards = list of the currently selected cards
+    //selectedCard[0] is the first card (from Wastepile)
+    //check if has more than 1 card -> shouldn't 
+    //DON'T USE CLICKED CARD
+    //take input (inputCard)
+    //that is the second card 
+    public void Clicked(GameObject inputCard)
     {
-        // has the waste pile been selected twice?
-        if (utils.GetComponent<UtilsScript>().clickedCard == cardList[cardList.Count - 1])
-        {
-            utils.GetComponent<UtilsScript>().clickedCard = null;
-        }
-        else // select the top of the waste pile
-        {
-            utils.GetComponent<UtilsScript>().clickedCard = cardList[cardList.Count - 1];
-            cardList[cardList.Count - 1].GetComponent<CardScript>().apearSelected = true;
-        }
-        return;
-    }
 
+        GameObject card1 = utils.selectedCards[0];
+
+        //list needs to only be 1, something wrong if not
+        if (utils.selectedCards.Count == 1)
+        {
+            if (utils.IsMatch(inputCard, card1))
+            {
+                utils.Match(inputCard, card1);
+            }
+            else
+            {
+                utils.selectedCards.Remove(card1);
+            }
+        }
+
+        //this is just the return call to end after having clicked
+        return;
+
+    }
     public List<GameObject> GetCardList()
     {
         return cardList;
