@@ -8,11 +8,14 @@ public class DeckScript : MonoBehaviour
     private GameObject wastePile;
     private List<GameObject> foundations;
     private List<GameObject> reactors;
-    public List<Sprite> sprites;
-
+    
     public Sprite cardBackSprite;
     public Sprite placeHolderSprite;
+
+    public GameObject myPrefab;
+    public List<Sprite> sprites;
     public List<GameObject> cardList;
+
     public bool shuffleOnDeckReset = false;
     public bool dealOnDeckReset = true;
     public int foundationStartSize = 7;
@@ -34,19 +37,25 @@ public class DeckScript : MonoBehaviour
      // sets up card list
     public void InstantiateCards()
     {
+        cardList = new List<GameObject>(52);
+        for (int i = 0; i < cardList.Count; i++)
+        {
+            cardList.Add(Instantiate(myPrefab));
+        }
+
         // order: club ace, 2, 3... 10, jack, queen, king, diamonds... hearts... spades
-        int cardIndex; // 0 - 51
+        int cardIndex; // 1 - 52
         for (int suit = 0; suit < 4; suit++) // order: club, diamonds, hearts, spades
         {
             for (int num = 1; num < 14; num++) // card num: 1 - 13
             {
                 cardIndex = suit * 13 + num;
-
+                
                 if (num > 10) // all face cards have a value of 10
                 {
                     cardList[cardIndex].GetComponent<CardScript>().cardVal = 10;
                 }
-                else
+                else    
                 {
                     cardList[cardIndex].GetComponent<CardScript>().cardVal = num;
                 }
@@ -70,6 +79,8 @@ public class DeckScript : MonoBehaviour
                     cardList[cardIndex].GetComponent<CardScript>().cardSuit = "spades";
                 }
 
+                cardList[cardIndex].GetComponent<CardScript>().cardBackSprite = sprites[0];
+                cardList[cardIndex].GetComponent<CardScript>().cardBackSprite = sprites[cardIndex];
                 // the only cards that will ever be set to hidden are the foundation non top cards
                 cardList[cardIndex].GetComponent<CardScript>().hidden = false;
                 cardList[cardIndex].GetComponent<CardScript>().apearSelected = false;
