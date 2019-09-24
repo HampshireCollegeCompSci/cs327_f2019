@@ -12,7 +12,7 @@ public class DeckScript : MonoBehaviour
     public Sprite cardBackSprite;
     public Sprite placeHolderSprite;
     public List<GameObject> cardList;
-    public bool shuffleOnDeckReset = true;
+    public bool shuffleOnDeckReset = false;
     public bool dealOnDeckReset = true;
     public int foundationStartSize = 7;
 
@@ -65,7 +65,7 @@ public class DeckScript : MonoBehaviour
             }
         }
 
-        cardList = Shuffle(cardList);
+        Shuffle();
 
         // moving cards into foundations
         for (int i = 0; i < foundations.Count; i++)
@@ -83,7 +83,7 @@ public class DeckScript : MonoBehaviour
             cardList[0].GetComponent<CardScript>().MoveCard(foundations[i]);
         }
 
-        gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
+        this.gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
         Deal();
     }
 
@@ -108,7 +108,7 @@ public class DeckScript : MonoBehaviour
             }
 
             NextCycle();
-            gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
+            this.gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
             DeckReset();
         }
     }
@@ -121,7 +121,7 @@ public class DeckScript : MonoBehaviour
             List<GameObject> foundationCardList = foundations[f].GetComponent<FoundationScript>().cardList;
             if (foundationCardList.Count != 0) // is it not empty?
             {
-                GameObject topFoundationCard = foundationCardList[foundationCardList.Count - 1];
+                GameObject topFoundationCard = foundationCardList[0];
 
                 // trackers for first time reactor suits
                 GameObject emptyReactor = null;
@@ -160,18 +160,20 @@ public class DeckScript : MonoBehaviour
 
     public void DeckReset()
     {
+        // the top of the deck is index 0
         // get all the cards from the wastepile
         List<GameObject> wasteCardList = wastePile.GetComponent<WastepileScript>().GetCardList();
 
         // move all the cards from waste to deck, preserves reveal order
-        for (int i = wasteCardList.Count - 1; i > -1; i--)
+        // if there are any cards in the deck's cardList before they will be on the bottom after
+        for (int i = 0; i < wasteCardList.Count; i++)
         {
-            wasteCardList[i].GetComponent<CardScript>().MoveCard(gameObject);
+            wasteCardList[i].GetComponent<CardScript>().MoveCard(this.gameObject);
         }
 
         if (shuffleOnDeckReset)
         {
-            cardList = Shuffle(cardList);
+            Shuffle();
         }
 
         if (dealOnDeckReset) // auto deal cards
@@ -186,28 +188,26 @@ public class DeckScript : MonoBehaviour
         {
             if (cardList.Count == 0) // are there no more cards in the deck?
             {
-                gameObject.GetComponent<SpriteRenderer>().sprite = placeHolderSprite;
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = placeHolderSprite;
                 break;
             }
 
             // move card from deck list top into waste
-            cardList[cardList.Count - 1].GetComponent<CardScript>().MoveCard(wastePile);
+            cardList[0].GetComponent<CardScript>().MoveCard(wastePile);
         }
     }
 
     //Shuffles list using Knuth shuffle aka Fisher-Yates shuffle
-    public List<GameObject> Shuffle(List<GameObject> cards)
+    public void Shuffle()
     {
         System.Random rand = new System.Random();
 
-        for (int i = 0; i < cards.Count; i++)
+        for (int i = 0; i < cardList.Count; i++)
         {
-            int j = rand.Next(i, cards.Count);
-            GameObject temp = cards[i];
-            cards[i] = cards[j];
-            cards[j] = temp;
+            int j = rand.Next(i, cardList.Count);
+            GameObject temp = cardList[i];
+            cardList[i] = cardList[j];
+            cardList[j] = temp;
         }
-
-        return cards;
     }
 }
