@@ -43,6 +43,13 @@ public class UtilsScript : MonoBehaviour
             selectedCards[0].GetComponent<CardScript>().SetCardAppearance();
         }
 
+        else if (selectedCards[0] == hit.collider.gameObject)
+        {
+            selectedCards.Remove(hit.collider.gameObject);
+            selectedCards[0].GetComponent<CardScript>().apearSelected = false;
+            selectedCards[0].GetComponent<CardScript>().SetCardAppearance();
+        }
+
         else
         {
             selectedCards[0].GetComponent<CardScript>().container.SendMessage("Clicked", hit.collider.gameObject);
