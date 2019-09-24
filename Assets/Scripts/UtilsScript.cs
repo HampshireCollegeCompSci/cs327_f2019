@@ -6,7 +6,6 @@ public class UtilsScript : MonoBehaviour
 {
     public static UtilsScript global; //Creates a new instance if one does not yet exist
     public List<GameObject> selectedCards;
-    public GameObject clickedCard;
     public GameObject matchedPile;
 
     void Awake()
