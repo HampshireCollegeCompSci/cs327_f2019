@@ -54,8 +54,7 @@ public class CardScript : MonoBehaviour
     {
         if (destination.CompareTag("Foundation"))
         {
-            //container.GetComponent<FoundationScript>().cardList.Remove(gameObject);
-            container.SendMessage("cardList.Remove", gameObject);
+            container.GetComponent<FoundationScript>().cardList.Remove(gameObject);
             destination.GetComponent<FoundationScript>().cardList.Insert(0, gameObject);
         }
 
