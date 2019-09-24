@@ -28,6 +28,10 @@ public class ReactorScript : MonoBehaviour
         }
     }
 
+    //iterate over cardList (in Reactor)
+    //set their location positions
+    //in other words, when a card is added to the Reactor
+    //this handles positions
     public void SetCardPositions()
     {
         counter = 0;
