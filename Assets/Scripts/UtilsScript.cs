@@ -30,6 +30,19 @@ public class UtilsScript : MonoBehaviour
 
     }
 
+    public void SelectCard(GameObject inputCard)
+    {
+        selectedCards.Add(inputCard);
+        inputCard.GetComponent<CardScript>().apearSelected = true;
+        inputCard.GetComponent<CardScript>().SetCardAppearance();
+    }
+
+    public void DeselectCard(GameObject inputCard)
+    {
+        inputCard.GetComponent<CardScript>().apearSelected = false;
+        inputCard.GetComponent<CardScript>().SetCardAppearance();
+        selectedCards.Remove(inputCard);
+    }
 
     //sends out a raycast to see you selected something
     public void Click()
@@ -38,16 +51,12 @@ public class UtilsScript : MonoBehaviour
 
         if (selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().hidden)
         {
-            selectedCards.Add(hit.collider.gameObject);
-            selectedCards[0].GetComponent<CardScript>().apearSelected = true;
-            selectedCards[0].GetComponent<CardScript>().SetCardAppearance();
+            SelectCard(hit.collider.gameObject);
         }
 
         else if (selectedCards[0] == hit.collider.gameObject)
         {
-            selectedCards[0].GetComponent<CardScript>().apearSelected = false;
-            selectedCards[0].GetComponent<CardScript>().SetCardAppearance();
-            selectedCards.Remove(hit.collider.gameObject);
+            DeselectCard(hit.collider.gameObject);
         }
 
         else
