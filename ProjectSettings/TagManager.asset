@@ -9,6 +9,7 @@ TagManager:
   - Deck
   - Wastepile
   - MatchedPile
+  - Card
   layers:
   - Default
   - TransparentFX

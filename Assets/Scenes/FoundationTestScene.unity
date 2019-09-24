@@ -177,6 +177,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Card
       objectReference: {fileID: 0}
+    - target: {fileID: 5176008346855944174, guid: 7232864c537dd463a882601b8089390d,
+        type: 3}
+      propertyPath: m_TagString
+      value: Card
+      objectReference: {fileID: 0}
     - target: {fileID: 5176008346855944175, guid: 7232864c537dd463a882601b8089390d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1007,6 +1012,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Card (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5176008346855944174, guid: 7232864c537dd463a882601b8089390d,
+        type: 3}
+      propertyPath: m_TagString
+      value: Card
+      objectReference: {fileID: 0}
     - target: {fileID: 5176008346855944175, guid: 7232864c537dd463a882601b8089390d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1464,6 +1474,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Card (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 5176008346855944174, guid: 7232864c537dd463a882601b8089390d,
+        type: 3}
+      propertyPath: m_TagString
+      value: Card
+      objectReference: {fileID: 0}
     - target: {fileID: 5176008346855944175, guid: 7232864c537dd463a882601b8089390d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1611,7 +1626,6 @@ MonoBehaviour:
   foundation2: {fileID: 643348560}
   foundation3: {fileID: 963779801}
   foundation4: {fileID: 1367277646}
-  foundationList: []
   wastePile: {fileID: 40183959}
   deck: {fileID: 1524850547}
 --- !u!4 &1923251344
@@ -1639,6 +1653,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Card (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5176008346855944174, guid: 7232864c537dd463a882601b8089390d,
+        type: 3}
+      propertyPath: m_TagString
+      value: Card
       objectReference: {fileID: 0}
     - target: {fileID: 5176008346855944175, guid: 7232864c537dd463a882601b8089390d,
         type: 3}
