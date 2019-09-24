@@ -17,6 +17,9 @@ public class Config : MonoBehaviour
 
     public GameObject[] foundationList;
 
+    public GameObject wastePile;
+    public GameObject deck;
+
     private int foundationCount = 0;
     private void Awake()
     {
@@ -47,7 +50,9 @@ public class Config : MonoBehaviour
             }
         }
 
-        if (foundationCount == foundationList.Length)
+        if (foundationCount == foundationList.Length 
+            && deck.GetComponent<DeckScript>().cardList.Count == 0 
+            && wastePile.GetComponent<WastepileScript>().cardList.Count == 0)
         {
             Application.Quit();
         }
