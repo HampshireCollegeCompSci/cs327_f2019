@@ -88,6 +88,8 @@ public class DeckScript : MonoBehaviour
                 cardIndex += 1;
             }
         }
+
+        SetCardPositions();
     }
 
     // moves cards into foundations
@@ -117,8 +119,8 @@ public class DeckScript : MonoBehaviour
         for (int i = cardList.Count - 1; i > -1; i--) // index 0 is on the top
         {
             cardList[i].transform.parent = this.gameObject.transform;
-            cardList[i].transform.localPosition = new Vector3(offset, offset, 0.03f + offset);
-            offset += 0.03f;
+            cardList[i].transform.localPosition = new Vector3(offset, offset, 0.01f + offset);
+            offset += 0.01f;
         }
     }
 
