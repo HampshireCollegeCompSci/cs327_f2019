@@ -59,6 +59,7 @@ public class UtilsScript : MonoBehaviour
                 DeselectCard(card);
                 }
             }
+            return;
         }
 
         else if (selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().hidden)
