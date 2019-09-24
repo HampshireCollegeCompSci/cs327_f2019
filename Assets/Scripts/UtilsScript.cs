@@ -49,7 +49,19 @@ public class UtilsScript : MonoBehaviour
     {
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Vector2.zero);
 
-        if (selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().hidden)
+        if (!hit.collider.gameObject.CompareTag("Card"))
+        {
+            if (!selectedCards.Count == 0)
+            {
+                selectedCards[0].GetComponent<CardScript>().container.SendMessage("Clicked", hit.collider.gameObject);
+                foreach (GameObject card in selectedCards)
+                {
+                DeselectCard(card);
+                }
+            }
+        }
+
+        else if (selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().hidden)
         {
             SelectCard(hit.collider.gameObject);
         }
