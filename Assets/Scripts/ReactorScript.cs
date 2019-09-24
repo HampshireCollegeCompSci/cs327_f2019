@@ -42,7 +42,16 @@ public class ReactorScript : MonoBehaviour
         }
     }
 
-    //this function is getting called when clicked
+
+
+    //this function is run on selected card's container
+    //if click reactor then click other card,
+    //click method gets run on container of first card clicked
+    //know first card is from reactor
+    //selectedCards = list
+    //selectedCard[0]
+    //check if has more than 1 card -> shouldn't 
+    //DON'T USE CLICKED CARD
     public void Clicked()
     {
 
@@ -69,6 +78,10 @@ public class ReactorScript : MonoBehaviour
 
             }
         }
+
+        
+
+
         //this is just the return call to end after having clicked
         return;
 

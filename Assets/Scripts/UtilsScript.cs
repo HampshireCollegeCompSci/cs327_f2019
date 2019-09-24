@@ -56,36 +56,45 @@ public class UtilsScript : MonoBehaviour
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
     }
 
-    public bool IsSuitMatch(GameObject card1, GameObject card2)
+    //checks if suit match AND value match
+    public bool IsMatch(GameObject card1, GameObject card2)
     {
         //just to make it cleaner because this utils.blah blah blah is yucky
         //basically a string of if/else cases for matching
         string card1Suit = card1.GetComponent<CardScript>().cardSuit;
         string card2Suit = card2.GetComponent<CardScript>().cardSuit;
-        //hearts diamond combo #1
-        if (card1Suit.Equals("hearts") && card2Suit.Equals("diamonds"))
-        {
-            return true;
-        }
-        //hearts diamond combo #2
-        else if (card1Suit.Equals("diamonds") && card2Suit.Equals("hearts"))
-        {
-            return true;
-        }
-        //spades clubs combo #1
-        else if (card1Suit.Equals("spades") && card2Suit.Equals("clubs"))
-        {
-            return true;
-        }
-        //spades clubs combo #2
-        else if (card1Suit.Equals("clubs") && card2Suit.Equals("spades"))
-        {
-            return true;
-        }
-        //otherwise not a match 
-        else
+        int card1Num = card1.GetComponent<CardScript>().cardNum;
+        int card2Num = card2.GetComponent<CardScript>().cardNum;
+        if (card1Num != card2Num)
         {
             return false;
+        }
+        else { 
+        //hearts diamond combo #1
+            if (card1Suit.Equals("hearts") && card2Suit.Equals("diamonds"))
+            {
+                return true;
+            }
+            //hearts diamond combo #2
+            else if (card1Suit.Equals("diamonds") && card2Suit.Equals("hearts"))
+            {
+                return true;
+            }
+            //spades clubs combo #1
+            else if (card1Suit.Equals("spades") && card2Suit.Equals("clubs"))
+            {
+                return true;
+            }
+            //spades clubs combo #2
+            else if (card1Suit.Equals("clubs") && card2Suit.Equals("spades"))
+            {
+                return true;
+            }
+            //otherwise not a match 
+            else
+            {
+                return false;
+            }
         }
     }
 
