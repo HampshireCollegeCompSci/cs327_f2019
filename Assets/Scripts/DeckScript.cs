@@ -89,9 +89,12 @@ public class DeckScript : MonoBehaviour
 
     public void setCardPositions()
     {
-        // cards should have hitboxes so placing them as hidden on top of the deck will need to be accounted for somewhere else
-        // or, don't have them on screen and have a placeholder card back that disappears when the deck is empty
-        return;
+        for (int i = 0; i < cardList.Count; i++)
+        {
+            cardList[i].transform.parent = this.gameObject.transform;
+            cardList[i].transform.localPosition = new Vector3(0, 0, 0);
+            cardList[i].gameObject.GetComponent<SpriteRenderer>().sortingOrder = i;
+        }
     }
 
     public void Clicked()
