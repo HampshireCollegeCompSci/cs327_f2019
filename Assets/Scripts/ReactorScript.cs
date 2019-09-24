@@ -48,39 +48,29 @@ public class ReactorScript : MonoBehaviour
     //if click reactor then click other card,
     //click method gets run on container of first card clicked
     //know first card is from reactor
-    //selectedCards = list
-    //selectedCard[0]
+    //selectedCards = list of the currently selected cards
+    //selectedCard[0] is the first card (from Reactor)
     //check if has more than 1 card -> shouldn't 
     //DON'T USE CLICKED CARD
-    public void Clicked()
+    //take input (inputCard)
+    //that is the second card 
+    public void Clicked(GameObject inputCard)
     {
 
-        //this is the double clicking part in theory? Jona said it was how he
-        //compared for double clicking so if it's wrong my bad
-        //I did modify the index though because I thought it's the first
-        //if it's not the first index, I will change it back
-        if (utils.clickedCard == cardList[0])
+        GameObject card1 = utils.selectedCards[0];
+        
+        //list needs to only be 1, something wrong if not
+        if (utils.selectedCards.Count == 1)
         {
-            //insert the clicked card into the list because in theory that's what we want?
-            //unless it's selected card, honestly not sure
-            cardList.Insert(0, utils.clickedCard);
-            //this was Jona's code initially, I'm just leaving it in case I forget wtf I'm doing
-            //in theory make it null, e.g. deselecting? 
-            utils.clickedCard = null;
-        }
-        else // if not double clicked, they aren't adding, whcih means they are trying to match
-        {
-            //if the card numbers match and the suits match (IsSuitMatch)
-            if (utils.selectedCards[0].GetComponent<CardScript>().cardNum ==
-                utils.clickedCard.GetComponent<CardScript>().cardNum && utils.IsSuitMatch())
+            if (utils.IsMatch(inputCard, card1))
             {
-                utils.Match();
-
+                utils.Match(inputCard, card1);
+            }
+            else
+            {
+                utils.selectedCards.Remove(card1);
             }
         }
-
-        
-
 
         //this is just the return call to end after having clicked
         return;
