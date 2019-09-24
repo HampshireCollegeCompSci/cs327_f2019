@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class DeckScript : MonoBehaviour
 {
     public UtilsScript utils;
-    private GameObject wastePile;
-    private List<GameObject> foundations;
-    private List<GameObject> reactors;
+    public GameObject wastePile;
+    public List<GameObject> foundations;
+    public List<GameObject> reactors;
     
     public Sprite cardBackSprite;
     public Sprite placeHolderSprite;
@@ -45,13 +46,11 @@ public class DeckScript : MonoBehaviour
         }
 
         // order: club ace, 2, 3... 10, jack, queen, king, diamonds... hearts... spades
-        int cardIndex; // 1 - 52
+        int cardIndex = 0; // 1 - 52
         for (int suit = 0; suit < 4; suit++) // order: club, diamonds, hearts, spades
         {
             for (int num = 1; num < 14; num++) // card num: 1 - 13
-            {
-                cardIndex = suit * 13 + num;
-                
+            { 
                 if (num > 10) // all face cards have a value of 10
                 {
                     cardList[cardIndex].GetComponent<CardScript>().cardVal = 10;
@@ -82,10 +81,11 @@ public class DeckScript : MonoBehaviour
 
                 cardList[cardIndex].GetComponent<CardScript>().cardBackSprite = sprites[0];
                 cardList[cardIndex].GetComponent<CardScript>().cardFrontSprite = sprites[cardIndex];
-                // the only cards that will ever be set to hidden are the foundation non top cards
                 cardList[cardIndex].GetComponent<CardScript>().hidden = true;
                 cardList[cardIndex].GetComponent<CardScript>().apearSelected = false;
                 cardList[cardIndex].GetComponent<CardScript>().container = this.gameObject;
+
+                cardIndex += 1;
             }
         }
     }
@@ -118,7 +118,6 @@ public class DeckScript : MonoBehaviour
         {
             cardList[i].transform.parent = this.gameObject.transform;
             cardList[i].transform.localPosition = new Vector3(offset, offset, 0.03f + offset);
-            //cardList[i].gameObject.GetComponent<SpriteRenderer>().sortingOrder = i;
             offset += 0.03f;
         }
     }
