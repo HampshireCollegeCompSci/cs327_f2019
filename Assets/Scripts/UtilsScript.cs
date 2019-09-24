@@ -51,7 +51,7 @@ public class UtilsScript : MonoBehaviour
 
         if (!hit.collider.gameObject.CompareTag("Card"))
         {
-            if (!selectedCards.Count == 0)
+            if (selectedCards.Count != 0)
             {
                 selectedCards[0].GetComponent<CardScript>().container.SendMessage("Clicked", hit.collider.gameObject);
                 foreach (GameObject card in selectedCards)

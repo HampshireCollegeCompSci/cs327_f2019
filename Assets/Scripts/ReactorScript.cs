@@ -13,6 +13,7 @@ public class ReactorScript : MonoBehaviour
 
     void Start()
     {
+        //because typing is yucky :)
         utils = UtilsScript.global;
     }
 
@@ -56,25 +57,32 @@ public class ReactorScript : MonoBehaviour
     //selectedCard[0] is the first card (from Reactor)
     //check if has more than 1 card -> shouldn't 
     //DON'T USE CLICKED CARD
-    //take input (inputCard)
-    //that is the second card 
-    public void Clicked(GameObject inputCard)
+    //take input (inputCard), which is the second card
+    //match with them if they match
+
+
+    //TODO: rename this goddamn function and all the other
+    public void Clicked(GameObject input)
     {
 
         GameObject card1 = utils.selectedCards[0];
-        
-        //list needs to only be 1, something wrong if not
-        if (utils.selectedCards.Count == 1)
+
+        if (input.CompareTag("Card"))
         {
-            if (utils.IsMatch(inputCard, card1))
+            //list needs to only be 1, something wrong if not -> skip to return
+            if (utils.selectedCards.Count == 1)
             {
-                utils.Match(inputCard, card1);
-            }
-            else
-            {
-                utils.selectedCards.Remove(card1);
+                if (utils.IsMatch(input, card1))
+                {
+                    utils.Match(input, card1);
+                }
+                else
+                {
+                    utils.selectedCards.Remove(card1);
+                }
             }
         }
+
 
         //this is just the return call to end after having clicked
         return;
@@ -83,9 +91,7 @@ public class ReactorScript : MonoBehaviour
 
     }
 
-    //this will need to be changed once I know what the actual string names are 
-
-
+    
     //this is just meant to iterate through the list of cards in the stack
     //sum the amounts of them, and then return whatever that sum is
     //in order to be used in the update function
