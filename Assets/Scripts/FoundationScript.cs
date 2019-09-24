@@ -41,7 +41,6 @@ public class FoundationScript : MonoBehaviour
         while (indexCounter > -1)
         {
             cardList[indexCounter].transform.position =  gameObject.transform.position + new Vector3(0, -0.5f * positionCounter, -0.5f * positionCounter);
-            cardList[indexCounter].gameObject.GetComponent<SpriteRenderer>().sortingOrder = cardMax - positionCounter;
 
             indexCounter -= 1;
             positionCounter += 1;

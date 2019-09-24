@@ -39,14 +39,12 @@ public class CardScript : MonoBehaviour
         if (apearSelected)
         {
             gameObject.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
-            gameObject.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCard";
         }
 
         //makes card normal if not selected
         else if (apearSelected == false)
         {
             gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
-            gameObject.GetComponent<SpriteRenderer>().sortingLayerName = "Default";
         }
     }
 
