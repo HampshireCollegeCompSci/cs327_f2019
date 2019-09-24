@@ -120,6 +120,51 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &40183959
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 40183961}
+  - component: {fileID: 40183960}
+  m_Layer: 0
+  m_Name: WastePile
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &40183960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 40183959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aace81811416b496487ac4b00885372a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  utils: {fileID: 0}
+  cardList: []
+--- !u!4 &40183961
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 40183959}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.7193099, y: 1.0843403, z: -1.6834388}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &523900778
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1564,7 +1609,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   foundation1: {fileID: 787894275}
   foundation2: {fileID: 643348560}
+  foundation3: {fileID: 963779801}
+  foundation4: {fileID: 1367277646}
   foundationList: []
+  wastePile: {fileID: 40183959}
+  deck: {fileID: 1524850547}
 --- !u!4 &1923251344
 Transform:
   m_ObjectHideFlags: 0
