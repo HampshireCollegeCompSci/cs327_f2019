@@ -42,17 +42,27 @@ public class FoundationScript : MonoBehaviour
         }
     }
 
-    public void Clicked(GameObject inputCard)
+    public void Clicked(GameObject input)
     {
-        if (utils.IsMatch(inputCard, utils.selectedCards[0]) && utils.selectedCards.Count == 1) //check if selectedCards and the input card match and that selesctedCards is only one card
+        if (!input.CompareTag("Card"))
         {
-            utils.Match(inputCard, utils.selectedCards[0]); //removes the two matched cards
+            if ((input.CompareTag("Foundation") || input.CompareTag("Reactor")) && selectedCards.Count != 0)
+            {
+                foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
+                {
+                    card.GetComponent<CardScript>().MoveCard(input);
+                }
+            }
         }
-        else if ((utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1) == inputCard.GetComponent<CardScript>().cardNum)
+        else if (utils.IsMatch(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1) //check if selectedCards and the input card match and that selesctedCards is only one card
+        {
+            utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+        }
+        else if ((utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1) == input.GetComponent<CardScript>().cardNum)
         {
             foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
                 {
-                    card.GetComponent<CardScript>().MoveCard(inputCard.GetComponent<CardScript>().container);
+                    card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
                 }
         }
     }
