@@ -35,46 +35,18 @@ public class FoundationScript : MonoBehaviour
         }
     }
 
-    public void Clicked()
+    public void Clicked(GameObject inputCard)
     {
-        Debug.Log("foo");
-         if (utils.selectedCards[0].GetComponent<CardScript>().container.CompareTag("Foundation")) //checking where selected card is from
+        if (utils.IsSuitMatch(inputCard, utils.selectedCards[0]) && utils.selectedCards.Count == 1) //check if selectedCards and the input card match and that selesctedCards is only one card
         {
-            if (utils.IsSuitMatch() && utils.selectedCards.Count == 1) //check if selectedCards and the clicked card match and that selesctedCards is only one card
-            {
-                utils.Match(); //removes the two matched cards
-            }
-
-            else if ((cardList[0].GetComponent<CardScript>().cardNum - 1) == utils.selectedCards[0].GetComponent<CardScript>().cardNum) //checks card destination is one higher
-            {
-                foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
+            utils.Match(inputCard, utils.selectedCards[0]); //removes the two matched cards
+        }
+        else if ((utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1) == inputCard.GetComponent<CardScript>().cardNum)
+        {
+            foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
                 {
-                    card.GetComponent<CardScript>().MoveCard(cardList[0].GetComponent<CardScript>().container);
+                    card.GetComponent<CardScript>().MoveCard(inputCard.GetComponent<CardScript>().container);
                 }
-            }
         }
-
-        else if (utils.selectedCards[0].GetComponent<CardScript>().container.CompareTag("Reactor") && utils.selectedCards.Count == 1) //checking if selectedcards is from a reactor and that it is only one card
-        {
-            if (utils.IsSuitMatch()) //check if selectedCards and the clicked card match
-            {
-                utils.Match(); //removes the two matched cards
-            }
-        }
-
-        else if (utils.selectedCards[0].GetComponent<CardScript>().container.CompareTag("Wastepile") && utils.selectedCards.Count == 1) //checking if selectedcards is from a wastepile and that it is only one card
-        {
-            if (utils.IsSuitMatch()) //check if selectedCards and the clicked card match
-            {
-                utils.Match(); //removes the two matched cards
-            }
-
-            else if ((cardList[0].GetComponent<CardScript>().cardNum - 1) == utils.selectedCards[0].GetComponent<CardScript>().cardNum) //checks card destination is one higher
-            {
-                utils.selectedCards[0].GetComponent<CardScript>().MoveCard(cardList[0].GetComponent<CardScript>().container); //moves card in selectedCards to clicked location
-            }
-        }
-        return;
     }
-
 }
