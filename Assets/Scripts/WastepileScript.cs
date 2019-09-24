@@ -38,7 +38,7 @@ public class WastepileScript : MonoBehaviour
     public void Clicked()
     {
         // has the waste pile been selected twice?
-        if (utils.selectedCards[0] == cardList[cardList.Count - 1])
+        /*if (utils.selectedCards[0] == cardList[cardList.Count - 1])
         {
             utils.selectedCards[0] = null;
         }
@@ -46,7 +46,7 @@ public class WastepileScript : MonoBehaviour
         {
             utils.selectedCards[0] = cardList[cardList.Count - 1];
             cardList[cardList.Count - 1].GetComponent<CardScript>().apearSelected = true;
-        }
+        }*/
         return;
     }
 

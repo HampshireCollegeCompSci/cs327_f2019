@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DeckScript : MonoBehaviour
 {
-    public GameObject utils;
+    public UtilsScript utils;
     private GameObject wastePile;
     private List<GameObject> foundations;
     private List<GameObject> reactors;
@@ -18,18 +18,30 @@ public class DeckScript : MonoBehaviour
 
     void Start()
     {
-        // we really shouldn't set up the game adding data to cards and cards to foundations in this script
+        utils = UtilsScript.global;
 
-        // setting up card list
+        // we really shouldn't set up the game adding data to cards and cards to foundations in this script
+        InstantiateCards();
+        Shuffle();
+        SetUpFoundations();
+        
+        // let user know deck has cards and deal some out
+        this.gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
+        Deal();
+    }
+
+     // sets up card list
+    public void InstantiateCards()
+    {
         // order: club ace, 2, 3... 10, jack, queen, king, diamonds... hearts... spades
-        int cardIndex;
-        for (int suit = 0; suit < 4; suit++)
+        int cardIndex; // 0 - 51
+        for (int suit = 0; suit < 4; suit++) // order: club, diamonds, hearts, spades
         {
-            for (int num = 1; num < 14; num++)
+            for (int num = 1; num < 14; num++) // card num: 1 - 13
             {
                 cardIndex = suit * 13 + num;
 
-                if (num > 10)
+                if (num > 10) // all face cards have a value of 10
                 {
                     cardList[cardIndex].GetComponent<CardScript>().cardVal = 10;
                 }
@@ -57,17 +69,17 @@ public class DeckScript : MonoBehaviour
                     cardList[cardIndex].GetComponent<CardScript>().cardSuit = "spades";
                 }
 
-                // the only cards that will ever be hidden are the foundation non top cards
-                // the decks cards are up for debate as their location is not specified yet
+                // the only cards that will ever be set to hidden are the foundation non top cards
                 cardList[cardIndex].GetComponent<CardScript>().hidden = false;
                 cardList[cardIndex].GetComponent<CardScript>().apearSelected = false;
-                //cardList[cardIndex].GetComponent<CardScript>().currentLocation = this.gameObject;
+                cardList[cardIndex].GetComponent<CardScript>().container = this.gameObject;
             }
         }
+    }
 
-        Shuffle();
-
-        // moving cards into foundations
+    // moves cards into foundations
+    public void SetUpFoundations()
+    {
         for (int i = 0; i < foundations.Count; i++)
         {
             for (int n = 0; n < foundationStartSize - 1; n++)
@@ -82,21 +94,20 @@ public class DeckScript : MonoBehaviour
             cardList[0].GetComponent<CardScript>().hidden = false;
             cardList[0].GetComponent<CardScript>().MoveCard(foundations[i]);
         }
-
-        this.gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
-        Deal();
     }
 
-    public void setCardPositions()
+    // cards shouldn't be clickable nor viewable, only the deck's sprite should be
+    public void SetCardPositions()
     {
         for (int i = 0; i < cardList.Count; i++)
         {
             cardList[i].transform.parent = this.gameObject.transform;
-            cardList[i].transform.localPosition = new Vector3(0, 0, 0);
-            cardList[i].gameObject.GetComponent<SpriteRenderer>().sortingOrder = i;
+            cardList[i].transform.localPosition = new Vector3(0, 0, -0.03f); // makes it go behind the deck?
+            //cardList[i].gameObject.GetComponent<SpriteRenderer>().sortingOrder = i;
         }
     }
 
+    // user wants to deal cards, other things might need to be done before that
     public void Clicked()
     {
         if (cardList.Count != 0) // can the deck can be drawn from
@@ -116,6 +127,7 @@ public class DeckScript : MonoBehaviour
         }
     }
 
+    // moves all of the top foundation cards into their appropriate reactors
     public void NextCycle()
     {
         for (int f = 0; f < foundations.Count; f++)
@@ -161,6 +173,7 @@ public class DeckScript : MonoBehaviour
         }
     }
 
+    // moves all wastePile cards into the deck
     public void DeckReset()
     {
         // the top of the deck is index 0
@@ -185,6 +198,7 @@ public class DeckScript : MonoBehaviour
         }
     }
 
+    // deals cards, changes sprite if deck is empty
     public void Deal()
     {
         for (int i = 0; i < 3; i++) // try to deal 3 cards
@@ -200,7 +214,7 @@ public class DeckScript : MonoBehaviour
         }
     }
 
-    //Shuffles list using Knuth shuffle aka Fisher-Yates shuffle
+    //Shuffles cardList using Knuth shuffle aka Fisher-Yates shuffle
     public void Shuffle()
     {
         System.Random rand = new System.Random();
