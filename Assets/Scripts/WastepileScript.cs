@@ -34,38 +34,22 @@ public class WastepileScript : MonoBehaviour
         }
     }
 
-    //this function is run on selected card's container
-    //if click reactor then click other card,
-    //click method gets run on container of first card clicked
-    //know first card is from reactor
-    //selectedCards = list of the currently selected cards
-    //selectedCard[0] is the first card (from Wastepile)
-    //check if has more than 1 card -> shouldn't 
-    //DON'T USE CLICKED CARD
-    //take input (inputCard)
-    //that is the second card 
-    public void Clicked(GameObject inputCard)
+    
+    public void Clicked()
     {
-
-        GameObject card1 = utils.selectedCards[0];
-
-        //list needs to only be 1, something wrong if not
-        if (utils.selectedCards.Count == 1)
+        // has the waste pile been selected twice?
+        if (utils.selectedCards[0] == cardList[cardList.Count - 1])
         {
-            if (utils.IsMatch(inputCard, card1))
-            {
-                utils.Match(inputCard, card1);
-            }
-            else
-            {
-                utils.selectedCards.Remove(card1);
-            }
+            utils.selectedCards[0] = null;
         }
-
-        //this is just the return call to end after having clicked
+        else // select the top of the waste pile
+        {
+            utils.selectedCards[0] = cardList[cardList.Count - 1];
+            cardList[cardList.Count - 1].GetComponent<CardScript>().apearSelected = true;
+        }
         return;
-
     }
+
     public List<GameObject> GetCardList()
     {
         return cardList;
