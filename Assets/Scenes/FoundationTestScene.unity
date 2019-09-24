@@ -296,7 +296,7 @@ GameObject:
   - component: {fileID: 643348561}
   m_Layer: 0
   m_Name: Foundation (1)
-  m_TagString: Untagged
+  m_TagString: Foundation
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -345,7 +345,7 @@ GameObject:
   - component: {fileID: 787894276}
   m_Layer: 0
   m_Name: Foundation
-  m_TagString: Untagged
+  m_TagString: Foundation
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -394,7 +394,7 @@ GameObject:
   - component: {fileID: 1214012894}
   m_Layer: 0
   m_Name: MatchedPile
-  m_TagString: Untagged
+  m_TagString: MatchedPile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -519,7 +519,7 @@ GameObject:
   - component: {fileID: 1524850548}
   m_Layer: 0
   m_Name: Deck
-  m_TagString: Untagged
+  m_TagString: Deck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -669,7 +669,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectedCards: []
-  clickedCard: {fileID: 0}
   matchedPile: {fileID: 0}
 --- !u!4 &1574574479
 Transform:
@@ -824,7 +823,7 @@ GameObject:
   - component: {fileID: 2019854353}
   m_Layer: 0
   m_Name: ReactorPile
-  m_TagString: Untagged
+  m_TagString: Reactor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
