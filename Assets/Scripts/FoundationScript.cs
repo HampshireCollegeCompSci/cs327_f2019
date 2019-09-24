@@ -6,7 +6,8 @@ public class FoundationScript : MonoBehaviour
 {
     public UtilsScript utils;
     public List<GameObject> cardList;
-    int counter;
+    int indexCounter;
+    int positionCounter;
     int cardMax;
 
     void Start()
@@ -34,16 +35,16 @@ public class FoundationScript : MonoBehaviour
         //offset card z axis by a little bit
     public void SetCardPositions()
     {
-        counter = 0;
-        cardMax = cardList.Count;
+        indexCounter = cardList.Count - 1;
+        positionCounter = 0;
 
-        while (counter < cardMax)
+        while (indexCounter > -1)
         {
-            
-            cardList[counter].transform.position =  gameObject.transform.position + new Vector3(0, 0.5f * counter, 0.5f * counter);
-            cardList[counter].gameObject.GetComponent<SpriteRenderer>().sortingOrder = cardMax - counter;
+            cardList[indexCounter].transform.position =  gameObject.transform.position + new Vector3(0, -0.5f * positionCounter, -0.5f * positionCounter);
+            cardList[indexCounter].gameObject.GetComponent<SpriteRenderer>().sortingOrder = cardMax - positionCounter;
 
-            counter += 1;
+            indexCounter -= 1;
+            positionCounter += 1;
         }
     }
 
