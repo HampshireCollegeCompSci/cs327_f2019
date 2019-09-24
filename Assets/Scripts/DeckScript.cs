@@ -22,6 +22,7 @@ public class DeckScript : MonoBehaviour
 
     void Start()
     {
+        myPrefab = (GameObject)Resources.Load("Prefabs/Card", typeof(GameObject));
         utils = UtilsScript.global;
 
         // we really shouldn't set up the game adding data to cards and cards to foundations in this script
@@ -37,8 +38,8 @@ public class DeckScript : MonoBehaviour
      // sets up card list
     public void InstantiateCards()
     {
-        cardList = new List<GameObject>(52);
-        for (int i = 0; i < cardList.Count; i++)
+        cardList = new List<GameObject>();
+        for (int i = 0; i < 52; i++)
         {
             cardList.Add(Instantiate(myPrefab));
         }
