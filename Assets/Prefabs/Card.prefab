@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5589543899514788396}
   m_Layer: 0
   m_Name: Card
-  m_TagString: Untagged
+  m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -94,13 +94,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff4ebf0a934f24ddd9bea9eb2f8f7888, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hidden: 0
+  container: {fileID: 0}
   cardFrontSprite: {fileID: 0}
   cardBackSprite: {fileID: 848148953277957218, guid: 683e7f20d28c948108926206e6bd788f,
     type: 3}
   cardVal: 0
-  cardSuit: 
   cardNum: 0
+  cardSuit: 
+  hidden: 0
   apearSelected: 0
 --- !u!61 &5589543899514788396
 BoxCollider2D:
