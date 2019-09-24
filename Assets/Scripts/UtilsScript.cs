@@ -62,6 +62,10 @@ public class UtilsScript : MonoBehaviour
         else
         {
             selectedCards[0].GetComponent<CardScript>().container.SendMessage("Clicked", hit.collider.gameObject);
+            foreach (GameObject card in selectedCards)
+            {
+                DeselectCard(card);
+            }
         }
     }
 
