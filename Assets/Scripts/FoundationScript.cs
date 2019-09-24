@@ -20,6 +20,11 @@ public class FoundationScript : MonoBehaviour
 
     }
 
+    RemoveCard(GameObject card)
+    {
+        cardList.Remove(card);
+    }
+
     //assigns card positions and render order and sets this foundation as the cards parents
 
         //iterate over the cardlist

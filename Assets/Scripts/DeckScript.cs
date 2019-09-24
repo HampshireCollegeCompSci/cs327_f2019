@@ -111,6 +111,11 @@ public class DeckScript : MonoBehaviour
         }
     }
 
+    RemoveCard(GameObject card)
+    {
+        cardList.Remove(card);
+    }
+
     // cards shouldn't be clickable nor viewable, only the deck's sprite should be
     public void SetCardPositions()
     {

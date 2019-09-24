@@ -20,6 +20,11 @@ public class WastepileScript : MonoBehaviour
         
     }
 
+    RemoveCard(GameObject card)
+    {
+        cardList.Remove(card);
+    }
+
     public void SetCardPositions()
     {
         counter = 0;

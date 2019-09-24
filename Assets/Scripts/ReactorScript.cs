@@ -29,6 +29,11 @@ public class ReactorScript : MonoBehaviour
         }
     }
 
+    RemoveCard(GameObject card)
+    {
+        cardList.Remove(card);
+    }
+
     //iterate over cardList (in Reactor)
     //set their location positions
     //in other words, when a card is added to the Reactor

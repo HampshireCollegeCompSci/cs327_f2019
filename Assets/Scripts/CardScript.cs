@@ -54,29 +54,29 @@ public class CardScript : MonoBehaviour
     {
         if (destination.CompareTag("Foundation"))
         {
-            container.GetComponent<FoundationScript>().cardList.Remove(gameObject);
+            container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<FoundationScript>().cardList.Insert(0, gameObject);
         }
 
         else if (destination.CompareTag("Reactor"))
         {
-            container.GetComponent<ReactorScript>().cardList.Remove(gameObject);
+            container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<ReactorScript>().cardList.Insert(0, gameObject);
         }
 
         else if (destination.CompareTag("Wastepile"))
         {
-            container.GetComponent<WastepileScript>().cardList.Remove(gameObject);
+            container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<WastepileScript>().cardList.Insert(0, gameObject);
         }
         else if (destination.CompareTag("Deck"))
         {
-            container.GetComponent<DeckScript>().cardList.Remove(gameObject);
+            container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<DeckScript>().cardList.Insert(0, gameObject);
         }
         else if (destination.CompareTag("MatchedPile"))
         {
-            container.GetComponent<MatchedPileScript>().cardList.Remove(gameObject);
+            container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<MatchedPileScript>().cardList.Insert(0, gameObject);
         }
         container = destination;

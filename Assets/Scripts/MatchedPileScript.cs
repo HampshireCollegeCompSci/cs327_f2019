@@ -13,6 +13,11 @@ public class MatchedPileScript : MonoBehaviour
         SetCardPositions();
     }
 
+    RemoveCard(GameObject card)
+    {
+        cardList.Remove(card);
+    }
+
     //assigns card positions and render order and sets this foundation as the cards parents
     public void SetCardPositions()
     {
