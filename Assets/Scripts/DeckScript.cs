@@ -10,7 +10,6 @@ public class DeckScript : MonoBehaviour
     public List<GameObject> foundations;
     public List<GameObject> reactors;
     
-    public Sprite cardBackSprite;
     public Sprite placeHolderSprite;
 
     public GameObject myPrefab;
@@ -32,8 +31,9 @@ public class DeckScript : MonoBehaviour
         SetUpFoundations();
         
         // let user know deck has cards and deal some out
-        this.gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
+        this.gameObject.GetComponent<SpriteRenderer>().sprite = placeHolderSprite;
         Deal();
+        SetCardPositions();
     }
 
      // sets up card list
@@ -79,7 +79,6 @@ public class DeckScript : MonoBehaviour
                     cardList[cardIndex].GetComponent<CardScript>().cardSuit = "spades";
                 }
 
-                cardList[cardIndex].GetComponent<CardScript>().cardBackSprite = sprites[0];
                 cardList[cardIndex].GetComponent<CardScript>().cardFrontSprite = sprites[cardIndex];
                 cardList[cardIndex].GetComponent<CardScript>().hidden = true;
                 cardList[cardIndex].GetComponent<CardScript>().apearSelected = false;
@@ -88,8 +87,6 @@ public class DeckScript : MonoBehaviour
                 cardIndex += 1;
             }
         }
-
-        SetCardPositions();
     }
 
     // moves cards into foundations
@@ -116,7 +113,7 @@ public class DeckScript : MonoBehaviour
         cardList.Remove(card);
     }
 
-    // cards shouldn't be clickable nor viewable, only the deck's sprite should be
+    // top card is cardList[0]
     public void SetCardPositions()
     {
         // stagger the cards
@@ -124,7 +121,7 @@ public class DeckScript : MonoBehaviour
         for (int i = cardList.Count - 1; i > -1; i--) // index 0 is on the top
         {
             cardList[i].transform.parent = this.gameObject.transform;
-            cardList[i].transform.localPosition = new Vector3(offset, offset, 0.01f + offset);
+            cardList[i].transform.localPosition = new Vector3(offset, offset, offset);
             offset += 0.01f;
         }
     }
@@ -144,7 +141,6 @@ public class DeckScript : MonoBehaviour
             }
 
             NextCycle();
-            this.gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
             DeckReset();
         }
     }
@@ -220,14 +216,13 @@ public class DeckScript : MonoBehaviour
         }
     }
 
-    // deals cards, changes sprite if deck is empty
+    // deals cards
     public void Deal()
     {
         for (int i = 0; i < 3; i++) // try to deal 3 cards
         {
             if (cardList.Count == 0) // are there no more cards in the deck?
             {
-                this.gameObject.GetComponent<SpriteRenderer>().sprite = placeHolderSprite;
                 break;
             }
 
