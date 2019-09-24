@@ -37,7 +37,7 @@ public class FoundationScript : MonoBehaviour
 
     public void Clicked(GameObject inputCard)
     {
-        if (utils.IsSuitMatch(inputCard, utils.selectedCards[0]) && utils.selectedCards.Count == 1) //check if selectedCards and the input card match and that selesctedCards is only one card
+        if (utils.IsMatch(inputCard, utils.selectedCards[0]) && utils.selectedCards.Count == 1) //check if selectedCards and the input card match and that selesctedCards is only one card
         {
             utils.Match(inputCard, utils.selectedCards[0]); //removes the two matched cards
         }
