@@ -8,6 +8,7 @@ public class DeckScript : MonoBehaviour
     private GameObject wastePile;
     private List<GameObject> foundations;
     private List<GameObject> reactors;
+    public List<Sprite2D> sprites;
 
     public Sprite cardBackSprite;
     public Sprite placeHolderSprite;
