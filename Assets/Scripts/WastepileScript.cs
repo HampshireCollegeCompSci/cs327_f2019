@@ -35,18 +35,45 @@ public class WastepileScript : MonoBehaviour
     }
 
     
-    public void Clicked()
+    public void Clicked(GameObject input)
     {
-        // has the waste pile been selected twice?
-        /*if (utils.selectedCards[0] == cardList[cardList.Count - 1])
+        GameObject selectedCard = utils.selectedCards[0];
+        // checking if utils.selectedCards only has the top card in the wastePile  
+        if (utils.selectedCards.Count != 1 || selectedCard != cardList[0])
         {
-            utils.selectedCards[0] = null;
+            return;
         }
-        else // select the top of the waste pile
+        
+        if (input.CompareTag("foundation") && input.GetComponent<FoundationScript>().cardList.Count == 0)
         {
-            utils.selectedCards[0] = cardList[cardList.Count - 1];
-            cardList[cardList.Count - 1].GetComponent<CardScript>().apearSelected = true;
-        }*/
+            selectedCard.GetComponent<CardScript>().MoveCard(input);
+        }
+        else if (input.CompareTag("reactor") && input.GetComponent<ReactorScript>().cardList.Count == 0)
+        {
+            selectedCard.GetComponent<CardScript>().MoveCard(input);
+        }
+        else if (input.CompareTag("card"))
+        {
+            GameObject cardContainer = input.GetComponent<CardScript>().container;
+            if (cardContainer.CompareTag("reactor"))
+            {
+                if (utils.IsMatch(input, selectedCard))
+                {
+                    utils.Match(input, selectedCard);
+                }
+            }
+            else if (cardContainer.CompareTag("foundation"))
+            {
+                // is input the top card in the foundation
+                if (input == cardContainer.GetComponent<FoundationScript>().cardList[0])
+                {
+                    if (utils.IsMatch(input, selectedCard))
+                    {
+                        utils.Match(input, selectedCard);
+                    }
+                }
+            }
+        }
         return;
     }
 
