@@ -101,11 +101,11 @@ public class UtilsScript : MonoBehaviour
 
 
 
-    //int forCounter;
-    //for (forCounter = 0; forCounter < selectedCards.Count; forCounter++)
-    //{
-    //    selectedCards[forCounter].GetComponent<CardScript>().apearSelected = true;
-    //    selectedCards[forCounter].GetComponent<CardScript>().SetCardAppearance();
-    //}
+    /*int forCounter;
+    for (forCounter = 0; forCounter < selectedCards.Count; forCounter++)
+    {
+        selectedCards[forCounter].GetComponent<CardScript>().apearSelected = true;
+        selectedCards[forCounter].GetComponent<CardScript>().SetCardAppearance();
+    }*/
 
 }
