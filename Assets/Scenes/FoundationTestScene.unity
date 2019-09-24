@@ -382,7 +382,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 9, y: 12.6}
+  m_Size: {x: 6.5, y: 9.5}
   m_EdgeRadius: 0
 --- !u!212 &638660389
 SpriteRenderer:
@@ -536,7 +536,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.0001, y: 0.0001}
+  m_Size: {x: 6.5, y: 9.5}
   m_EdgeRadius: 0
 --- !u!212 &643348564
 SpriteRenderer:
@@ -711,7 +711,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 6.5, y: 9.5}
   m_EdgeRadius: 0
 --- !u!1 &792743495
 GameObject:
@@ -756,7 +756,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 9, y: 12.6}
+  m_Size: {x: 6.5, y: 9.5}
   m_EdgeRadius: 0
 --- !u!212 &792743497
 SpriteRenderer:
@@ -878,7 +878,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.0001, y: 0.0001}
+  m_Size: {x: 6.5, y: 9.5}
   m_EdgeRadius: 0
 --- !u!212 &963779803
 SpriteRenderer:
@@ -1139,7 +1139,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 9, y: 12.6}
+  m_Size: {x: 6.5, y: 9.5}
   m_EdgeRadius: 0
 --- !u!212 &1275097673
 SpriteRenderer:
@@ -1261,7 +1261,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.0001, y: 0.0001}
+  m_Size: {x: 6.5, y: 9.5}
   m_EdgeRadius: 0
 --- !u!212 &1367277648
 SpriteRenderer:
@@ -1376,6 +1376,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   utils: {fileID: 0}
+  cardBackSprite: {fileID: 848148953277957218, guid: 683e7f20d28c948108926206e6bd788f,
+    type: 3}
+  placeHolderSprite: {fileID: 21300000, guid: 26cae7adde222450ab5c96c6268ffd92, type: 3}
+  myPrefab: {fileID: 0}
   sprites:
   - {fileID: 21300000, guid: e70fbfed6d43c194ca389da3868f7f5d, type: 3}
   - {fileID: 21300000, guid: 3e1549d1ea2f4f84d8d2063b82c95eaf, type: 3}
@@ -1430,9 +1434,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 6231b23125d31784d9a82f6d4622a0ba, type: 3}
   - {fileID: 21300000, guid: 1919e2b9254d6bc4899da0c83c985908, type: 3}
   - {fileID: 21300000, guid: 6bd5c85185dc8504bbac8da148d4f458, type: 3}
-  cardBackSprite: {fileID: 848148953277957218, guid: 683e7f20d28c948108926206e6bd788f,
-    type: 3}
-  placeHolderSprite: {fileID: 21300000, guid: 26cae7adde222450ab5c96c6268ffd92, type: 3}
   cardList: []
   shuffleOnDeckReset: 1
   dealOnDeckReset: 1
@@ -1873,7 +1874,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 9, y: 12.6}
+  m_Size: {x: 6.5, y: 9.5}
   m_EdgeRadius: 0
 --- !u!212 &2019854356
 SpriteRenderer:
