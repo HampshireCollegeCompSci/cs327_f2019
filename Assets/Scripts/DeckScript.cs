@@ -81,9 +81,9 @@ public class DeckScript : MonoBehaviour
                 }
 
                 cardList[cardIndex].GetComponent<CardScript>().cardBackSprite = sprites[0];
-                cardList[cardIndex].GetComponent<CardScript>().cardBackSprite = sprites[cardIndex];
+                cardList[cardIndex].GetComponent<CardScript>().cardFrontSprite = sprites[cardIndex];
                 // the only cards that will ever be set to hidden are the foundation non top cards
-                cardList[cardIndex].GetComponent<CardScript>().hidden = false;
+                cardList[cardIndex].GetComponent<CardScript>().hidden = true;
                 cardList[cardIndex].GetComponent<CardScript>().apearSelected = false;
                 cardList[cardIndex].GetComponent<CardScript>().container = this.gameObject;
             }
