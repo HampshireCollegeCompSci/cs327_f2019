@@ -13,7 +13,7 @@ public class MatchedPileScript : MonoBehaviour
         SetCardPositions();
     }
 
-    RemoveCard(GameObject card)
+    public void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
     }

@@ -20,7 +20,7 @@ public class WastepileScript : MonoBehaviour
         
     }
 
-    RemoveCard(GameObject card)
+     public void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
     }

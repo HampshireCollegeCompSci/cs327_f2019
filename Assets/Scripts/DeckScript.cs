@@ -111,7 +111,7 @@ public class DeckScript : MonoBehaviour
         }
     }
 
-    RemoveCard(GameObject card)
+    public void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
     }

@@ -29,7 +29,7 @@ public class ReactorScript : MonoBehaviour
         }
     }
 
-    RemoveCard(GameObject card)
+    public void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
     }
