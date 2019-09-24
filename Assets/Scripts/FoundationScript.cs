@@ -21,6 +21,12 @@ public class FoundationScript : MonoBehaviour
     }
 
     //assigns card positions and render order and sets this foundation as the cards parents
+
+        //iterate over the cardlist
+        //for each one there, copy transform of foundation
+        //apply to the card
+        //offset card y axis by a little bit
+        //offset card z axis by a little bit
     public void SetCardPositions()
     {
         counter = 0;
@@ -28,9 +34,10 @@ public class FoundationScript : MonoBehaviour
 
         while (counter < cardMax)
         {
-            cardList[counter].transform.parent = gameObject.transform;
-            cardList[counter].transform.localPosition = new Vector3(0, 0.5f * counter, 0);
+            
+            cardList[counter].transform.position =  gameObject.transform.position + new Vector3(0, 0.5f * counter, 0.5f * counter);
             cardList[counter].gameObject.GetComponent<SpriteRenderer>().sortingOrder = cardMax - counter;
+
             counter += 1;
         }
     }
