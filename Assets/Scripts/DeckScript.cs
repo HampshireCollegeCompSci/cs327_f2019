@@ -100,16 +100,19 @@ public class DeckScript : MonoBehaviour
     // cards shouldn't be clickable nor viewable, only the deck's sprite should be
     public void SetCardPositions()
     {
-        for (int i = 0; i < cardList.Count; i++)
+        // stagger the cards
+        float offset = 0;
+        for (int i = cardList.Count - 1; i > -1; i--) // index 0 is on the top
         {
             cardList[i].transform.parent = this.gameObject.transform;
-            cardList[i].transform.localPosition = new Vector3(0, 0, -0.03f); // makes it go behind the deck?
+            cardList[i].transform.localPosition = new Vector3(offset, offset, 0.03f + offset);
             //cardList[i].gameObject.GetComponent<SpriteRenderer>().sortingOrder = i;
+            offset += 0.03f;
         }
     }
 
     // user wants to deal cards, other things might need to be done before that
-    public void Clicked()
+    public void Clicked(GameObject input)
     {
         if (cardList.Count != 0) // can the deck can be drawn from
         {
