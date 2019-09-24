@@ -15,7 +15,7 @@ public class Config : MonoBehaviour
     public GameObject foundation3;
     public GameObject foundation4;
 
-    public GameObject[] foundationList;
+    private GameObject[] foundationList;
 
     public GameObject wastePile;
     public GameObject deck;
