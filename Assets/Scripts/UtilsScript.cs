@@ -45,9 +45,9 @@ public class UtilsScript : MonoBehaviour
 
         else if (selectedCards[0] == hit.collider.gameObject)
         {
-            selectedCards.Remove(hit.collider.gameObject);
             selectedCards[0].GetComponent<CardScript>().apearSelected = false;
             selectedCards[0].GetComponent<CardScript>().SetCardAppearance();
+            selectedCards.Remove(hit.collider.gameObject);
         }
 
         else
