@@ -45,12 +45,20 @@ public class FoundationScript : MonoBehaviour
     {
         indexCounter = cardList.Count - 1;
         positionCounter = 0;
-
+        /*
         while (indexCounter > -1)
         {
             cardList[indexCounter].transform.position =  gameObject.transform.position + new Vector3(0, -Config.config.foundationStackDensity * positionCounter, -0.5f * positionCounter);
 
             indexCounter -= 1;
+            positionCounter += 1;
+        }
+        */
+
+        for(indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
+        {
+            cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, -Config.config.foundationStackDensity * positionCounter, -0.5f * positionCounter);
+
             positionCounter += 1;
         }
     }
