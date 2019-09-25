@@ -103,6 +103,7 @@ public class UtilsScript : MonoBehaviour
         int card2Num = card2.GetComponent<CardScript>().cardNum;
         if (card1Num != card2Num)
         {
+            Debug.Log("Numbers don't match");
             return false;
         }
         else { 
@@ -129,6 +130,7 @@ public class UtilsScript : MonoBehaviour
             //otherwise not a match 
             else
             {
+                Debug.Log("Suits don't match");
                 return false;
             }
         }

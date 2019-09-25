@@ -75,7 +75,7 @@ public class DeckScript : MonoBehaviour
                 }
                 else if (suit == 1)
                 {
-                    cardList[cardIndex].GetComponent<CardScript>().cardSuit = "diamonds";
+                    cardList[cardIndex].GetComponent<CardScript>().cardSuit = "spades";
                 }
                 else if (suit == 2)
                 {
@@ -83,7 +83,7 @@ public class DeckScript : MonoBehaviour
                 }
                 else if (suit == 3)
                 {
-                    cardList[cardIndex].GetComponent<CardScript>().cardSuit = "spades";
+                    cardList[cardIndex].GetComponent<CardScript>().cardSuit = "diamonds";
                 }
 
                 cardList[cardIndex].GetComponent<CardScript>().cardFrontSprite = sprites[cardIndex + 1];
