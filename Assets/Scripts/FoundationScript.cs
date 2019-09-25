@@ -57,7 +57,6 @@ public class FoundationScript : MonoBehaviour
 
     public void Clicked(GameObject input)
     {
-        Debug.Log("Foundation clicked on");
         if (!input.CompareTag("Card"))
         {
             if ((input.CompareTag("Foundation") || input.CompareTag("Reactor")) && utils.selectedCards.Count != 0)
