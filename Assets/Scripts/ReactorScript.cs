@@ -7,7 +7,7 @@ public class ReactorScript : MonoBehaviour
     //helloWorld
     public List<GameObject> cardList;
     public UtilsScript utils;
-    int counter;
+    int positionCounter;
     int cardMax;
     int ReactorVal;
 
@@ -40,15 +40,13 @@ public class ReactorScript : MonoBehaviour
     //this handles positions
     public void SetCardPositions()
     {
-        counter = 0;
-        cardMax = cardList.Count;
+        positionCounter = 0;
 
-        while (counter < cardMax)
+        for(int indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
         {
-            cardList[counter].transform.parent = gameObject.transform;
-            cardList[counter].transform.localPosition = new Vector3(0, 0.5f * counter, -0.5f);
-            cardList[counter].gameObject.GetComponent<SpriteRenderer>().sortingOrder = cardMax - counter;
-            counter += 1;
+            cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, 0, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
+
+            positionCounter += 1;
         }
     }
 
