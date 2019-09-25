@@ -159,7 +159,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 40183959}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.42, y: 3, z: -1.6834388}
+  m_LocalPosition: {x: -0.79, y: -3.61, z: -1.6834388}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -830,7 +830,7 @@ Transform:
   m_GameObject: {fileID: 1283793619}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.120654136, y: 0.85869944, z: -0.6906163}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children:
   - {fileID: 787894279}
   - {fileID: 1812935835}
@@ -1031,8 +1031,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1524850547}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.65, y: 3, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -1.8, y: -3.64, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -1137,7 +1137,7 @@ Transform:
   m_GameObject: {fileID: 1554683628}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.120654136, y: 0.85869944, z: -0.6906163}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children:
   - {fileID: 1663621892}
   - {fileID: 1761531079}
@@ -1324,8 +1324,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9301d4daf1243e4190f638de2c9a4b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardScale: {x: 3, y: 3, z: 0}
-  foundationStackDensity: 0.45
+  cardScale: {x: 1.5, y: 1.5, z: 0}
+  foundationStackDensity: 0.3
   foundation1: {fileID: 787894275}
   foundation2: {fileID: 1812935831}
   foundation3: {fileID: 627912848}
