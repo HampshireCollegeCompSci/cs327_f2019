@@ -79,10 +79,6 @@ public class ReactorScript : MonoBehaviour
                 {
                     utils.Match(input, card1);
                 }
-                else if (utils.IsSameSuit(input, card1))
-                {
-                    input.GetComponent<CardScript>().MoveCard(gameObject);
-                }
                 else
                 {
                     utils.selectedCards.Remove(card1);
