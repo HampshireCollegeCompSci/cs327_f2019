@@ -48,7 +48,7 @@ public class FoundationScript : MonoBehaviour
 
         while (indexCounter > -1)
         {
-            cardList[indexCounter].transform.position =  gameObject.transform.position + new Vector3(0, -0.2f * positionCounter, -0.5f * positionCounter);
+            cardList[indexCounter].transform.position =  gameObject.transform.position + new Vector3(0, -Config.config.foundationStackDensity * positionCounter, -0.5f * positionCounter);
 
             indexCounter -= 1;
             positionCounter += 1;

@@ -9,7 +9,13 @@ public class Config : MonoBehaviour
     //Variables go here
     public Stack<Move> moveLog = new Stack<Move>();
 
+    //card scale
+    public Vector3 cardScale;
+
+
     //foundations
+    public float foundationStackDensity;
+
     public GameObject foundation1;
     public GameObject foundation2;
     public GameObject foundation3;

@@ -84,6 +84,13 @@ public class WastepileScript : MonoBehaviour
                     {
                         utils.Match(input, selectedCard);
                     }
+                    else if ((selectedCard.GetComponent<CardScript>().cardNum + 1) == input.GetComponent<CardScript>().cardNum)
+                    {
+                        foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
+                        {
+                            card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
+                        }
+                    }
                 }
             }
         }

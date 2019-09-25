@@ -12,13 +12,13 @@ public class CardScript : MonoBehaviour
     public string cardSuit;
     public bool hidden;
     public bool appearSelected;
-    Vector3 originalTransform = new Vector3(2.8f, 2.8f, 2.8f);
+    Vector3 originalTransform;
 
 
 
     void Update()
     {
-        
+        originalTransform = Config.config.cardScale;
         SetCardAppearance();
     }
 
