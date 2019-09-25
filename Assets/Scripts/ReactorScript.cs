@@ -105,12 +105,10 @@ public class ReactorScript : MonoBehaviour
     {
         //sum the values into totalSum, return
         int totalSum = 0;
-        counter = 0; //index for tracking position in cardlist
-        while (counter < cardMax)
+        int cardListNum = cardList.Count;
+        for (int i = 0; i < cardListNum; i++)
         {
-            //this is going to need to be changed because card list is not an array according to
-            //I think Ian? 
-            totalSum += cardList[counter].gameObject.GetComponent<CardScript>().cardNum;
+            totalSum += cardList[i].gameObject.GetComponent<CardScript>().cardNum;
         }
 
         return totalSum;
