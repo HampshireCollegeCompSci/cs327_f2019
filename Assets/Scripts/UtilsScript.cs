@@ -73,6 +73,13 @@ public class UtilsScript : MonoBehaviour
             }
             return;
         }
+        else if (hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Wastepile") && selectedCards.Count == 0)
+        {
+            if (hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<WastepileScript>().cardList[0] == hit.collider.gameObject)
+            {
+                SelectCard(hit.collider.gameObject);
+            }
+        }
         else if (selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().hidden)
         {
             SelectCard(hit.collider.gameObject);
