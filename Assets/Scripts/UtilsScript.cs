@@ -53,7 +53,7 @@ public class UtilsScript : MonoBehaviour
         {
             if (selectedCards.Count != 0)
             {
-                selectedCards[0].GetComponent<CardScript>().container.SendMessage("Clicked", hit.collider.gameObject);
+                selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
                 int selectedCardsLength = selectedCards.Count;
                 for (int i = 0; i < selectedCardsLength; i++)
                 {
@@ -65,13 +65,20 @@ public class UtilsScript : MonoBehaviour
         // if we click a car in the deck call deck clicked and deselect all cards
         else if (hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Deck"))
         {
-            hit.collider.gameObject.GetComponent<CardScript>().container.SendMessage("Clicked", hit.collider.gameObject);
+            hit.collider.gameObject.GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
             int selectedCardsLength = selectedCards.Count;
             for (int i = 0; i < selectedCardsLength; i++)
             {
                 DeselectCard(selectedCards[0]);
             }
             return;
+        }
+        else if (hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Wastepile") && selectedCards.Count == 0)
+        {
+            if (hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<WastepileScript>().cardList[0] == hit.collider.gameObject)
+            {
+                SelectCard(hit.collider.gameObject);
+            }
         }
         else if (selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().hidden)
         {
@@ -85,7 +92,7 @@ public class UtilsScript : MonoBehaviour
 
         else
         {
-            selectedCards[0].GetComponent<CardScript>().container.SendMessage("Clicked", hit.collider.gameObject);
+            selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
             //we are no longer changing a list that we are also iterating over
             int selectedCardsLength = selectedCards.Count;
             for (int i = 0; i < selectedCardsLength; i++)
@@ -146,26 +153,23 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    public bool IsTrueSuitMatch(GameObject card1, GameObject card2)
+    public bool IsSameSuit(GameObject card1, GameObject card2)
     {
         string card1Suit = card1.GetComponent<CardScript>().cardSuit;
         string card2Suit = card2.GetComponent<CardScript>().cardSuit;
-        //hearts diamond combo #1
+
         if (card1Suit.Equals("hearts") && card2Suit.Equals("hearts"))
         {
             return true;
         }
-        //hearts diamond combo #2
         else if (card1Suit.Equals("diamonds") && card2Suit.Equals("diamonds"))
         {
             return true;
         }
-        //spades clubs combo #1
         else if (card1Suit.Equals("spades") && card2Suit.Equals("spades"))
         {
             return true;
         }
-        //spades clubs combo #2
         else if (card1Suit.Equals("clubs") && card2Suit.Equals("clubs"))
         {
             return true;

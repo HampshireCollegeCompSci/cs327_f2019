@@ -43,19 +43,17 @@ public class FoundationScript : MonoBehaviour
         //offset card z axis by a little bit
     public void SetCardPositions()
     {
-        indexCounter = cardList.Count - 1;
         positionCounter = 0;
 
-        while (indexCounter > -1)
+        for(indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
         {
-            cardList[indexCounter].transform.position =  gameObject.transform.position + new Vector3(0, -Config.config.foundationStackDensity * positionCounter, -0.5f * positionCounter);
+            cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, -Config.config.foundationStackDensity * positionCounter, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
 
-            indexCounter -= 1;
             positionCounter += 1;
         }
     }
 
-    public void Clicked(GameObject input)
+    public void ProcessAction(GameObject input)
     {
         if (!input.CompareTag("Card"))
         {
@@ -71,12 +69,16 @@ public class FoundationScript : MonoBehaviour
         {
             utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
         }
-        else if ((utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1) == input.GetComponent<CardScript>().cardNum)
+        else if ((utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1) == input.GetComponent<CardScript>().cardNum && input.GetComponent<CardScript>().container.CompareTag("Foundation"))
         {
             foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
-                {
-                    card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
-                }
+            {
+                card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
+            }
+        }
+        else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
+        {
+            utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
         }
     }
 }

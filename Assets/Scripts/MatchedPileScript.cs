@@ -21,15 +21,11 @@ public class MatchedPileScript : MonoBehaviour
     //assigns card positions and render order and sets this foundation as the cards parents
     public void SetCardPositions()
     {
-        counter = 0;
-        cardMax = cardList.Count;
-
-        while (counter < cardMax)
+        for (int i = cardList.Count - 1; i > -1; i--)
         {
-            cardList[counter].transform.parent = gameObject.transform;
-            cardList[counter].transform.localPosition = new Vector3(0, 0.5f * counter, 0);
-            cardList[counter].gameObject.GetComponent<SpriteRenderer>().sortingOrder = cardMax - counter;
-            counter += 1;
+            cardList[i].transform.parent = gameObject.transform;
+            cardList[i].transform.localPosition = new Vector3(0, -0.5f * counter, -0.1f * counter);
+            counter++;
         }
     }
 }
