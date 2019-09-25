@@ -150,22 +150,19 @@ public class UtilsScript : MonoBehaviour
     {
         string card1Suit = card1.GetComponent<CardScript>().cardSuit;
         string card2Suit = card2.GetComponent<CardScript>().cardSuit;
-        //hearts diamond combo #1
+
         if (card1Suit.Equals("hearts") && card2Suit.Equals("hearts"))
         {
             return true;
         }
-        //hearts diamond combo #2
         else if (card1Suit.Equals("diamonds") && card2Suit.Equals("diamonds"))
         {
             return true;
         }
-        //spades clubs combo #1
         else if (card1Suit.Equals("spades") && card2Suit.Equals("spades"))
         {
             return true;
         }
-        //spades clubs combo #2
         else if (card1Suit.Equals("clubs") && card2Suit.Equals("clubs"))
         {
             return true;
