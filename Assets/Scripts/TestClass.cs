@@ -3,7 +3,7 @@ using UnityEngine;
 public class TestClass: MonoBehaviour
 {
 
-    string JSONToTest = "{\"reactorLimit\":[1,2,3,40],\"startingStack\":[1,1,30,60],\"cardsToDeal\":1}";
+    string JSONToTest;
     GameInfo gameInfo = new GameInfo();
     public GameInfo ConvertJSON(string JSON)
     {
@@ -11,6 +11,12 @@ public class TestClass: MonoBehaviour
     }
     public void TestingJSON()
     {
+        string path = "Assets/GameConfigurations/gameValues.json";
+        HandleTextFile handleTextFile = new HandleTextFile();
+        JSONToTest = handleTextFile.WriteString(path);
+
+        print(JSONToTest);
+
         GameInfo newInfo = ConvertJSON(JSONToTest);
         print(newInfo.reactorLimit[0] + " Should Equal 1");
         print(newInfo.reactorLimit[1] + " Should Equal 2");
