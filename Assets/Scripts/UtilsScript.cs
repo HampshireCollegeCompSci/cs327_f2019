@@ -54,9 +54,10 @@ public class UtilsScript : MonoBehaviour
             if (selectedCards.Count != 0)
             {
                 selectedCards[0].GetComponent<CardScript>().container.SendMessage("Clicked", hit.collider.gameObject);
-                foreach (GameObject card in selectedCards)
+                int selectedCardsLength = selectedCards.Count;
+                for (int i = 0; i < selectedCardsLength; i++)
                 {
-                    DeselectCard(card);
+                    DeselectCard(selectedCards[0]);
                 }
             }
             return;
