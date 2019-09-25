@@ -62,7 +62,17 @@ public class UtilsScript : MonoBehaviour
             }
             return;
         }
-
+        // if we click a car in the deck call deck clicked and deselect all cards
+        else if (hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Deck"))
+        {
+            hit.collider.gameObject.GetComponent<CardScript>().container.SendMessage("Clicked", hit.collider.gameObject);
+            int selectedCardsLength = selectedCards.Count;
+            for (int i = 0; i < selectedCardsLength; i++)
+            {
+                DeselectCard(selectedCards[0]);
+            }
+            return;
+        }
         else if (selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().hidden)
         {
             SelectCard(hit.collider.gameObject);

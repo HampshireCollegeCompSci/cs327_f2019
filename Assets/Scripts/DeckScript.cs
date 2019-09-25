@@ -128,7 +128,7 @@ public class DeckScript : MonoBehaviour
 
         while (indexCounter > -1)
         {
-            cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, -0.1f * positionCounter, -0.1f * positionCounter);
+            cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, -0.03f * positionCounter, -0.1f * positionCounter);
 
             indexCounter -= 1;
             positionCounter += 1;
@@ -211,6 +211,7 @@ public class DeckScript : MonoBehaviour
         // if there are any cards in the deck's cardList before they will be on the bottom after
         for (int i = 0; i < wasteCardList.Count; i++)
         {
+            wasteCardList[i].GetComponent<CardScript>().hidden = true;
             wasteCardList[i].GetComponent<CardScript>().MoveCard(this.gameObject);
         }
 
@@ -235,9 +236,12 @@ public class DeckScript : MonoBehaviour
                 break;
             }
 
-            // move card from deck list top into waste
+            // move card from deck list top into waste and reveal
+            cardList[0].GetComponent<CardScript>().hidden = false;
             cardList[0].GetComponent<CardScript>().MoveCard(wastePile);
+            
         }
+        //wastePile.GetComponent<WastepileScript>().SetCardPositions();
     }
 
     //Shuffles cardList using Knuth shuffle aka Fisher-Yates shuffle
