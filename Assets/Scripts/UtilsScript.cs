@@ -75,12 +75,8 @@ public class UtilsScript : MonoBehaviour
         else
         {
             selectedCards[0].GetComponent<CardScript>().container.SendMessage("Clicked", hit.collider.gameObject);
-            //we are no longer changing a list that we are also iterating over
-            int selectedCardsLength = selectedCards.Count;
-            for (int i = 0; i < selectedCardsLength; i++)
-            {
-                DeselectCard(selectedCards[0]);
-            }
+            //entire loop was unessisary
+            selectedCards.Clear();
         }
     }
 
