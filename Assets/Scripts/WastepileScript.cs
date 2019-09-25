@@ -57,25 +57,25 @@ public class WastepileScript : MonoBehaviour
             return;
         }
 
-        if (input.CompareTag("foundation") && input.GetComponent<FoundationScript>().cardList.Count == 0)
+        if (input.CompareTag("Foundation") && input.GetComponent<FoundationScript>().cardList.Count == 0)
         {
             selectedCard.GetComponent<CardScript>().MoveCard(input);
         }
-        else if (input.CompareTag("reactor") && input.GetComponent<ReactorScript>().cardList.Count == 0)
+        else if (input.CompareTag("Reactor") && input.GetComponent<ReactorScript>().cardList.Count == 0)
         {
             selectedCard.GetComponent<CardScript>().MoveCard(input);
         }
-        else if (input.CompareTag("card"))
+        else if (input.CompareTag("Card"))
         {
             GameObject cardContainer = input.GetComponent<CardScript>().container;
-            if (cardContainer.CompareTag("reactor"))
+            if (cardContainer.CompareTag("Reactor"))
             {
                 if (utils.IsMatch(input, selectedCard))
                 {
                     utils.Match(input, selectedCard);
                 }
             }
-            else if (cardContainer.CompareTag("foundation"))
+            else if (cardContainer.CompareTag("Foundation"))
             {
                 // is input the top card in the foundation
                 if (input == cardContainer.GetComponent<FoundationScript>().cardList[0])
