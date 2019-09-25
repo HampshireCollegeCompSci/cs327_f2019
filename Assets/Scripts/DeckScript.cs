@@ -26,7 +26,7 @@ public class DeckScript : MonoBehaviour
     void Start()
     {
         myPrefab = (GameObject)Resources.Load("Prefabs/Card", typeof(GameObject));
-        myPrefab.GetComponent<BoxCollider2D>().size = new Vector2Int(1, 1);
+        myPrefab.GetComponent<BoxCollider2D>().size = new Vector2Int(1,1);
         myPrefab.GetComponent<BoxCollider2D>().offset = new Vector2Int(0, 0);
 
         utils = UtilsScript.global;
