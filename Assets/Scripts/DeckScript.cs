@@ -86,7 +86,7 @@ public class DeckScript : MonoBehaviour
                     cardList[cardIndex].GetComponent<CardScript>().cardSuit = "spades";
                 }
 
-                cardList[cardIndex].GetComponent<CardScript>().cardFrontSprite = sprites[cardIndex];
+                cardList[cardIndex].GetComponent<CardScript>().cardFrontSprite = sprites[cardIndex + 1];
                 cardList[cardIndex].GetComponent<CardScript>().hidden = true;
                 cardList[cardIndex].GetComponent<CardScript>().appearSelected = false;
                 cardList[cardIndex].GetComponent<CardScript>().container = this.gameObject;
