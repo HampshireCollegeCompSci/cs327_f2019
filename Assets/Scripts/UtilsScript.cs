@@ -33,13 +33,13 @@ public class UtilsScript : MonoBehaviour
     public void SelectCard(GameObject inputCard)
     {
         selectedCards.Add(inputCard);
-        inputCard.GetComponent<CardScript>().apearSelected = true;
+        inputCard.GetComponent<CardScript>().appearSelected = true;
         inputCard.GetComponent<CardScript>().SetCardAppearance();
     }
 
     public void DeselectCard(GameObject inputCard)
     {
-        inputCard.GetComponent<CardScript>().apearSelected = false;
+        inputCard.GetComponent<CardScript>().appearSelected = false;
         inputCard.GetComponent<CardScript>().SetCardAppearance();
         selectedCards.Remove(inputCard);
     }

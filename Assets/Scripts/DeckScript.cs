@@ -20,6 +20,9 @@ public class DeckScript : MonoBehaviour
     public bool dealOnDeckReset = true;
     public int foundationStartSize = 7;
 
+    int indexCounter;
+    int positionCounter;
+
     void Start()
     {
         myPrefab = (GameObject)Resources.Load("Prefabs/Card", typeof(GameObject));
@@ -32,6 +35,7 @@ public class DeckScript : MonoBehaviour
         
         // let user know deck has cards and deal some out
         this.gameObject.GetComponent<SpriteRenderer>().sprite = placeHolderSprite;
+        
         Deal();
         SetCardPositions();
     }
@@ -81,9 +85,9 @@ public class DeckScript : MonoBehaviour
 
                 cardList[cardIndex].GetComponent<CardScript>().cardFrontSprite = sprites[cardIndex];
                 cardList[cardIndex].GetComponent<CardScript>().hidden = true;
-                cardList[cardIndex].GetComponent<CardScript>().apearSelected = false;
+                cardList[cardIndex].GetComponent<CardScript>().appearSelected = false;
                 cardList[cardIndex].GetComponent<CardScript>().container = this.gameObject;
-
+               
                 cardIndex += 1;
             }
         }
@@ -116,13 +120,15 @@ public class DeckScript : MonoBehaviour
     // top card is cardList[0]
     public void SetCardPositions()
     {
-        // stagger the cards
-        float offset = 0;
-        for (int i = cardList.Count - 1; i > -1; i--) // index 0 is on the top
+        indexCounter = cardList.Count - 1;
+        positionCounter = 0;
+
+        while (indexCounter > -1)
         {
-            cardList[i].transform.parent = this.gameObject.transform;
-            cardList[i].transform.localPosition = new Vector3(offset, offset, offset);
-            offset += 0.01f;
+            cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, -0.1f * positionCounter, -0.1f * positionCounter);
+
+            indexCounter -= 1;
+            positionCounter += 1;
         }
     }
 

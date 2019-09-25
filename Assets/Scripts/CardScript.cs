@@ -11,7 +11,8 @@ public class CardScript : MonoBehaviour
     public int cardNum; //cardNum is the number on the card, ace is 1 jack is 11 queen is 12 king is 13
     public string cardSuit;
     public bool hidden;
-    public bool apearSelected;
+    public bool appearSelected;
+    Vector3 originalTransform = new Vector3(2.8f, 2.8f, 2.8f);
 
 
 
@@ -21,30 +22,37 @@ public class CardScript : MonoBehaviour
         SetCardAppearance();
     }
 
+    //all the scales in here have been modified deliberately because the cards were too small
+    //this will need to be changed when the sprites for the final card designs are added
+    //unless they have the same exact dimensions
     public void SetCardAppearance()
     {
         //shows card back if it's hidden
         if (hidden)
         {
             gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
+           //gameObject.transform.localScale = new Vector3(2.8f, 2.8f, 2.8f);
         }
 
         //shows card if it's not hidden
         else if (hidden == false)
         {
             gameObject.GetComponent<SpriteRenderer>().sprite = cardFrontSprite;
+            //gameObject.transform.localScale = new Vector3(2.8f, 2.8f, 2.8f);
         }
 
         //makes card larger and first in sorting order if the card is selected
-        if (apearSelected)
+        if (appearSelected)
         {
-            gameObject.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
+            gameObject.transform.localScale = originalTransform * 1.1f;
+            //gameObject.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
         }
 
         //makes card normal if not selected
-        else if (apearSelected == false)
+        else if (appearSelected == false)
         {
-            gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
+            gameObject.transform.localScale = originalTransform;
+            //gameObject.transform.localScale = new Vector3(1, 1, 1);
         }
     }
 
