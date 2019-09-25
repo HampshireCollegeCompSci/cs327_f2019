@@ -46,7 +46,7 @@ public class ReactorScript : MonoBehaviour
         while (counter < cardMax)
         {
             cardList[counter].transform.parent = gameObject.transform;
-            cardList[counter].transform.localPosition = new Vector3(0, 0.5f * counter, 0);
+            cardList[counter].transform.localPosition = new Vector3(0, 0.5f * counter, -0.5f);
             cardList[counter].gameObject.GetComponent<SpriteRenderer>().sortingOrder = cardMax - counter;
             counter += 1;
         }
