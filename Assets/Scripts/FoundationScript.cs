@@ -53,7 +53,7 @@ public class FoundationScript : MonoBehaviour
         }
     }
 
-    public void Clicked(GameObject input)
+    public void ProcessAction(GameObject input)
     {
         if (!input.CompareTag("Card"))
         {

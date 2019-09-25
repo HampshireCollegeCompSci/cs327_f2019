@@ -53,7 +53,7 @@ public class UtilsScript : MonoBehaviour
         {
             if (selectedCards.Count != 0)
             {
-                selectedCards[0].GetComponent<CardScript>().container.SendMessage("Clicked", hit.collider.gameObject);
+                selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
                 int selectedCardsLength = selectedCards.Count;
                 for (int i = 0; i < selectedCardsLength; i++)
                 {
@@ -65,7 +65,7 @@ public class UtilsScript : MonoBehaviour
         // if we click a car in the deck call deck clicked and deselect all cards
         else if (hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Deck"))
         {
-            hit.collider.gameObject.GetComponent<CardScript>().container.SendMessage("Clicked", hit.collider.gameObject);
+            hit.collider.gameObject.GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
             int selectedCardsLength = selectedCards.Count;
             for (int i = 0; i < selectedCardsLength; i++)
             {
@@ -85,7 +85,7 @@ public class UtilsScript : MonoBehaviour
 
         else
         {
-            selectedCards[0].GetComponent<CardScript>().container.SendMessage("Clicked", hit.collider.gameObject);
+            selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
             //we are no longer changing a list that we are also iterating over
             int selectedCardsLength = selectedCards.Count;
             for (int i = 0; i < selectedCardsLength; i++)
@@ -146,7 +146,7 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    public bool IsTrueSuitMatch(GameObject card1, GameObject card2)
+    public bool IsSameSuit(GameObject card1, GameObject card2)
     {
         string card1Suit = card1.GetComponent<CardScript>().cardSuit;
         string card2Suit = card2.GetComponent<CardScript>().cardSuit;

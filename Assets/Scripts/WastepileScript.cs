@@ -48,7 +48,7 @@ public class WastepileScript : MonoBehaviour
     }
 
 
-    public void Clicked(GameObject input)
+    public void ProcessAction(GameObject input)
     {
         GameObject selectedCard = utils.selectedCards[0];
         // checking if utils.selectedCards only has the top card in the wastePile  

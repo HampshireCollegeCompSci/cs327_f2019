@@ -136,7 +136,7 @@ public class DeckScript : MonoBehaviour
     }
 
     // user wants to deal cards, other things might need to be done before that
-    public void Clicked(GameObject input)
+    public void ProcessAction(GameObject input)
     {
         if (cardList.Count != 0) // can the deck can be drawn from
         {

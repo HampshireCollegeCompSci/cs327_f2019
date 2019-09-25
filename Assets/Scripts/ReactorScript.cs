@@ -67,7 +67,7 @@ public class ReactorScript : MonoBehaviour
 
 
     //TODO: rename this goddamn function and all the other
-    public void Clicked(GameObject input)
+    public void ProcessAction(GameObject input)
     {
 
         GameObject card1 = utils.selectedCards[0];
@@ -81,7 +81,7 @@ public class ReactorScript : MonoBehaviour
                 {
                     utils.Match(input, card1);
                 }
-                else if (utils.IsTrueSuitMatch(input, card1))
+                else if (utils.IsSameSuit(input, card1))
                 {
                     input.GetComponent<CardScript>().MoveCard(gameObject);
                 }
