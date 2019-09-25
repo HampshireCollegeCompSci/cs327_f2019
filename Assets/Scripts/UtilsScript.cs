@@ -148,6 +148,7 @@ public class UtilsScript : MonoBehaviour
 
     public bool IsTrueSuitMatch(GameObject card1, GameObject card2)
     {
+        Debug.Log("attempting true suit match");
         string card1Suit = card1.GetComponent<CardScript>().cardSuit;
         string card2Suit = card2.GetComponent<CardScript>().cardSuit;
         //hearts diamond combo #1

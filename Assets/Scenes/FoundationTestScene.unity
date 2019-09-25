@@ -1325,7 +1325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardScale: {x: 3, y: 3, z: 0}
-  foundationStackDensity: 0
+  foundationStackDensity: 0.5
   foundation1: {fileID: 787894275}
   foundation2: {fileID: 1812935831}
   foundation3: {fileID: 627912848}

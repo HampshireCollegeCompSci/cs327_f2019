@@ -77,6 +77,7 @@ public class ReactorScript : MonoBehaviour
             //list needs to only be 1, something wrong if not -> skip to return
             if (utils.selectedCards.Count == 1)
             {
+                Debug.Log("Reactor clicked on");
                 if (utils.IsMatch(input, card1))
                 {
                     utils.Match(input, card1);
