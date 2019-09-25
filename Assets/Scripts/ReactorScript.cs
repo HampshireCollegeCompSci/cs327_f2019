@@ -96,7 +96,7 @@ public class ReactorScript : MonoBehaviour
 
     }
 
-    
+
     //this is just meant to iterate through the list of cards in the stack
     //sum the amounts of them, and then return whatever that sum is
     //in order to be used in the update function
