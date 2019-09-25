@@ -18,7 +18,15 @@ public class FoundationScript : MonoBehaviour
 
     void Update()
     {
+        checkTopCard();
+    }
 
+    public void checkTopCard()
+    {
+        if (cardList[0].gameObject.GetComponent<CardScript>().hidden)
+        {
+            cardList[0].gameObject.GetComponent<CardScript>().hidden = false;
+        }
     }
 
     public void RemoveCard(GameObject card)

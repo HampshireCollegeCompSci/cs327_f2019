@@ -1476,7 +1476,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectedCards: []
-  matchedPile: {fileID: 0}
+  matchedPile: {fileID: 1214012893}
 --- !u!4 &1574574479
 Transform:
   m_ObjectHideFlags: 0
