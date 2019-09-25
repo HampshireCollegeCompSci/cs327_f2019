@@ -17,17 +17,17 @@ public class WastepileScript : MonoBehaviour
 
     void Update()
     {
-        
+
     }
 
-     public void RemoveCard(GameObject card)
+    public void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
     }
 
     public void SetCardPositions()
     {
-        
+
         counter = 0;
         /*cardMax = cardList.Count;
 
@@ -47,7 +47,7 @@ public class WastepileScript : MonoBehaviour
         }
     }
 
-    
+
     public void Clicked(GameObject input)
     {
         GameObject selectedCard = utils.selectedCards[0];
@@ -56,7 +56,7 @@ public class WastepileScript : MonoBehaviour
         {
             return;
         }
-        
+
         if (input.CompareTag("foundation") && input.GetComponent<FoundationScript>().cardList.Count == 0)
         {
             selectedCard.GetComponent<CardScript>().MoveCard(input);
