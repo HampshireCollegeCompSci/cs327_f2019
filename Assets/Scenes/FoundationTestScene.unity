@@ -1324,6 +1324,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9301d4daf1243e4190f638de2c9a4b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardScale: {x: 3, y: 3, z: 0}
+  foundationStackDensity: 0
   foundation1: {fileID: 787894275}
   foundation2: {fileID: 1812935831}
   foundation3: {fileID: 627912848}
