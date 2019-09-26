@@ -16,6 +16,9 @@ public class GameInfo
     public int[] reactorLimit;
     public int[] startingStack;
     public int cardsToDeal;
+    public int cardsToFlipOver;
+    public int wastePileCardsToShow;
+    
 
     public static GameInfo CreateFromJSON(string jsonString)
     {

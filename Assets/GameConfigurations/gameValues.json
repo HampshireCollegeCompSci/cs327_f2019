@@ -1,5 +1,7 @@
 { 
    "reactorLimit":[ 1,2,3,40],
    "startingStack":[1,1,30,60],
-   "cardsToDeal":1
+   "cardsToDeal":1,
+   "cardsToFlipOver":3,
+   "wastePileCardsToShow":3
 }
