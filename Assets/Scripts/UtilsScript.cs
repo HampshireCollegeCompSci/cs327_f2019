@@ -73,7 +73,12 @@ public class UtilsScript : MonoBehaviour
     {
         hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Vector2.zero);
 
-        if (!hit.collider.gameObject.CompareTag("Card"))
+        if (hit.collider.gameObject.CompareTag("Button"))
+        {
+            hit.collider.gameObject.SendMessage("ProcessAction", hit.collider.gameObject);
+        }
+
+        else if (!hit.collider.gameObject.CompareTag("Card"))
         {
             if (selectedCards.Count != 0)
             {
