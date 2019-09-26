@@ -7,6 +7,8 @@ public class UtilsScript : MonoBehaviour
     public static UtilsScript global; //Creates a new instance if one does not yet exist
     public List<GameObject> selectedCards;
     public GameObject matchedPile;
+    public int indexCounter;
+    public RaycastHit2D hit;
 
     void Awake()
     {
@@ -44,10 +46,32 @@ public class UtilsScript : MonoBehaviour
         selectedCards.Remove(inputCard);
     }
 
+    public void SelectMultipleCards(int cardsToCount) //selects multipule cards
+    {
+        for (indexCounter = cardsToCount; indexCounter + 1 > 0; indexCounter--)
+        {
+            SelectCard(hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[indexCounter]);
+        }
+    }
+
+    public int countCardsToSelect(GameObject selectedCard) //takes the input of a selected card and counts how many cards are below it in a foundation
+    {
+        for (indexCounter = hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList.Count - 1; indexCounter > 0; indexCounter--)
+        {
+            if (selectedCard == hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[indexCounter])
+            {
+                Debug.Log("indexCounter " + (indexCounter + 1));
+                return indexCounter;
+            }
+        }
+
+        return 0;
+    }
+
     //sends out a raycast to see you selected something
     public void Click()
     {
-        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Vector2.zero);
+        hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Vector2.zero);
 
         if (!hit.collider.gameObject.CompareTag("Card"))
         {
@@ -62,6 +86,7 @@ public class UtilsScript : MonoBehaviour
             }
             return;
         }
+
         // if we click a car in the deck call deck clicked and deselect all cards
         else if (hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Deck"))
         {
@@ -73,6 +98,7 @@ public class UtilsScript : MonoBehaviour
             }
             return;
         }
+
         else if (hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Wastepile") && selectedCards.Count == 0)
         {
             if (hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<WastepileScript>().cardList[0] == hit.collider.gameObject)
@@ -80,9 +106,10 @@ public class UtilsScript : MonoBehaviour
                 SelectCard(hit.collider.gameObject);
             }
         }
+
         else if (selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().hidden)
         {
-            SelectCard(hit.collider.gameObject);
+            SelectMultipleCards(countCardsToSelect(hit.collider.gameObject));
         }
 
         else if (selectedCards[0] == hit.collider.gameObject)
@@ -181,15 +208,5 @@ public class UtilsScript : MonoBehaviour
             return false;
         }
     }
-
-
-
-
-    /*int forCounter;
-    for (forCounter = 0; forCounter < selectedCards.Count; forCounter++)
-    {
-        selectedCards[forCounter].GetComponent<CardScript>().apearSelected = true;
-        selectedCards[forCounter].GetComponent<CardScript>().SetCardAppearance();
-    }*/
 
 }
