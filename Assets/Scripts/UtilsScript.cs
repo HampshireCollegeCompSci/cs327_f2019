@@ -85,6 +85,11 @@ public class UtilsScript : MonoBehaviour
 
         else if (!hit.collider.gameObject.CompareTag("Card"))
         {
+            if (hit.collider.gameObject.CompareTag("Deck"))
+            {
+                hit.collider.gameObject.GetComponent<DeckScript>().ProcessAction(hit.collider.gameObject);
+            }
+
             if (selectedCards.Count != 0)
             {
                 selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
