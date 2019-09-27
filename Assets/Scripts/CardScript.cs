@@ -89,6 +89,7 @@ public class CardScript : MonoBehaviour
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<MatchedPileScript>().cardList.Insert(0, gameObject);
         }
+        container.SendMessage("SetCardPositions");
         container = destination;
         destination.SendMessage("SetCardPositions");
     }
