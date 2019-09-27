@@ -10,6 +10,7 @@ public class ReactorScript : MonoBehaviour
     int positionCounter;
     int cardMax;
     int ReactorVal;
+    GameObject myPrefab;
 
     void Start()
     {
@@ -23,9 +24,10 @@ public class ReactorScript : MonoBehaviour
         //constantly checking to see if reactor score is below
         if (CountReactorCard() > 18)
         {
-            //TODO: game over
-            print("You lost, bitch!");
-            GameObject.Find("Restart").GetComponent<RestartButtonScript>().ProcessAction(gameObject);
+            myPrefab = (GameObject)Resources.Load("Prefabs/Explosion", typeof(GameObject));
+            Instantiate(myPrefab);
+            myPrefab.transform.position = gameObject.transform.position + new Vector3(0, 0, 15);
+            Destroy(gameObject);
 
 
         }
