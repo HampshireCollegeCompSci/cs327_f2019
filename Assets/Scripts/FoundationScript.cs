@@ -18,7 +18,10 @@ public class FoundationScript : MonoBehaviour
 
     void Update()
     {
-        checkTopCard();
+        if (cardList.Count != 0)
+        {
+            checkTopCard();
+        }
     }
 
     public void checkTopCard()
