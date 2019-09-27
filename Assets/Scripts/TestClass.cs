@@ -1,10 +1,11 @@
 ﻿using System;
 using UnityEngine;
-public class TestClass: MonoBehaviour
+public class TestClass : MonoBehaviour
 {
 
     string JSONToTest;
     GameInfo gameInfo = new GameInfo();
+
     public GameInfo ConvertJSON(string JSON)
     {
         return GameInfo.CreateFromJSON(JSON);
@@ -26,7 +27,7 @@ public class TestClass: MonoBehaviour
         print(newInfo.foundationStartingSize[0] + " Should Equal 1");
         print(newInfo.foundationStartingSize[1] + " Should Equal 1");
         print(newInfo.foundationStartingSize[2] + " Should Equal 30");
-        print(newInfo.foundationStartingSize[3] + " Should Equal 6");
+        print(newInfo.foundationStartingSize[3] + " Should Equal 60");
 
         print(newInfo.cardsToWastePilePerClick + " Should Equal 1");
     }
