@@ -21,7 +21,7 @@ public class ReactorScript : MonoBehaviour
     void Update()
     {
         //constantly checking to see if reactor score is below
-        if (CountReactorCard() >= 18)
+        if (CountReactorCard() > 18)
         {
             //TODO: game over
 
