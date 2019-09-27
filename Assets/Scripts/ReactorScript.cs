@@ -24,6 +24,8 @@ public class ReactorScript : MonoBehaviour
         if (CountReactorCard() > 18)
         {
             //TODO: game over
+            print("You lost, bitch!");
+            GameObject.Find("Restart").GetComponent<RestartButtonScript>().ProcessAction(gameObject);
 
 
         }
