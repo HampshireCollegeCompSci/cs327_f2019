@@ -5,6 +5,13 @@ TagManager:
   serializedVersion: 2
   tags:
   - Foundation
+  - Reactor
+  - Deck
+  - Wastepile
+  - MatchedPile
+  - Card
+  - Background
+  - Button
   layers:
   - Default
   - TransparentFX
