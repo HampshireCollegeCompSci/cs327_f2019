@@ -119,7 +119,15 @@ public class UtilsScript : MonoBehaviour
 
         else if (selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().hidden)
         {
-            SelectMultipleCards(countCardsToSelect(hit.collider.gameObject));
+            if (hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("FoundationScript"))
+            {
+                SelectMultipleCards(countCardsToSelect(hit.collider.gameObject));
+            }
+
+            else
+            {
+                SelectCard(hit.collider.gameObject);
+            }
         }
 
         else if (selectedCards[0] == hit.collider.gameObject)
