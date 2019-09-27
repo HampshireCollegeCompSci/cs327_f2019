@@ -29,19 +29,39 @@ public class WastepileScript : MonoBehaviour
     {
         int counter = 0;
         float xOffset = 0;
-        for (int i = cardList.Count - 1; i > -1; i--)
+        if (false) // Config.config.onlyShowTopWastepileCards
         {
-            cardList[i].transform.parent = gameObject.transform;
-            cardList[i].transform.localPosition = new Vector3(xOffset, 0, counter * -0.1f);
-            if (i < 3) // replace 3 with Config.config.cardsAtTopOfWastePile
+            for (int i = cardList.Count - 1; i > -1; i--)
             {
-                xOffset += Config.config.foundationStackDensity;
+                cardList[i].transform.parent = gameObject.transform;
+                if (i < 3) // Config.config.cardsAtTopOfWastePile
+                {
+                    cardList[i].transform.localPosition = new Vector3(xOffset, 0, counter * -0.1f);
+                    xOffset += Config.config.foundationStackDensity;
+                }
+                else
+                {
+                    cardList[i].transform.localPosition = new Vector3(0, 0, counter * -0.1f);
+                }
+                counter++;
             }
-            else
+        }
+        else
+        {
+            for (int i = cardList.Count - 1; i > -1; i--)
             {
-                xOffset += Config.config.foundationStackDensity * 0.25f;
+                cardList[i].transform.parent = gameObject.transform;
+                cardList[i].transform.localPosition = new Vector3(xOffset, 0, counter * -0.1f);
+                if (i < 3) // replace 3 with Config.config.cardsAtTopOfWastePile
+                {
+                    xOffset += Config.config.foundationStackDensity;
+                }
+                else
+                {
+                    xOffset += Config.config.foundationStackDensity * 0.25f;
+                }
+                counter++;
             }
-            counter++;
         }
     }
 
