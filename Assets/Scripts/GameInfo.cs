@@ -14,10 +14,8 @@ public class GameInfo
     //(How many cards should we deal at a time?)
 
     public int[] reactorLimit;
-    public int[] startingStack;
-    public int cardsToDeal;
-    public int cardsToFlipOver;
-    public int wastePileCardsToShow;
+    public int[] foundationStartingSize;
+    public int cardsToWastePilePerClick;
     
 
     public static GameInfo CreateFromJSON(string jsonString)
