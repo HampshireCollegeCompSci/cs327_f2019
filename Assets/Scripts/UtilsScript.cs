@@ -10,6 +10,11 @@ public class UtilsScript : MonoBehaviour
     public int indexCounter;
     public RaycastHit2D hit;
 
+    public void SetCards()
+    {
+        matchedPile = GameObject.Find("MatchedPile");
+    }
+
     void Awake()
     {
         if (global == null)
@@ -92,7 +97,7 @@ public class UtilsScript : MonoBehaviour
             return;
         }
 
-        // if we click a car in the deck call deck clicked and deselect all cards
+        // if we click a card in the deck call deck clicked and deselect all cards
         else if (hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Deck"))
         {
             hit.collider.gameObject.GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
