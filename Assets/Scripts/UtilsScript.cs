@@ -119,7 +119,12 @@ public class UtilsScript : MonoBehaviour
 
         else if (selectedCards[0] == hit.collider.gameObject)
         {
-            DeselectCard(hit.collider.gameObject);
+            int selectedCardsLength = selectedCards.Count;
+            for (int i = 0; i < selectedCardsLength; i++)
+            {
+                Debug.Log(i);
+                DeselectCard(selectedCards[0]);
+            }
         }
 
         else

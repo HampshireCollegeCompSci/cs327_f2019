@@ -1352,7 +1352,7 @@ PrefabInstance:
     - target: {fileID: 3465283733490406803, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
       propertyPath: m_Name
-      value: ReactorPile
+      value: ReactorPile (0)
       objectReference: {fileID: 0}
     - target: {fileID: 3465283733490406801, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
