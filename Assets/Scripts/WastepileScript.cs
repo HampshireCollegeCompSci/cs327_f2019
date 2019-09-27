@@ -29,7 +29,7 @@ public class WastepileScript : MonoBehaviour
     {
         int counter = 0;
         float xOffset = 0;
-        if (false) // Config.config.onlyShowTopWastepileCards
+        if (true) // Config.config.onlyShowTopWastepileCards
         {
             for (int i = cardList.Count - 1; i > -1; i--)
             {
