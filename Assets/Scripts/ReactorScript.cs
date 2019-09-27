@@ -25,8 +25,7 @@ public class ReactorScript : MonoBehaviour
         if (CountReactorCard() > 18)
         {
             myPrefab = (GameObject)Resources.Load("Prefabs/Explosion", typeof(GameObject));
-            Instantiate(myPrefab);
-            myPrefab.transform.position = gameObject.transform.position + new Vector3(0, 0, 15);
+            Instantiate(myPrefab, gameObject.transform.position, gameObject.transform.rotation);
             Destroy(gameObject);
 
 
