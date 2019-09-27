@@ -124,10 +124,7 @@ public class UtilsScript : MonoBehaviour
 
         else if (hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Reactor") && selectedCards.Count == 0)
         {
-            if (hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<ReactorScript>().cardList[0] == hit.collider.gameObject)
-            {
-                SelectCard(hit.collider.gameObject);
-            }
+            SelectCard(hit.collider.gameObject);
         }
 
         else if (selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().hidden &&

@@ -21,7 +21,7 @@ public class ReactorScript : MonoBehaviour
     void Update()
     {
         //constantly checking to see if reactor score is below
-        if (CountReactorCard() > 18)
+        if (CountReactorCard() >= 18)
         {
             //TODO: game over
 
@@ -41,7 +41,17 @@ public class ReactorScript : MonoBehaviour
     //set their location positions
     //in other words, when a card is added to the Reactor
     //this handles positions
-  
+    //public void SetCardPositions()
+    //{
+    //    positionCounter = 0;
+
+    //    for(int indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
+    //    {
+    //        cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, 0, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
+
+    //        positionCounter += 1;
+    //    }
+    //}
 
     public void SetCardPositions()
     {
@@ -90,9 +100,7 @@ public class ReactorScript : MonoBehaviour
                 }
             }
         }
-        
 
-        
 
         //this is just the return call to end after having clicked
         return;
