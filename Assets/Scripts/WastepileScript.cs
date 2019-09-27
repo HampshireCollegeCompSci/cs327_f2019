@@ -27,22 +27,20 @@ public class WastepileScript : MonoBehaviour
 
     public void SetCardPositions()
     {
-
-        counter = 0;
-        /*cardMax = cardList.Count;
-
-        while (counter < cardMax)
-        {
-            cardList[counter].transform.parent = gameObject.transform;
-            cardList[counter].transform.localPosition = new Vector3(0, -0.5f * counter, 0);
-            cardList[counter].gameObject.GetComponent<SpriteRenderer>().sortingOrder = cardMax - counter;
-            counter += 1;
-        }*/
-
+        int counter = 0;
+        float xOffset = 0;
         for (int i = cardList.Count - 1; i > -1; i--)
         {
             cardList[i].transform.parent = gameObject.transform;
-            cardList[i].transform.localPosition = new Vector3(Config.config.foundationStackDensity * counter, 0, -0.1f * counter);
+            cardList[i].transform.localPosition = new Vector3(xOffset, 0, counter * -0.1f);
+            if (i < 3) // replace 3 with Config.config.cardsAtTopOfWastePile
+            {
+                xOffset += Config.config.foundationStackDensity;
+            }
+            else
+            {
+                xOffset += Config.config.foundationStackDensity * 0.25f;
+            }
             counter++;
         }
     }
