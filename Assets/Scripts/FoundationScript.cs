@@ -48,9 +48,19 @@ public class FoundationScript : MonoBehaviour
     {
         positionCounter = 0;
 
+        float yOffset = 0;
         for(indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
         {
-            cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, -Config.config.foundationStackDensity * positionCounter, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
+            if (cardList[indexCounter].GetComponent<CardScript>().hidden)
+            {
+                cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
+                yOffset -= Config.config.foundationStackDensity * 0.5f;
+            }
+            else
+            {
+                cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
+                yOffset -= Config.config.foundationStackDensity;
+            }
 
             positionCounter += 1;
         }
