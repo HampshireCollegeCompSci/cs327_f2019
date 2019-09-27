@@ -59,7 +59,7 @@ public class ReactorScript : MonoBehaviour
 
         for (int indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
         {
-            cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, -Config.config.foundationStackDensity * positionCounter, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
+            cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, Config.config.foundationStackDensity * positionCounter, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
 
             positionCounter += 1;
         }
