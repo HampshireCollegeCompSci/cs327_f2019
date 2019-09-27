@@ -23,12 +23,12 @@ public class TestClass: MonoBehaviour
         print(newInfo.reactorLimit[2] + " Should Equal 3");
         print(newInfo.reactorLimit[3] + " Should Equal 40");
 
-        print(newInfo.startingStack[0] + " Should Equal 1");
-        print(newInfo.startingStack[1] + " Should Equal 1");
-        print(newInfo.startingStack[2] + " Should Equal 30");
-        print(newInfo.startingStack[3] + " Should Equal 6");
+        print(newInfo.foundationStartingSize[0] + " Should Equal 1");
+        print(newInfo.foundationStartingSize[1] + " Should Equal 1");
+        print(newInfo.foundationStartingSize[2] + " Should Equal 30");
+        print(newInfo.foundationStartingSize[3] + " Should Equal 6");
 
-        print(newInfo.cardsToDeal + " Should Equal 1");
+        print(newInfo.cardsToWastePilePerClick + " Should Equal 1");
     }
 
     void Start()
