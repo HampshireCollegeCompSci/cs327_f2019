@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+using System.IO;
 [System.Serializable]
 public class GameInfo
 {
@@ -24,5 +24,16 @@ public class GameInfo
     {
         return JsonUtility.FromJson<GameInfo>(jsonString);
     }
-   
+
+    [SerializeField]
+    string json;
+    public string WriteString(string path)
+    {
+        using (StreamReader stream = new StreamReader(path))
+        {
+            json = stream.ReadToEnd();
+        }
+        return json;
+    }
+
 }

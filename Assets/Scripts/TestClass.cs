@@ -12,8 +12,8 @@ public class TestClass: MonoBehaviour
     public void TestingJSON()
     {
         string path = "Assets/GameConfigurations/gameValues.json";
-        HandleTextFile handleTextFile = new HandleTextFile();
-        JSONToTest = handleTextFile.WriteString(path);
+
+        JSONToTest = gameInfo.WriteString(path);
 
         print(JSONToTest);
 
