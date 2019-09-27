@@ -117,18 +117,21 @@ public class UtilsScript : MonoBehaviour
             }
         }
 
-        else if (selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().hidden)
+        else if (hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Reactor") && selectedCards.Count == 0)
         {
-            if (hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("FoundationScript"))
-            {
-                SelectMultipleCards(countCardsToSelect(hit.collider.gameObject));
-            }
-
-            else
+            if (hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<WastepileScript>().cardList[0] == hit.collider.gameObject)
             {
                 SelectCard(hit.collider.gameObject);
             }
         }
+
+        else if (selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().hidden &&
+            hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Foundation"))
+        {
+            SelectMultipleCards(countCardsToSelect(hit.collider.gameObject));
+        }
+
+
 
         else if (selectedCards[0] == hit.collider.gameObject)
         {
