@@ -51,7 +51,7 @@ public class UtilsScript : MonoBehaviour
         selectedCards.Remove(inputCard);
     }
 
-    public void SelectMultipleCards(int cardsToCount) //selects multipule cards
+    public void SelectMultipleCards(int cardsToCount)
     {
         for (indexCounter = cardsToCount; indexCounter + 1 > 0; indexCounter--)
         {
@@ -117,9 +117,17 @@ public class UtilsScript : MonoBehaviour
             }
         }
 
-        else if (hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Reactor") && selectedCards.Count == 0)
+        else if (hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Reactor"))
         {
-                SelectCard(hit.collider.gameObject);
+            if (selectedCards.Count == 0)
+            {
+                SelectCard(hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<ReactorScript>().cardList[0]);
+            }
+
+            else if(selectedCards.Count == 1 && hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<ReactorScript>().cardList[0] == selectedCards[0])
+            {
+                DeselectCard(selectedCards[0]);
+            }
         }
 
         else if (selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().hidden &&
@@ -149,6 +157,7 @@ public class UtilsScript : MonoBehaviour
             {
                 DeselectCard(selectedCards[0]);
             }
+            Debug.Log("else");
         }
     }
 

@@ -99,7 +99,6 @@ public class WastepileScript : MonoBehaviour
 
     public void ProcessAction(GameObject input)
     {
-        GameObject selectedCard = utils.selectedCards[0];
         if (!input.CompareTag("Card"))
         {
             if ((input.CompareTag("Foundation") || input.CompareTag("Reactor")) && utils.selectedCards.Count != 0)
@@ -110,10 +109,12 @@ public class WastepileScript : MonoBehaviour
                 }
             }
         }
+
         else if (utils.IsMatch(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1) //check if selectedCards and the input card match and that selesctedCards is only one card
         {
             utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
         }
+
         else if ((utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1) == input.GetComponent<CardScript>().cardNum && input.GetComponent<CardScript>().container.CompareTag("Foundation"))
         {
             foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
@@ -121,10 +122,12 @@ public class WastepileScript : MonoBehaviour
                 card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
             }
         }
+
         else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
         {
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
         }
+
         return;
     }
     public List<GameObject> GetCardList()
