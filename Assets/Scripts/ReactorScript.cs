@@ -27,8 +27,11 @@ public class ReactorScript : MonoBehaviour
 
 
         }
+        SetCardPositions();
     }
 
+
+    
     public void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
@@ -38,13 +41,25 @@ public class ReactorScript : MonoBehaviour
     //set their location positions
     //in other words, when a card is added to the Reactor
     //this handles positions
+    //public void SetCardPositions()
+    //{
+    //    positionCounter = 0;
+
+    //    for(int indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
+    //    {
+    //        cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, 0, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
+
+    //        positionCounter += 1;
+    //    }
+    //}
+
     public void SetCardPositions()
     {
         positionCounter = 0;
 
-        for(int indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
+        for (int indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
         {
-            cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, 0, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
+            cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, Config.config.foundationStackDensity * positionCounter, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
 
             positionCounter += 1;
         }

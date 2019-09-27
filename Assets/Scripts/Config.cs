@@ -42,6 +42,17 @@ public class Config : MonoBehaviour
 
     private void Start()
     {
+        SetCards();
+    }
+
+    public void SetCards()
+    {
+        foundation1 = GameObject.Find("Foundation (0)");
+        foundation2 = GameObject.Find("Foundation (1)");
+        foundation3 = GameObject.Find("Foundation (2)");
+        foundation4 = GameObject.Find("Foundation (3)");
+        wastePile = GameObject.Find("WastePile");
+        deck = GameObject.Find("Deck");
         foundationList = new GameObject[] { foundation1, foundation2, foundation3, foundation4 };
     }
 
