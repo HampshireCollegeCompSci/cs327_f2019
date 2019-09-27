@@ -22,7 +22,7 @@ public class ReactorScript : MonoBehaviour
     void Update()
     {
         //constantly checking to see if reactor score is below
-        if (CountReactorCard() > 18)
+        if (CountReactorCard() >= 18)
         {
             myPrefab = (GameObject)Resources.Load("Prefabs/Explosion", typeof(GameObject));
             Instantiate(myPrefab, gameObject.transform.position, gameObject.transform.rotation);
@@ -121,10 +121,10 @@ public class ReactorScript : MonoBehaviour
     {
         //sum the values into totalSum, return
         int totalSum = 0;
-        int cardListNum = cardList.Count;
-        for (int i = 0; i < cardListNum; i++)
+        int cardListVal = cardList.Count;
+        for (int i = 0; i < cardListVal; i++)
         {
-            totalSum += cardList[i].gameObject.GetComponent<CardScript>().cardNum;
+            totalSum += cardList[i].gameObject.GetComponent<CardScript>().cardVal;
         }
 
         return totalSum;
