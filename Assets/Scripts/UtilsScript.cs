@@ -114,6 +114,7 @@ public class UtilsScript : MonoBehaviour
             return;
         }
 
+        //if we click a card in the wastepile and we don't have any card selected select the card in the wastepile
         else if (hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Wastepile") && selectedCards.Count == 0)
         {
             if (hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<WastepileScript>().cardList[0] == hit.collider.gameObject)
@@ -122,6 +123,7 @@ public class UtilsScript : MonoBehaviour
             }
         }
 
+        //if we click a card in a reactor and we don't have any card selected select the card in the reactor
         else if (hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Reactor") && selectedCards.Count == 0)
         {
             if (hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<ReactorScript>().cardList[0] == hit.collider.gameObject)
@@ -130,6 +132,7 @@ public class UtilsScript : MonoBehaviour
             }
         }
 
+        //if we click a card in a foundation and we don't have any card selected and the card we're trying to select is not hidden select the card in the foundation
         else if (selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().hidden &&
             hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Foundation"))
         {
@@ -137,7 +140,7 @@ public class UtilsScript : MonoBehaviour
         }
 
 
-
+        //if we click a our first selected card deselect all cards
         else if (selectedCards[0] == hit.collider.gameObject)
         {
             int selectedCardsLength = selectedCards.Count;
@@ -148,6 +151,7 @@ public class UtilsScript : MonoBehaviour
             }
         }
 
+        //if we click on something else tries to move the selected cards 
         else
         {
             selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
