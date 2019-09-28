@@ -206,13 +206,13 @@ public class DeckScript : MonoBehaviour
         // the top of the deck is index 0
         // get all the cards from the wastepile
         List<GameObject> wasteCardList = wastePile.GetComponent<WastepileScript>().GetCardList();
-
+        
         // move all the cards from waste to deck, preserves reveal order
         // if there are any cards in the deck's cardList before they will be on the bottom after
-        for (int i = 0; i < wasteCardList.Count; i++)
+        while (wasteCardList.Count > 0)
         {
-            wasteCardList[i].GetComponent<CardScript>().hidden = true;
-            wasteCardList[i].GetComponent<CardScript>().MoveCard(this.gameObject);
+            wasteCardList[0].GetComponent<CardScript>().hidden = true;
+            wasteCardList[0].GetComponent<CardScript>().MoveCard(this.gameObject);
         }
 
         if (shuffleOnDeckReset)

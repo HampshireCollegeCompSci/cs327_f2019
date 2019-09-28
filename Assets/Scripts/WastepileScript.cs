@@ -27,23 +27,41 @@ public class WastepileScript : MonoBehaviour
 
     public void SetCardPositions()
     {
-
-        counter = 0;
-        /*cardMax = cardList.Count;
-
-        while (counter < cardMax)
+        int counter = 0;
+        float xOffset = 0;
+        if (Config.config.onlyShowTopWastepileCards)
         {
-            cardList[counter].transform.parent = gameObject.transform;
-            cardList[counter].transform.localPosition = new Vector3(0, -0.5f * counter, 0);
-            cardList[counter].gameObject.GetComponent<SpriteRenderer>().sortingOrder = cardMax - counter;
-            counter += 1;
-        }*/
-
-        for (int i = cardList.Count - 1; i > -1; i--)
+            for (int i = cardList.Count - 1; i > -1; i--)
+            {
+                cardList[i].transform.parent = gameObject.transform;
+                if (i < Config.config.cardsAtTopOfWastePile)
+                {
+                    cardList[i].transform.localPosition = new Vector3(xOffset, 0, counter * -0.1f);
+                    xOffset += Config.config.foundationStackDensity;
+                }
+                else
+                {
+                    cardList[i].transform.localPosition = new Vector3(0, 0, counter * -0.1f);
+                }
+                counter++;
+            }
+        }
+        else
         {
-            cardList[i].transform.parent = gameObject.transform;
-            cardList[i].transform.localPosition = new Vector3(Config.config.foundationStackDensity * counter, 0, -0.1f * counter);
-            counter++;
+            for (int i = cardList.Count - 1; i > -1; i--)
+            {
+                cardList[i].transform.parent = gameObject.transform;
+                cardList[i].transform.localPosition = new Vector3(xOffset, 0, counter * -0.1f);
+                if (i < Config.config.cardsAtTopOfWastePile)
+                {
+                    xOffset += Config.config.foundationStackDensity;
+                }
+                else
+                {
+                    xOffset += Config.config.foundationStackDensity * 0.25f;
+                }
+                counter++;
+            }
         }
     }
 
@@ -99,7 +117,6 @@ public class WastepileScript : MonoBehaviour
 
     public void ProcessAction(GameObject input)
     {
-        GameObject selectedCard = utils.selectedCards[0];
         if (!input.CompareTag("Card"))
         {
             if ((input.CompareTag("Foundation") || input.CompareTag("Reactor")) && utils.selectedCards.Count != 0)
@@ -110,10 +127,12 @@ public class WastepileScript : MonoBehaviour
                 }
             }
         }
+
         else if (utils.IsMatch(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1) //check if selectedCards and the input card match and that selesctedCards is only one card
         {
             utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
         }
+
         else if ((utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1) == input.GetComponent<CardScript>().cardNum && input.GetComponent<CardScript>().container.CompareTag("Foundation"))
         {
             foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
@@ -121,10 +140,12 @@ public class WastepileScript : MonoBehaviour
                 card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
             }
         }
+
         else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
         {
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
         }
+
         return;
     }
     public List<GameObject> GetCardList()
