@@ -16,6 +16,10 @@ public class Config : MonoBehaviour
     //foundations
     public float foundationStackDensity;
 
+    //wastepile
+    public bool onlyShowTopWastepileCards = true;
+    public int cardsAtTopOfWastePile = 3;
+
     public GameObject foundation1;
     public GameObject foundation2;
     public GameObject foundation3;

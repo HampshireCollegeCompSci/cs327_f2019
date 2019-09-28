@@ -29,12 +29,12 @@ public class WastepileScript : MonoBehaviour
     {
         int counter = 0;
         float xOffset = 0;
-        if (true) // Config.config.onlyShowTopWastepileCards
+        if (Config.config.onlyShowTopWastepileCards)
         {
             for (int i = cardList.Count - 1; i > -1; i--)
             {
                 cardList[i].transform.parent = gameObject.transform;
-                if (i < 3) // Config.config.cardsAtTopOfWastePile
+                if (i < Config.config.cardsAtTopOfWastePile)
                 {
                     cardList[i].transform.localPosition = new Vector3(xOffset, 0, counter * -0.1f);
                     xOffset += Config.config.foundationStackDensity;
@@ -52,7 +52,7 @@ public class WastepileScript : MonoBehaviour
             {
                 cardList[i].transform.parent = gameObject.transform;
                 cardList[i].transform.localPosition = new Vector3(xOffset, 0, counter * -0.1f);
-                if (i < 3) // replace 3 with Config.config.cardsAtTopOfWastePile
+                if (i < Config.config.cardsAtTopOfWastePile)
                 {
                     xOffset += Config.config.foundationStackDensity;
                 }
