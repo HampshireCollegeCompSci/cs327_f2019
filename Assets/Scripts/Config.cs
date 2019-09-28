@@ -20,6 +20,9 @@ public class Config : MonoBehaviour
     public bool onlyShowTopWastepileCards = true;
     public int cardsAtTopOfWastePile = 3;
 
+    //reactor
+    public int maxReactorVal = 18;
+
     public GameObject foundation1;
     public GameObject foundation2;
     public GameObject foundation3;
