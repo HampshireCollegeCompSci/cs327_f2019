@@ -11,6 +11,7 @@ public class ReactorScript : MonoBehaviour
     int cardMax;
     int ReactorVal;
     GameObject myPrefab;
+    public string suit;
 
     private GUIStyle guiStyle;
     Vector3 position;
