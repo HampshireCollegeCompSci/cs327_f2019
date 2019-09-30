@@ -121,6 +121,10 @@ public class WastepileScript : MonoBehaviour
         {
             if ((input.CompareTag("Foundation") || input.CompareTag("Reactor")) && utils.selectedCards.Count != 0)
             {
+                if (input.CompareTag("Reactor") && (utils.selectedCards.Count != 1 || utils.selectedCards[0].GetComponent<CardScript>().cardSuit != input.GetComponent<ReactorScript>().suit))
+                {
+                    return;
+                }
                 foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
                 {
                     card.GetComponent<CardScript>().MoveCard(input);
