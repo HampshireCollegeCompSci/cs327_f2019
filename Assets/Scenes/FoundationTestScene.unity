@@ -237,6 +237,11 @@ PrefabInstance:
       propertyPath: utils
       value: 
       objectReference: {fileID: 1574574478}
+    - target: {fileID: 3465283733490406802, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
+        type: 3}
+      propertyPath: suit
+      value: hearts
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52c162a0df0dc4f0c87ae9b064d1f022, type: 3}
 --- !u!1 &283026417 stripped
@@ -317,6 +322,11 @@ PrefabInstance:
       propertyPath: utils
       value: 
       objectReference: {fileID: 1574574478}
+    - target: {fileID: 3465283733490406802, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
+        type: 3}
+      propertyPath: suit
+      value: diamonds
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52c162a0df0dc4f0c87ae9b064d1f022, type: 3}
 --- !u!1001 &326742632
@@ -821,6 +831,11 @@ PrefabInstance:
       propertyPath: utils
       value: 
       objectReference: {fileID: 1574574478}
+    - target: {fileID: 3465283733490406802, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
+        type: 3}
+      propertyPath: suit
+      value: spades
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52c162a0df0dc4f0c87ae9b064d1f022, type: 3}
 --- !u!1 &1283793619
@@ -1440,6 +1455,11 @@ PrefabInstance:
       propertyPath: utils
       value: 
       objectReference: {fileID: 1574574478}
+    - target: {fileID: 3465283733490406802, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
+        type: 3}
+      propertyPath: suit
+      value: clubs
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52c162a0df0dc4f0c87ae9b064d1f022, type: 3}
 --- !u!1 &1923251342
@@ -1473,6 +1493,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardScale: {x: 1.5, y: 1.5, z: 0}
   foundationStackDensity: 0.3
+  onlyShowTopWastepileCards: 1
+  cardsAtTopOfWastePile: 3
+  maxReactorVal: 18
   foundation1: {fileID: 787894275}
   foundation2: {fileID: 1812935831}
   foundation3: {fileID: 627912848}
