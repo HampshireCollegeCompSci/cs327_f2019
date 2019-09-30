@@ -53,9 +53,9 @@ public class Config : MonoBehaviour
 
     private void Start()
     {
-        string path = "Assets/GameConfigurations/gameValues.json";
-        JSON = gameInfo.WriteString(path);
-        ConfigFromJSON();
+        //string path = "Assets/GameConfigurations/gameValues.json";
+        //JSON = gameInfo.WriteString(path);
+        //ConfigFromJSON();
         SetCards();
     }
 
