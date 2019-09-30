@@ -163,37 +163,13 @@ public class DeckScript : MonoBehaviour
             List<GameObject> foundationCardList = foundations[f].GetComponent<FoundationScript>().cardList;
             if (foundationCardList.Count != 0) // is it not empty?
             {
-                GameObject topFoundationCard = foundationCardList[0];
-
-                // trackers for first time reactor suits
-                GameObject emptyReactor = null;
-                bool placed = false;
                 for (int r = 0; r < reactors.Count; r++)
                 {
-                    // get the reactor's card list
-                    List<GameObject> reactorCardList = reactors[r].GetComponent<ReactorScript>().cardList;
-                    if (reactorCardList.Count == 0) // is this reactor empty?
+                    //  does this top card's suit matches the reactor suit
+                    if (foundationCardList[0].GetComponent<CardScript>().cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
                     {
-                        if (emptyReactor == null) // is this the first empty reactor found for this card?
-                        {
-                            // save for possible use
-                            emptyReactor = reactors[r];
-                        }
-                    }
-                    // otherwise see if this top card's suit matches the reactor cards suit
-                    else if (topFoundationCard.GetComponent<CardScript>().cardSuit == reactorCardList[0].GetComponent<CardScript>().cardSuit)
-                    {
-                        topFoundationCard.GetComponent<CardScript>().MoveCard(reactors[r]);
-                        placed = true;
+                        foundationCardList[0].GetComponent<CardScript>().MoveCard(reactors[r]);
                         break;
-                    }
-                }
-                if (placed == false) // is this a brand new suit for the reactors?
-                {
-                    if (emptyReactor != null) // reactors with the same suit may not fulfill this
-                    {
-                        // place this top card into the first empty reactor that was found
-                        topFoundationCard.GetComponent<CardScript>().MoveCard(emptyReactor);
                     }
                 }
             }
