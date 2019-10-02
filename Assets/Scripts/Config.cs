@@ -20,6 +20,9 @@ public class Config : MonoBehaviour
     public bool onlyShowTopWastepileCards = true;
     public int cardsAtTopOfWastePile = 3;
 
+    //reactor
+    public int maxReactorVal = 18;
+
     public GameObject foundation1;
     public GameObject foundation2;
     public GameObject foundation3;
@@ -30,7 +33,11 @@ public class Config : MonoBehaviour
     public GameObject wastePile;
     public GameObject deck;
 
+    //internal variables
     private int foundationCount = 0;
+    string JSON;
+    GameInfo gameInfo = new GameInfo();
+
     private void Awake()
     {
         if (config == null)
@@ -46,7 +53,15 @@ public class Config : MonoBehaviour
 
     private void Start()
     {
+        //string path = "Assets/GameConfigurations/gameValues.json";
+        //JSON = gameInfo.WriteString(path);
+        //ConfigFromJSON();
         SetCards();
+    }
+
+    public void ConfigFromJSON()
+    {
+        cardsAtTopOfWastePile = gameInfo.cardsToWastePilePerClick;
     }
 
     public void SetCards()
