@@ -123,7 +123,13 @@ public class ReactorScript : MonoBehaviour
 
                         return;
                     }
+
+                    else
+                    {
+                        utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+                    }
                 }
+
                 else
                 {
                     utils.selectedCards.Remove(card1);

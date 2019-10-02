@@ -146,6 +146,11 @@ public class WastepileScript : MonoBehaviour
 
                 return;
             }
+
+            else
+            {
+                utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+            }
         }
 
         else if ((utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1) == input.GetComponent<CardScript>().cardNum && input.GetComponent<CardScript>().container.CompareTag("Foundation"))
