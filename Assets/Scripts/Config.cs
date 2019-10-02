@@ -17,7 +17,7 @@ public class Config : MonoBehaviour
     public float foundationStackDensity;
 
     //wastepile
-    public bool onlyShowTopWastepileCards = true;
+    public float nonTopXOffset = 0.3f * 0.25F; // foundationStackDensity * 0.25
     public int cardsAtTopOfWastePile = 3;
 
     //reactor
