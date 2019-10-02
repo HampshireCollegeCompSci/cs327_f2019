@@ -111,7 +111,18 @@ public class ReactorScript : MonoBehaviour
             {
                 if (utils.IsMatch(input, card1) && utils.selectedCards.Count == 1)
                 {
-                    utils.Match(input, card1);
+                    GameObject inputContainer = input.GetComponent<CardScript>().container;
+
+                    if (inputContainer.CompareTag("Foundation"))
+                    {
+                        if (inputContainer.GetComponent<FoundationScript>().cardList[0] == input)
+                        {
+                            utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+                            Debug.Log("matched");
+                        }
+
+                        return;
+                    }
                 }
                 else
                 {

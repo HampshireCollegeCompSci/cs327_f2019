@@ -87,8 +87,24 @@ public class FoundationScript : MonoBehaviour
 
         else if (utils.IsMatch(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1) //check if selectedCards and the input card match and that selesctedCards is only one card
         {
-            utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-            Debug.Log("matched");
+            GameObject inputContainer = input.GetComponent<CardScript>().container;
+
+            if (inputContainer.CompareTag("Foundation"))
+            {
+                if(inputContainer.GetComponent<FoundationScript>().cardList[0] == input)
+                {
+                    utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+                    Debug.Log("matched");
+                }
+
+                return;
+            }
+
+            else
+            {
+                utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+                Debug.Log("matched");
+            }
         }
 
         else if ((utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1) == input.GetComponent<CardScript>().cardNum && input.GetComponent<CardScript>().container.CompareTag("Foundation"))
