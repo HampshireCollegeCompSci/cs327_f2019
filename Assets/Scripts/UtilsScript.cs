@@ -163,8 +163,7 @@ public class UtilsScript : MonoBehaviour
             for (int i = 0; i < selectedCardsLength; i++)
             {
                 DeselectCard(selectedCards[0]);
-            }
-            Debug.Log("else");
+            }   
         }
     }
 

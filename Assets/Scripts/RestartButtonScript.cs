@@ -18,7 +18,7 @@ public class RestartButtonScript : MonoBehaviour
 
     public void ProcessAction(GameObject input)
     {
-        Application.LoadLevel(0);//resets the level
+        Application.LoadLevel("FoundationTestScene");//resets the level
         Debug.Log("hit button");
         return;
     }
