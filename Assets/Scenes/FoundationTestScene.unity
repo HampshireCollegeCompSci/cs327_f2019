@@ -1685,7 +1685,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1579517047
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1935,7 +1935,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardScale: {x: 1.5, y: 1.5, z: 0}
   foundationStackDensity: 0.3
-  onlyShowTopWastepileCards: 1
+  nonTopXOffset: 0.075
   cardsAtTopOfWastePile: 3
   maxReactorVal: 18
   foundation1: {fileID: 787894275}
