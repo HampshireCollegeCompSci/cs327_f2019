@@ -48,9 +48,19 @@ public class FoundationScript : MonoBehaviour
     {
         positionCounter = 0;
 
+        float yOffset = 0;
         for(indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
         {
-            cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, -Config.config.foundationStackDensity * positionCounter, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
+            if (cardList[indexCounter].GetComponent<CardScript>().hidden)
+            {
+                cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
+                yOffset -= Config.config.foundationStackDensity * 0.5f;
+            }
+            else
+            {
+                cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
+                yOffset -= Config.config.foundationStackDensity;
+            }
 
             positionCounter += 1;
         }
@@ -58,10 +68,16 @@ public class FoundationScript : MonoBehaviour
 
     public void ProcessAction(GameObject input)
     {
+        Debug.Log("matchcheck");
+
         if (!input.CompareTag("Card"))
         {
             if ((input.CompareTag("Foundation") || input.CompareTag("Reactor")) && utils.selectedCards.Count != 0)
             {
+                if (input.CompareTag("Reactor") && (utils.selectedCards.Count != 1 || utils.selectedCards[0].GetComponent<CardScript>().cardSuit != input.GetComponent<ReactorScript>().suit))
+                {
+                    return;
+                }
                 foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
                 {
                     card.GetComponent<CardScript>().MoveCard(input);
@@ -71,7 +87,24 @@ public class FoundationScript : MonoBehaviour
 
         else if (utils.IsMatch(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1) //check if selectedCards and the input card match and that selesctedCards is only one card
         {
-            utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+            GameObject inputContainer = input.GetComponent<CardScript>().container;
+
+            if (inputContainer.CompareTag("Foundation"))
+            {
+                if(inputContainer.GetComponent<FoundationScript>().cardList[0] == input)
+                {
+                    utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+                    Debug.Log("matched");
+                }
+
+                return;
+            }
+
+            else
+            {
+                utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+                Debug.Log("matched");
+            }
         }
 
         else if ((utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1) == input.GetComponent<CardScript>().cardNum && input.GetComponent<CardScript>().container.CompareTag("Foundation"))

@@ -10,51 +10,69 @@ public class ReactorScript : MonoBehaviour
     int positionCounter;
     int cardMax;
     int ReactorVal;
+    GameObject myPrefab;
+    public string suit;
+
+    private GUIStyle guiStyle;
+    Vector3 position;
+    Vector2 textSize;
+    string GUItext;
 
     void Start()
     {
         //because typing is yucky :)
         utils = UtilsScript.global;
+        ReactorVal = 0;
+        guiStyle = new GUIStyle();
+        guiStyle.fontSize = 20;
+        position = Camera.main.WorldToScreenPoint(gameObject.transform.position);
+        position.y -= 30;
+        position.x += 35;
+        UpdateGUI();
     }
 
 
     void Update()
     {
-        //constantly checking to see if reactor score is below
-        if (CountReactorCard() >= 18)
+        return;
+    }
+
+    private void OnGUI()
+    {
+        GUI.contentColor = Color.blue;
+        textSize = GUI.skin.label.CalcSize(new GUIContent(GUItext));
+        GUI.Label(new Rect(position.x, Screen.height - position.y, textSize.x, textSize.y), GUItext, guiStyle);
+    }
+
+    private void UpdateGUI()
+    {
+        // Debug.Log("RS UpdateGUI");
+        ReactorVal = CountReactorCard();
+        GUItext = ReactorVal.ToString() + "/" + Config.config.maxReactorVal.ToString();
+    }
+
+    private void CheckGameOver()
+    {
+        // Debug.Log("RS CheckGameOver");
+        if (CountReactorCard() >= Config.config.maxReactorVal)
         {
-            //TODO: game over
-
-
+            myPrefab = (GameObject)Resources.Load("Prefabs/Explosion", typeof(GameObject));
+            Instantiate(myPrefab, gameObject.transform.position, gameObject.transform.rotation);
+            Destroy(gameObject);
         }
-        SetCardPositions();
     }
 
 
-    
     public void RemoveCard(GameObject card)
     {
+        // Debug.Log("RS RemoveCard");
         cardList.Remove(card);
+        UpdateGUI();
     }
-
-    //iterate over cardList (in Reactor)
-    //set their location positions
-    //in other words, when a card is added to the Reactor
-    //this handles positions
-    //public void SetCardPositions()
-    //{
-    //    positionCounter = 0;
-
-    //    for(int indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
-    //    {
-    //        cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, 0, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
-
-    //        positionCounter += 1;
-    //    }
-    //}
 
     public void SetCardPositions()
     {
+        // Debug.Log("RS SetCardPositions");
         positionCounter = 0;
 
         for (int indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
@@ -63,9 +81,10 @@ public class ReactorScript : MonoBehaviour
 
             positionCounter += 1;
         }
+
+        UpdateGUI();
+        CheckGameOver();
     }
-
-
 
     //this function is run on selected card's container
     //if click reactor then click other card,
@@ -82,7 +101,7 @@ public class ReactorScript : MonoBehaviour
     //TODO: rename this goddamn function and all the other
     public void ProcessAction(GameObject input)
     {
-
+        // Debug.Log("RS ProcessAction");
         GameObject card1 = utils.selectedCards[0];
 
         if (input.CompareTag("Card"))
@@ -90,10 +109,27 @@ public class ReactorScript : MonoBehaviour
             //list needs to only be 1, something wrong if not -> skip to return
             if (utils.selectedCards.Count == 1)
             {
-                if (utils.IsMatch(input, card1))
+                if (utils.IsMatch(input, card1) && utils.selectedCards.Count == 1)
                 {
-                    utils.Match(input, card1);
+                    GameObject inputContainer = input.GetComponent<CardScript>().container;
+
+                    if (inputContainer.CompareTag("Foundation"))
+                    {
+                        if (inputContainer.GetComponent<FoundationScript>().cardList[0] == input)
+                        {
+                            utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+                            Debug.Log("matched");
+                        }
+
+                        return;
+                    }
+
+                    else
+                    {
+                        utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+                    }
                 }
+
                 else
                 {
                     utils.selectedCards.Remove(card1);
@@ -116,12 +152,13 @@ public class ReactorScript : MonoBehaviour
     //basically just in case it goes over 18, in which case end game
     private int CountReactorCard()
     {
+        // Debug.Log("RS CountReactorCard");
         //sum the values into totalSum, return
         int totalSum = 0;
-        int cardListNum = cardList.Count;
-        for (int i = 0; i < cardListNum; i++)
+        int cardListVal = cardList.Count;
+        for (int i = 0; i < cardListVal; i++)
         {
-            totalSum += cardList[i].gameObject.GetComponent<CardScript>().cardNum;
+            totalSum += cardList[i].gameObject.GetComponent<CardScript>().cardVal;
         }
 
         return totalSum;

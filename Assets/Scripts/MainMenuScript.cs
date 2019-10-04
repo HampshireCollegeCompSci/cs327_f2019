@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RestartButtonScript : MonoBehaviour
+public class MainMenuScript : MonoBehaviour
 {
-	public GameObject config;
+    public GameObject config;
     public GameObject utils;
 
     void Start()
-	{
-		config = GameObject.Find("Config");
-		config.GetComponent<Config>().SetCards();
+    {
+        config = GameObject.Find("Config");
+        config.GetComponent<Config>().SetCards();
 
         utils = GameObject.Find("Utils");
         utils.GetComponent<UtilsScript>().SetCards();
@@ -18,7 +18,7 @@ public class RestartButtonScript : MonoBehaviour
 
     public void ProcessAction(GameObject input)
     {
-        Application.LoadLevel("FoundationTestScene");//resets the level
+        Application.LoadLevel("MainMenuScene");//resets the level
         Debug.Log("hit button");
         return;
     }
