@@ -3028,6 +3028,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   config: {fileID: 0}
   utils: {fileID: 0}
+  listLen: 0
+  counter: 0
 --- !u!4 &1615020385
 Transform:
   m_ObjectHideFlags: 0

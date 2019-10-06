@@ -7,12 +7,14 @@ public class UtilsScript : MonoBehaviour
     public static UtilsScript global; //Creates a new instance if one does not yet exist
     public List<GameObject> selectedCards;
     public GameObject matchedPile;
+    public GameObject menu;
     public int indexCounter;
     public RaycastHit2D hit;
 
     public void SetCards()
     {
         matchedPile = GameObject.Find("MatchedPile");
+        menu = GameObject.Find("GameMenu");
     }
 
     void Awake()
@@ -30,7 +32,7 @@ public class UtilsScript : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0) && menu.active != true)
         {
             Click();
         }
