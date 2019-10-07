@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class Config : MonoBehaviour
 {
@@ -15,10 +16,10 @@ public class Config : MonoBehaviour
 
     //foundations
     public float foundationStackDensity;
-
+    public int foundationStartSize;
     //wastepile
     public float nonTopXOffset = 0.3f * 0.25F; // foundationStackDensity * 0.25
-    public int cardsAtTopOfWastePile = 3;
+    public int cardsAtTopOfWastePile;
 
     //reactor
     public int maxReactorVal = 18;
@@ -36,7 +37,7 @@ public class Config : MonoBehaviour
     //internal variables
     private int foundationCount = 0;
     string JSON;
-    GameInfo gameInfo = new GameInfo();
+    GameInfo gameInfo;
 
     private void Awake()
     {
@@ -53,15 +54,19 @@ public class Config : MonoBehaviour
 
     private void Start()
     {
-        //string path = "Assets/GameConfigurations/gameValues.json";
-        //JSON = gameInfo.WriteString(path);
-        //ConfigFromJSON();
+        string path = "Assets/GameConfigurations/gameValues.json";
+        JSON = WriteString(path);
+        gameInfo = CreateFromJSON(JSON);
+        ConfigFromJSON();
         SetCards();
     }
 
     public void ConfigFromJSON()
     {
         cardsAtTopOfWastePile = gameInfo.cardsToWastePilePerClick;
+        foundationStartSize = gameInfo.foundationStartingSize[0];
+        print(foundationStartSize);
+        maxReactorVal = gameInfo.reactorLimit[0];
     }
 
     public void SetCards()
@@ -97,4 +102,20 @@ public class Config : MonoBehaviour
             foundationCount = 0;
         }
     }
+    public static GameInfo CreateFromJSON(string jsonString)
+    {
+        return JsonUtility.FromJson<GameInfo>(jsonString);
+    }
+
+    [SerializeField]
+    string json;
+    public string WriteString(string path)
+    {
+        using (StreamReader stream = new StreamReader(path))
+        {
+            json = stream.ReadToEnd();
+        }
+        return json;
+    }
+
 }

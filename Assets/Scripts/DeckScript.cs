@@ -18,13 +18,15 @@ public class DeckScript : MonoBehaviour
 
     public bool shuffleOnDeckReset = false;
     public bool dealOnDeckReset = true;
-    public int foundationStartSize = 7;
+    public int foundationStartSize;
 
     int indexCounter;
     int positionCounter;
 
     void Start()
     {
+        foundationStartSize = Config.config.foundationStartSize;
+        print("foundation start Size in DeckScript: " + foundationStartSize);
         myPrefab = (GameObject)Resources.Load("Prefabs/Card", typeof(GameObject));
         myPrefab.GetComponent<BoxCollider2D>().size = new Vector2Int(1,1);
         myPrefab.GetComponent<BoxCollider2D>().offset = new Vector2Int(0, 0);

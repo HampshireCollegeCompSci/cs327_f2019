@@ -16,22 +16,5 @@ public class GameInfo
     public int[] reactorLimit;
     public int[] foundationStartingSize;
     public int cardsToWastePilePerClick;
-    
-
-    public static GameInfo CreateFromJSON(string jsonString)
-    {
-        return JsonUtility.FromJson<GameInfo>(jsonString);
-    }
-
-    [SerializeField]
-    string json;
-    public string WriteString(string path)
-    {
-        using (StreamReader stream = new StreamReader(path))
-        {
-            json = stream.ReadToEnd();
-        }
-        return json;
-    }
 
 }
