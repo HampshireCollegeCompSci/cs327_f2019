@@ -91,10 +91,19 @@ public class FoundationScript : MonoBehaviour
 
             if (inputContainer.CompareTag("Foundation"))
             {
-                if(inputContainer.GetComponent<FoundationScript>().cardList[0] == input)
+                if (inputContainer.GetComponent<FoundationScript>().cardList[0] == input)
                 {
                     utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-                    Debug.Log("matched");
+                }
+
+                return;
+            }
+
+            if (inputContainer.CompareTag("Reactor"))
+            {
+                if (inputContainer.GetComponent<ReactorScript>().cardList[0] == input)
+                {
+                    utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
                 }
 
                 return;
