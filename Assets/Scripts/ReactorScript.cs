@@ -133,6 +133,16 @@ public class ReactorScript : MonoBehaviour
                         return;
                     }
 
+                    if (inputContainer.CompareTag("Wastepile"))
+                    {
+                        if (inputContainer.GetComponent<WastepileScript>().cardList[0] == input)
+                        {
+                            utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+                        }
+
+                        return;
+                    }
+
                     else
                     {
                         utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
