@@ -18,10 +18,13 @@ public class FoundationScript : MonoBehaviour
 
     void Update()
     {
-        if (cardList.Count != 0)
-        {
-            checkTopCard();
-        }
+        return;
+    }
+
+    public void RemoveCard(GameObject card)
+    {
+        cardList.Remove(card);
+        checkTopCard();
     }
 
     public void checkTopCard()
@@ -29,12 +32,8 @@ public class FoundationScript : MonoBehaviour
         if (cardList[0].gameObject.GetComponent<CardScript>().hidden)
         {
             cardList[0].gameObject.GetComponent<CardScript>().hidden = false;
+            cardList[0].gameObject.GetComponent<CardScript>().SetCardAppearance();
         }
-    }
-
-    public void RemoveCard(GameObject card)
-    {
-        cardList.Remove(card);
     }
 
     //assigns card positions and render order and sets this foundation as the cards parents

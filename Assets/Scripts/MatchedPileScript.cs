@@ -10,7 +10,7 @@ public class MatchedPileScript : MonoBehaviour
 
     void Update()
     {
-        SetCardPositions();
+        return;
     }
 
     public void RemoveCard(GameObject card)
