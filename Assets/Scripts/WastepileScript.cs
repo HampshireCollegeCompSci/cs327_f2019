@@ -17,7 +17,7 @@ public class WastepileScript : MonoBehaviour
 
     void Update()
     {
-
+        return;
     }
 
     public void RemoveCard(GameObject card)

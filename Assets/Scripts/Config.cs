@@ -82,25 +82,7 @@ public class Config : MonoBehaviour
 
     private void Update()
     {
-        //every frame, check to see if all foundations are empty.
-        foreach (GameObject foundation in foundationList)
-        {  
-            if (foundation.GetComponent<FoundationScript>().cardList.Count == 0)
-            {
-                foundationCount++;
-            }
-        }
-
-        if (foundationCount == foundationList.Length 
-            && deck.GetComponent<DeckScript>().cardList.Count == 0 
-            && wastePile.GetComponent<WastepileScript>().cardList.Count == 0)
-        {
-            Application.Quit();
-        }
-        else
-        {
-            foundationCount = 0;
-        }
+        return;
     }
     public static GameInfo CreateFromJSON(string jsonString)
     {

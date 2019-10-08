@@ -174,6 +174,12 @@ public class UtilsScript : MonoBehaviour
     {
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
+        
+        //check to see if the board is clear
+        if (matchedPile.GetComponent<MatchedPileScript>().cardList.Count == 52)
+        {
+            Application.Quit();
+        }
     }
 
     //checks if suit match AND value match

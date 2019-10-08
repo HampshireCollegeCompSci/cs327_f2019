@@ -14,12 +14,15 @@ public class CardScript : MonoBehaviour
     public bool appearSelected;
     Vector3 originalTransform;
 
-
-
-    void Update()
+    void Start()
     {
         originalTransform = Config.config.cardScale;
         SetCardAppearance();
+    }
+
+    void Update()
+    {
+        return;
     }
 
     //all the scales in here have been modified deliberately because the cards were too small
