@@ -9,4 +9,10 @@ public class MainMenuScript : MonoBehaviour
         Application.LoadLevel("FoundationTestScene");
         return;
     }
+
+    public void About()
+    {
+        Application.LoadLevel("AboutScene");//resets the level
+        return;
+    }
 }
