@@ -1,5 +1,5 @@
 {
-    "reactorLimit": [ 1, 2, 3, 40 ],
-    "foundationStartingSize": [ 1, 1, 30, 60 ],
+    "reactorLimit": [ 18, 18, 18, 18 ],
+    "foundationStartingSize": [ 7, 7, 7, 7 ],
     "cardsToWastePilePerClick": 3
 }

@@ -18,10 +18,13 @@ public class FoundationScript : MonoBehaviour
 
     void Update()
     {
-        if (cardList.Count != 0)
-        {
-            checkTopCard();
-        }
+        return;
+    }
+
+    public void RemoveCard(GameObject card)
+    {
+        cardList.Remove(card);
+        checkTopCard();
     }
 
     public void checkTopCard()
@@ -29,12 +32,8 @@ public class FoundationScript : MonoBehaviour
         if (cardList[0].gameObject.GetComponent<CardScript>().hidden)
         {
             cardList[0].gameObject.GetComponent<CardScript>().hidden = false;
+            cardList[0].gameObject.GetComponent<CardScript>().SetCardAppearance();
         }
-    }
-
-    public void RemoveCard(GameObject card)
-    {
-        cardList.Remove(card);
     }
 
     //assigns card positions and render order and sets this foundation as the cards parents
@@ -91,10 +90,29 @@ public class FoundationScript : MonoBehaviour
 
             if (inputContainer.CompareTag("Foundation"))
             {
-                if(inputContainer.GetComponent<FoundationScript>().cardList[0] == input)
+                if (inputContainer.GetComponent<FoundationScript>().cardList[0] == input)
                 {
                     utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-                    Debug.Log("matched");
+                }
+
+                return;
+            }
+
+            if (inputContainer.CompareTag("Reactor"))
+            {
+                if (inputContainer.GetComponent<ReactorScript>().cardList[0] == input)
+                {
+                    utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+                }
+
+                return;
+            }
+
+            if (inputContainer.CompareTag("Wastepile"))
+            {
+                if (inputContainer.GetComponent<WastepileScript>().cardList[0] == input)
+                {
+                    utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
                 }
 
                 return;

@@ -18,13 +18,15 @@ public class DeckScript : MonoBehaviour
 
     public bool shuffleOnDeckReset = false;
     public bool dealOnDeckReset = true;
-    public int foundationStartSize = 7;
+    public int foundationStartSize;
 
     int indexCounter;
     int positionCounter;
 
     void Start()
     {
+        foundationStartSize = Config.config.foundationStartSize;
+        print("foundation start Size in DeckScript: " + foundationStartSize);
         myPrefab = (GameObject)Resources.Load("Prefabs/Card", typeof(GameObject));
         myPrefab.GetComponent<BoxCollider2D>().size = new Vector2Int(1,1);
         myPrefab.GetComponent<BoxCollider2D>().offset = new Vector2Int(0, 0);
@@ -187,8 +189,9 @@ public class DeckScript : MonoBehaviour
         // if there are any cards in the deck's cardList before they will be on the bottom after
         while (wasteCardList.Count > 0)
         {
-            wasteCardList[0].GetComponent<CardScript>().hidden = true;
             wasteCardList[0].GetComponent<CardScript>().MoveCard(this.gameObject);
+            cardList[0].GetComponent<CardScript>().hidden = true;
+            cardList[0].GetComponent<CardScript>().SetCardAppearance();
         }
 
         if (shuffleOnDeckReset)
@@ -212,12 +215,11 @@ public class DeckScript : MonoBehaviour
                 break;
             }
 
-            // move card from deck list top into waste and reveal
+            // reveal card and move from deck list top into waste
             cardList[0].GetComponent<CardScript>().hidden = false;
-            cardList[0].GetComponent<CardScript>().MoveCard(wastePile);
-            
+            cardList[0].GetComponent<CardScript>().SetCardAppearance();
+            cardList[0].GetComponent<CardScript>().MoveCard(wastePile);   
         }
-        //wastePile.GetComponent<WastepileScript>().SetCardPositions();
     }
 
     //Shuffles cardList using Knuth shuffle aka Fisher-Yates shuffle
