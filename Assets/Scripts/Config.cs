@@ -36,7 +36,7 @@ public class Config : MonoBehaviour
 
     //internal variables
     private int foundationCount = 0;
-    string JSON;
+    private string JSON;
     GameInfo gameInfo;
 
     private void Awake()
@@ -54,9 +54,9 @@ public class Config : MonoBehaviour
 
     private void Start()
     {
-        string path = "Assets/GameConfigurations/gameValues.json";
-        JSON = WriteString(path);
-        gameInfo = CreateFromJSON(JSON);
+        string path = "GameConfigurations/gameValues";
+        //JSON = WriteString(path);
+        gameInfo = CreateFromJSON(path);
         ConfigFromJSON();
         SetCards();
     }
@@ -84,8 +84,11 @@ public class Config : MonoBehaviour
     {
         return;
     }
-    public static GameInfo CreateFromJSON(string jsonString)
+    public static GameInfo CreateFromJSON(string path)
     {
+        var jsonTextFile = Resources.Load<TextAsset>(path);
+        string jsonString = jsonTextFile.ToString();
+        print(jsonString);
         return JsonUtility.FromJson<GameInfo>(jsonString);
     }
 
