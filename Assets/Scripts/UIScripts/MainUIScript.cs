@@ -1,27 +1,36 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class MainUIScript : MonoBehaviour
 {
-	public void Restart()
-	{
-		Application.LoadLevel(0);//resets the level
-		return;
-	}
+    public void Restart()
+    {
+        SceneManager.LoadScene("MainMenuScene");//resets the level
+        return;
+    }
 
-	public void SetGameMenu(GameObject gameMenu)
-	{
-        Debug.Log(gameMenu.activeSelf);
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("MainMenuScene");//resets the level
+    }
 
-        if (gameMenu.activeSelf)
-        {
-            gameMenu.SetActive(false);
-        }
+    //This can be used for pause menu in the future.
 
-        else if (!gameMenu.activeSelf)
-        {
-            gameMenu.SetActive(true);
-        }
-	}
+    //public void SetGameMenu(GameObject gameMenu)
+    //{
+    //       Debug.Log(gameMenu.activeSelf);
+
+    //       if (gameMenu.activeSelf)
+    //       {
+    //           gameMenu.SetActive(false);
+    //       }
+
+    //       else if (!gameMenu.activeSelf)
+    //       {
+    //           gameMenu.SetActive(true);
+    //       }
+    //}
 }
