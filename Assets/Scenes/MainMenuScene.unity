@@ -277,6 +277,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: About
       objectReference: {fileID: 0}
+    - target: {fileID: 2149383897853883841, guid: a1305559b663b4554bd8a81e36467567,
+        type: 3}
+      propertyPath: m_TagString
+      value: Button
+      objectReference: {fileID: 0}
     - target: {fileID: 2149383897853883842, guid: a1305559b663b4554bd8a81e36467567,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -347,6 +352,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 2149383896383363877, guid: a1305559b663b4554bd8a81e36467567,
+        type: 3}
+      propertyPath: m_Text
+      value: About
+      objectReference: {fileID: 0}
     - target: {fileID: 2149383896383363876, guid: a1305559b663b4554bd8a81e36467567,
         type: 3}
       propertyPath: m_AnchorMin.x
@@ -377,11 +387,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2149383896383363877, guid: a1305559b663b4554bd8a81e36467567,
-        type: 3}
-      propertyPath: m_Text
-      value: About
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1305559b663b4554bd8a81e36467567, type: 3}
 --- !u!224 &354134836 stripped
@@ -404,7 +409,7 @@ GameObject:
   - component: {fileID: 407446270}
   m_Layer: 5
   m_Name: Hard
-  m_TagString: Untagged
+  m_TagString: Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -792,7 +797,7 @@ GameObject:
   - component: {fileID: 1248900716}
   m_Layer: 5
   m_Name: Easy
-  m_TagString: Untagged
+  m_TagString: Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1153,7 +1158,7 @@ GameObject:
   - component: {fileID: 1807188135}
   m_Layer: 5
   m_Name: Debuging
-  m_TagString: Untagged
+  m_TagString: Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1286,7 +1291,7 @@ GameObject:
   - component: {fileID: 1816222047}
   m_Layer: 5
   m_Name: Normal
-  m_TagString: Untagged
+  m_TagString: Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

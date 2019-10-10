@@ -32,10 +32,15 @@ public class UtilsScript : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonUp(0) && menu.active != true)
+        if (Input.GetMouseButtonUp(0))
         {
             Click();
         }
+
+        //if (Input.GetMouseButtonUp(0) && menu.activeSelf != true)
+        //{
+        //    Click();
+        //}
 
     }
 
@@ -80,6 +85,10 @@ public class UtilsScript : MonoBehaviour
     {
         //raycast to see what we clicked
         hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Vector2.zero);
+
+        //!!!
+        //BUG: UtilScript still raycast in other scenes and throws NUllPointerException.
+        //!!!
 
         //if we clicked a button activates the button
         if (hit.collider.gameObject.CompareTag("Button"))
@@ -165,7 +174,7 @@ public class UtilsScript : MonoBehaviour
             for (int i = 0; i < selectedCardsLength; i++)
             {
                 DeselectCard(selectedCards[0]);
-            }   
+            }
         }
     }
 
@@ -174,7 +183,7 @@ public class UtilsScript : MonoBehaviour
     {
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
-        
+
         //check to see if the board is clear
         if (matchedPile.GetComponent<MatchedPileScript>().cardList.Count == 52)
         {
@@ -196,8 +205,9 @@ public class UtilsScript : MonoBehaviour
             Debug.Log("Numbers don't match");
             return false;
         }
-        else { 
-        //hearts diamond combo #1
+        else
+        {
+            //hearts diamond combo #1
             if (card1Suit.Equals("hearts") && card2Suit.Equals("diamonds"))
             {
                 return true;

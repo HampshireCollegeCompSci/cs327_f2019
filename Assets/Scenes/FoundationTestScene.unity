@@ -871,7 +871,7 @@ GameObject:
   - component: {fileID: 612237310}
   m_Layer: 5
   m_Name: Menu
-  m_TagString: Untagged
+  m_TagString: Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -940,11 +940,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2058941302}
-        m_MethodName: SetGameMenu
-        m_Mode: 2
+        m_MethodName: MainMenu
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 1047591875}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2646,8 +2646,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a37fb9a5733444a4ebbf85213384da37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  config: {fileID: 0}
-  utils: {fileID: 0}
+  config: {fileID: 1923251342}
+  utils: {fileID: 1574574477}
   listLen: 0
   counter: 0
 --- !u!4 &1615020385
@@ -2769,7 +2769,7 @@ GameObject:
   - component: {fileID: 1760593707}
   m_Layer: 5
   m_Name: Restart
-  m_TagString: Untagged
+  m_TagString: Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3747,7 +3747,12 @@ PrefabInstance:
     - target: {fileID: 2149383897771343391, guid: a1305559b663b4554bd8a81e36467567,
         type: 3}
       propertyPath: m_Name
-      value: GameMenu
+      value: GameMenu(Not used)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2149383897771343391, guid: a1305559b663b4554bd8a81e36467567,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2149383897771343387, guid: a1305559b663b4554bd8a81e36467567,
         type: 3}
