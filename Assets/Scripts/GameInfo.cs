@@ -17,5 +17,6 @@ public class GameInfo
     public int[] foundationStartingSize;
     public int cardsToWastePilePerClick;
     public int nonTopXOffset;
+    public int cardsToDeal;
 
 }

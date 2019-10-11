@@ -17,6 +17,7 @@ public class Config : MonoBehaviour
     //foundations
     public float foundationStackDensity;
     public int foundationStartSize;
+    
     //wastepile
     public float nonTopXOffset = 0.3f * 0.25F; // foundationStackDensity * 0.25
     public int cardsAtTopOfWastePile;
@@ -32,7 +33,10 @@ public class Config : MonoBehaviour
     private GameObject[] foundationList;
 
     public GameObject wastePile;
+
+    //deck
     public GameObject deck;
+    public int cardsToDeal;
 
     //internal variables
     private int foundationCount = 0;
@@ -66,6 +70,7 @@ public class Config : MonoBehaviour
         foundationStartSize = gameInfo.foundationStartingSize[0];
         maxReactorVal = gameInfo.reactorLimit[0];
         nonTopXOffset = foundationStackDensity * ((float)gameInfo.nonTopXOffset / 100.0f);
+        cardsToDeal = gameInfo.cardsToDeal;
     }
 
     public void SetCards()
