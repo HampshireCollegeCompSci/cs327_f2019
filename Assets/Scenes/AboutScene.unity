@@ -426,6 +426,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainMenu
       objectReference: {fileID: 0}
+    - target: {fileID: 2149383897853883841, guid: a1305559b663b4554bd8a81e36467567,
+        type: 3}
+      propertyPath: m_TagString
+      value: Button
+      objectReference: {fileID: 0}
     - target: {fileID: 2149383897853883842, guid: a1305559b663b4554bd8a81e36467567,
         type: 3}
       propertyPath: m_AnchorMin.x
