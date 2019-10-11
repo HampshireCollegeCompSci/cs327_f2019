@@ -66,7 +66,7 @@ public class Config : MonoBehaviour
 
     public void ConfigFromJSON()
     {
-        cardsAtTopOfWastePile = gameInfo.cardsToWastePilePerClick;
+        cardsAtTopOfWastePile = gameInfo.wastepileCardsToShow;
         foundationStartSize = gameInfo.foundationStartingSize[0];
         maxReactorVal = gameInfo.reactorLimit[0];
         nonTopXOffset = foundationStackDensity * ((float)gameInfo.nonTopXOffset / 100.0f);

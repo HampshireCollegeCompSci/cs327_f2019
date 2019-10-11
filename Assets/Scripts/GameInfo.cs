@@ -15,7 +15,7 @@ public class GameInfo
 
     public int[] reactorLimit;
     public int[] foundationStartingSize;
-    public int cardsToWastePilePerClick;
+    public int wastepileCardsToShow;
     public int nonTopXOffset;
     public int cardsToDeal;
 
