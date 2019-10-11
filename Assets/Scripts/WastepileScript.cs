@@ -34,7 +34,7 @@ public class WastepileScript : MonoBehaviour
         {
             cardList[i].transform.parent = gameObject.transform;
             cardList[i].transform.localPosition = new Vector3(xOffset, 0, counter * -0.1f);
-            if (i < Config.config.cardsAtTopOfWastePile)
+            if (i < Config.config.wastepileCardsToShow)
             {
                 xOffset += Config.config.foundationStackDensity;
             }

@@ -208,7 +208,7 @@ public class DeckScript : MonoBehaviour
     // deals cards
     public void Deal()
     {
-        for (int i = 0; i < 3; i++) // try to deal 3 cards
+        for (int i = 0; i < Config.config.cardsToDeal; i++) // try to deal set number of cards
         {
             if (cardList.Count == 0) // are there no more cards in the deck?
             {

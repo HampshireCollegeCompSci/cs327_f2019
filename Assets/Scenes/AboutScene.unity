@@ -426,6 +426,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainMenu
       objectReference: {fileID: 0}
+    - target: {fileID: 2149383897853883841, guid: a1305559b663b4554bd8a81e36467567,
+        type: 3}
+      propertyPath: m_TagString
+      value: Button
+      objectReference: {fileID: 0}
     - target: {fileID: 2149383897853883842, guid: a1305559b663b4554bd8a81e36467567,
         type: 3}
       propertyPath: m_AnchorMin.x
@@ -498,6 +503,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 1042643878}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbd86d815170e4e4cb05cb91757201a5, type: 3}
+  m_Script: {fileID: 11500000, guid: 871aa0b01d410402f817ec623c1b35ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

@@ -25,9 +25,6 @@ public class ReactorScript : MonoBehaviour
         ReactorVal = 0;
         guiStyle = new GUIStyle();
         guiStyle.fontSize = 20;
-        position = Camera.main.WorldToScreenPoint(gameObject.transform.position);
-        position.y -= 30;
-        position.x += 35;
         UpdateGUI();
     }
 
@@ -39,9 +36,11 @@ public class ReactorScript : MonoBehaviour
 
     private void OnGUI()
     {
-        GUI.contentColor = Color.blue;
+        position = Camera.main.WorldToScreenPoint(gameObject.transform.position);
+        Vector3 reactorPos = Camera.main.WorldToScreenPoint(gameObject.GetComponent<SpriteRenderer>().bounds.size);
+        float reactorHeight = position.y - reactorPos.y;
         textSize = GUI.skin.label.CalcSize(new GUIContent(GUItext));
-        GUI.Label(new Rect(position.x, Screen.height - position.y, textSize.x, textSize.y), GUItext, guiStyle);
+        GUI.Label(new Rect(position.x - 25, Screen.height - reactorPos.y + reactorHeight, textSize.x, textSize.y), GUItext, guiStyle);
     }
 
     private void UpdateGUI()

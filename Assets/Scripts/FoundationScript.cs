@@ -29,7 +29,7 @@ public class FoundationScript : MonoBehaviour
 
     public void checkTopCard()
     {
-        if (cardList[0].gameObject.GetComponent<CardScript>().hidden)
+        if (cardList.Count != 0 && cardList[0].gameObject.GetComponent<CardScript>().hidden)
         {
             cardList[0].gameObject.GetComponent<CardScript>().hidden = false;
             cardList[0].gameObject.GetComponent<CardScript>().SetCardAppearance();
@@ -53,7 +53,14 @@ public class FoundationScript : MonoBehaviour
             if (cardList[indexCounter].GetComponent<CardScript>().hidden)
             {
                 cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
-                yOffset -= Config.config.foundationStackDensity * 0.5f;
+                if (cardList.Count > 10)
+                {
+                    yOffset -= Config.config.foundationStackDensity * 0.25f;
+                }
+                else
+                {
+                    yOffset -= Config.config.foundationStackDensity * 0.5f;
+                }
             }
             else
             {
