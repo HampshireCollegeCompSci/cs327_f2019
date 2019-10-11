@@ -28,4 +28,15 @@ public class MenuUIScript : MonoBehaviour
     {
         gameMenu.SetActive(false);
     }
+
+    public void About()
+    {
+        SceneManager.LoadScene("AboutScene");//resets the level
+        return;
+    }
+
+    public void EndGame()
+    {
+        SceneManager.LoadScene("SummaryScene");
+    }
 }
