@@ -20,7 +20,7 @@ public class Config : MonoBehaviour
     
     //wastepile
     public float nonTopXOffset = 0.3f * 0.25F; // foundationStackDensity * 0.25
-    public int cardsAtTopOfWastePile;
+    public int wastepileCardsToShow;
 
     //reactor
     public int maxReactorVal = 18;
@@ -66,7 +66,7 @@ public class Config : MonoBehaviour
 
     public void ConfigFromJSON()
     {
-        cardsAtTopOfWastePile = gameInfo.wastepileCardsToShow;
+        wastepileCardsToShow = gameInfo.wastepileCardsToShow;
         foundationStartSize = gameInfo.foundationStartingSize[0];
         maxReactorVal = gameInfo.reactorLimit[0];
         nonTopXOffset = foundationStackDensity * ((float)gameInfo.nonTopXOffset / 100.0f);
