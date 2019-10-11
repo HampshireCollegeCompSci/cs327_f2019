@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UtilsScript : MonoBehaviour
 {
@@ -32,7 +33,7 @@ public class UtilsScript : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0) && SceneManager.GetActiveScene().buildIndex != 0)
         {
             Click();
         }
