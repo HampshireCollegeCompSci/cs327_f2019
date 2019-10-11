@@ -55,7 +55,6 @@ public class Config : MonoBehaviour
     private void Start()
     {
         string path = "GameConfigurations/gameValues";
-        //JSON = WriteString(path);
         gameInfo = CreateFromJSON(path);
         ConfigFromJSON();
         SetCards();
@@ -65,8 +64,8 @@ public class Config : MonoBehaviour
     {
         cardsAtTopOfWastePile = gameInfo.cardsToWastePilePerClick;
         foundationStartSize = gameInfo.foundationStartingSize[0];
-        print(foundationStartSize);
         maxReactorVal = gameInfo.reactorLimit[0];
+        nonTopXOffset = foundationStackDensity * ((float)gameInfo.nonTopXOffset / 100.0f);
     }
 
     public void SetCards()
@@ -87,9 +86,7 @@ public class Config : MonoBehaviour
     public static GameInfo CreateFromJSON(string path)
     {
         var jsonTextFile = Resources.Load<TextAsset>(path);
-        string jsonString = jsonTextFile.ToString();
-        print(jsonString);
-        return JsonUtility.FromJson<GameInfo>(jsonString);
+        return JsonUtility.FromJson<GameInfo>(jsonTextFile.ToString());
     }
 
     [SerializeField]
