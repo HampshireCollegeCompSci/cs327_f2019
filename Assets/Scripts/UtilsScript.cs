@@ -33,7 +33,7 @@ public class UtilsScript : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonUp(0) && SceneManager.GetActiveScene().buildIndex != 0)
+        if (Input.GetMouseButtonUp(0) && SceneManager.GetActiveScene().buildIndex == 2)
         {
             Click();
         }
@@ -92,13 +92,14 @@ public class UtilsScript : MonoBehaviour
         //!!!
 
         //if we clicked a button activates the button
+        /*
         if (hit.collider.gameObject.CompareTag("Button"))
         {
             hit.collider.gameObject.SendMessage("ProcessAction", hit.collider.gameObject);
-        }
+        }*/
 
         //if we click a deck activates deck and deselected our cards
-        else if (!hit.collider.gameObject.CompareTag("Card"))
+        if (!hit.collider.gameObject.CompareTag("Card"))
         {
             if (hit.collider.gameObject.CompareTag("Deck"))
             {
