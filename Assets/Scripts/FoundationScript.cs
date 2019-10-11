@@ -29,7 +29,7 @@ public class FoundationScript : MonoBehaviour
 
     public void checkTopCard()
     {
-        if (cardList[0].gameObject.GetComponent<CardScript>().hidden)
+        if (cardList.Count != 0 && cardList[0].gameObject.GetComponent<CardScript>().hidden)
         {
             cardList[0].gameObject.GetComponent<CardScript>().hidden = false;
             cardList[0].gameObject.GetComponent<CardScript>().SetCardAppearance();
