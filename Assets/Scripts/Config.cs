@@ -69,7 +69,8 @@ public class Config : MonoBehaviour
         wastepileCardsToShow = gameInfo.wastepileCardsToShow;
         foundationStartSize = gameInfo.foundationStartingSize[0];
         maxReactorVal = gameInfo.reactorLimit[0];
-        nonTopXOffset = foundationStackDensity * ((float)gameInfo.nonTopXOffset / 100.0f);
+        nonTopXOffset = foundationStackDensity * gameInfo.nonTopXOffset;
+        print(nonTopXOffset);
         cardsToDeal = gameInfo.cardsToDeal;
     }
 

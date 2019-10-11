@@ -16,7 +16,7 @@ public class GameInfo
     public int[] reactorLimit;
     public int[] foundationStartingSize;
     public int wastepileCardsToShow;
-    public int nonTopXOffset;
+    public float nonTopXOffset;
     public int cardsToDeal;
 
 }
