@@ -3182,7 +3182,7 @@ MonoBehaviour:
   foundationStackDensity: 0.3
   foundationStartSize: 0
   nonTopXOffset: 0.075
-  cardsAtTopOfWastePile: 3
+  wastepileCardsToShow: 0
   maxReactorVal: 18
   foundation1: {fileID: 787894275}
   foundation2: {fileID: 1812935831}
@@ -3190,6 +3190,7 @@ MonoBehaviour:
   foundation4: {fileID: 1056444916}
   wastePile: {fileID: 40183959}
   deck: {fileID: 1524850547}
+  cardsToDeal: 0
   json: 
 --- !u!4 &1923251344
 Transform:
@@ -3660,7 +3661,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2058941297}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2cd944391d6204c40887b3876ef46add, type: 3}
+  m_Script: {fileID: 11500000, guid: 871aa0b01d410402f817ec623c1b35ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &862624159679698547
