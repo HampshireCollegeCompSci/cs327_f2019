@@ -36,6 +36,13 @@ public class UtilsScript : MonoBehaviour
         if (Input.GetMouseButtonUp(0) && SceneManager.GetActiveScene().buildIndex == 2)
         {
             Click();
+
+            //checks if the game has been won
+            if (Config.config.CountFoundationCards() == 0)
+            {
+                Config.config.gameOver = true;
+                Config.config.gameWin = true;
+            }
         }
 
         //if (Input.GetMouseButtonUp(0) && menu.activeSelf != true)
@@ -187,11 +194,6 @@ public class UtilsScript : MonoBehaviour
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
 
         //check to see if the board is clear
-        if (matchedPile.GetComponent<MatchedPileScript>().cardList.Count == 52)
-        {
-            Config.config.gameOver = true;
-            Config.config.gameWin = true;
-        }
     }
 
     //checks if suit match AND value match
