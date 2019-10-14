@@ -163,7 +163,7 @@ public class ReactorScript : MonoBehaviour
     //sum the amounts of them, and then return whatever that sum is
     //in order to be used in the update function
     //basically just in case it goes over 18, in which case end game
-    private int CountReactorCard()
+    public int CountReactorCard()
     {
         // Debug.Log("RS CountReactorCard");
         //sum the values into totalSum, return

@@ -147,6 +147,4 @@ public class FoundationScript : MonoBehaviour
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
         }
     }
-
-
 }
