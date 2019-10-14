@@ -58,6 +58,9 @@ public class ReactorScript : MonoBehaviour
             myPrefab = (GameObject)Resources.Load("Prefabs/Explosion", typeof(GameObject));
             Instantiate(myPrefab, gameObject.transform.position, gameObject.transform.rotation);
             Destroy(gameObject);
+
+            Config.config.gameOver = true;
+            Config.config.gameWin = false;
         }
     }
 
@@ -119,7 +122,6 @@ public class ReactorScript : MonoBehaviour
                             utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
                         }
 
-                        return;
                     }
 
                     if (inputContainer.CompareTag("Reactor"))
@@ -129,7 +131,6 @@ public class ReactorScript : MonoBehaviour
                             utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
                         }
 
-                        return;
                     }
 
                     if (inputContainer.CompareTag("Wastepile"))
@@ -138,8 +139,6 @@ public class ReactorScript : MonoBehaviour
                         {
                             utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
                         }
-
-                        return;
                     }
 
                     else
@@ -154,11 +153,6 @@ public class ReactorScript : MonoBehaviour
                 }
             }
         }
-
-
-        //this is just the return call to end after having clicked
-        return;
-
 
 
     }

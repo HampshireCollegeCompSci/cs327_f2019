@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class Config : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class Config : MonoBehaviour
 
     //Variables go here
     public Stack<Move> moveLog = new Stack<Move>();
+    public bool gameOver;
+    public bool gameWin;
 
     //card scale
     public Vector3 cardScale;
@@ -17,7 +20,7 @@ public class Config : MonoBehaviour
     //foundations
     public float foundationStackDensity;
     public int foundationStartSize;
-    
+
     //wastepile
     public float nonTopXOffset = 0.3f * 0.25F; // foundationStackDensity * 0.25
     public int wastepileCardsToShow;
@@ -43,6 +46,8 @@ public class Config : MonoBehaviour
     private string JSON;
     GameInfo gameInfo;
 
+
+
     private void Awake()
     {
         if (config == null)
@@ -62,6 +67,17 @@ public class Config : MonoBehaviour
         gameInfo = CreateFromJSON(path);
         ConfigFromJSON();
         SetCards();
+    }
+
+
+    private void Update()
+    {
+        //handle game end
+        if (gameOver && SceneManager.GetActiveScene().name != "SummaryScene")
+        {
+            SceneManager.LoadScene("SummaryScene");
+        }
+
     }
 
     public void ConfigFromJSON()
@@ -85,10 +101,7 @@ public class Config : MonoBehaviour
         foundationList = new GameObject[] { foundation1, foundation2, foundation3, foundation4 };
     }
 
-    private void Update()
-    {
-        return;
-    }
+
     public static GameInfo CreateFromJSON(string path)
     {
         var jsonTextFile = Resources.Load<TextAsset>(path);

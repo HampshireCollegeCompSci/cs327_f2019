@@ -16,12 +16,16 @@ public class MenuUIScript : MonoBehaviour
 
     public void Restart()
     {
+        Config.config.gameOver = false;
         SceneManager.LoadScene("FoundationTestScene");//resets the level
+        Config.config.gameWin = false;
     }
 
     public void MainMenu()
     {
+        Config.config.gameOver = false;
         SceneManager.LoadScene("MainMenuScene");//resets the level
+        Config.config.gameWin = false;
     }
 
     public void CloseGameMenu(GameObject gameMenu)
@@ -35,8 +39,5 @@ public class MenuUIScript : MonoBehaviour
         return;
     }
 
-    public void EndGame()
-    {
-        SceneManager.LoadScene("SummaryScene");
-    }
+
 }

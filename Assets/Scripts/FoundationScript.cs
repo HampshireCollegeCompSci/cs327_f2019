@@ -38,17 +38,17 @@ public class FoundationScript : MonoBehaviour
 
     //assigns card positions and render order and sets this foundation as the cards parents
 
-        //iterate over the cardlist
-        //for each one there, copy transform of foundation
-        //apply to the card
-        //offset card y axis by a little bit
-        //offset card z axis by a little bit
+    //iterate over the cardlist
+    //for each one there, copy transform of foundation
+    //apply to the card
+    //offset card y axis by a little bit
+    //offset card z axis by a little bit
     public void SetCardPositions()
     {
         positionCounter = 0;
 
         float yOffset = 0;
-        for(indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
+        for (indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
         {
             if (cardList[indexCounter].GetComponent<CardScript>().hidden)
             {
@@ -145,4 +145,6 @@ public class FoundationScript : MonoBehaviour
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
         }
     }
+
+
 }

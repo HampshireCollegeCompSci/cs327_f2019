@@ -189,7 +189,8 @@ public class UtilsScript : MonoBehaviour
         //check to see if the board is clear
         if (matchedPile.GetComponent<MatchedPileScript>().cardList.Count == 52)
         {
-            Application.Quit();
+            Config.config.gameOver = true;
+            Config.config.gameWin = true;
         }
     }
 
