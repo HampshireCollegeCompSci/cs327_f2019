@@ -16,7 +16,7 @@ public class CardScript : MonoBehaviour
 
     void Start()
     {
-        originalTransform = Config.config.cardScale / 15;
+        originalTransform = Config.config.cardScale / 10;
         SetCardAppearance();
     }
 
