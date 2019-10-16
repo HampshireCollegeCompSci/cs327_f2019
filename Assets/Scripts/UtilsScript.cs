@@ -8,14 +8,14 @@ public class UtilsScript : MonoBehaviour
     public static UtilsScript global; //Creates a new instance if one does not yet exist
     public List<GameObject> selectedCards;
     public GameObject matchedPile;
-    public GameObject menu;
+    public GameObject gameUI;
     public int indexCounter;
     public RaycastHit2D hit;
 
     public void SetCards()
     {
         matchedPile = GameObject.Find("MatchedPile");
-        menu = GameObject.Find("GameMenu");
+        gameUI = GameObject.Find("GameUI");
     }
 
     void Awake()
@@ -37,6 +37,9 @@ public class UtilsScript : MonoBehaviour
         {
             Click();
 
+            //sets the reactor scores
+            gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
+
             //checks if the game has been won
             if (Config.config.CountFoundationCards() == 0)
             {
@@ -44,12 +47,6 @@ public class UtilsScript : MonoBehaviour
                 Config.config.gameWin = true;
             }
         }
-
-        //if (Input.GetMouseButtonUp(0) && menu.activeSelf != true)
-        //{
-        //    Click();
-        //}
-
     }
 
     public void SelectCard(GameObject inputCard)
