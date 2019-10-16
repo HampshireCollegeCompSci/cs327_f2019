@@ -36,8 +36,18 @@ public class MenuUIScript : MonoBehaviour
     public void About()
     {
         SceneManager.LoadScene("AboutScene");//resets the level
-        return;
     }
 
+    public void PauseGame()
+    {
+        //TODO save the game scene
+
+        SceneManager.LoadScene("PauseScene");
+    }
+
+    public void ResumeGame()
+    {
+        //TODO load the saved game scene
+    }
 
 }

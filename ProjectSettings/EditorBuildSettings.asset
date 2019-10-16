@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SummaryScene.unity
     guid: 38c52f752e809429faa3c4618fd135b9
+  - enabled: 1
+    path: Assets/Scenes/PauseScene.unity
+    guid: 2060416274f13418cb904f2d1d21d308
   m_configObjects: {}
