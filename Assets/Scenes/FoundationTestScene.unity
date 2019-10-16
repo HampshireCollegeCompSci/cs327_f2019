@@ -394,7 +394,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Menu
+  m_Text: Pause
 --- !u!222 &176473006
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -949,7 +949,7 @@ GameObject:
   - component: {fileID: 612237311}
   - component: {fileID: 612237310}
   m_Layer: 5
-  m_Name: Menu
+  m_Name: Pause
   m_TagString: Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
