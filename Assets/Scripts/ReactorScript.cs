@@ -34,20 +34,20 @@ public class ReactorScript : MonoBehaviour
         return;
     }
 
-    private void OnGUI()
-    {
-        position = Camera.main.WorldToScreenPoint(gameObject.transform.position);
-        Vector3 reactorPos = Camera.main.WorldToScreenPoint(gameObject.GetComponent<SpriteRenderer>().bounds.size);
-        float reactorHeight = position.y - reactorPos.y;
-        textSize = GUI.skin.label.CalcSize(new GUIContent(GUItext));
-        GUI.Label(new Rect(position.x - 25, Screen.height - reactorPos.y + reactorHeight, textSize.x, textSize.y), GUItext, guiStyle);
-    }
+    //private void OnGUI()
+    //{
+    //    position = Camera.main.WorldToScreenPoint(gameObject.transform.position);
+    //    Vector3 reactorPos = Camera.main.WorldToScreenPoint(gameObject.GetComponent<SpriteRenderer>().bounds.size);
+    //    float reactorHeight = position.y - reactorPos.y;
+    //    textSize = GUI.skin.label.CalcSize(new GUIContent(GUItext));
+    //    GUI.Label(new Rect(position.x - 25, Screen.height - reactorPos.y + reactorHeight, textSize.x, textSize.y), GUItext, guiStyle);
+    //}
 
     private void UpdateGUI()
     {
         // Debug.Log("RS UpdateGUI");
-        ReactorVal = CountReactorCard();
-        GUItext = ReactorVal.ToString() + "/" + Config.config.maxReactorVal.ToString();
+        //ReactorVal = CountReactorCard();
+        //GUItext = ReactorVal.ToString() + "/" + Config.config.maxReactorVal.ToString();
     }
 
     private void CheckGameOver()
