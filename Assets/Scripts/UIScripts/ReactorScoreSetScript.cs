@@ -5,6 +5,11 @@ using UnityEngine.UI;
 
 public class ReactorScoreSetScript : MonoBehaviour
 {
+    private void Start()
+    {
+        SetReactorScore();
+    }
+
     public GameObject reactor0;
     public Text reactorScore0;
 
