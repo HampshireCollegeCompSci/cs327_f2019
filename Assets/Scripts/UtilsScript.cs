@@ -41,6 +41,11 @@ public class UtilsScript : MonoBehaviour
             gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
 
             //checks if the game has been won
+
+            /*this code is if we want to check cards in the deck and the wastepile as well as the foundations to see if you can win the game
+             * if (Config.config.CountFoundationCards() + Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count +
+               Config.config.deck.GetComponent<DeckScript>().cardList.Count == 0)*/
+
             if (Config.config.CountFoundationCards() == 0)
             {
                 Config.config.gameOver = true;
@@ -102,8 +107,8 @@ public class UtilsScript : MonoBehaviour
             hit.collider.gameObject.SendMessage("ProcessAction", hit.collider.gameObject);
         }*/
 
-        //if we click a deck activates deck and deselected our cards
-        if (!hit.collider.gameObject.CompareTag("Card"))
+            //if we click a deck activates deck and deselected our cards
+            if (!hit.collider.gameObject.CompareTag("Card"))
         {
             if (hit.collider.gameObject.CompareTag("Deck"))
             {
