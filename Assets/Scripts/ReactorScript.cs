@@ -34,20 +34,20 @@ public class ReactorScript : MonoBehaviour
         return;
     }
 
-    private void OnGUI()
-    {
-        position = Camera.main.WorldToScreenPoint(gameObject.transform.position);
-        Vector3 reactorPos = Camera.main.WorldToScreenPoint(gameObject.GetComponent<SpriteRenderer>().bounds.size);
-        float reactorHeight = position.y - reactorPos.y;
-        textSize = GUI.skin.label.CalcSize(new GUIContent(GUItext));
-        GUI.Label(new Rect(position.x - 25, Screen.height - reactorPos.y + reactorHeight, textSize.x, textSize.y), GUItext, guiStyle);
-    }
+    //private void OnGUI()
+    //{
+    //    position = Camera.main.WorldToScreenPoint(gameObject.transform.position);
+    //    Vector3 reactorPos = Camera.main.WorldToScreenPoint(gameObject.GetComponent<SpriteRenderer>().bounds.size);
+    //    float reactorHeight = position.y - reactorPos.y;
+    //    textSize = GUI.skin.label.CalcSize(new GUIContent(GUItext));
+    //    GUI.Label(new Rect(position.x - 25, Screen.height - reactorPos.y + reactorHeight, textSize.x, textSize.y), GUItext, guiStyle);
+    //}
 
     private void UpdateGUI()
     {
         // Debug.Log("RS UpdateGUI");
-        ReactorVal = CountReactorCard();
-        GUItext = ReactorVal.ToString() + "/" + Config.config.maxReactorVal.ToString();
+        //ReactorVal = CountReactorCard();
+        //GUItext = ReactorVal.ToString() + "/" + Config.config.maxReactorVal.ToString();
     }
 
     private void CheckGameOver()
@@ -79,7 +79,8 @@ public class ReactorScript : MonoBehaviour
 
         for (int indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
         {
-            cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, Config.config.foundationStackDensity * positionCounter, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
+            cardList[indexCounter].transform.position = gameObject.transform.position +
+                new Vector3(0, Config.config.foundationStackDensity * positionCounter, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
 
             positionCounter += 1;
         }
@@ -162,7 +163,7 @@ public class ReactorScript : MonoBehaviour
     //sum the amounts of them, and then return whatever that sum is
     //in order to be used in the update function
     //basically just in case it goes over 18, in which case end game
-    private int CountReactorCard()
+    public int CountReactorCard()
     {
         // Debug.Log("RS CountReactorCard");
         //sum the values into totalSum, return

@@ -8,14 +8,14 @@ public class UtilsScript : MonoBehaviour
     public static UtilsScript global; //Creates a new instance if one does not yet exist
     public List<GameObject> selectedCards;
     public GameObject matchedPile;
-    public GameObject menu;
+    public GameObject gameUI;
     public int indexCounter;
     public RaycastHit2D hit;
 
     public void SetCards()
     {
         matchedPile = GameObject.Find("MatchedPile");
-        menu = GameObject.Find("GameMenu");
+        gameUI = GameObject.Find("GameUI");
     }
 
     void Awake()
@@ -36,13 +36,22 @@ public class UtilsScript : MonoBehaviour
         if (Input.GetMouseButtonUp(0) && SceneManager.GetActiveScene().buildIndex == 2)
         {
             Click();
+
+            //sets the reactor scores
+            gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
+
+            //checks if the game has been won
+
+            /*this code is if we want to check cards in the deck and the wastepile as well as the foundations to see if you can win the game
+             * if (Config.config.CountFoundationCards() + Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count +
+               Config.config.deck.GetComponent<DeckScript>().cardList.Count == 0)*/
+
+            if (Config.config.CountFoundationCards() == 0)
+            {
+                Config.config.gameOver = true;
+                Config.config.gameWin = true;
+            }
         }
-
-        //if (Input.GetMouseButtonUp(0) && menu.activeSelf != true)
-        //{
-        //    Click();
-        //}
-
     }
 
     public void SelectCard(GameObject inputCard)
@@ -98,8 +107,8 @@ public class UtilsScript : MonoBehaviour
             hit.collider.gameObject.SendMessage("ProcessAction", hit.collider.gameObject);
         }*/
 
-        //if we click a deck activates deck and deselected our cards
-        if (!hit.collider.gameObject.CompareTag("Card"))
+            //if we click a deck activates deck and deselected our cards
+            if (!hit.collider.gameObject.CompareTag("Card"))
         {
             if (hit.collider.gameObject.CompareTag("Deck"))
             {
@@ -187,11 +196,6 @@ public class UtilsScript : MonoBehaviour
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
 
         //check to see if the board is clear
-        if (matchedPile.GetComponent<MatchedPileScript>().cardList.Count == 52)
-        {
-            Config.config.gameOver = true;
-            Config.config.gameWin = true;
-        }
     }
 
     //checks if suit match AND value match

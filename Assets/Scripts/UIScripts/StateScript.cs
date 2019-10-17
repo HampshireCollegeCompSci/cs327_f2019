@@ -7,7 +7,7 @@ public class StateScript : MonoBehaviour
 {
     public Text gameState;
 
-    private void Update()
+    private void Start()
     {
         WinOrLose(Config.config.gameWin);
 
@@ -15,6 +15,7 @@ public class StateScript : MonoBehaviour
 
     public void WinOrLose(bool win)
     {
+
         if (win)
             gameState.text = "You Won!";
 

@@ -119,4 +119,10 @@ public class Config : MonoBehaviour
         return json;
     }
 
+    public int CountFoundationCards()
+    {
+        return foundation1.GetComponent<FoundationScript>().cardList.Count + foundation2.GetComponent<FoundationScript>().cardList.Count +
+            foundation3.GetComponent<FoundationScript>().cardList.Count + foundation4.GetComponent<FoundationScript>().cardList.Count;
+    }
+
 }
