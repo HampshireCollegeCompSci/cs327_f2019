@@ -17,7 +17,7 @@ public class UtilsScript : MonoBehaviour
     //TODO make these tuning variables
     public float matchPoints;
     public float emptyReactorPoints;
-    public float PerfectGamePoints;
+    public float perfectGamePoints;
 
 
     public void SetCards()
