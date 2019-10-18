@@ -2840,6 +2840,11 @@ MonoBehaviour:
   matchedPile: {fileID: 1214012893}
   gameUI: {fileID: 0}
   indexCounter: 0
+  score: 0
+  matchPoints: 200
+  cardInReactorPoints: -100
+  emptyReactorPoints: 0
+  PerfectGamePoints: 0
 --- !u!4 &1574574479
 Transform:
   m_ObjectHideFlags: 0

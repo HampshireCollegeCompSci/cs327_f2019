@@ -11,6 +11,14 @@ public class UtilsScript : MonoBehaviour
     public GameObject gameUI;
     public int indexCounter;
     public RaycastHit2D hit;
+    public float score = 0;
+
+
+    //TODO make these tuning variables
+    public float matchPoints;
+    public float emptyReactorPoints;
+    public float PerfectGamePoints;
+
 
     public void SetCards()
     {
@@ -195,6 +203,7 @@ public class UtilsScript : MonoBehaviour
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
 
+        score += matchPoints;
         //check to see if the board is clear
     }
 
