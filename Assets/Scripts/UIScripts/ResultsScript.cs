@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StateScript : MonoBehaviour
+public class ResultsScript : MonoBehaviour
 {
     public Text gameState;
+    public Text gameScore;
 
     private void Start()
     {
-        WinOrLose(Config.config.gameWin);
+        WinOrLose(Config.config.gameWin, GameObject.Find("Utils").GetComponent<UtilsScript>().score);
 
     }
 
-    public void WinOrLose(bool win)
+    public void WinOrLose(bool win, float score)
     {
 
         if (win)
@@ -23,5 +24,6 @@ public class StateScript : MonoBehaviour
             gameState.text = "You Lost!";
 
         gameState.alignment = TextAnchor.MiddleCenter;
+        gameScore.text = "score " + score;
     }
 }
