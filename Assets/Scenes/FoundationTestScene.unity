@@ -408,7 +408,7 @@ PrefabInstance:
     - target: {fileID: 3465283733490406802, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
       propertyPath: suit
-      value: spades
+      value: clubs
       objectReference: {fileID: 0}
     - target: {fileID: 3465283733490406807, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
@@ -524,7 +524,7 @@ PrefabInstance:
     - target: {fileID: 3465283733490406802, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
       propertyPath: suit
-      value: clubs
+      value: spades
       objectReference: {fileID: 0}
     - target: {fileID: 3465283733490406807, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
