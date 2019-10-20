@@ -210,6 +210,9 @@ public class UtilsScript : MonoBehaviour
     //checks if suit match AND value match
     public bool IsMatch(GameObject card1, GameObject card2)
     {
+
+        Debug.Log(card1.GetComponent<CardScript>().cardSuit + card1.GetComponent<CardScript>().cardNum);
+        Debug.Log(card2.GetComponent<CardScript>().cardSuit + card2.GetComponent<CardScript>().cardNum);
         //just to make it cleaner because this utils.blah blah blah is yucky
         //basically a string of if/else cases for matching
         string card1Suit = card1.GetComponent<CardScript>().cardSuit;
