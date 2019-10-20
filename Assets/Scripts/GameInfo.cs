@@ -27,5 +27,6 @@ public class GameInfo
     public int wastepileCardsToShow;
     public float nonTopXOffset;
     public int cardsToDeal;
+    public float relativeCardScale;
 
 }
