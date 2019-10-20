@@ -12,6 +12,7 @@ public class Config : MonoBehaviour
     public Stack<Move> moveLog = new Stack<Move>();
     public bool gameOver;
     public bool gameWin;
+    public float relativeCardScale;
 
     //card scale
     public Vector3 cardScale;
@@ -88,6 +89,7 @@ public class Config : MonoBehaviour
         nonTopXOffset = foundationStackDensity * gameInfo.nonTopXOffset;
         print(nonTopXOffset);
         cardsToDeal = gameInfo.cardsToDeal;
+        relativeCardScale = gameInfo.relativeCardScale;
     }
 
     public void SetCards()
@@ -123,6 +125,27 @@ public class Config : MonoBehaviour
     {
         return foundation1.GetComponent<FoundationScript>().cardList.Count + foundation2.GetComponent<FoundationScript>().cardList.Count +
             foundation3.GetComponent<FoundationScript>().cardList.Count + foundation4.GetComponent<FoundationScript>().cardList.Count;
+    }
+
+
+    public float GetScreenToWorldHeight()
+    {
+
+        Vector2 topRightCorner = new Vector2(1, 1);
+        Vector2 edgeVector = Camera.main.ViewportToWorldPoint(topRightCorner);
+        var height = edgeVector.y * 2;
+        return height;
+
+    }
+
+    public float GetScreenToWorldWidth()
+    {
+
+        Vector2 topRightCorner = new Vector2(1, 1);
+        Vector2 edgeVector = Camera.main.ViewportToWorldPoint(topRightCorner);
+        var width = edgeVector.x * 2;
+        return width;
+
     }
 
 }

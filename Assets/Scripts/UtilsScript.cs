@@ -11,6 +11,14 @@ public class UtilsScript : MonoBehaviour
     public GameObject gameUI;
     public int indexCounter;
     public RaycastHit2D hit;
+    public float score = 0;
+
+
+    //TODO make these tuning variables
+    public float matchPoints;
+    public float emptyReactorPoints;
+    public float PerfectGamePoints;
+
 
     public void SetCards()
     {
@@ -195,12 +203,16 @@ public class UtilsScript : MonoBehaviour
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
 
+        score += matchPoints;
         //check to see if the board is clear
     }
 
     //checks if suit match AND value match
     public bool IsMatch(GameObject card1, GameObject card2)
     {
+
+        Debug.Log(card1.GetComponent<CardScript>().cardSuit + card1.GetComponent<CardScript>().cardNum);
+        Debug.Log(card2.GetComponent<CardScript>().cardSuit + card2.GetComponent<CardScript>().cardNum);
         //just to make it cleaner because this utils.blah blah blah is yucky
         //basically a string of if/else cases for matching
         string card1Suit = card1.GetComponent<CardScript>().cardSuit;

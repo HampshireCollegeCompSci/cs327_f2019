@@ -9,8 +9,6 @@ public class DeckScript : MonoBehaviour
     public GameObject wastePile;
     public List<GameObject> foundations;
     public List<GameObject> reactors;
-    
-    public Sprite placeHolderSprite;
 
     public GameObject myPrefab;
     public List<Sprite> sprites;
@@ -37,9 +35,6 @@ public class DeckScript : MonoBehaviour
         InstantiateCards();
         Shuffle();
         SetUpFoundations();
-        
-        // let user know deck has cards and deal some out
-        this.gameObject.GetComponent<SpriteRenderer>().sprite = placeHolderSprite;
         
         Deal();
         SetCardPositions();
@@ -88,7 +83,7 @@ public class DeckScript : MonoBehaviour
                     cardList[cardIndex].GetComponent<CardScript>().cardSuit = "diamonds";
                 }
 
-                cardList[cardIndex].GetComponent<CardScript>().cardFrontSprite = sprites[cardIndex + 1];
+                cardList[cardIndex].GetComponent<CardScript>().cardFrontSprite = sprites[cardIndex];
                 cardList[cardIndex].GetComponent<CardScript>().hidden = true;
                 cardList[cardIndex].GetComponent<CardScript>().appearSelected = false;
                 cardList[cardIndex].GetComponent<CardScript>().container = this.gameObject;
