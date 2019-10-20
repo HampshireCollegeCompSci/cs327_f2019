@@ -2650,11 +2650,9 @@ MonoBehaviour:
   - {fileID: 283026417}
   - {fileID: 1619051437}
   - {fileID: 1211482542}
-  placeHolderSprite: {fileID: 21300000, guid: 26cae7adde222450ab5c96c6268ffd92, type: 3}
   myPrefab: {fileID: 5176008346855944174, guid: 7232864c537dd463a882601b8089390d,
     type: 3}
   sprites:
-  - {fileID: 21300000, guid: e70fbfed6d43c194ca389da3868f7f5d, type: 3}
   - {fileID: 21300000, guid: 3e1549d1ea2f4f84d8d2063b82c95eaf, type: 3}
   - {fileID: 21300000, guid: 7aca11e1dfa0d9541b713de119a05e2f, type: 3}
   - {fileID: 21300000, guid: ffdeac9c1a4329c4c8027380a79e2c54, type: 3}
