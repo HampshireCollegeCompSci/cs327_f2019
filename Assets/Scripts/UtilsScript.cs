@@ -7,17 +7,23 @@ public class UtilsScript : MonoBehaviour
 {
     public static UtilsScript global; //Creates a new instance if one does not yet exist
     public List<GameObject> selectedCards;
-    private List<GameObject> selectedCardsCopy;
     public GameObject matchedPile;
-    public GameObject menu;
+    public GameObject gameUI;
     public int indexCounter;
     public RaycastHit2D hit;
-    private bool dragOn;
+    public float score = 0;
+
+
+    //TODO make these tuning variables
+    public float matchPoints;
+    public float emptyReactorPoints;
+    public float PerfectGamePoints;
+
 
     public void SetCards()
     {
         matchedPile = GameObject.Find("MatchedPile");
-        menu = GameObject.Find("GameMenu");
+        gameUI = GameObject.Find("GameUI");
     }
 
     void Awake()
@@ -35,27 +41,25 @@ public class UtilsScript : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && dragOn == false && SceneManager.GetActiveScene().buildIndex == 2)
+        if (Input.GetMouseButtonUp(0) && SceneManager.GetActiveScene().buildIndex == 2)
         {
             Click();
-            dragOn = true;
-        }
 
-        if (Input.GetMouseButtonUp(0) && dragOn == true && SceneManager.GetActiveScene().buildIndex == 2)
-        {
-            foreach(GameObject card in selectedCards)
+            //sets the reactor scores
+            gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
+
+            //checks if the game has been won
+
+            /*this code is if we want to check cards in the deck and the wastepile as well as the foundations to see if you can win the game
+             * if (Config.config.CountFoundationCards() + Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count +
+               Config.config.deck.GetComponent<DeckScript>().cardList.Count == 0)*/
+
+            if (Config.config.CountFoundationCards() == 0)
             {
-                DeselectCard(card);
+                Config.config.gameOver = true;
+                Config.config.gameWin = true;
             }
-            selectedCardsCopy = null;
-            dragOn = false;
         }
-
-        if (dragOn == true && SceneManager.GetActiveScene().buildIndex == 2)
-        {
-            ClickAndDrag(selectedCardsCopy);
-        }
-
     }
 
     public void SelectCard(GameObject inputCard)
@@ -111,8 +115,8 @@ public class UtilsScript : MonoBehaviour
             hit.collider.gameObject.SendMessage("ProcessAction", hit.collider.gameObject);
         }*/
 
-        //if we click a deck activates deck and deselected our cards
-        if (!hit.collider.gameObject.CompareTag("Card"))
+            //if we click a deck activates deck and deselected our cards
+            if (!hit.collider.gameObject.CompareTag("Card"))
         {
             if (hit.collider.gameObject.CompareTag("Deck"))
             {
@@ -199,16 +203,16 @@ public class UtilsScript : MonoBehaviour
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
 
+        score += matchPoints;
         //check to see if the board is clear
-        if (matchedPile.GetComponent<MatchedPileScript>().cardList.Count == 52)
-        {
-            Application.Quit();
-        }
     }
 
     //checks if suit match AND value match
     public bool IsMatch(GameObject card1, GameObject card2)
     {
+
+        Debug.Log(card1.GetComponent<CardScript>().cardSuit + card1.GetComponent<CardScript>().cardNum);
+        Debug.Log(card2.GetComponent<CardScript>().cardSuit + card2.GetComponent<CardScript>().cardNum);
         //just to make it cleaner because this utils.blah blah blah is yucky
         //basically a string of if/else cases for matching
         string card1Suit = card1.GetComponent<CardScript>().cardSuit;
@@ -277,22 +281,6 @@ public class UtilsScript : MonoBehaviour
         {
             Debug.Log("Suits don't match");
             return false;
-        }
-    }
-
-    public void ClickAndDrag(List<GameObject> cards)
-    {
-        if (cards == null)
-        {
-            foreach (GameObject card in selectedCards)
-            {
-                cards.Add(Instantiate(card, Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Quaternion.identity));
-            }
-        }
-
-        foreach (GameObject card in cards)
-        {
-            card.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y + card.transform.position.y, 10));
         }
     }
 
