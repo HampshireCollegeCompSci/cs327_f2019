@@ -12,6 +12,7 @@ TagManager:
   - Card
   - Background
   - Button
+  - ReactorHolder
   layers:
   - Default
   - TransparentFX
