@@ -47,7 +47,9 @@ public class UtilsScript : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && dragOn == false && SceneManager.GetActiveScene().buildIndex == 2)
         {
             Click();
-            dragOn = true;
+            if (selectedCards.Count > 0) {
+                dragOn = true;
+            }
 
             //sets the reactor scores
             gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
@@ -65,7 +67,7 @@ public class UtilsScript : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonUp(0) && SceneManager.GetActiveScene().buildIndex == 2)
+        if (Input.GetMouseButtonUp(0) && selectedCardsCopy.Count > 0 && SceneManager.GetActiveScene().buildIndex == 2)
         {
             Click();
             gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
