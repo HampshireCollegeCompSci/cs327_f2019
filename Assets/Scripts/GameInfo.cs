@@ -4,34 +4,29 @@ using System.IO;
 public class GameInfo
 {
 
-    //reactorLimit = [int,int,int,int]
+    //reactorLimit = int
     //(A four element array)
 
-    //startingStack = [int,int,int,int]
+    //startingStack = int
     //(How many cards are dealt to each starting stack.A value of 7 results in 6 face down and 1 face up)
 
     //cardsToDeal = int
     //(How many cards should we deal at a time?)
 
-    public int[] reactorLimit;
-    public int[] foundationStartingSize;
-    public int cardsToWastePilePerClick;
-    
+    //wastepileCardsToShow
+    //(how many cards to fully show on top of the wastepile)
 
-    public static GameInfo CreateFromJSON(string jsonString)
-    {
-        return JsonUtility.FromJson<GameInfo>(jsonString);
-    }
+    //nonTopXOffset = float
+    //(adjusts how compressed the hidden cards in the wastepile are)
 
-    [SerializeField]
-    string json;
-    public string WriteString(string path)
-    {
-        using (StreamReader stream = new StreamReader(path))
-        {
-            json = stream.ReadToEnd();
-        }
-        return json;
-    }
+    //cardsToDeal = int
+    //(how many cards to deal per click on the deck)
+
+    public int reactorLimit;
+    public int foundationStartingSize;
+    public int wastepileCardsToShow;
+    public float nonTopXOffset;
+    public int cardsToDeal;
+    public float relativeCardScale;
 
 }

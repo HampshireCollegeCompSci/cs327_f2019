@@ -1,0 +1,8 @@
+{
+    "reactorLimit": 18,
+    "foundationStartingSize": 7,
+    "wastepileCardsToShow": 3,
+    "nonTopXOffset": 0.25,
+    "cardsToDeal": 3,
+    "relativeCardScale": 0.18
+}

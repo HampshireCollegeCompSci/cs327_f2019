@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+using UnityEngine.SceneManagement;
 
 public class Config : MonoBehaviour
 {
@@ -8,6 +10,9 @@ public class Config : MonoBehaviour
 
     //Variables go here
     public Stack<Move> moveLog = new Stack<Move>();
+    public bool gameOver;
+    public bool gameWin;
+    public float relativeCardScale;
 
     //card scale
     public Vector3 cardScale;
@@ -15,10 +20,11 @@ public class Config : MonoBehaviour
 
     //foundations
     public float foundationStackDensity;
+    public int foundationStartSize;
 
     //wastepile
     public float nonTopXOffset = 0.3f * 0.25F; // foundationStackDensity * 0.25
-    public int cardsAtTopOfWastePile = 3;
+    public int wastepileCardsToShow;
 
     //reactor
     public int maxReactorVal = 18;
@@ -31,12 +37,17 @@ public class Config : MonoBehaviour
     private GameObject[] foundationList;
 
     public GameObject wastePile;
+
+    //deck
     public GameObject deck;
+    public int cardsToDeal;
 
     //internal variables
     private int foundationCount = 0;
-    string JSON;
-    GameInfo gameInfo = new GameInfo();
+    private string JSON;
+    GameInfo gameInfo;
+
+
 
     private void Awake()
     {
@@ -53,15 +64,32 @@ public class Config : MonoBehaviour
 
     private void Start()
     {
-        //string path = "Assets/GameConfigurations/gameValues.json";
-        //JSON = gameInfo.WriteString(path);
-        //ConfigFromJSON();
+        string path = "GameConfigurations/gameValues";
+        gameInfo = CreateFromJSON(path);
+        ConfigFromJSON();
         SetCards();
+    }
+
+
+    private void Update()
+    {
+        //handle game end
+        if (gameOver && SceneManager.GetActiveScene().name != "SummaryScene")
+        {
+            SceneManager.LoadScene("SummaryScene");
+        }
+
     }
 
     public void ConfigFromJSON()
     {
-        cardsAtTopOfWastePile = gameInfo.cardsToWastePilePerClick;
+        wastepileCardsToShow = gameInfo.wastepileCardsToShow;
+        foundationStartSize = gameInfo.foundationStartingSize;
+        maxReactorVal = gameInfo.reactorLimit;
+        nonTopXOffset = foundationStackDensity * gameInfo.nonTopXOffset;
+        print(nonTopXOffset);
+        cardsToDeal = gameInfo.cardsToDeal;
+        relativeCardScale = gameInfo.relativeCardScale;
     }
 
     public void SetCards()
@@ -75,26 +103,49 @@ public class Config : MonoBehaviour
         foundationList = new GameObject[] { foundation1, foundation2, foundation3, foundation4 };
     }
 
-    private void Update()
-    {
-        //every frame, check to see if all foundations are empty.
-        foreach (GameObject foundation in foundationList)
-        {  
-            if (foundation.GetComponent<FoundationScript>().cardList.Count == 0)
-            {
-                foundationCount++;
-            }
-        }
 
-        if (foundationCount == foundationList.Length 
-            && deck.GetComponent<DeckScript>().cardList.Count == 0 
-            && wastePile.GetComponent<WastepileScript>().cardList.Count == 0)
-        {
-            Application.Quit();
-        }
-        else
-        {
-            foundationCount = 0;
-        }
+    public static GameInfo CreateFromJSON(string path)
+    {
+        var jsonTextFile = Resources.Load<TextAsset>(path);
+        return JsonUtility.FromJson<GameInfo>(jsonTextFile.ToString());
     }
+
+    [SerializeField]
+    string json;
+    public string WriteString(string path)
+    {
+        using (StreamReader stream = new StreamReader(path))
+        {
+            json = stream.ReadToEnd();
+        }
+        return json;
+    }
+
+    public int CountFoundationCards()
+    {
+        return foundation1.GetComponent<FoundationScript>().cardList.Count + foundation2.GetComponent<FoundationScript>().cardList.Count +
+            foundation3.GetComponent<FoundationScript>().cardList.Count + foundation4.GetComponent<FoundationScript>().cardList.Count;
+    }
+
+
+    public float GetScreenToWorldHeight()
+    {
+
+        Vector2 topRightCorner = new Vector2(1, 1);
+        Vector2 edgeVector = Camera.main.ViewportToWorldPoint(topRightCorner);
+        var height = edgeVector.y * 2;
+        return height;
+
+    }
+
+    public float GetScreenToWorldWidth()
+    {
+
+        Vector2 topRightCorner = new Vector2(1, 1);
+        Vector2 edgeVector = Camera.main.ViewportToWorldPoint(topRightCorner);
+        var width = edgeVector.x * 2;
+        return width;
+
+    }
+
 }

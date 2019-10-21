@@ -18,47 +18,55 @@ public class FoundationScript : MonoBehaviour
 
     void Update()
     {
-        if (cardList.Count != 0)
-        {
-            checkTopCard();
-        }
-    }
-
-    public void checkTopCard()
-    {
-        if (cardList[0].gameObject.GetComponent<CardScript>().hidden)
-        {
-            cardList[0].gameObject.GetComponent<CardScript>().hidden = false;
-        }
+        return;
     }
 
     public void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
+        checkTopCard();
+    }
+
+    public void checkTopCard()
+    {
+        if (cardList.Count != 0 && cardList[0].gameObject.GetComponent<CardScript>().hidden)
+        {
+            cardList[0].gameObject.GetComponent<CardScript>().hidden = false;
+            cardList[0].gameObject.GetComponent<CardScript>().SetCardAppearance();
+        }
     }
 
     //assigns card positions and render order and sets this foundation as the cards parents
 
-        //iterate over the cardlist
-        //for each one there, copy transform of foundation
-        //apply to the card
-        //offset card y axis by a little bit
-        //offset card z axis by a little bit
+    //iterate over the cardlist
+    //for each one there, copy transform of foundation
+    //apply to the card
+    //offset card y axis by a little bit
+    //offset card z axis by a little bit
     public void SetCardPositions()
     {
         positionCounter = 0;
 
         float yOffset = 0;
-        for(indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
+        for (indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
         {
             if (cardList[indexCounter].GetComponent<CardScript>().hidden)
             {
-                cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
-                yOffset -= Config.config.foundationStackDensity * 0.5f;
+                cardList[indexCounter].transform.position = gameObject.transform.position +
+                    new Vector3(0, -yOffset, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
+                if (cardList.Count > 10)
+                {
+                    yOffset -= Config.config.foundationStackDensity * 0.25f;
+                }
+                else
+                {
+                    yOffset -= Config.config.foundationStackDensity * 0.5f;
+                }
             }
             else
             {
-                cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
+                cardList[indexCounter].transform.position = gameObject.transform.position +
+                    new Vector3(0, -yOffset, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
                 yOffset -= Config.config.foundationStackDensity;
             }
 
@@ -91,10 +99,29 @@ public class FoundationScript : MonoBehaviour
 
             if (inputContainer.CompareTag("Foundation"))
             {
-                if(inputContainer.GetComponent<FoundationScript>().cardList[0] == input)
+                if (inputContainer.GetComponent<FoundationScript>().cardList[0] == input)
                 {
                     utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-                    Debug.Log("matched");
+                }
+
+                return;
+            }
+
+            if (inputContainer.CompareTag("Reactor"))
+            {
+                if (inputContainer.GetComponent<ReactorScript>().cardList[0] == input)
+                {
+                    utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+                }
+
+                return;
+            }
+
+            if (inputContainer.CompareTag("Wastepile"))
+            {
+                if (inputContainer.GetComponent<WastepileScript>().cardList[0] == input)
+                {
+                    utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
                 }
 
                 return;
