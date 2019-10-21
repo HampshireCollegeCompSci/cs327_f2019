@@ -23,9 +23,16 @@ public class MenuUIScript : MonoBehaviour
 
     public void MainMenu()
     {
-        Config.config.gameOver = false;
-        SceneManager.LoadScene("MainMenuScene");//resets the level
-        Config.config.gameWin = false;
+        if (Config.config != null)
+        {
+            Config.config.gameOver = false;
+            SceneManager.LoadScene("MainMenuScene");
+            Config.config.gameWin = false;
+        }
+        else
+        {
+            SceneManager.LoadScene("MainMenuScene");
+        }
     }
 
     public void CloseGameMenu(GameObject gameMenu)
