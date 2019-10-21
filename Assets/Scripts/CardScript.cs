@@ -97,6 +97,12 @@ public class CardScript : MonoBehaviour
         destination.SendMessage("SetCardPositions");
     }
 
+    public void MakeVisualOnly()
+    {
+        container = null;
+        Destroy(gameObject.GetComponent<BoxCollider2D>());
+    }
+
 
 }
 

@@ -9,7 +9,7 @@ public class ResponsiveController : MonoBehaviour
     bool updated;
     float width;
     Vector3[] cardOriginalScale;
-    Vector3 foundationOriginalScale, deckOriginalScale, reactorOriginalScale;
+    Vector3 foundationOriginalScale, deckOriginalScale, singleReactorOriginalScale, reactorHolderOriginalScale;
 
     // Start is called before the first frame update
     void Start()
@@ -43,14 +43,17 @@ public class ResponsiveController : MonoBehaviour
 
             //find reactor 
             reactors = GameObject.FindGameObjectsWithTag("Reactor");
-            reactorOriginalScale = reactors[0].transform.localScale;
+            singleReactorOriginalScale = reactors[0].transform.localScale;
+
+            //find reactor holder
+            reactorHolderOriginalScale = GameObject.FindGameObjectWithTag("ReactorHolder").transform.localScale;
 
         }
         else if (Config.config.GetScreenToWorldWidth() != width)
         {
             width = Config.config.GetScreenToWorldWidth();
 
-            //find cards by tag
+            //scale cards by tag
             cards = GameObject.FindGameObjectsWithTag("Card");
 
             for (int i = 0; i < cards.Length; i++)
@@ -58,7 +61,7 @@ public class ResponsiveController : MonoBehaviour
                 cards[i].transform.localScale = cardOriginalScale[i] * width * Config.config.relativeCardScale;
             }
 
-            //find deck
+            //scale deck
             GameObject.FindGameObjectWithTag("Deck").transform.localScale = deckOriginalScale * width * Config.config.relativeCardScale;
 
             //find foundation
@@ -68,12 +71,16 @@ public class ResponsiveController : MonoBehaviour
                 foundations[i].transform.localScale = foundationOriginalScale * width * Config.config.relativeCardScale;
             }
 
-            //find reactor 
+            //scale reactor 
             reactors = GameObject.FindGameObjectsWithTag("Reactor");
             for (int i = 0; i < reactors.Length; i++)
             {
-                reactors[i].transform.localScale = reactorOriginalScale * width * Config.config.relativeCardScale;
+                reactors[i].transform.localScale = singleReactorOriginalScale * width * Config.config.relativeCardScale;
             }
+
+            //scale reactor holder
+            GameObject.FindGameObjectWithTag("ReactorHolder").transform.localScale = reactorHolderOriginalScale * width * Config.config.relativeCardScale;
+
 
         }
     }

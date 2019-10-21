@@ -7,11 +7,14 @@ public class UtilsScript : MonoBehaviour
 {
     public static UtilsScript global; //Creates a new instance if one does not yet exist
     public List<GameObject> selectedCards;
+    private List<GameObject> selectedCardsCopy = new List<GameObject>();
     public GameObject matchedPile;
     public GameObject gameUI;
     public int indexCounter;
     public RaycastHit2D hit;
     public float score = 0;
+    private bool dragOn;
+    private GameObject newGameObject;
 
 
     //TODO make these tuning variables
@@ -41,9 +44,10 @@ public class UtilsScript : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonUp(0) && SceneManager.GetActiveScene().buildIndex == 2)
+        if (Input.GetMouseButtonDown(0) && dragOn == false && SceneManager.GetActiveScene().buildIndex == 2)
         {
             Click();
+            dragOn = true;
 
             //sets the reactor scores
             gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
@@ -60,6 +64,26 @@ public class UtilsScript : MonoBehaviour
                 Config.config.gameWin = true;
             }
         }
+
+        if (Input.GetMouseButtonUp(0) && SceneManager.GetActiveScene().buildIndex == 2)
+        {
+            Click();
+            gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
+
+            foreach(GameObject card in selectedCardsCopy)
+            {
+                Destroy(card);
+            }
+
+            selectedCardsCopy.Clear();
+            dragOn = false;
+        }
+
+        if (dragOn == true && SceneManager.GetActiveScene().buildIndex == 2)
+        {
+            ClickAndDrag(selectedCardsCopy);
+        }
+
     }
 
     public void SelectCard(GameObject inputCard)
@@ -115,8 +139,8 @@ public class UtilsScript : MonoBehaviour
             hit.collider.gameObject.SendMessage("ProcessAction", hit.collider.gameObject);
         }*/
 
-            //if we click a deck activates deck and deselected our cards
-            if (!hit.collider.gameObject.CompareTag("Card"))
+        //if we click a deck activates deck and deselected our cards
+        if (!hit.collider.gameObject.CompareTag("Card"))
         {
             if (hit.collider.gameObject.CompareTag("Deck"))
             {
@@ -281,6 +305,24 @@ public class UtilsScript : MonoBehaviour
         {
             Debug.Log("Suits don't match");
             return false;
+        }
+    }
+
+    public void ClickAndDrag(List<GameObject> cards)
+    {
+        if (cards.Count.Equals(0))
+        {
+            foreach (GameObject card in selectedCards)
+            {
+                newGameObject = (GameObject)Instantiate(card, Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Quaternion.identity);
+                newGameObject.GetComponent<CardScript>().MakeVisualOnly();
+                cards.Add(newGameObject);
+            }
+        }
+
+        foreach (GameObject card in cards)
+        {
+            card.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y + card.transform.position.y, 1));
         }
     }
 
