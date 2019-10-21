@@ -5,6 +5,15 @@ using UnityEngine.SceneManagement;
 
 public class MenuUIScript : MonoBehaviour
 {
+    public void Play()
+    {
+        SceneManager.LoadScene("LevelSelectScene");
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
+    }
 
     public void NewGame(int difficulty)
     {
