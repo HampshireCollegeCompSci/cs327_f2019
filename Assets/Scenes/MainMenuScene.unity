@@ -1317,6 +1317,12 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 602280117}
+    - target: {fileID: 3511995102404692529, guid: 4f18c847488634472bc5d8c326254d9f,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 946a0acc1cb9f7a4d8a34e44c0fe4c82,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f18c847488634472bc5d8c326254d9f, type: 3}
 --- !u!1001 &3837364533131041230
@@ -1474,12 +1480,12 @@ PrefabInstance:
     - target: {fileID: 3837364534203374140, guid: 6b5bcfc054acb4d12874c43284ce7ad3,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: NewGame
+      value: Play
       objectReference: {fileID: 0}
     - target: {fileID: 3837364534203374140, guid: 6b5bcfc054acb4d12874c43284ce7ad3,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6b5bcfc054acb4d12874c43284ce7ad3, type: 3}

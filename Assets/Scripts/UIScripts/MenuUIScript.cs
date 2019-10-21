@@ -5,17 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class MenuUIScript : MonoBehaviour
 {
-    public float countdown;
-
-    private void Update()
-    {
-        countdown -= Time.deltaTime;
-    }
-
 
     public void Play()
     {
-        SceneManager.LoadScene("LevelSelectScene");
+        gameObject.GetComponent<AudioSource>().Play();
+        if (!gameObject.GetComponent<AudioSource>().isPlaying)
+            SceneManager.LoadScene("LevelSelectScene");
     }
 
     public void Quit()
