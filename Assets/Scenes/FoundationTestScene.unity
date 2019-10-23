@@ -2647,10 +2647,9 @@ MonoBehaviour:
   matchedPile: {fileID: 1214012893}
   gameUI: {fileID: 0}
   indexCounter: 0
-  score: 0
   matchPoints: 200
-  emptyReactorPoints: 0
-  PerfectGamePoints: 0
+  emptyReactorPoints: 1000
+  PerfectGamePoints: 2800
 --- !u!4 &1574574479
 Transform:
   m_ObjectHideFlags: 0
@@ -3184,6 +3183,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameOver: 0
   gameWin: 0
+  score: 0
   relativeCardScale: 0
   cardScale: {x: 1.5, y: 1.5, z: 0}
   foundationStackDensity: 0.3
@@ -3195,6 +3195,10 @@ MonoBehaviour:
   foundation2: {fileID: 1812935831}
   foundation3: {fileID: 627912848}
   foundation4: {fileID: 1056444916}
+  reactor1: {fileID: 0}
+  reactor2: {fileID: 0}
+  reactor3: {fileID: 0}
+  reactor4: {fileID: 0}
   wastePile: {fileID: 40183959}
   deck: {fileID: 1524850547}
   cardsToDeal: 0
