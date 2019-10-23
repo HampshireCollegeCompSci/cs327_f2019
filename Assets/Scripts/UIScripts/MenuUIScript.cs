@@ -26,8 +26,9 @@ public class MenuUIScript : MonoBehaviour
 
     public void Restart()
     {
-        Config.config.gameOver = false;
         SceneManager.LoadScene("FoundationTestScene");//resets the level
+        Config.config.gamePaused = false;
+        Config.config.gameOver = false;
         Config.config.gameWin = false;
     }
 
@@ -35,8 +36,9 @@ public class MenuUIScript : MonoBehaviour
     {
         if (Config.config != null)
         {
-            Config.config.gameOver = false;
             SceneManager.LoadScene("MainMenuScene");
+            Config.config.gamePaused = false;
+            Config.config.gameOver = false;
             Config.config.gameWin = false;
         }
         else
@@ -58,13 +60,14 @@ public class MenuUIScript : MonoBehaviour
     public void PauseGame()
     {
         //TODO save the game scene
-
+        Config.config.gamePaused = true;
         SceneManager.LoadScene("PauseScene");
     }
 
     public void ResumeGame()
     {
-        //TODO load the saved game scene
+        //Config.config.gamePaused = false;
+        //TODO load the saved game scene then uncomment the above code
     }
 
 }

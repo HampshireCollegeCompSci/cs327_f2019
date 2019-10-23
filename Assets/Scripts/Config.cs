@@ -54,6 +54,9 @@ public class Config : MonoBehaviour
     public GameObject deck;
     public int cardsToDeal;
 
+    //UI
+    public bool gamePaused;
+
     //internal variables
     private int foundationCount = 0;
     private string JSON;
