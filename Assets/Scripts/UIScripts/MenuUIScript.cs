@@ -20,7 +20,6 @@ public class MenuUIScript : MonoBehaviour
         //restarts the level there will be more added to this method later but for now we don't have dificulty
         SceneManager.LoadScene("FoundationTestScene");
         gameObject.SetActive(false);
-
     }
 
     public void Restart()
