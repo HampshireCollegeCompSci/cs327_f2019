@@ -106,10 +106,10 @@ public class Config : MonoBehaviour
         foundation4 = GameObject.Find("Foundation (3)");
         foundationList = new GameObject[] { foundation1, foundation2, foundation3, foundation4 };
 
-        reactor1 = GameObject.Find("Reactor (0)");
-        reactor2 = GameObject.Find("Reactor (1)");
-        reactor3 = GameObject.Find("Reactor (2)");
-        reactor4 = GameObject.Find("Reactor (3)");
+        reactor1 = GameObject.Find("ReactorPile (0)");
+        reactor2 = GameObject.Find("ReactorPile (1)");
+        reactor3 = GameObject.Find("ReactorPile (2)");
+        reactor4 = GameObject.Find("ReactorPile (3)");
 
         wastePile = GameObject.Find("WastePile");
 

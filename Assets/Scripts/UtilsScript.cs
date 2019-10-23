@@ -43,21 +43,44 @@ public class UtilsScript : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && dragOn == false && SceneManager.GetActiveScene().buildIndex == 2)
+        if (!Config.config.gameOver)
         {
-            Click();
-            if (selectedCards.Count > 0) {
-                dragOn = true;
+            if (Input.GetMouseButtonDown(0) && dragOn == false && SceneManager.GetActiveScene().buildIndex == 2)
+            {
+                Click();
+                if (selectedCards.Count > 0)
+                {
+                    dragOn = true;
+                }
+
+                //sets the reactor scores
+                gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
+
+                //checks if the game has been won
+
+                /*this code is if we want to check cards in the deck and the wastepile as well as the foundations to see if you can win the game
+                 * if (Config.config.CountFoundationCards() + Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count +
+                   Config.config.deck.GetComponent<DeckScript>().cardList.Count == 0)*/
             }
 
-            //sets the reactor scores
-            gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
+            if (Input.GetMouseButtonUp(0) && selectedCardsCopy.Count > 0 && SceneManager.GetActiveScene().buildIndex == 2)
+            {
+                Click();
+                gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
 
-            //checks if the game has been won
+                foreach (GameObject card in selectedCardsCopy)
+                {
+                    Destroy(card);
+                }
 
-            /*this code is if we want to check cards in the deck and the wastepile as well as the foundations to see if you can win the game
-             * if (Config.config.CountFoundationCards() + Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count +
-               Config.config.deck.GetComponent<DeckScript>().cardList.Count == 0)*/
+                selectedCardsCopy.Clear();
+                dragOn = false;
+            }
+
+            if (dragOn == true && SceneManager.GetActiveScene().buildIndex == 2)
+            {
+                ClickAndDrag(selectedCardsCopy);
+            }
 
             if (Config.config.CountFoundationCards() == 0)
             {
@@ -66,26 +89,6 @@ public class UtilsScript : MonoBehaviour
                 Config.config.gameWin = true;
             }
         }
-
-        if (Input.GetMouseButtonUp(0) && selectedCardsCopy.Count > 0 && SceneManager.GetActiveScene().buildIndex == 2)
-        {
-            Click();
-            gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
-
-            foreach(GameObject card in selectedCardsCopy)
-            {
-                Destroy(card);
-            }
-
-            selectedCardsCopy.Clear();
-            dragOn = false;
-        }
-
-        if (dragOn == true && SceneManager.GetActiveScene().buildIndex == 2)
-        {
-            ClickAndDrag(selectedCardsCopy);
-        }
-
     }
 
     public void SelectCard(GameObject inputCard)
