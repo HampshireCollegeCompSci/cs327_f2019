@@ -10,10 +10,12 @@ public class UtilsScript : MonoBehaviour
     private List<GameObject> selectedCardsCopy = new List<GameObject>();
     public GameObject matchedPile;
     public GameObject gameUI;
+    public AudioSource soundController;
     public int indexCounter;
     public RaycastHit2D hit;
     private bool dragOn;
     private GameObject newGameObject;
+
 
     public int matchPoints = Config.config.matchPoints;
     public int emptyReactorPoints = Config.config.emptyReactorPoints;
@@ -45,6 +47,7 @@ public class UtilsScript : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0) && dragOn == false && SceneManager.GetActiveScene().buildIndex == 2)
             {
+
                 Click();
                 if (selectedCards.Count > 0)
                 {
@@ -63,6 +66,7 @@ public class UtilsScript : MonoBehaviour
 
             if (Input.GetMouseButtonUp(0) && selectedCardsCopy.Count > 0 && SceneManager.GetActiveScene().buildIndex == 2)
             {
+
                 Click();
                 gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
 
@@ -77,6 +81,7 @@ public class UtilsScript : MonoBehaviour
 
             if (dragOn == true && SceneManager.GetActiveScene().buildIndex == 2)
             {
+                CardPressSound();
                 ClickAndDrag(selectedCardsCopy);
             }
 
@@ -341,6 +346,7 @@ public class UtilsScript : MonoBehaviour
 
     public void ClickAndDrag(List<GameObject> cards)
     {
+
         if (cards.Count.Equals(0))
         {
             foreach (GameObject card in selectedCards)
@@ -355,6 +361,13 @@ public class UtilsScript : MonoBehaviour
         {
             card.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y + card.transform.position.y, 1));
         }
+    }
+
+    private void CardPressSound()
+    {
+        AudioClip pressSound = Resources.Load<AudioClip>("Audio/token_select");
+        soundController.clip = pressSound;
+        soundController.Play();
     }
 
 }
