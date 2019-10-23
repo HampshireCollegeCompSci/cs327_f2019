@@ -14,9 +14,11 @@ public class DeckScript : MonoBehaviour
     public List<Sprite> sprites;
     public List<GameObject> cardList;
 
-    public bool shuffleOnDeckReset = false;
+    // public bool shuffleOnDeckReset = false;
     public bool dealOnDeckReset = true;
     public int foundationStartSize;
+
+    public int shuffleSeed;
 
     int indexCounter;
     int positionCounter;
@@ -30,12 +32,17 @@ public class DeckScript : MonoBehaviour
         myPrefab.GetComponent<BoxCollider2D>().offset = new Vector2Int(0, 0);
 
         utils = UtilsScript.global;
-
-        // we really shouldn't set up the game adding data to cards and cards to foundations in this script
-        InstantiateCards();
-        Shuffle();
-        SetUpFoundations();
         
+        InstantiateCards();
+
+        if (shuffleSeed == null)
+        {
+            System.Random rand = new System.Random();
+            shuffleSeed = rand.Next();   
+        }
+        Shuffle(shuffleSeed);
+        
+        SetUpFoundations();
         Deal();
         SetCardPositions();
     }
@@ -130,6 +137,14 @@ public class DeckScript : MonoBehaviour
             indexCounter -= 1;
             positionCounter += 1;
         }
+
+        // int counter = 0;
+        // for (int i = cardList.Count - 1; i > 0; i--)
+        // {
+        //     cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, -0.03f * counter, -0.1f * counter);
+        //     counter++;
+        // }
+
     }
 
     // user wants to deal cards, other things might need to be done before that
@@ -139,7 +154,7 @@ public class DeckScript : MonoBehaviour
         {
             Deal();
         }
-        else // we can repopulate the deck
+        else // we need to try repopulating the deck
         {
             if (wastePile.GetComponent<WastepileScript>().GetCardList().Count == 0) // is it not possible to repopulate the deck?
             {
@@ -156,18 +171,14 @@ public class DeckScript : MonoBehaviour
     {
         for (int f = 0; f < foundations.Count; f++)
         {
-            // get the list of cards in a foundation
-            List<GameObject> foundationCardList = foundations[f].GetComponent<FoundationScript>().cardList;
-            if (foundationCardList.Count != 0) // is it not empty?
+            GameObject topFoundationCard = foundations[f].GetComponent<FoundationScript>().cardList[0];
+            for (int r = 0; r < reactors.Count; r++)
             {
-                for (int r = 0; r < reactors.Count; r++)
+                //  does this top card's suit matches the reactor suit
+                if (topFoundationCard.GetComponent<CardScript>().cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
                 {
-                    //  does this top card's suit matches the reactor suit
-                    if (foundationCardList[0].GetComponent<CardScript>().cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
-                    {
-                        foundationCardList[0].GetComponent<CardScript>().MoveCard(reactors[r]);
-                        break;
-                    }
+                    topFoundationCard.GetComponent<CardScript>().MoveCard(reactors[r]);
+                    break;
                 }
             }
         }
@@ -189,10 +200,10 @@ public class DeckScript : MonoBehaviour
             cardList[0].GetComponent<CardScript>().SetCardAppearance();
         }
 
-        if (shuffleOnDeckReset)
-        {
-            Shuffle();
-        }
+        // if (shuffleOnDeckReset) // seed saving for this not implemented yet
+        // {
+        //     Shuffle();
+        // }
 
         if (dealOnDeckReset) // auto deal cards
         {
@@ -218,9 +229,9 @@ public class DeckScript : MonoBehaviour
     }
 
     //Shuffles cardList using Knuth shuffle aka Fisher-Yates shuffle
-    public void Shuffle()
+    public void Shuffle(int seed)
     {
-        System.Random rand = new System.Random();
+        System.Random rand = new System.Random(seed);
 
         for (int i = 0; i < cardList.Count; i++)
         {
