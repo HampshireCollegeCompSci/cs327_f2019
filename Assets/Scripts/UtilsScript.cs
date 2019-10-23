@@ -41,7 +41,7 @@ public class UtilsScript : MonoBehaviour
 
     void Update()
     {
-        if (!Config.config.gameOver)
+        if (!Config.config.gameOver && !Config.config.gamePaused)
         {
             if (Input.GetMouseButtonDown(0) && dragOn == false && SceneManager.GetActiveScene().buildIndex == 2)
             {
