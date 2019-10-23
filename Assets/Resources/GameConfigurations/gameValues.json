@@ -3,6 +3,11 @@
     "foundationStartingSize": 7,
     "wastepileCardsToShow": 3,
     "nonTopXOffset": 0.25,
+    "draggedTokenOffset": .5,
     "cardsToDeal": 3,
-    "relativeCardScale": 0.18
+    "relativeCardScale": 0.18,
+    "turnsTillReset": 18,
+    "matchPoints": 100,
+    "emptyReactorPoint": 100,
+    "perfectGamePoints": 100
 }

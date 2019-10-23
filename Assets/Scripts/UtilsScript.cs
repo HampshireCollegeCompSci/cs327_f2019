@@ -15,11 +15,9 @@ public class UtilsScript : MonoBehaviour
     private bool dragOn;
     private GameObject newGameObject;
 
-
-    //TODO make these tuning variables
-    public int matchPoints;
-    public int emptyReactorPoints;
-    public int PerfectGamePoints;
+    public int matchPoints = Config.config.matchPoints;
+    public int emptyReactorPoints = Config.config.emptyReactorPoints;
+    public int PerfectGamePoints = Config.config.perfectGamePoints;
 
 
     public void SetCards()
