@@ -109,7 +109,7 @@ public class Config : MonoBehaviour
         matchPoints = gameInfo.matchPoints;
         emptyReactorPoints = gameInfo.emptyReactorPoints;
         perfectGamePoints = gameInfo.perfectGamePoints;
-}
+    }
 
     public void SetCards()
     {

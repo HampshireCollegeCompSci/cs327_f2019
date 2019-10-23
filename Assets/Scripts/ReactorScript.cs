@@ -7,6 +7,8 @@ public class ReactorScript : MonoBehaviour
     //helloWorld
     public List<GameObject> cardList;
     public UtilsScript utils;
+    public SoundController soundController;
+
     int positionCounter;
     int cardMax;
     int ReactorVal;
@@ -26,12 +28,6 @@ public class ReactorScript : MonoBehaviour
         guiStyle = new GUIStyle();
         guiStyle.fontSize = 20;
         UpdateGUI();
-    }
-
-
-    void Update()
-    {
-        return;
     }
 
     //private void OnGUI()
@@ -55,6 +51,7 @@ public class ReactorScript : MonoBehaviour
         // Debug.Log("RS CheckGameOver");
         if (CountReactorCard() >= Config.config.maxReactorVal)
         {
+            Config.config.GetComponent<SoundController>().ReactorExplodeSound();
             myPrefab = (GameObject)Resources.Load("Prefabs/Explosion", typeof(GameObject));
             Instantiate(myPrefab, gameObject.transform.position, gameObject.transform.rotation);
             Destroy(gameObject);
@@ -74,13 +71,17 @@ public class ReactorScript : MonoBehaviour
 
     public void SetCardPositions()
     {
+        //TODO:find where to put the sound below
+        //soundController.CardToReactorSound();
+
         // Debug.Log("RS SetCardPositions");
         positionCounter = 0;
 
         for (int indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
         {
+            //TODO: refine card position; move it lower
             cardList[indexCounter].transform.position = gameObject.transform.position +
-                new Vector3(0, Config.config.foundationStackDensity * positionCounter, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
+                new Vector3(0, Config.config.foundationStackDensity * positionCounter, -0.5f * (positionCounter + 1));
 
             positionCounter += 1;
         }
@@ -165,6 +166,7 @@ public class ReactorScript : MonoBehaviour
     //basically just in case it goes over 18, in which case end game
     public int CountReactorCard()
     {
+
         // Debug.Log("RS CountReactorCard");
         //sum the values into totalSum, return
         int totalSum = 0;

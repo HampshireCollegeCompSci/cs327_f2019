@@ -14,6 +14,8 @@ public class DeckScript : MonoBehaviour
     public List<Sprite> sprites;
     public List<GameObject> cardList;
 
+    public SoundController soundController;
+
     // public bool shuffleOnDeckReset = false;
     public bool dealOnDeckReset = true;
     public int foundationStartSize;
@@ -28,26 +30,26 @@ public class DeckScript : MonoBehaviour
         foundationStartSize = Config.config.foundationStartSize;
         print("foundation start Size in DeckScript: " + foundationStartSize);
         myPrefab = (GameObject)Resources.Load("Prefabs/Card", typeof(GameObject));
-        myPrefab.GetComponent<BoxCollider2D>().size = new Vector2Int(1,1);
+        myPrefab.GetComponent<BoxCollider2D>().size = new Vector2Int(1, 1);
         myPrefab.GetComponent<BoxCollider2D>().offset = new Vector2Int(0, 0);
 
         utils = UtilsScript.global;
-        
+
         InstantiateCards();
 
         if (shuffleSeed == null)
         {
             System.Random rand = new System.Random();
-            shuffleSeed = rand.Next();   
+            shuffleSeed = rand.Next();
         }
         Shuffle(shuffleSeed);
-        
+
         SetUpFoundations();
         Deal();
         SetCardPositions();
     }
 
-     // sets up card list
+    // sets up card list
     public void InstantiateCards()
     {
         cardList = new List<GameObject>();
@@ -61,12 +63,12 @@ public class DeckScript : MonoBehaviour
         for (int suit = 0; suit < 4; suit++) // order: club, diamonds, hearts, spades
         {
             for (int num = 1; num < 14; num++) // card num: 1 - 13
-            { 
+            {
                 if (num > 10) // all face cards have a value of 10
                 {
                     cardList[cardIndex].GetComponent<CardScript>().cardVal = 10;
                 }
-                else    
+                else
                 {
                     cardList[cardIndex].GetComponent<CardScript>().cardVal = num;
                 }
@@ -94,7 +96,7 @@ public class DeckScript : MonoBehaviour
                 cardList[cardIndex].GetComponent<CardScript>().hidden = true;
                 cardList[cardIndex].GetComponent<CardScript>().appearSelected = false;
                 cardList[cardIndex].GetComponent<CardScript>().container = this.gameObject;
-               
+
                 cardIndex += 1;
             }
         }
@@ -150,8 +152,10 @@ public class DeckScript : MonoBehaviour
     // user wants to deal cards, other things might need to be done before that
     public void ProcessAction(GameObject input)
     {
+
         if (cardList.Count != 0) // can the deck can be drawn from
         {
+            soundController.DeckDeal();
             Deal();
         }
         else // we need to try repopulating the deck
@@ -161,6 +165,7 @@ public class DeckScript : MonoBehaviour
                 return;
             }
 
+            soundController.DeckReshuffle();
             NextCycle();
             DeckReset();
         }
@@ -187,10 +192,11 @@ public class DeckScript : MonoBehaviour
     // moves all wastePile cards into the deck
     public void DeckReset()
     {
+
         // the top of the deck is index 0
         // get all the cards from the wastepile
         List<GameObject> wasteCardList = wastePile.GetComponent<WastepileScript>().GetCardList();
-        
+
         // move all the cards from waste to deck, preserves reveal order
         // if there are any cards in the deck's cardList before they will be on the bottom after
         while (wasteCardList.Count > 0)
@@ -214,6 +220,7 @@ public class DeckScript : MonoBehaviour
     // deals cards
     public void Deal()
     {
+
         for (int i = 0; i < Config.config.cardsToDeal; i++) // try to deal set number of cards
         {
             if (cardList.Count == 0) // are there no more cards in the deck?
@@ -224,7 +231,7 @@ public class DeckScript : MonoBehaviour
             // reveal card and move from deck list top into waste
             cardList[0].GetComponent<CardScript>().hidden = false;
             cardList[0].GetComponent<CardScript>().SetCardAppearance();
-            cardList[0].GetComponent<CardScript>().MoveCard(wastePile);   
+            cardList[0].GetComponent<CardScript>().MoveCard(wastePile);
         }
     }
 

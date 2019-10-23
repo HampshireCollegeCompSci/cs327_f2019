@@ -34,7 +34,7 @@ public class CardScript : MonoBehaviour
         if (hidden)
         {
             gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
-           //gameObject.transform.localScale = new Vector3(2.8f, 2.8f, 2.8f);
+            //gameObject.transform.localScale = new Vector3(2.8f, 2.8f, 2.8f);
         }
 
         //shows card if it's not hidden
