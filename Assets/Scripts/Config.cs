@@ -14,6 +14,12 @@ public class Config : MonoBehaviour
     public bool gameWin;
     public int score;
     public float relativeCardScale;
+    public int turnsTillReset;
+
+    //score
+    public int matchPoints;
+    public int emptyReactorPoints;
+    public int perfectGamePoints;
 
     //card scale
     public Vector3 cardScale;
@@ -96,7 +102,11 @@ public class Config : MonoBehaviour
         print(nonTopXOffset);
         cardsToDeal = gameInfo.cardsToDeal;
         relativeCardScale = gameInfo.relativeCardScale;
-    }
+        turnsTillReset = gameInfo.turnsTillReset;
+        matchPoints = gameInfo.matchPoints;
+        emptyReactorPoints = gameInfo.emptyReactorPoints;
+        perfectGamePoints = gameInfo.perfectGamePoints;
+}
 
     public void SetCards()
     {
