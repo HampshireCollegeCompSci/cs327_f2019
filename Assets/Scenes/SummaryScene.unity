@@ -375,6 +375,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameState: {fileID: 349081295}
+  gameScore: {fileID: 1467624045}
 --- !u!1001 &928942056
 PrefabInstance:
   m_ObjectHideFlags: 0

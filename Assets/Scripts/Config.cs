@@ -12,6 +12,7 @@ public class Config : MonoBehaviour
     public Stack<Move> moveLog = new Stack<Move>();
     public bool gameOver;
     public bool gameWin;
+    public int score;
     public float relativeCardScale;
 
     //card scale
@@ -33,6 +34,11 @@ public class Config : MonoBehaviour
     public GameObject foundation2;
     public GameObject foundation3;
     public GameObject foundation4;
+
+    public GameObject reactor1;
+    public GameObject reactor2;
+    public GameObject reactor3;
+    public GameObject reactor4;
 
     private GameObject[] foundationList;
 
@@ -98,9 +104,16 @@ public class Config : MonoBehaviour
         foundation2 = GameObject.Find("Foundation (1)");
         foundation3 = GameObject.Find("Foundation (2)");
         foundation4 = GameObject.Find("Foundation (3)");
-        wastePile = GameObject.Find("WastePile");
-        deck = GameObject.Find("Deck");
         foundationList = new GameObject[] { foundation1, foundation2, foundation3, foundation4 };
+
+        reactor1 = GameObject.Find("Reactor (0)");
+        reactor2 = GameObject.Find("Reactor (1)");
+        reactor3 = GameObject.Find("Reactor (2)");
+        reactor4 = GameObject.Find("Reactor (3)");
+
+        wastePile = GameObject.Find("WastePile");
+
+        deck = GameObject.Find("Deck");
     }
 
 

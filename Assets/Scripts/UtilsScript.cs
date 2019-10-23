@@ -12,15 +12,14 @@ public class UtilsScript : MonoBehaviour
     public GameObject gameUI;
     public int indexCounter;
     public RaycastHit2D hit;
-    public float score = 0;
     private bool dragOn;
     private GameObject newGameObject;
 
 
     //TODO make these tuning variables
-    public float matchPoints;
-    public float emptyReactorPoints;
-    public float PerfectGamePoints;
+    public int matchPoints;
+    public int emptyReactorPoints;
+    public int PerfectGamePoints;
 
 
     public void SetCards()
@@ -62,6 +61,7 @@ public class UtilsScript : MonoBehaviour
 
             if (Config.config.CountFoundationCards() == 0)
             {
+                SetEndGameScore();
                 Config.config.gameOver = true;
                 Config.config.gameWin = true;
             }
@@ -229,7 +229,7 @@ public class UtilsScript : MonoBehaviour
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
 
-        score += matchPoints;
+        Config.config.score += matchPoints;
         //check to see if the board is clear
     }
 
@@ -307,6 +307,34 @@ public class UtilsScript : MonoBehaviour
         {
             Debug.Log("Suits don't match");
             return false;
+        }
+    }
+
+    public void SetEndGameScore()
+    {
+        if (matchedPile.GetComponent<MatchedPileScript>().cardList.Count == 52)
+        {
+            Config.config.score += PerfectGamePoints;
+        }
+
+        if (Config.config.reactor1.GetComponent<ReactorScript>().cardList.Count == 0)
+        {
+            Config.config.score += emptyReactorPoints;
+        }
+
+        if (Config.config.reactor2.GetComponent<ReactorScript>().cardList.Count == 0)
+        {
+            Config.config.score += emptyReactorPoints;
+        }
+
+        if (Config.config.reactor3.GetComponent<ReactorScript>().cardList.Count == 0)
+        {
+            Config.config.score += emptyReactorPoints;
+        }
+
+        if (Config.config.reactor4.GetComponent<ReactorScript>().cardList.Count == 0)
+        {
+            Config.config.score += emptyReactorPoints;
         }
     }
 
