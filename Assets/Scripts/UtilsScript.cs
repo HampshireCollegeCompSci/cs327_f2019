@@ -10,7 +10,7 @@ public class UtilsScript : MonoBehaviour
     private List<GameObject> selectedCardsCopy = new List<GameObject>();
     public GameObject matchedPile;
     public GameObject gameUI;
-    public AudioSource soundController;
+    public SoundController soundController;
     public int indexCounter;
     public RaycastHit2D hit;
     private bool dragOn;
@@ -24,7 +24,6 @@ public class UtilsScript : MonoBehaviour
 
     public void SetCards()
     {
-        soundController = GameObject.Find("Sound").GetComponent<AudioSource>();
         matchedPile = GameObject.Find("MatchedPile");
         gameUI = GameObject.Find("GameUI");
     }
@@ -52,6 +51,7 @@ public class UtilsScript : MonoBehaviour
                 Click();
                 if (selectedCards.Count > 0)
                 {
+                    soundController.CardPressSound();
                     dragOn = true;
                 }
 
@@ -82,7 +82,7 @@ public class UtilsScript : MonoBehaviour
 
             if (dragOn == true && SceneManager.GetActiveScene().buildIndex == 2)
             {
-                CardPressSound();
+
                 ClickAndDrag(selectedCardsCopy);
             }
 
@@ -233,6 +233,7 @@ public class UtilsScript : MonoBehaviour
 
     public void Match(GameObject card1, GameObject card2)
     {
+        soundController.CardMatchSound();
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
 
@@ -364,11 +365,7 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    private void CardPressSound()
-    {
-        AudioClip pressSound = Resources.Load<AudioClip>("Audio/token_select");
-        soundController.clip = pressSound;
-        soundController.Play();
-    }
+
+
 
 }
