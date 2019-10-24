@@ -83,7 +83,6 @@ public class UtilsScript : MonoBehaviour
 
             if (dragOn == true && SceneManager.GetActiveScene().buildIndex == 2)
             {
-
                 ClickAndDrag(selectedCardsCopy);
             }
 
@@ -96,6 +95,7 @@ public class UtilsScript : MonoBehaviour
             if (Config.config.gameOver)
             {
                 SetEndGameScore();
+                Debug.Log("score" + Config.config.score);
             }
         }
     }
@@ -243,6 +243,7 @@ public class UtilsScript : MonoBehaviour
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
 
         Config.config.score += matchPoints;
+        Debug.Log("score" + Config.config.score);
         //check to see if the board is clear
     }
 

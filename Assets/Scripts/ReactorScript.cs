@@ -124,6 +124,7 @@ public class ReactorScript : MonoBehaviour
                             utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
                         }
 
+                        return;
                     }
 
                     if (inputContainer.CompareTag("Reactor"))
@@ -133,6 +134,7 @@ public class ReactorScript : MonoBehaviour
                             utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
                         }
 
+                        return;
                     }
 
                     if (inputContainer.CompareTag("Wastepile"))
@@ -141,12 +143,26 @@ public class ReactorScript : MonoBehaviour
                         {
                             utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
                         }
+
+                        return;
+                    }
+
+                    if (inputContainer.CompareTag("Wastepile"))
+                    {
+                        if (inputContainer.GetComponent<WastepileScript>().cardList[0] == input)
+                        {
+                            utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+                        }
+
+                        return;
                     }
 
                     else
                     {
                         utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
                     }
+
+                    return;
                 }
 
                 else
