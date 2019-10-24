@@ -89,9 +89,13 @@ public class UtilsScript : MonoBehaviour
 
             if (Config.config.CountFoundationCards() == 0)
             {
-                SetEndGameScore();
                 Config.config.gameOver = true;
                 Config.config.gameWin = true;
+            }
+
+            if (Config.config.gameOver)
+            {
+                SetEndGameScore();
             }
         }
     }

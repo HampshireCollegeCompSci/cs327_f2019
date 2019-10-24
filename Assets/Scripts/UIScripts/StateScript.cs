@@ -19,15 +19,14 @@ public class StateScript : MonoBehaviour
         if (win)
         {
             gameState.text = "You Won!";
-            ShowScore(Config.config.score);
-
         }
 
         else
         {
             gameState.text = "You Lost!";
-            gameScore.text = "";
         }
+
+        ShowScore(Config.config.score);
     }
 
     public void ShowScore(int score)
