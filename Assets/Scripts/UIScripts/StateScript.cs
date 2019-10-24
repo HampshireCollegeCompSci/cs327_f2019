@@ -31,6 +31,6 @@ public class StateScript : MonoBehaviour
 
     public void ShowScore(int score)
     {
-        gameScore.text = "score:" + score;
+        gameScore.text = score.ToString();
     }
 }
