@@ -20,6 +20,7 @@ public class DeckScript : MonoBehaviour
     public bool dealOnDeckReset = true;
     public int foundationStartSize;
 
+    public bool importedSeed;
     public int shuffleSeed;
 
     int indexCounter;
@@ -36,14 +37,8 @@ public class DeckScript : MonoBehaviour
         utils = UtilsScript.global;
 
         InstantiateCards();
-
-        if (shuffleSeed == null)
-        {
-            System.Random rand = new System.Random();
-            shuffleSeed = rand.Next();
-        }
-        Shuffle(shuffleSeed);
-
+        importedSeed = false;
+        Shuffle();
         SetUpFoundations();
         Deal();
         SetCardPositions();
@@ -235,14 +230,30 @@ public class DeckScript : MonoBehaviour
         }
     }
 
-    //Shuffles cardList using Knuth shuffle aka Fisher-Yates shuffle
-    public void Shuffle(int seed)
+    public void ImportShuffleSeed(int seed)
     {
-        System.Random rand = new System.Random(seed);
+        shuffleSeed = seed;
+        importedSeed = true;
+    }
+
+    //Shuffles cardList using Knuth shuffle aka Fisher-Yates shuffle
+    public void Shuffle()
+    {
+        if (!importedSeed)
+        {
+            System.Random rand1 = new System.Random();
+            shuffleSeed = rand1.Next();
+        }
+        else
+        {
+            importedSeed = false;
+        }
+
+        System.Random rand2 = new System.Random(shuffleSeed);
 
         for (int i = 0; i < cardList.Count; i++)
         {
-            int j = rand.Next(i, cardList.Count);
+            int j = rand2.Next(i, cardList.Count);
             GameObject temp = cardList[i];
             cardList[i] = cardList[j];
             cardList[j] = temp;
