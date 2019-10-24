@@ -6,6 +6,7 @@ public class WastepileScript : MonoBehaviour
 {
     public UtilsScript utils;
     public List<GameObject> cardList;
+    public SoundController soundController;
     int counter;
     int cardMax;
 
@@ -119,6 +120,7 @@ public class WastepileScript : MonoBehaviour
 
         else if ((utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1) == input.GetComponent<CardScript>().cardNum && input.GetComponent<CardScript>().container.CompareTag("Foundation"))
         {
+            soundController.CardStackSound();
             foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
             {
                 card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
@@ -127,6 +129,7 @@ public class WastepileScript : MonoBehaviour
 
         else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
         {
+            soundController.CardToReactorSound();
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
         }
 

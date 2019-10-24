@@ -151,6 +151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   utils: {fileID: 1574574478}
   cardList: []
+  soundController: {fileID: 307181958}
 --- !u!4 &40183961
 Transform:
   m_ObjectHideFlags: 0
