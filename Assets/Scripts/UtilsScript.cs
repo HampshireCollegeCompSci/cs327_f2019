@@ -26,6 +26,7 @@ public class UtilsScript : MonoBehaviour
     {
         matchedPile = GameObject.Find("MatchedPile");
         gameUI = GameObject.Find("GameUI");
+        soundController = GameObject.Find("Sound").GetComponent<SoundController>();
     }
 
     void Awake()
