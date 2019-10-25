@@ -13,6 +13,7 @@ public class StartScript : MonoBehaviour
         config = GameObject.Find("Config");
         config.GetComponent<Config>().SetCards();
         config.GetComponent<Config>().gamePaused = false;
+        config.GetComponent<Config>().gameOver = false;
 
         utils = GameObject.Find("Utils");
         utils.GetComponent<UtilsScript>().SetCards();
