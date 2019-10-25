@@ -19,6 +19,7 @@ public class MenuUIScript : MonoBehaviour
     public void NewGame(int difficulty)
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
+        Config.config.GetComponent<MusicController>().GameMusic();
         //restarts the level there will be more added to this method later but for now we don't have dificulty
         Config.config.gameOver = false;
         Config.config.gameWin = false;
@@ -30,6 +31,7 @@ public class MenuUIScript : MonoBehaviour
     public void Restart()
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
+        Config.config.GetComponent<MusicController>().GameMusic();
         SceneManager.LoadScene("FoundationTestScene");//resets the level
         Config.config.gameOver = false;
         Config.config.gameWin = false;
@@ -50,6 +52,7 @@ public class MenuUIScript : MonoBehaviour
         {
             SceneManager.LoadScene("MainMenuScene");
         }
+        Config.config.GetComponent<MusicController>().MainMenuMusic();
     }
 
     public void About()
