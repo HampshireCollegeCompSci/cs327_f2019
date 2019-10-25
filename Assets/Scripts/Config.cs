@@ -12,7 +12,14 @@ public class Config : MonoBehaviour
     public Stack<Move> moveLog = new Stack<Move>();
     public bool gameOver;
     public bool gameWin;
+    public int score;
     public float relativeCardScale;
+    public int turnsTillReset;
+
+    //score
+    public int matchPoints;
+    public int emptyReactorPoints;
+    public int perfectGamePoints;
 
     //card scale
     public Vector3 cardScale;
@@ -34,6 +41,11 @@ public class Config : MonoBehaviour
     public GameObject foundation3;
     public GameObject foundation4;
 
+    public GameObject reactor1;
+    public GameObject reactor2;
+    public GameObject reactor3;
+    public GameObject reactor4;
+
     private GameObject[] foundationList;
 
     public GameObject wastePile;
@@ -41,6 +53,9 @@ public class Config : MonoBehaviour
     //deck
     public GameObject deck;
     public int cardsToDeal;
+
+    //UI
+    public bool gamePaused;
 
     //internal variables
     private int foundationCount = 0;
@@ -90,6 +105,10 @@ public class Config : MonoBehaviour
         print(nonTopXOffset);
         cardsToDeal = gameInfo.cardsToDeal;
         relativeCardScale = gameInfo.relativeCardScale;
+        turnsTillReset = gameInfo.turnsTillReset;
+        matchPoints = gameInfo.matchPoints;
+        emptyReactorPoints = gameInfo.emptyReactorPoints;
+        perfectGamePoints = gameInfo.perfectGamePoints;
     }
 
     public void SetCards()
@@ -98,9 +117,18 @@ public class Config : MonoBehaviour
         foundation2 = GameObject.Find("Foundation (1)");
         foundation3 = GameObject.Find("Foundation (2)");
         foundation4 = GameObject.Find("Foundation (3)");
-        wastePile = GameObject.Find("WastePile");
-        deck = GameObject.Find("Deck");
         foundationList = new GameObject[] { foundation1, foundation2, foundation3, foundation4 };
+
+        reactor1 = GameObject.Find("ReactorPile (0)");
+        reactor2 = GameObject.Find("ReactorPile (1)");
+        reactor3 = GameObject.Find("ReactorPile (2)");
+        reactor4 = GameObject.Find("ReactorPile (3)");
+
+        wastePile = GameObject.Find("WastePile");
+
+        deck = GameObject.Find("Deck");
+
+        score = 0;
     }
 
 

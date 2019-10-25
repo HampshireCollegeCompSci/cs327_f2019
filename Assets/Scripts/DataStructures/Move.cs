@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class Move
 {
-    GameObject card;
-    GameObject stackFrom;
-    GameObject stackTo;
+    public GameObject card;
+    public GameObject origin;
+    public string moveType;
+    public bool nextCardWasHidden;
 
-    public Move(GameObject Card, GameObject StackFrom, GameObject StackTo)
+    public Move(string moveType, GameObject card, GameObject origin, bool nextCardWasHidden)
     {
-        card = Card;
-        stackFrom = StackFrom;
-        stackTo = StackTo;
+        this.card = card;
+        this.origin = origin;
+        this.moveType = moveType;
+        this.nextCardWasHidden = nextCardWasHidden;
     }
 }
