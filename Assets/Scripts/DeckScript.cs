@@ -122,10 +122,15 @@ public class DeckScript : MonoBehaviour
     public void SetCardPositions()
     {
         int positionCounter = 0;
-        for (int i = cardList.Count - 1; i > 0; i--)
+        float yOffset = 0;
+
+        for (int i = cardList.Count - 1; i >= 0; i--)  // go backwards through the list
         {
-            cardList[i].transform.position = gameObject.transform.position + new Vector3(0, -0.03f * positionCounter, -0.1f * positionCounter);
+            // as we go through, place cards below and in-front of the previous one
+            cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -positionCounter * 0.1f);
+
             positionCounter++;
+            yOffset -= 0.03f;
         }
     }
 
