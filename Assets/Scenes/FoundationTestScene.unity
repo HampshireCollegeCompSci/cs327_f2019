@@ -627,7 +627,7 @@ GameObject:
   - component: {fileID: 356610222}
   m_Layer: 0
   m_Name: reactor_front
-  m_TagString: Untagged
+  m_TagString: ReactorHolder
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2064,7 +2064,7 @@ GameObject:
   - component: {fileID: 1528290457}
   m_Layer: 0
   m_Name: reactor_back
-  m_TagString: Untagged
+  m_TagString: ReactorHolder
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
