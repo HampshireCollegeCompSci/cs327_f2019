@@ -86,6 +86,7 @@ public class Config : MonoBehaviour
         ConfigFromJSON();
         SetCards();
         countdown = delayToShowGameSummary;
+        gameObject.GetComponent<MusicController>().MainMenuMusic();
     }
 
 
@@ -98,6 +99,14 @@ public class Config : MonoBehaviour
             if (countdown < 0)
             {
                 SceneManager.LoadScene("SummaryScene");
+                if (gameWin)
+                {
+                    gameObject.GetComponent<MusicController>().WinMusic();
+                }
+                else
+                {
+                    gameObject.GetComponent<MusicController>().LoseMusic();
+                }
                 countdown = delayToShowGameSummary;
             }
             else

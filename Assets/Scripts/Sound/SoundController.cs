@@ -4,12 +4,7 @@ using UnityEngine;
 
 public class SoundController : MonoBehaviour
 {
-    AudioSource soundController;
-
-    private void Start()
-    {
-        soundController = gameObject.GetComponent<AudioSource>();
-    }
+    public AudioSource soundController;
 
     public void ButtonPressSound()
     {
@@ -63,27 +58,6 @@ public class SoundController : MonoBehaviour
     public void DeckReshuffle()
     {
         AudioClip sound = Resources.Load<AudioClip>("Audio/deck_conveyer_belt_reshuffle");
-        soundController.clip = sound;
-        soundController.Play();
-    }
-
-    public void LoseMusic()
-    {
-        AudioClip sound = Resources.Load<AudioClip>("Audio/music_lose");
-        soundController.clip = sound;
-        soundController.Play();
-    }
-
-    public void WinMusic()
-    {
-        AudioClip sound = Resources.Load<AudioClip>("Audio/music_win");
-        soundController.clip = sound;
-        soundController.Play();
-    }
-
-    public void MainMenuMusic()
-    {
-        AudioClip sound = Resources.Load<AudioClip>("Audio/music_menu");
         soundController.clip = sound;
         soundController.Play();
     }
