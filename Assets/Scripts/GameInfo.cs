@@ -33,4 +33,5 @@ public class GameInfo
     public int matchPoints;
     public int emptyReactorPoints;
     public int perfectGamePoints;
+    public float delayToShowGameSummary;
 }

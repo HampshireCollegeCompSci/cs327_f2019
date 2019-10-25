@@ -20,11 +20,8 @@ public class DeckScript : MonoBehaviour
     public bool dealOnDeckReset = true;
     public int foundationStartSize;
 
-    public bool importedSeed;
+    public bool importSeed;
     public int shuffleSeed;
-
-    int indexCounter;
-    int positionCounter;
 
     void Start()
     {
@@ -37,7 +34,7 @@ public class DeckScript : MonoBehaviour
         utils = UtilsScript.global;
 
         InstantiateCards();
-        importedSeed = false;
+        importSeed = false;
         Shuffle();
         SetUpFoundations();
         Deal();
@@ -124,24 +121,12 @@ public class DeckScript : MonoBehaviour
     // top card is cardList[0]
     public void SetCardPositions()
     {
-        indexCounter = cardList.Count - 1;
-        positionCounter = 0;
-
-        while (indexCounter > -1)
+        int positionCounter = 0;
+        for (int i = cardList.Count - 1; i > 0; i--)
         {
-            cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, -0.03f * positionCounter, -0.1f * positionCounter);
-
-            indexCounter -= 1;
-            positionCounter += 1;
+            cardList[i].transform.position = gameObject.transform.position + new Vector3(0, -0.03f * positionCounter, -0.1f * positionCounter);
+            positionCounter++;
         }
-
-        // int counter = 0;
-        // for (int i = cardList.Count - 1; i > 0; i--)
-        // {
-        //     cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, -0.03f * counter, -0.1f * counter);
-        //     counter++;
-        // }
-
     }
 
     // user wants to deal cards, other things might need to be done before that
@@ -174,7 +159,7 @@ public class DeckScript : MonoBehaviour
             GameObject topFoundationCard = foundations[f].GetComponent<FoundationScript>().cardList[0];
             for (int r = 0; r < reactors.Count; r++)
             {
-                //  does this top card's suit matches the reactor suit
+                //  does this top card's suit match the reactor's suit
                 if (topFoundationCard.GetComponent<CardScript>().cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
                 {
                     topFoundationCard.GetComponent<CardScript>().MoveCard(reactors[r]);
@@ -187,8 +172,6 @@ public class DeckScript : MonoBehaviour
     // moves all wastePile cards into the deck
     public void DeckReset()
     {
-
-        // the top of the deck is index 0
         // get all the cards from the wastepile
         List<GameObject> wasteCardList = wastePile.GetComponent<WastepileScript>().GetCardList();
 
@@ -215,7 +198,6 @@ public class DeckScript : MonoBehaviour
     // deals cards
     public void Deal()
     {
-
         for (int i = 0; i < Config.config.cardsToDeal; i++) // try to deal set number of cards
         {
             if (cardList.Count == 0) // are there no more cards in the deck?
@@ -233,20 +215,20 @@ public class DeckScript : MonoBehaviour
     public void ImportShuffleSeed(int seed)
     {
         shuffleSeed = seed;
-        importedSeed = true;
+        importSeed = true;
     }
 
     //Shuffles cardList using Knuth shuffle aka Fisher-Yates shuffle
     public void Shuffle()
     {
-        if (!importedSeed)
+        if (!importSeed)
         {
             System.Random rand1 = new System.Random();
             shuffleSeed = rand1.Next();
         }
         else
         {
-            importedSeed = false;
+            importSeed = false;
         }
 
         System.Random rand2 = new System.Random(shuffleSeed);
