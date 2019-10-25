@@ -14,9 +14,14 @@ public class DeckScript : MonoBehaviour
     public List<Sprite> sprites;
     public List<GameObject> cardList;
 
-    public bool shuffleOnDeckReset = false;
+    public SoundController soundController;
+
+    // public bool shuffleOnDeckReset = false;
     public bool dealOnDeckReset = true;
     public int foundationStartSize;
+
+    public bool importedSeed;
+    public int shuffleSeed;
 
     int indexCounter;
     int positionCounter;
@@ -26,21 +31,20 @@ public class DeckScript : MonoBehaviour
         foundationStartSize = Config.config.foundationStartSize;
         print("foundation start Size in DeckScript: " + foundationStartSize);
         myPrefab = (GameObject)Resources.Load("Prefabs/Card", typeof(GameObject));
-        myPrefab.GetComponent<BoxCollider2D>().size = new Vector2Int(1,1);
+        myPrefab.GetComponent<BoxCollider2D>().size = new Vector2Int(1, 1);
         myPrefab.GetComponent<BoxCollider2D>().offset = new Vector2Int(0, 0);
 
         utils = UtilsScript.global;
 
-        // we really shouldn't set up the game adding data to cards and cards to foundations in this script
         InstantiateCards();
+        importedSeed = false;
         Shuffle();
         SetUpFoundations();
-        
         Deal();
         SetCardPositions();
     }
 
-     // sets up card list
+    // sets up card list
     public void InstantiateCards()
     {
         cardList = new List<GameObject>();
@@ -54,12 +58,12 @@ public class DeckScript : MonoBehaviour
         for (int suit = 0; suit < 4; suit++) // order: club, diamonds, hearts, spades
         {
             for (int num = 1; num < 14; num++) // card num: 1 - 13
-            { 
+            {
                 if (num > 10) // all face cards have a value of 10
                 {
                     cardList[cardIndex].GetComponent<CardScript>().cardVal = 10;
                 }
-                else    
+                else
                 {
                     cardList[cardIndex].GetComponent<CardScript>().cardVal = num;
                 }
@@ -87,7 +91,7 @@ public class DeckScript : MonoBehaviour
                 cardList[cardIndex].GetComponent<CardScript>().hidden = true;
                 cardList[cardIndex].GetComponent<CardScript>().appearSelected = false;
                 cardList[cardIndex].GetComponent<CardScript>().container = this.gameObject;
-               
+
                 cardIndex += 1;
             }
         }
@@ -130,22 +134,33 @@ public class DeckScript : MonoBehaviour
             indexCounter -= 1;
             positionCounter += 1;
         }
+
+        // int counter = 0;
+        // for (int i = cardList.Count - 1; i > 0; i--)
+        // {
+        //     cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, -0.03f * counter, -0.1f * counter);
+        //     counter++;
+        // }
+
     }
 
     // user wants to deal cards, other things might need to be done before that
     public void ProcessAction(GameObject input)
     {
+
         if (cardList.Count != 0) // can the deck can be drawn from
         {
+            soundController.DeckDeal();
             Deal();
         }
-        else // we can repopulate the deck
+        else // we need to try repopulating the deck
         {
             if (wastePile.GetComponent<WastepileScript>().GetCardList().Count == 0) // is it not possible to repopulate the deck?
             {
                 return;
             }
 
+            soundController.DeckReshuffle();
             NextCycle();
             DeckReset();
         }
@@ -156,18 +171,14 @@ public class DeckScript : MonoBehaviour
     {
         for (int f = 0; f < foundations.Count; f++)
         {
-            // get the list of cards in a foundation
-            List<GameObject> foundationCardList = foundations[f].GetComponent<FoundationScript>().cardList;
-            if (foundationCardList.Count != 0) // is it not empty?
+            GameObject topFoundationCard = foundations[f].GetComponent<FoundationScript>().cardList[0];
+            for (int r = 0; r < reactors.Count; r++)
             {
-                for (int r = 0; r < reactors.Count; r++)
+                //  does this top card's suit matches the reactor suit
+                if (topFoundationCard.GetComponent<CardScript>().cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
                 {
-                    //  does this top card's suit matches the reactor suit
-                    if (foundationCardList[0].GetComponent<CardScript>().cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
-                    {
-                        foundationCardList[0].GetComponent<CardScript>().MoveCard(reactors[r]);
-                        break;
-                    }
+                    topFoundationCard.GetComponent<CardScript>().MoveCard(reactors[r]);
+                    break;
                 }
             }
         }
@@ -176,10 +187,11 @@ public class DeckScript : MonoBehaviour
     // moves all wastePile cards into the deck
     public void DeckReset()
     {
+
         // the top of the deck is index 0
         // get all the cards from the wastepile
         List<GameObject> wasteCardList = wastePile.GetComponent<WastepileScript>().GetCardList();
-        
+
         // move all the cards from waste to deck, preserves reveal order
         // if there are any cards in the deck's cardList before they will be on the bottom after
         while (wasteCardList.Count > 0)
@@ -189,10 +201,10 @@ public class DeckScript : MonoBehaviour
             cardList[0].GetComponent<CardScript>().SetCardAppearance();
         }
 
-        if (shuffleOnDeckReset)
-        {
-            Shuffle();
-        }
+        // if (shuffleOnDeckReset) // seed saving for this not implemented yet
+        // {
+        //     Shuffle();
+        // }
 
         if (dealOnDeckReset) // auto deal cards
         {
@@ -203,6 +215,7 @@ public class DeckScript : MonoBehaviour
     // deals cards
     public void Deal()
     {
+
         for (int i = 0; i < Config.config.cardsToDeal; i++) // try to deal set number of cards
         {
             if (cardList.Count == 0) // are there no more cards in the deck?
@@ -213,18 +226,34 @@ public class DeckScript : MonoBehaviour
             // reveal card and move from deck list top into waste
             cardList[0].GetComponent<CardScript>().hidden = false;
             cardList[0].GetComponent<CardScript>().SetCardAppearance();
-            cardList[0].GetComponent<CardScript>().MoveCard(wastePile);   
+            cardList[0].GetComponent<CardScript>().MoveCard(wastePile);
         }
+    }
+
+    public void ImportShuffleSeed(int seed)
+    {
+        shuffleSeed = seed;
+        importedSeed = true;
     }
 
     //Shuffles cardList using Knuth shuffle aka Fisher-Yates shuffle
     public void Shuffle()
     {
-        System.Random rand = new System.Random();
+        if (!importedSeed)
+        {
+            System.Random rand1 = new System.Random();
+            shuffleSeed = rand1.Next();
+        }
+        else
+        {
+            importedSeed = false;
+        }
+
+        System.Random rand2 = new System.Random(shuffleSeed);
 
         for (int i = 0; i < cardList.Count; i++)
         {
-            int j = rand.Next(i, cardList.Count);
+            int j = rand2.Next(i, cardList.Count);
             GameObject temp = cardList[i];
             cardList[i] = cardList[j];
             cardList[j] = temp;

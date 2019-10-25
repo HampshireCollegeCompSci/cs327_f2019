@@ -6,6 +6,7 @@ public class FoundationScript : MonoBehaviour
 {
     public UtilsScript utils;
     public List<GameObject> cardList;
+    public SoundController soundController;
     int indexCounter;
     int positionCounter;
     int cardMax;
@@ -33,6 +34,7 @@ public class FoundationScript : MonoBehaviour
         {
             cardList[0].gameObject.GetComponent<CardScript>().hidden = false;
             cardList[0].gameObject.GetComponent<CardScript>().SetCardAppearance();
+            //soundController.CardRevealSound();
         }
     }
 
@@ -136,6 +138,7 @@ public class FoundationScript : MonoBehaviour
 
         else if ((utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1) == input.GetComponent<CardScript>().cardNum && input.GetComponent<CardScript>().container.CompareTag("Foundation"))
         {
+            soundController.CardStackSound();
             foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
             {
                 card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
