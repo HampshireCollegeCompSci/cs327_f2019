@@ -20,6 +20,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         //restarts the level there will be more added to this method later but for now we don't have dificulty
+        Config.config.gameOver = false;
         Config.config.gameWin = false;
         gameObject.SetActive(false);
         SceneManager.LoadScene("FoundationTestScene");
@@ -29,6 +30,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         SceneManager.LoadScene("FoundationTestScene");//resets the level
+        Config.config.gameOver = false;
         Config.config.gameWin = false;
     }
 
@@ -38,6 +40,7 @@ public class MenuUIScript : MonoBehaviour
         if (Config.config != null)
         {
             SceneManager.LoadScene("MainMenuScene");
+            Config.config.gameOver = false;
             Config.config.gameWin = false;
         }
         else
