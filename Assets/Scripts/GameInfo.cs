@@ -26,7 +26,11 @@ public class GameInfo
     public int foundationStartingSize;
     public int wastepileCardsToShow;
     public float nonTopXOffset;
+    public float draggedTokenOffset;
     public int cardsToDeal;
     public float relativeCardScale;
-
+    public int turnsTillReset;
+    public int matchPoints;
+    public int emptyReactorPoints;
+    public int perfectGamePoints;
 }

@@ -10,23 +10,23 @@ public class UtilsScript : MonoBehaviour
     private List<GameObject> selectedCardsCopy = new List<GameObject>();
     public GameObject matchedPile;
     public GameObject gameUI;
+    public SoundController soundController;
     public int indexCounter;
     public RaycastHit2D hit;
-    public float score = 0;
     private bool dragOn;
     private GameObject newGameObject;
 
 
-    //TODO make these tuning variables
-    public float matchPoints;
-    public float emptyReactorPoints;
-    public float PerfectGamePoints;
+    public int matchPoints = Config.config.matchPoints;
+    public int emptyReactorPoints = Config.config.emptyReactorPoints;
+    public int PerfectGamePoints = Config.config.perfectGamePoints;
 
 
     public void SetCards()
     {
         matchedPile = GameObject.Find("MatchedPile");
         gameUI = GameObject.Find("GameUI");
+        soundController = GameObject.Find("Sound").GetComponent<SoundController>();
     }
 
     void Awake()
@@ -44,46 +44,60 @@ public class UtilsScript : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && dragOn == false && SceneManager.GetActiveScene().buildIndex == 2)
+        if (!Config.config.gameOver && !Config.config.gamePaused)
         {
-            Click();
-            dragOn = true;
+            if (Input.GetMouseButtonDown(0) && dragOn == false && SceneManager.GetActiveScene().buildIndex == 2)
+            {
 
-            //sets the reactor scores
-            gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
+                Click();
+                if (selectedCards.Count > 0)
+                {
+                    soundController.CardPressSound();
+                    dragOn = true;
+                }
 
-            //checks if the game has been won
+                //sets the reactor scores
+                gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
 
-            /*this code is if we want to check cards in the deck and the wastepile as well as the foundations to see if you can win the game
-             * if (Config.config.CountFoundationCards() + Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count +
-               Config.config.deck.GetComponent<DeckScript>().cardList.Count == 0)*/
+                //checks if the game has been won
+
+                /*this code is if we want to check cards in the deck and the wastepile as well as the foundations to see if you can win the game
+                 * if (Config.config.CountFoundationCards() + Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count +
+                   Config.config.deck.GetComponent<DeckScript>().cardList.Count == 0)*/
+            }
+
+            if (Input.GetMouseButtonUp(0) && selectedCardsCopy.Count > 0 && SceneManager.GetActiveScene().buildIndex == 2)
+            {
+
+                Click();
+                gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
+
+                foreach (GameObject card in selectedCardsCopy)
+                {
+                    Destroy(card);
+                }
+
+                selectedCardsCopy.Clear();
+                dragOn = false;
+            }
+
+            if (dragOn == true && SceneManager.GetActiveScene().buildIndex == 2)
+            {
+                ClickAndDrag(selectedCardsCopy);
+            }
 
             if (Config.config.CountFoundationCards() == 0)
             {
                 Config.config.gameOver = true;
                 Config.config.gameWin = true;
             }
-        }
 
-        if (Input.GetMouseButtonUp(0) && SceneManager.GetActiveScene().buildIndex == 2)
-        {
-            Click();
-            gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
-
-            foreach(GameObject card in selectedCardsCopy)
+            if (Config.config.gameOver)
             {
-                Destroy(card);
+                SetEndGameScore();
+                Debug.Log("score" + Config.config.score);
             }
-
-            selectedCardsCopy.Clear();
-            dragOn = false;
         }
-
-        if (dragOn == true && SceneManager.GetActiveScene().buildIndex == 2)
-        {
-            ClickAndDrag(selectedCardsCopy);
-        }
-
     }
 
     public void SelectCard(GameObject inputCard)
@@ -224,10 +238,12 @@ public class UtilsScript : MonoBehaviour
 
     public void Match(GameObject card1, GameObject card2)
     {
+        soundController.CardMatchSound();
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
 
-        score += matchPoints;
+        Config.config.score += matchPoints;
+        Debug.Log("score" + Config.config.score);
         //check to see if the board is clear
     }
 
@@ -308,8 +324,37 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
+    public void SetEndGameScore()
+    {
+        if (matchedPile.GetComponent<MatchedPileScript>().cardList.Count == 52)
+        {
+            Config.config.score += PerfectGamePoints;
+        }
+
+        if (Config.config.reactor1.GetComponent<ReactorScript>().cardList.Count == 0)
+        {
+            Config.config.score += emptyReactorPoints;
+        }
+
+        if (Config.config.reactor2.GetComponent<ReactorScript>().cardList.Count == 0)
+        {
+            Config.config.score += emptyReactorPoints;
+        }
+
+        if (Config.config.reactor3.GetComponent<ReactorScript>().cardList.Count == 0)
+        {
+            Config.config.score += emptyReactorPoints;
+        }
+
+        if (Config.config.reactor4.GetComponent<ReactorScript>().cardList.Count == 0)
+        {
+            Config.config.score += emptyReactorPoints;
+        }
+    }
+
     public void ClickAndDrag(List<GameObject> cards)
     {
+
         if (cards.Count.Equals(0))
         {
             foreach (GameObject card in selectedCards)
@@ -325,5 +370,8 @@ public class UtilsScript : MonoBehaviour
             card.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y + card.transform.position.y, 1));
         }
     }
+
+
+
 
 }
