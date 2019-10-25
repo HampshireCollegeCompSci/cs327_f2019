@@ -151,8 +151,11 @@ public class Config : MonoBehaviour
 
     public int CountFoundationCards()
     {
-        return foundation1.GetComponent<FoundationScript>().cardList.Count + foundation2.GetComponent<FoundationScript>().cardList.Count +
-            foundation3.GetComponent<FoundationScript>().cardList.Count + foundation4.GetComponent<FoundationScript>().cardList.Count;
+        if (foundation1 != null && foundation2 != null && foundation3 != null && foundation4 != null)
+            return foundation1.GetComponent<FoundationScript>().cardList.Count + foundation2.GetComponent<FoundationScript>().cardList.Count +
+                foundation3.GetComponent<FoundationScript>().cardList.Count + foundation4.GetComponent<FoundationScript>().cardList.Count;
+        else
+            return -1;
     }
 
 
