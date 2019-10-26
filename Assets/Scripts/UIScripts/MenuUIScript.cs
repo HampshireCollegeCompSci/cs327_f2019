@@ -102,4 +102,10 @@ public class MenuUIScript : MonoBehaviour
             SceneManager.LoadScene("MainMenuScene");
         }
     }
+
+    public void Tutorial()
+    {
+        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SceneManager.LoadScene("TutorialScene");
+    }
 }
