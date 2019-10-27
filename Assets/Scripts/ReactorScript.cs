@@ -4,51 +4,21 @@ using UnityEngine;
 
 public class ReactorScript : MonoBehaviour
 {
-    //helloWorld
     public List<GameObject> cardList;
     public UtilsScript utils;
     public SoundController soundController;
 
-    int positionCounter;
-    int cardMax;
-    int ReactorVal;
     GameObject myPrefab;
     public string suit;
 
-    private GUIStyle guiStyle;
-    Vector3 position;
-    Vector2 textSize;
-    string GUItext;
 
     void Start()
     {
-        //because typing is yucky :)
         utils = UtilsScript.global;
-        ReactorVal = 0;
-        guiStyle = new GUIStyle();
-        guiStyle.fontSize = 20;
-        UpdateGUI();
-    }
-
-    //private void OnGUI()
-    //{
-    //    position = Camera.main.WorldToScreenPoint(gameObject.transform.position);
-    //    Vector3 reactorPos = Camera.main.WorldToScreenPoint(gameObject.GetComponent<SpriteRenderer>().bounds.size);
-    //    float reactorHeight = position.y - reactorPos.y;
-    //    textSize = GUI.skin.label.CalcSize(new GUIContent(GUItext));
-    //    GUI.Label(new Rect(position.x - 25, Screen.height - reactorPos.y + reactorHeight, textSize.x, textSize.y), GUItext, guiStyle);
-    //}
-
-    private void UpdateGUI()
-    {
-        // Debug.Log("RS UpdateGUI");
-        //ReactorVal = CountReactorCard();
-        //GUItext = ReactorVal.ToString() + "/" + Config.config.maxReactorVal.ToString();
     }
 
     private void CheckGameOver()
     {
-        // Debug.Log("RS CheckGameOver");
         if (CountReactorCard() >= Config.config.maxReactorVal)
         {
             Config.config.GetComponent<SoundController>().ReactorExplodeSound();
@@ -61,32 +31,32 @@ public class ReactorScript : MonoBehaviour
         }
     }
 
-
     public void RemoveCard(GameObject card)
     {
-        // Debug.Log("RS RemoveCard");
         cardList.Remove(card);
-        UpdateGUI();
     }
 
     public void SetCardPositions()
     {
-        //TODO:find where to put the sound below
-        //soundController.CardToReactorSound();
+        int positionCounter = 0;
+        float yOffset = -0.3f;
 
-        // Debug.Log("RS SetCardPositions");
-        positionCounter = 0;
-
-        for (int indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
+        for (int i = cardList.Count - 1; i >= 0; i--)  // go backwards through the list
         {
-            //TODO: refine card position; move it lower
-            cardList[indexCounter].transform.position = gameObject.transform.position +
-                new Vector3(0, Config.config.foundationStackDensity * positionCounter, -0.5f * (positionCounter + 1));
+            // as we go through, place cards above and in-front the previous one
+            cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -1 - positionCounter * 0.1f);
+
+            // 4 tokens can visibly fit in the container at once, so hide the bottom ones if over 4
+            if (!(cardList.Count > 4 && positionCounter < cardList.Count - 4))
+            {
+                yOffset += 0.35f;
+            }
 
             positionCounter += 1;
         }
 
-        UpdateGUI();
+        // these two things need to be put in the correct ProcessAction() if statements
+        //soundController.CardToReactorSound();
         CheckGameOver();
     }
 
@@ -100,12 +70,8 @@ public class ReactorScript : MonoBehaviour
     //DON'T USE CLICKED CARD
     //take input (inputCard), which is the second card
     //match with them if they match
-
-
-    //TODO: rename this goddamn function and all the other
     public void ProcessAction(GameObject input)
     {
-        // Debug.Log("RS ProcessAction");
         GameObject card1 = utils.selectedCards[0];
 
         if (input.CompareTag("Card"))
@@ -156,7 +122,6 @@ public class ReactorScript : MonoBehaviour
 
                         return;
                     }
-
                     else
                     {
                         utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
@@ -164,27 +129,16 @@ public class ReactorScript : MonoBehaviour
 
                     return;
                 }
-
                 else
                 {
                     utils.DeselectCard(card1);
                 }
             }
         }
-
-
     }
 
-
-    //this is just meant to iterate through the list of cards in the stack
-    //sum the amounts of them, and then return whatever that sum is
-    //in order to be used in the update function
-    //basically just in case it goes over 18, in which case end game
     public int CountReactorCard()
     {
-
-        // Debug.Log("RS CountReactorCard");
-        //sum the values into totalSum, return
         int totalSum = 0;
         int cardListVal = cardList.Count;
         for (int i = 0; i < cardListVal; i++)

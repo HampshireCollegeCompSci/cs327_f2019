@@ -19,31 +19,40 @@ public class MenuUIScript : MonoBehaviour
     public void NewGame(int difficulty)
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
+        Config.config.GetComponent<MusicController>().GameMusic();
         //restarts the level there will be more added to this method later but for now we don't have dificulty
+        Config.config.gameOver = false;
         Config.config.gameWin = false;
+        Config.config.gamePaused = false;
         gameObject.SetActive(false);
-        SceneManager.LoadScene("FoundationTestScene");
+        SceneManager.LoadScene("GameplayScene");
     }
 
     public void Restart()
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
-        SceneManager.LoadScene("FoundationTestScene");//resets the level
+        Config.config.GetComponent<MusicController>().GameMusic();
+        SceneManager.LoadScene("GameplayScene");//resets the level
+        Config.config.gameOver = false;
         Config.config.gameWin = false;
+        Config.config.gamePaused = false;
     }
 
     public void MainMenu()
     {
+        Config.config.gamePaused = false;
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         if (Config.config != null)
         {
             SceneManager.LoadScene("MainMenuScene");
+            Config.config.gameOver = false;
             Config.config.gameWin = false;
         }
         else
         {
             SceneManager.LoadScene("MainMenuScene");
         }
+        Config.config.GetComponent<MusicController>().MainMenuMusic();
     }
 
     public void About()
@@ -70,14 +79,34 @@ public class MenuUIScript : MonoBehaviour
         Config.config.GetComponent<SoundController>().PauseMenuButtonSound();
         //TODO save the game scene
         Config.config.gamePaused = true;
-        SceneManager.LoadScene("PauseScene");
+        SceneManager.LoadScene("PauseScene", LoadSceneMode.Additive);
     }
 
     public void ResumeGame()
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
-        //Config.config.gamePaused = false;
+        Config.config.gamePaused = false;
         //TODO load the saved game scene then uncomment the above code
+        SceneManager.UnloadSceneAsync("PauseScene");
     }
 
+    public void Return()
+    {
+        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        if (Config.config.gamePaused)
+        {
+            SceneManager.LoadScene("PauseScene");
+        }
+
+        else
+        {
+            SceneManager.LoadScene("MainMenuScene");
+        }
+    }
+
+    public void Tutorial()
+    {
+        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SceneManager.LoadScene("TutorialScene");
+    }
 }

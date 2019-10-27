@@ -9,5 +9,6 @@
     "turnsTillReset": 18,
     "matchPoints": 200,
     "emptyReactorPoint": 1000,
-    "perfectGamePoints": 2800
+    "perfectGamePoints": 2800,
+    "delayToShowGameSummary": 1.5
 }
