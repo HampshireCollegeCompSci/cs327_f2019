@@ -1,0 +1,14 @@
+{
+    "reactorLimit": 18,
+    "foundationStartingSize": 7,
+    "wastepileCardsToShow": 3,
+    "nonTopXOffset": 0.25,
+    "draggedTokenOffset": 0.5,
+    "cardsToDeal": 3,
+    "relativeCardScale": 0.18,
+    "turnsTillReset": 18,
+    "matchPoints": 200,
+    "emptyReactorPoint": 1000,
+    "perfectGamePoints": 2800,
+    "delayToShowGameSummary": 1.5
+}

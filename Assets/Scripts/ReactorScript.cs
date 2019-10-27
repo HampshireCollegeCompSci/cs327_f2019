@@ -7,6 +7,8 @@ public class ReactorScript : MonoBehaviour
     //helloWorld
     public List<GameObject> cardList;
     public UtilsScript utils;
+    public SoundController soundController;
+
     int positionCounter;
     int cardMax;
     int ReactorVal;
@@ -25,30 +27,23 @@ public class ReactorScript : MonoBehaviour
         ReactorVal = 0;
         guiStyle = new GUIStyle();
         guiStyle.fontSize = 20;
-        position = Camera.main.WorldToScreenPoint(gameObject.transform.position);
-        position.y -= 30;
-        position.x += 35;
         UpdateGUI();
     }
 
-
-    void Update()
-    {
-        return;
-    }
-
-    private void OnGUI()
-    {
-        GUI.contentColor = Color.blue;
-        textSize = GUI.skin.label.CalcSize(new GUIContent(GUItext));
-        GUI.Label(new Rect(position.x, Screen.height - position.y, textSize.x, textSize.y), GUItext, guiStyle);
-    }
+    //private void OnGUI()
+    //{
+    //    position = Camera.main.WorldToScreenPoint(gameObject.transform.position);
+    //    Vector3 reactorPos = Camera.main.WorldToScreenPoint(gameObject.GetComponent<SpriteRenderer>().bounds.size);
+    //    float reactorHeight = position.y - reactorPos.y;
+    //    textSize = GUI.skin.label.CalcSize(new GUIContent(GUItext));
+    //    GUI.Label(new Rect(position.x - 25, Screen.height - reactorPos.y + reactorHeight, textSize.x, textSize.y), GUItext, guiStyle);
+    //}
 
     private void UpdateGUI()
     {
         // Debug.Log("RS UpdateGUI");
-        ReactorVal = CountReactorCard();
-        GUItext = ReactorVal.ToString() + "/" + Config.config.maxReactorVal.ToString();
+        //ReactorVal = CountReactorCard();
+        //GUItext = ReactorVal.ToString() + "/" + Config.config.maxReactorVal.ToString();
     }
 
     private void CheckGameOver()
@@ -56,9 +51,13 @@ public class ReactorScript : MonoBehaviour
         // Debug.Log("RS CheckGameOver");
         if (CountReactorCard() >= Config.config.maxReactorVal)
         {
+            Config.config.GetComponent<SoundController>().ReactorExplodeSound();
             myPrefab = (GameObject)Resources.Load("Prefabs/Explosion", typeof(GameObject));
             Instantiate(myPrefab, gameObject.transform.position, gameObject.transform.rotation);
             Destroy(gameObject);
+
+            Config.config.gameOver = true;
+            Config.config.gameWin = false;
         }
     }
 
@@ -72,12 +71,17 @@ public class ReactorScript : MonoBehaviour
 
     public void SetCardPositions()
     {
+        //TODO:find where to put the sound below
+        //soundController.CardToReactorSound();
+
         // Debug.Log("RS SetCardPositions");
         positionCounter = 0;
 
         for (int indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
         {
-            cardList[indexCounter].transform.position = gameObject.transform.position + new Vector3(0, Config.config.foundationStackDensity * positionCounter, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
+            //TODO: refine card position; move it lower
+            cardList[indexCounter].transform.position = gameObject.transform.position +
+                new Vector3(0, Config.config.foundationStackDensity * positionCounter, -0.5f * (positionCounter + 1));
 
             positionCounter += 1;
         }
@@ -118,7 +122,36 @@ public class ReactorScript : MonoBehaviour
                         if (inputContainer.GetComponent<FoundationScript>().cardList[0] == input)
                         {
                             utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-                            Debug.Log("matched");
+                        }
+
+                        return;
+                    }
+
+                    if (inputContainer.CompareTag("Reactor"))
+                    {
+                        if (inputContainer.GetComponent<ReactorScript>().cardList[0] == input)
+                        {
+                            utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+                        }
+
+                        return;
+                    }
+
+                    if (inputContainer.CompareTag("Wastepile"))
+                    {
+                        if (inputContainer.GetComponent<WastepileScript>().cardList[0] == input)
+                        {
+                            utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+                        }
+
+                        return;
+                    }
+
+                    if (inputContainer.CompareTag("Wastepile"))
+                    {
+                        if (inputContainer.GetComponent<WastepileScript>().cardList[0] == input)
+                        {
+                            utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
                         }
 
                         return;
@@ -128,19 +161,16 @@ public class ReactorScript : MonoBehaviour
                     {
                         utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
                     }
+
+                    return;
                 }
 
                 else
                 {
-                    utils.selectedCards.Remove(card1);
+                    utils.DeselectCard(card1);
                 }
             }
         }
-
-
-        //this is just the return call to end after having clicked
-        return;
-
 
 
     }
@@ -150,8 +180,9 @@ public class ReactorScript : MonoBehaviour
     //sum the amounts of them, and then return whatever that sum is
     //in order to be used in the update function
     //basically just in case it goes over 18, in which case end game
-    private int CountReactorCard()
+    public int CountReactorCard()
     {
+
         // Debug.Log("RS CountReactorCard");
         //sum the values into totalSum, return
         int totalSum = 0;

@@ -6,6 +6,7 @@ public class WastepileScript : MonoBehaviour
 {
     public UtilsScript utils;
     public List<GameObject> cardList;
+    public SoundController soundController;
     int counter;
     int cardMax;
 
@@ -17,7 +18,7 @@ public class WastepileScript : MonoBehaviour
 
     void Update()
     {
-
+        return;
     }
 
     public void RemoveCard(GameObject card)
@@ -27,22 +28,37 @@ public class WastepileScript : MonoBehaviour
 
     public void SetCardPositions()
     {
-        int counter = 1;
+        // int counter = 1;
+        // float xOffset = 0;
+    
+        // for (int i = cardList.Count - 1; i > -1; i--)
+        // {
+        //     cardList[i].transform.parent = gameObject.transform;
+        //     cardList[i].transform.localPosition = new Vector3(xOffset, 0, counter * -0.1f);
+        //     if (i < Config.config.wastepileCardsToShow)
+        //     {
+        //         xOffset += Config.config.foundationStackDensity;
+        //     }
+        //     else
+        //     {
+        //         xOffset += Config.config.nonTopXOffset;
+        //     }
+        //     counter++;
+        // }
+
+        int counter = 0;
         float xOffset = 0;
     
-        for (int i = cardList.Count - 1; i > -1; i--)
+        for (int i = 0; i < cardList.Count; i++)
         {
             cardList[i].transform.parent = gameObject.transform;
-            cardList[i].transform.localPosition = new Vector3(xOffset, 0, counter * -0.1f);
-            if (i < Config.config.cardsAtTopOfWastePile)
+            cardList[i].transform.localPosition = new Vector3(xOffset, 0, counter * 0.1f);
+            if (counter < 5)
             {
-                xOffset += Config.config.foundationStackDensity;
-            }
-            else
-            {
-                xOffset += Config.config.nonTopXOffset;
+                xOffset += 1;
             }
             counter++;
+            
         }
     }
     public void ProcessAction(GameObject input)
@@ -71,7 +87,26 @@ public class WastepileScript : MonoBehaviour
                 if (inputContainer.GetComponent<FoundationScript>().cardList[0] == input)
                 {
                     utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-                    Debug.Log("matched");
+                }
+
+                return;
+            }
+
+            if (inputContainer.CompareTag("Reactor"))
+            {
+                if (inputContainer.GetComponent<ReactorScript>().cardList[0] == input)
+                {
+                    utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
+                }
+
+                return;
+            }
+
+            if (inputContainer.CompareTag("Wastepile"))
+            {
+                if (inputContainer.GetComponent<WastepileScript>().cardList[0] == input)
+                {
+                    utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
                 }
 
                 return;
@@ -85,6 +120,7 @@ public class WastepileScript : MonoBehaviour
 
         else if ((utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1) == input.GetComponent<CardScript>().cardNum && input.GetComponent<CardScript>().container.CompareTag("Foundation"))
         {
+            soundController.CardStackSound();
             foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
             {
                 card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
@@ -93,6 +129,7 @@ public class WastepileScript : MonoBehaviour
 
         else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
         {
+            soundController.CardToReactorSound();
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
         }
 
