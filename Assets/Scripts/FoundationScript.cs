@@ -7,9 +7,6 @@ public class FoundationScript : MonoBehaviour
     public UtilsScript utils;
     public List<GameObject> cardList;
     public SoundController soundController;
-    int indexCounter;
-    int positionCounter;
-    int cardMax;
 
     void Start()
     {
@@ -47,32 +44,35 @@ public class FoundationScript : MonoBehaviour
     //offset card z axis by a little bit
     public void SetCardPositions()
     {
-        positionCounter = 0;
-
+        int positionCounter = 0;
         float yOffset = 0;
-        for (indexCounter = cardList.Count - 1; indexCounter > -1; indexCounter--)
+        
+        for (int i = cardList.Count - 1; i >= 0; i--) // go backwards through the list
         {
-            if (cardList[indexCounter].GetComponent<CardScript>().hidden)
+            // as we go through, place cards above and in-front the previous one
+            cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -positionCounter * 0.1f);
+
+            if (cardList[i].GetComponent<CardScript>().hidden)  // don't show hidden cards as much
             {
-                cardList[indexCounter].transform.position = gameObject.transform.position +
-                    new Vector3(0, -yOffset, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
-                if (cardList.Count > 10)
+                if(cardList.Count > 12) // especially if the stack is large
                 {
-                    yOffset -= Config.config.foundationStackDensity * 0.25f;
+                    yOffset += 0.05f;
+                }
+                else if (cardList.Count > 8) // less so if the stack is medium
+                {
+                    yOffset += 0.1f;
                 }
                 else
                 {
-                    yOffset -= Config.config.foundationStackDensity * 0.5f;
+                    yOffset += 0.2f;
                 }
             }
             else
             {
-                cardList[indexCounter].transform.position = gameObject.transform.position +
-                    new Vector3(0, -yOffset, -0.5f * positionCounter) + new Vector3(0, 0, -0.5f);
-                yOffset -= Config.config.foundationStackDensity;
+                yOffset += 0.35f;
             }
 
-            positionCounter += 1;
+            positionCounter++;
         }
     }
 

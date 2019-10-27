@@ -25,14 +25,14 @@ public class MenuUIScript : MonoBehaviour
         Config.config.gameWin = false;
         Config.config.gamePaused = false;
         gameObject.SetActive(false);
-        SceneManager.LoadScene("FoundationTestScene");
+        SceneManager.LoadScene("GameplayScene");
     }
 
     public void Restart()
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         Config.config.GetComponent<MusicController>().GameMusic();
-        SceneManager.LoadScene("FoundationTestScene");//resets the level
+        SceneManager.LoadScene("GameplayScene");//resets the level
         Config.config.gameOver = false;
         Config.config.gameWin = false;
         Config.config.gamePaused = false;
@@ -79,14 +79,15 @@ public class MenuUIScript : MonoBehaviour
         Config.config.GetComponent<SoundController>().PauseMenuButtonSound();
         //TODO save the game scene
         Config.config.gamePaused = true;
-        SceneManager.LoadScene("PauseScene");
+        SceneManager.LoadScene("PauseScene", LoadSceneMode.Additive);
     }
 
     public void ResumeGame()
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
-        //Config.config.gamePaused = false;
+        Config.config.gamePaused = false;
         //TODO load the saved game scene then uncomment the above code
+        SceneManager.UnloadSceneAsync("PauseScene");
     }
 
     public void Return()
@@ -101,5 +102,11 @@ public class MenuUIScript : MonoBehaviour
         {
             SceneManager.LoadScene("MainMenuScene");
         }
+    }
+
+    public void Tutorial()
+    {
+        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SceneManager.LoadScene("TutorialScene");
     }
 }
