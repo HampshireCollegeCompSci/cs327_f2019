@@ -25,7 +25,7 @@ public class DeckScript : MonoBehaviour
 
     void Start()
     {
-        foundationStartSize = Config.config.foundationStartSize;
+        //foundationStartSize = Config.config.foundationStartSize;
         print("foundation start Size in DeckScript: " + foundationStartSize);
         myPrefab = (GameObject)Resources.Load("Prefabs/Card", typeof(GameObject));
         myPrefab.GetComponent<BoxCollider2D>().size = new Vector2Int(1, 1);
@@ -111,6 +111,11 @@ public class DeckScript : MonoBehaviour
             cardList[0].GetComponent<CardScript>().hidden = false;
             cardList[0].GetComponent<CardScript>().MoveCard(foundations[i]);
         }
+        //for (int i = 0; i < 10; i++)
+        //{
+        //    cardList[0].GetComponent<CardScript>().hidden = false;
+        //    cardList[0].GetComponent<CardScript>().MoveCard(foundations[0]);
+        //}
     }
 
     public void RemoveCard(GameObject card)
@@ -127,7 +132,7 @@ public class DeckScript : MonoBehaviour
         for (int i = cardList.Count - 1; i >= 0; i--)  // go backwards through the list
         {
             // as we go through, place cards below and in-front of the previous one
-            cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -positionCounter * 0.1f);
+            cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -1 - positionCounter * 0.1f);
 
             positionCounter++;
             yOffset -= 0.03f;

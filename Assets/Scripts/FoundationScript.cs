@@ -50,7 +50,7 @@ public class FoundationScript : MonoBehaviour
         for (int i = cardList.Count - 1; i >= 0; i--) // go backwards through the list
         {
             // as we go through, place cards above and in-front the previous one
-            cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -positionCounter * 0.1f);
+            cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -1 - positionCounter * 0.1f);
 
             if (cardList[i].GetComponent<CardScript>().hidden)  // don't show hidden cards as much
             {
@@ -58,7 +58,7 @@ public class FoundationScript : MonoBehaviour
                 {
                     yOffset += 0.05f;
                 }
-                else if (cardList.Count > 8) // less so if the stack is medium
+                else if (cardList.Count > 10) // less so if the stack is medium
                 {
                     yOffset += 0.1f;
                 }
