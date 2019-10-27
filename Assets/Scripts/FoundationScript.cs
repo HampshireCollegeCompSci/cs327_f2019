@@ -34,7 +34,7 @@ public class FoundationScript : MonoBehaviour
         {
             cardList[0].gameObject.GetComponent<CardScript>().hidden = false;
             cardList[0].gameObject.GetComponent<CardScript>().SetCardAppearance();
-            //soundController.CardRevealSound();
+            Config.config.GetComponent<SoundController>().CardRevealSound();
         }
     }
 

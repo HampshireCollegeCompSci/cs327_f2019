@@ -19,8 +19,11 @@ public class MenuUIScript : MonoBehaviour
     public void NewGame(int difficulty)
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
+        Config.config.GetComponent<MusicController>().GameMusic();
         //restarts the level there will be more added to this method later but for now we don't have dificulty
+        Config.config.gameOver = false;
         Config.config.gameWin = false;
+        Config.config.gamePaused = false;
         gameObject.SetActive(false);
         SceneManager.LoadScene("FoundationTestScene");
     }
@@ -28,22 +31,28 @@ public class MenuUIScript : MonoBehaviour
     public void Restart()
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
+        Config.config.GetComponent<MusicController>().GameMusic();
         SceneManager.LoadScene("FoundationTestScene");//resets the level
+        Config.config.gameOver = false;
         Config.config.gameWin = false;
+        Config.config.gamePaused = false;
     }
 
     public void MainMenu()
     {
+        Config.config.gamePaused = false;
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         if (Config.config != null)
         {
             SceneManager.LoadScene("MainMenuScene");
+            Config.config.gameOver = false;
             Config.config.gameWin = false;
         }
         else
         {
             SceneManager.LoadScene("MainMenuScene");
         }
+        Config.config.GetComponent<MusicController>().MainMenuMusic();
     }
 
     public void About()
@@ -80,4 +89,17 @@ public class MenuUIScript : MonoBehaviour
         //TODO load the saved game scene then uncomment the above code
     }
 
+    public void Return()
+    {
+        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        if (Config.config.gamePaused)
+        {
+            SceneManager.LoadScene("PauseScene");
+        }
+
+        else
+        {
+            SceneManager.LoadScene("MainMenuScene");
+        }
+    }
 }

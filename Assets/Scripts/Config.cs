@@ -15,6 +15,8 @@ public class Config : MonoBehaviour
     public int score;
     public float relativeCardScale;
     public int turnsTillReset;
+    public float delayToShowGameSummary;
+    public float countdown;
 
     //score
     public int matchPoints;
@@ -83,6 +85,8 @@ public class Config : MonoBehaviour
         gameInfo = CreateFromJSON(path);
         ConfigFromJSON();
         SetCards();
+        countdown = delayToShowGameSummary;
+        gameObject.GetComponent<MusicController>().MainMenuMusic();
     }
 
 
@@ -91,7 +95,24 @@ public class Config : MonoBehaviour
         //handle game end
         if (gameOver && SceneManager.GetActiveScene().name != "SummaryScene")
         {
-            SceneManager.LoadScene("SummaryScene");
+            //delay to show summary
+            if (countdown < 0)
+            {
+                SceneManager.LoadScene("SummaryScene");
+                if (gameWin)
+                {
+                    gameObject.GetComponent<MusicController>().WinMusic();
+                }
+                else
+                {
+                    gameObject.GetComponent<MusicController>().LoseMusic();
+                }
+                countdown = delayToShowGameSummary;
+            }
+            else
+            {
+                countdown -= Time.deltaTime;
+            }
         }
 
     }
@@ -109,6 +130,7 @@ public class Config : MonoBehaviour
         matchPoints = gameInfo.matchPoints;
         emptyReactorPoints = gameInfo.emptyReactorPoints;
         perfectGamePoints = gameInfo.perfectGamePoints;
+        delayToShowGameSummary = gameInfo.delayToShowGameSummary;
     }
 
     public void SetCards()
@@ -151,8 +173,11 @@ public class Config : MonoBehaviour
 
     public int CountFoundationCards()
     {
-        return foundation1.GetComponent<FoundationScript>().cardList.Count + foundation2.GetComponent<FoundationScript>().cardList.Count +
-            foundation3.GetComponent<FoundationScript>().cardList.Count + foundation4.GetComponent<FoundationScript>().cardList.Count;
+        if (foundation1 != null && foundation2 != null && foundation3 != null && foundation4 != null)
+            return foundation1.GetComponent<FoundationScript>().cardList.Count + foundation2.GetComponent<FoundationScript>().cardList.Count +
+                foundation3.GetComponent<FoundationScript>().cardList.Count + foundation4.GetComponent<FoundationScript>().cardList.Count;
+        else
+            return -1;
     }
 
 
