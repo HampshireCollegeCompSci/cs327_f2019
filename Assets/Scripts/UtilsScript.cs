@@ -212,7 +212,7 @@ public class UtilsScript : MonoBehaviour
 
 
         //if we click on our first selected card deselect all cards
-        else if (hit.collider != null && selectedCards[0] == hit.collider.gameObject)
+        else if (hit.collider != null && selectedCards.Count!=0 && selectedCards[0] == hit.collider.gameObject)
         {
             int selectedCardsLength = selectedCards.Count;
             for (int i = 0; i < selectedCardsLength; i++)
@@ -223,7 +223,7 @@ public class UtilsScript : MonoBehaviour
         }
 
         //if we click on something else tries to move the selected cards 
-        else if (hit.collider != null)
+        else if (hit.collider != null && selectedCards.Count != 0)
         {
             selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
             //we are no longer changing a list that we are also iterating over

@@ -25,14 +25,14 @@ public class MenuUIScript : MonoBehaviour
         Config.config.gameWin = false;
         Config.config.gamePaused = false;
         gameObject.SetActive(false);
-        SceneManager.LoadScene("FoundationTestScene");
+        SceneManager.LoadScene("GameplayScene");
     }
 
     public void Restart()
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         Config.config.GetComponent<MusicController>().GameMusic();
-        SceneManager.LoadScene("FoundationTestScene");//resets the level
+        SceneManager.LoadScene("GameplayScene");//resets the level
         Config.config.gameOver = false;
         Config.config.gameWin = false;
         Config.config.gamePaused = false;
