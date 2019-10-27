@@ -79,14 +79,15 @@ public class MenuUIScript : MonoBehaviour
         Config.config.GetComponent<SoundController>().PauseMenuButtonSound();
         //TODO save the game scene
         Config.config.gamePaused = true;
-        SceneManager.LoadScene("PauseScene");
+        SceneManager.LoadScene("PauseScene", LoadSceneMode.Additive);
     }
 
     public void ResumeGame()
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
-        //Config.config.gamePaused = false;
+        Config.config.gamePaused = false;
         //TODO load the saved game scene then uncomment the above code
+        SceneManager.UnloadSceneAsync("PauseScene");
     }
 
     public void Return()
