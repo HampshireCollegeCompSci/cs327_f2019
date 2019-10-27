@@ -47,13 +47,13 @@ public class ReactorScript : MonoBehaviour
             cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -1 - positionCounter * 0.1f);
 
             // 4 tokens can visibly fit in the container at once, so hide the bottom ones if over 4
-            if (!(cardList.Count > 5 && positionCounter < cardList.Count - 5))
+            if (!(cardList.Count > 4 && positionCounter < cardList.Count - 4))
             {
                 yOffset += 0.35f;
             }
             else
             {
-                yOffset += 0.1f;
+                yOffset += 0;
             }
 
             positionCounter += 1;
