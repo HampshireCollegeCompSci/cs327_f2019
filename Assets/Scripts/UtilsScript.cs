@@ -365,9 +365,9 @@ public class UtilsScript : MonoBehaviour
             }
         }
 
-        foreach (GameObject card in cards)
+        for(int i = 0; i < cards.Count; i++)
         {
-            card.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y + card.transform.position.y, 1));
+            cards[i].transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y + cards[i].transform.position.y + i * Config.config.draggedTokenOffset, i));
         }
     }
 

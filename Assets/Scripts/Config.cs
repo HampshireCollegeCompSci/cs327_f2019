@@ -17,6 +17,7 @@ public class Config : MonoBehaviour
     public int turnsTillReset;
     public float delayToShowGameSummary;
     public float countdown;
+    public float draggedTokenOffset;
 
     //score
     public int matchPoints;
@@ -131,6 +132,7 @@ public class Config : MonoBehaviour
         emptyReactorPoints = gameInfo.emptyReactorPoints;
         perfectGamePoints = gameInfo.perfectGamePoints;
         delayToShowGameSummary = gameInfo.delayToShowGameSummary;
+        draggedTokenOffset = gameInfo.draggedTokenOffset;
     }
 
     public void SetCards()
