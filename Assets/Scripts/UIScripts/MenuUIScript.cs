@@ -65,7 +65,7 @@ public class MenuUIScript : MonoBehaviour
     public void Sound()
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
-        SceneManager.LoadScene("SoundScene");
+        SceneManager.LoadScene("SoundScene", LoadSceneMode.Additive);
     }
 
     public void Credits()
@@ -95,7 +95,7 @@ public class MenuUIScript : MonoBehaviour
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         if (Config.config.gamePaused)
         {
-            SceneManager.LoadScene("PauseScene");
+            SceneManager.UnloadSceneAsync("SoundScene");
         }
 
         else
@@ -108,5 +108,17 @@ public class MenuUIScript : MonoBehaviour
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         SceneManager.LoadScene("TutorialScene");
+    }
+    public void hardDifficulty()
+    {
+        Config.config.setDifficulty(15);
+    }
+    public void easyDifficulty()
+    {
+        Config.config.setDifficulty(21);
+    }
+    public void mediumDifficulty()
+    {
+        Config.config.setDifficulty(18);
     }
 }

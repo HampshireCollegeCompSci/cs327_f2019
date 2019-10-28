@@ -101,6 +101,7 @@ public class DeckScript : MonoBehaviour
         {
             for (int n = 0; n < foundationStartSize - 1; n++)
             {
+                cardList[0].SetActive(true);
                 // set to hidden as they might be unhidden
                 cardList[0].GetComponent<CardScript>().hidden = true;
                 // MoveCard() should be removing the card from its current cardList so taking index 0 should work
@@ -108,6 +109,7 @@ public class DeckScript : MonoBehaviour
             }
 
             // adding and revealing the top card of the foundation
+            cardList[0].SetActive(true);
             cardList[0].GetComponent<CardScript>().hidden = false;
             cardList[0].GetComponent<CardScript>().MoveCard(foundations[i]);
         }
@@ -136,6 +138,8 @@ public class DeckScript : MonoBehaviour
 
             positionCounter++;
             yOffset -= 0.03f;
+
+            cardList[i].SetActive(false);
         }
     }
 
@@ -216,6 +220,8 @@ public class DeckScript : MonoBehaviour
             }
 
             // reveal card and move from deck list top into waste
+
+            cardList[0].SetActive(true);
             cardList[0].GetComponent<CardScript>().hidden = false;
             cardList[0].GetComponent<CardScript>().SetCardAppearance();
             cardList[0].GetComponent<CardScript>().MoveCard(wastePile);

@@ -200,5 +200,10 @@ public class Config : MonoBehaviour
         return width;
 
     }
+    public void setDifficulty(int val)
+    {
+        maxReactorVal = val;
+    }
+
 
 }
