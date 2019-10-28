@@ -34,4 +34,7 @@ public class GameInfo
     public int emptyReactorPoints;
     public int perfectGamePoints;
     public float delayToShowGameSummary;
+    public int easy;
+    public int medium;
+    public int hard;
 }
