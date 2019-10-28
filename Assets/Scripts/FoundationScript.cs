@@ -90,6 +90,14 @@ public class FoundationScript : MonoBehaviour
                 }
                 foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
                 {
+                    if (card.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[1].GetComponent<CardScript>().hidden)
+                    {
+                        UndoScript.undoScript.logMove("move", card, this.gameObject, true);
+                    }
+                    else
+                    {
+                        UndoScript.undoScript.logMove("move", card, this.gameObject, false);
+                    }
                     card.GetComponent<CardScript>().MoveCard(input);
                 }
             }
@@ -141,12 +149,28 @@ public class FoundationScript : MonoBehaviour
             soundController.CardStackSound();
             foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
             {
+                if (card.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[1].GetComponent<CardScript>().hidden)
+                {
+                    UndoScript.undoScript.logMove("move", card, this.gameObject, true);
+                }
+                else
+                {
+                    UndoScript.undoScript.logMove("move", card, this.gameObject, false);
+                }
                 card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
             }
         }
 
         else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
         {
+            if (utils.selectedCards[0].GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[1].GetComponent<CardScript>().hidden)
+            {
+                UndoScript.undoScript.logMove("move", utils.selectedCards[0], this.gameObject, true);
+            }
+            else
+            {
+                UndoScript.undoScript.logMove("move", utils.selectedCards[0], this.gameObject, false);
+            }
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
         }
     }
