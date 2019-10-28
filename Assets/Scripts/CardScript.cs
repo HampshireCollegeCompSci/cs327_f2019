@@ -59,8 +59,8 @@ public class CardScript : MonoBehaviour
         }
 
         //set collider scale to match sprite scale
-        gameObject.GetComponent<BoxCollider2D>().size = gameObject.GetComponent<SpriteRenderer>().sprite.bounds.size;
-        gameObject.GetComponent<BoxCollider2D>().offset = gameObject.GetComponent<SpriteRenderer>().sprite.bounds.center;
+        gameObject.GetComponent<BoxCollider2D>().size = gameObject.GetComponentInChildren<SpriteRenderer>().sprite.bounds.size;
+        gameObject.GetComponent<BoxCollider2D>().offset = gameObject.GetComponentInChildren<SpriteRenderer>().sprite.bounds.center;
     }
 
     public void MoveCard(GameObject destination)
