@@ -135,10 +135,11 @@ public class DeckScript : MonoBehaviour
         {
             // as we go through, place cards below and in-front of the previous one
             cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -1 - positionCounter * 0.1f);
-            cardList[i].SetActive(false);
 
             positionCounter++;
             yOffset -= 0.03f;
+
+            cardList[i].SetActive(false);
         }
     }
 

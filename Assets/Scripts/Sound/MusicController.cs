@@ -29,7 +29,11 @@ public class MusicController : MonoBehaviour
 
     public void GameMusic()
     {
-        soundController.clip = null;
-        soundController.Play();
+        AudioClip sound = Resources.Load<AudioClip>("Audio/music_main_theme");
+        if (soundController.clip != sound)
+        {
+            soundController.clip = sound;
+            soundController.Play();
+        }
     }
 }
