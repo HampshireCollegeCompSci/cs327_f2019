@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ResponsiveController : MonoBehaviour
 {
-    GameObject[] cards, foundations, reactors, reactorHolders;
+    GameObject[] cards, foundations, reactors, reactorHolders, decks;
     bool updated;
     float width, height, backGroundSizeX, backGroundSizeY;
     Vector3[] cardOriginalScale;
@@ -41,8 +41,9 @@ public class ResponsiveController : MonoBehaviour
                 cardOriginalScale[i] = cards[i].transform.localScale;
             }
 
-            //find deck
-            deckOriginalScale = GameObject.FindGameObjectWithTag("Deck").transform.localScale;
+            //find decks
+            decks = GameObject.FindGameObjectsWithTag("Deck");
+            deckOriginalScale = decks[0].transform.localScale;
 
             //find foundation
             foundations = GameObject.FindGameObjectsWithTag("Foundation");
@@ -70,9 +71,12 @@ public class ResponsiveController : MonoBehaviour
             }
 
             //scale deck
-            GameObject.FindGameObjectWithTag("Deck").transform.localScale = deckOriginalScale * width * Config.config.relativeCardScale;
+            for (int i = 0; i < decks.Length; i++)
+            {
+                decks[i].transform.localScale = deckOriginalScale * width * Config.config.relativeCardScale;
+            }
 
-            //find foundation
+            //scale foundation
             for (int i = 0; i < foundations.Length; i++)
             {
                 foundations[i].transform.localScale = foundationOriginalScale * width * Config.config.relativeCardScale;
