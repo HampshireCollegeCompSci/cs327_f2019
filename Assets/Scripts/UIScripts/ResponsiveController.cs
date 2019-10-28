@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class ResponsiveController : MonoBehaviour
 {
-    GameObject[] cards, foundations, reactors, reactorHolders;
+    GameObject[] cards, foundations, reactors, reactorHolders, decks;
     bool updated;
     float width, height, backGroundSizeX, backGroundSizeY;
-    Vector3[] cardOriginalScale;
-    Vector3 foundationOriginalScale, deckOriginalScale, singleReactorOriginalScale, reactorHolderOriginalScale, backgroundOriginalScale;
+    Vector3[] cardOriginalScale, deckOriginalScale;
+    Vector3 foundationOriginalScale, singleReactorOriginalScale, reactorHolderOriginalScale, backgroundOriginalScale;
 
     // Start is called before the first frame update
     void Start()
@@ -17,6 +17,7 @@ public class ResponsiveController : MonoBehaviour
         width = Config.config.GetScreenToWorldWidth();
         height = Config.config.GetScreenToWorldHeight();
         cardOriginalScale = new Vector3[52];
+        deckOriginalScale = new Vector3[3];
 
         //resize background image
         backGroundSizeX = GameObject.FindGameObjectWithTag("Background").GetComponent<SpriteRenderer>().bounds.size.x;
@@ -24,6 +25,7 @@ public class ResponsiveController : MonoBehaviour
 
         backgroundOriginalScale = GameObject.FindGameObjectWithTag("Background").transform.localScale;
 
+        GameObject.FindGameObjectWithTag("Background").transform.localScale = new Vector2(backgroundOriginalScale.x * width / backGroundSizeX, backgroundOriginalScale.y * height / backGroundSizeY);
 
     }
 
@@ -41,20 +43,25 @@ public class ResponsiveController : MonoBehaviour
                 cardOriginalScale[i] = cards[i].transform.localScale;
             }
 
-            //find deck
-            deckOriginalScale = GameObject.FindGameObjectWithTag("Deck").transform.localScale;
+            //find decks
+            decks = GameObject.FindGameObjectsWithTag("Deck");
+            for (int i = 0; i < decks.Length; i++)
+            {
+                deckOriginalScale[i] = decks[i].transform.localScale;
+            }
+            
 
             //find foundation
             foundations = GameObject.FindGameObjectsWithTag("Foundation");
             foundationOriginalScale = foundations[0].transform.localScale;
 
             //find reactor 
-            reactors = GameObject.FindGameObjectsWithTag("Reactor");
-            singleReactorOriginalScale = reactors[0].transform.localScale;
+            //reactors = GameObject.FindGameObjectsWithTag("Reactor");
+            //singleReactorOriginalScale = reactors[0].transform.localScale;
 
             //find reactor holder
-            reactorHolders = GameObject.FindGameObjectsWithTag("ReactorHolder");
-            reactorHolderOriginalScale = reactorHolders[0].transform.localScale;
+            //reactorHolders = GameObject.FindGameObjectsWithTag("ReactorHolder");
+            //reactorHolderOriginalScale = reactorHolders[0].transform.localScale;
 
         }
 
@@ -70,26 +77,29 @@ public class ResponsiveController : MonoBehaviour
             }
 
             //scale deck
-            GameObject.FindGameObjectWithTag("Deck").transform.localScale = deckOriginalScale * width * Config.config.relativeCardScale;
+            for (int i = 0; i < decks.Length; i++)
+            {
+                decks[i].transform.localScale = deckOriginalScale[i] * width * Config.config.relativeCardScale;
+            }
 
-            //find foundation
+            //scale foundation
             for (int i = 0; i < foundations.Length; i++)
             {
                 foundations[i].transform.localScale = foundationOriginalScale * width * Config.config.relativeCardScale;
             }
 
             //scale reactor 
-            for (int i = 0; i < reactors.Length; i++)
-            {
-                reactors[i].transform.localScale = singleReactorOriginalScale * width * Config.config.relativeCardScale;
-            }
+            //for (int i = 0; i < reactors.Length; i++)
+            //{
+            //    reactors[i].transform.localScale = singleReactorOriginalScale * width * Config.config.relativeCardScale;
+            //}
 
             //scale reactor holder
 
-            for (int i = 0; i < reactorHolders.Length; i++)
-            {
-                reactorHolders[i].transform.localScale = reactorHolderOriginalScale * width * Config.config.relativeCardScale;
-            }
+            //for (int i = 0; i < reactorHolders.Length; i++)
+            //{
+            //    reactorHolders[i].transform.localScale = reactorHolderOriginalScale * width * Config.config.relativeCardScale;
+            //}
 
             //scale background
             GameObject.FindGameObjectWithTag("Background").transform.localScale = new Vector2(backgroundOriginalScale.x* width / backGroundSizeX, backgroundOriginalScale.y * height / backGroundSizeY);

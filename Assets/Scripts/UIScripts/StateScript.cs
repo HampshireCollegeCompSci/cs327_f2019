@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class StateScript : MonoBehaviour
 {
     public Text gameState;
-    public Text gameScore;
+    
 
     private void Start()
     {
@@ -25,12 +25,7 @@ public class StateScript : MonoBehaviour
         {
             gameState.text = "You Lost!";
         }
-
-        ShowScore(Config.config.score);
     }
 
-    public void ShowScore(int score)
-    {
-        gameScore.text = score.ToString();
-    }
+    
 }
