@@ -25,7 +25,7 @@ public class DeckScript : MonoBehaviour
 
     void Start()
     {
-        foundationStartSize = Config.config.foundationStartSize;
+        //foundationStartSize = Config.config.foundationStartSize;
         print("foundation start Size in DeckScript: " + foundationStartSize);
         myPrefab = (GameObject)Resources.Load("Prefabs/Card", typeof(GameObject));
         myPrefab.GetComponent<BoxCollider2D>().size = new Vector2Int(1, 1);
@@ -88,7 +88,6 @@ public class DeckScript : MonoBehaviour
                 cardList[cardIndex].GetComponent<CardScript>().hidden = true;
                 cardList[cardIndex].GetComponent<CardScript>().appearSelected = false;
                 cardList[cardIndex].GetComponent<CardScript>().container = this.gameObject;
-                cardList[cardIndex].SetActive(false);
 
                 cardIndex += 1;
             }
@@ -129,21 +128,18 @@ public class DeckScript : MonoBehaviour
     // top card is cardList[0]
     public void SetCardPositions()
     {
-        // int positionCounter = 0;
-        // float yOffset = 0;
+        int positionCounter = 0;
+        float yOffset = 0;
 
-        // for (int i = cardList.Count - 1; i >= 0; i--)  // go backwards through the list
-        // {
-        //     // as we go through, place cards below and in-front of the previous one
-        //     cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -1 - positionCounter * 0.1f);
-
-        //     positionCounter++;
-        //     yOffset -= 0.03f;
-        // }
-
-        for (int i = 0; i < cardList.Count; i++)
+        for (int i = cardList.Count - 1; i >= 0; i--)  // go backwards through the list
         {
-            cardList[i].transform.position = gameObject.transform.position;
+            // as we go through, place cards below and in-front of the previous one
+            cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -1 - positionCounter * 0.1f);
+
+            positionCounter++;
+            yOffset -= 0.03f;
+
+            cardList[i].SetActive(false);
         }
     }
 
@@ -200,7 +196,6 @@ public class DeckScript : MonoBehaviour
             wasteCardList[0].GetComponent<CardScript>().MoveCard(this.gameObject);
             cardList[0].GetComponent<CardScript>().hidden = true;
             cardList[0].GetComponent<CardScript>().SetCardAppearance();
-            cardList[0].SetActive(false);
         }
 
         // if (shuffleOnDeckReset) // seed saving for this not implemented yet

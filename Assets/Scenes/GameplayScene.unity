@@ -1304,49 +1304,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1204289923}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &785104414
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 785104416}
-  - component: {fileID: 785104415}
-  m_Layer: 0
-  m_Name: Undo Controller
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &785104415
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 785104414}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53d2c23039b95f54a98bf75c816da902, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &785104416
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 785104414}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 700.4009, y: 1140.1003, z: -1125.4009}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 11
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &787894275 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 862624160320751216, guid: 69181d72dc76a46519e11927d009c663,
@@ -1372,7 +1329,7 @@ GameObject:
   - component: {fileID: 944386652}
   - component: {fileID: 944386651}
   m_Layer: 5
-  m_Name: Undo
+  m_Name: Undo(placeholder)
   m_TagString: Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1439,18 +1396,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 944386652}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 785104415}
-        m_MethodName: undo
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &944386652
@@ -1948,7 +1894,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.44250003, y: 0.7546047}
   m_AnchorMax: {x: 0.44250003, y: 0.7546047}
-  m_AnchoredPosition: {x: -29.700005, y: -2.7905273}
+  m_AnchoredPosition: {x: -29.700006, y: -2.7905138}
   m_SizeDelta: {x: 165.29999, y: 56.599976}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1317338128
@@ -2027,7 +1973,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.64875007, y: 0.7546047}
   m_AnchorMax: {x: 0.64875007, y: 0.7546047}
-  m_AnchoredPosition: {x: -31.599968, y: -2.7905273}
+  m_AnchoredPosition: {x: -31.59997, y: -2.7905138}
   m_SizeDelta: {x: 165.29999, y: 56.599976}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1380018235
@@ -2999,7 +2945,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.2475, y: 0.7484813}
   m_AnchorMax: {x: 0.2475, y: 0.7484813}
-  m_AnchoredPosition: {x: -33.300003, y: 6.2094727}
+  m_AnchoredPosition: {x: -33.299995, y: 6.209486}
   m_SizeDelta: {x: 165.29999, y: 56.599976}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2007725037
