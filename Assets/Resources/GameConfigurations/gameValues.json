@@ -10,5 +10,8 @@
     "matchPoints": 200,
     "emptyReactorPoint": 1000,
     "perfectGamePoints": 2800,
-    "delayToShowGameSummary": 1.5
+    "delayToShowGameSummary": 1.5,
+    "easy":21,
+    "medium":18,
+    "hard":15
 }

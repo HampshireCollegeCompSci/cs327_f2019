@@ -65,6 +65,9 @@ public class Config : MonoBehaviour
     private string JSON;
     GameInfo gameInfo;
 
+    public int easy;
+    public int medium;
+    public int hard;
 
 
     private void Awake()
@@ -132,6 +135,9 @@ public class Config : MonoBehaviour
         emptyReactorPoints = gameInfo.emptyReactorPoints;
         perfectGamePoints = gameInfo.perfectGamePoints;
         delayToShowGameSummary = gameInfo.delayToShowGameSummary;
+        easy = gameInfo.easy;
+        medium = gameInfo.medium;
+        hard = gameInfo.hard;
         draggedTokenOffset = gameInfo.draggedTokenOffset;
     }
 
@@ -202,9 +208,19 @@ public class Config : MonoBehaviour
         return width;
 
     }
-    public void setDifficulty(int val)
+    public void setDifficulty(string dif)
     {
-        maxReactorVal = val;
+        if (dif.Equals("easy")){
+            maxReactorVal = easy;
+        }
+        if (dif.Equals("medium"))
+        {
+            maxReactorVal = medium;
+        }
+        if (dif.Equals("hard"))
+        {
+            maxReactorVal = hard;
+        }
     }
 
 

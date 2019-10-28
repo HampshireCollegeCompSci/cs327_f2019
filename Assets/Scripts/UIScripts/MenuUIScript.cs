@@ -111,14 +111,14 @@ public class MenuUIScript : MonoBehaviour
     }
     public void hardDifficulty()
     {
-        Config.config.setDifficulty(15);
+        Config.config.setDifficulty("hard");
     }
     public void easyDifficulty()
     {
-        Config.config.setDifficulty(21);
+        Config.config.setDifficulty("easy");
     }
     public void mediumDifficulty()
     {
-        Config.config.setDifficulty(18);
+        Config.config.setDifficulty("medium");
     }
 }
