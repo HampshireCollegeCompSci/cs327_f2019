@@ -17,6 +17,7 @@ public class Config : MonoBehaviour
     public int turnsTillReset;
     public float delayToShowGameSummary;
     public float countdown;
+    public float draggedTokenOffset;
 
     //score
     public int matchPoints;
@@ -137,6 +138,7 @@ public class Config : MonoBehaviour
         easy = gameInfo.easy;
         medium = gameInfo.medium;
         hard = gameInfo.hard;
+        draggedTokenOffset = gameInfo.draggedTokenOffset;
     }
 
     public void SetCards()

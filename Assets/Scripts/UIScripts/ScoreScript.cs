@@ -10,7 +10,7 @@ public class ScoreScript : MonoBehaviour
 
     void Start()
     {
-        score = Config.config.score;
+        UpdateScore();
     }
 
     void Update()
