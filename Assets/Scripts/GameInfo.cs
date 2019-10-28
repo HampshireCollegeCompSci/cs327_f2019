@@ -37,4 +37,5 @@ public class GameInfo
     public int easy;
     public int medium;
     public int hard;
+    public float selectedCardOpacity;
 }

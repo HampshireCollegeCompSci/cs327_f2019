@@ -18,6 +18,7 @@ public class Config : MonoBehaviour
     public float delayToShowGameSummary;
     public float countdown;
     public float draggedTokenOffset;
+    public float selectedCardOpacity;
 
     //score
     public int matchPoints;
@@ -139,6 +140,7 @@ public class Config : MonoBehaviour
         medium = gameInfo.medium;
         hard = gameInfo.hard;
         draggedTokenOffset = gameInfo.draggedTokenOffset;
+        selectedCardOpacity = gameInfo.selectedCardOpacity;
     }
 
     public void SetCards()

@@ -13,5 +13,7 @@
     "delayToShowGameSummary": 1.5,
     "easy":21,
     "medium":18,
-    "hard":15
+    "hard":15,
+    "selectedCardOpacity": 0.25
+
 }
