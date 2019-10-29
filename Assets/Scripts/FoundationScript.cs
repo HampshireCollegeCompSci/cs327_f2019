@@ -88,11 +88,24 @@ public class FoundationScript : MonoBehaviour
                 {
                     return;
                 }
-                foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
+
+                if (input.CompareTag("Reactor") || input.CompareTag("Foundation") && input.GetComponent<FoundationScript>().cardList.Count == 0)
                 {
-                    card.GetComponent<CardScript>().MoveCard(input);
+
+                    foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
+                    {
+                        if (card.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[1].GetComponent<CardScript>().hidden)
+                        {
+                            UndoScript.undoScript.logMove("move", card, this.gameObject, true);
+                        }
+                        else
+                        {
+                            UndoScript.undoScript.logMove("move", card, this.gameObject, false);
+                        }
+                        card.GetComponent<CardScript>().MoveCard(input);
+                    }
                 }
-            }
+            }      
         }
 
         else if (utils.IsMatch(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1) //check if selectedCards and the input card match and that selesctedCards is only one card
@@ -141,12 +154,28 @@ public class FoundationScript : MonoBehaviour
             soundController.CardStackSound();
             foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
             {
+                if (card.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[1].GetComponent<CardScript>().hidden)
+                {
+                    UndoScript.undoScript.logMove("move", card, this.gameObject, true);
+                }
+                else
+                {
+                    UndoScript.undoScript.logMove("move", card, this.gameObject, false);
+                }
                 card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
             }
         }
 
         else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
         {
+            if (utils.selectedCards[0].GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[1].GetComponent<CardScript>().hidden)
+            {
+                UndoScript.undoScript.logMove("move", utils.selectedCards[0], this.gameObject, true);
+            }
+            else
+            {
+                UndoScript.undoScript.logMove("move", utils.selectedCards[0], this.gameObject, false);
+            }
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
         }
     }
