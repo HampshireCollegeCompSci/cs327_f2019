@@ -20,7 +20,7 @@ public class CardScript : MonoBehaviour
     void Start()
     {
         originalTransform = Config.config.cardScale * .1f;
-        originalColor = gameObject.GetComponent<SpriteRenderer>().material.color;
+        originalColor = new Color(1, 1, 1, 1);
         SetCardAppearance();
     }
 
