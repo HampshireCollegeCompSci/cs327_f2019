@@ -363,6 +363,8 @@ public class UtilsScript : MonoBehaviour
                 newGameObject = (GameObject)Instantiate(card, Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Quaternion.identity);
                 newGameObject.GetComponent<CardScript>().MakeVisualOnly();
                 cards.Add(newGameObject);
+                newGameObject.GetComponent<CardScript>().appearSelected = false;
+                newGameObject.GetComponent<CardScript>().SetCardAppearance();
             }
         }
 
