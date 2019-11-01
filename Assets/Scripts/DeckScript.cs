@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 
 public class DeckScript : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class DeckScript : MonoBehaviour
     public GameObject myPrefab;
     public List<Sprite> sprites;
     public List<GameObject> cardList;
+
+    public Text deckCounter;
 
     public SoundController soundController;
 
@@ -39,6 +42,8 @@ public class DeckScript : MonoBehaviour
         SetUpFoundations();
         Deal();
         SetCardPositions();
+
+        deckCounter.text = cardList.Count.ToString();
     }
 
     // sets up card list
@@ -163,6 +168,8 @@ public class DeckScript : MonoBehaviour
             NextCycle();
             DeckReset();
         }
+
+        deckCounter.text = cardList.Count.ToString();
     }
 
     // moves all of the top foundation cards into their appropriate reactors
