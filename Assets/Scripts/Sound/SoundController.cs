@@ -22,7 +22,7 @@ public class SoundController : MonoBehaviour
 
     public void CardToReactorSound()
     {
-        AudioClip sound = Resources.Load<AudioClip>("Audio/token_place_in_reactor");
+        AudioClip sound = Resources.Load<AudioClip>("Audio/token_placed_in_reactor");
         soundController.clip = sound;
         soundController.Play();
     }

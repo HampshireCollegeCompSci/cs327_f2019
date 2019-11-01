@@ -84,6 +84,7 @@ public class CardScript : MonoBehaviour
         {
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<ReactorScript>().cardList.Insert(0, gameObject);
+            destination.GetComponent<ReactorScript>().soundController.CardToReactorSound();
         }
 
         else if (destination.CompareTag("Wastepile"))
