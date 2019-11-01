@@ -79,7 +79,8 @@ public class UtilsScript : MonoBehaviour
 
                 selectedCardsCopy.Clear();
                 dragOn = false;
-                for (int i = 0; i < selectedCards.Count; i++)
+                int foo = selectedCards.Count;
+                for (int i = 0; i < foo; i++)
                 {
                     DeselectCard(selectedCards[0]);
                 }
