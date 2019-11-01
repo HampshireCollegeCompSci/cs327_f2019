@@ -20,7 +20,15 @@ public class CardScript : MonoBehaviour
     void Start()
     {
         originalTransform = Config.config.cardScale * .1f;
-        originalColor = new Color(1, 1, 1, 1);
+        if (Config.config.prettyColors)
+        {
+            originalColor = new Color(Random.Range(0.4f, 1), Random.Range(0.4f, 1f), Random.Range(0.4f, 1f), 1);
+        }
+
+        else
+        {
+            originalColor = new Color(1, 1, 1, 1);
+        }
         SetCardAppearance();
     }
 

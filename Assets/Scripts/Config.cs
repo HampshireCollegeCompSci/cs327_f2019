@@ -19,6 +19,7 @@ public class Config : MonoBehaviour
     public float countdown;
     public float draggedTokenOffset;
     public float selectedCardOpacity;
+    public bool prettyColors = false;
 
     //score
     public int matchPoints;
