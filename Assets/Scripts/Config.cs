@@ -162,7 +162,7 @@ public class Config : MonoBehaviour
 
         wastePile = GameObject.Find("WastePile");
 
-        deck = GameObject.Find("Deck");
+        deck = GameObject.Find("DeckButton");
 
         score = 0;
     }

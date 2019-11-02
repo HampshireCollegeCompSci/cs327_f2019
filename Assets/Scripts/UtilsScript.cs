@@ -70,6 +70,7 @@ public class UtilsScript : MonoBehaviour
             {
 
                 Click();
+
                 gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
 
                 foreach (GameObject card in selectedCardsCopy)
@@ -101,6 +102,13 @@ public class UtilsScript : MonoBehaviour
             {
                 SetEndGameScore();
                 Debug.Log("score" + Config.config.score);
+            }
+
+            if (Config.config.actions == Config.config.actionMax)
+            {
+                Config.config.deck.GetComponent<DeckScript>().NextCycle();
+                Config.config.actions = 0;
+                gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
             }
         }
     }
