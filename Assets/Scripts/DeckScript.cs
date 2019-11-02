@@ -233,6 +233,8 @@ public class DeckScript : MonoBehaviour
             cardList[0].GetComponent<CardScript>().SetCardAppearance();
             cardList[0].GetComponent<CardScript>().MoveCard(wastePile);
         }
+
+        Config.config.actions += 1; //adds to the action count
     }
 
     public void ImportShuffleSeed(int seed)

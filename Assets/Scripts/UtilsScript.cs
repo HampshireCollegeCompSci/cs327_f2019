@@ -243,6 +243,7 @@ public class UtilsScript : MonoBehaviour
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
 
+        Config.config.actions += 1;
         Config.config.score += matchPoints;
         Debug.Log("score" + Config.config.score);
         //check to see if the board is clear

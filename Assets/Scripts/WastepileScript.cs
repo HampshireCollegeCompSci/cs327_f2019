@@ -59,6 +59,8 @@ public class WastepileScript : MonoBehaviour
                 {
                     card.GetComponent<CardScript>().MoveCard(input);
                 }
+
+                Config.config.actions += 1; //adds to the action count
             }
         }
 
@@ -109,12 +111,14 @@ public class WastepileScript : MonoBehaviour
             {
                 card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
             }
+            Config.config.actions += 1; //adds to the action count
         }
 
         else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
         {
             soundController.CardToReactorSound();
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
+            Config.config.actions += 1; //adds to the action count
         }
 
         return;

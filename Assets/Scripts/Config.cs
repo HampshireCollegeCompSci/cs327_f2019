@@ -71,6 +71,9 @@ public class Config : MonoBehaviour
     public int medium;
     public int hard;
 
+    public int actionMax;
+    public int actions;
+
 
     private void Awake()
     {
@@ -215,14 +218,17 @@ public class Config : MonoBehaviour
     {
         if (dif.Equals("easy")){
             maxReactorVal = easy;
+            actionMax = easy;
         }
         if (dif.Equals("medium"))
         {
             maxReactorVal = medium;
+            actionMax = medium;
         }
         if (dif.Equals("hard"))
         {
             maxReactorVal = hard;
+            actionMax = hard;
         }
     }
 
