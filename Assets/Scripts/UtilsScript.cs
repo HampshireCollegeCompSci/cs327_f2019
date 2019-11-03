@@ -70,6 +70,7 @@ public class UtilsScript : MonoBehaviour
             {
 
                 Click();
+
                 gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
 
                 foreach (GameObject card in selectedCardsCopy)
@@ -79,7 +80,8 @@ public class UtilsScript : MonoBehaviour
 
                 selectedCardsCopy.Clear();
                 dragOn = false;
-                for (int i = 0; i < selectedCards.Count; i++)
+                int foo = selectedCards.Count;
+                for (int i = 0; i < foo; i++)
                 {
                     DeselectCard(selectedCards[0]);
                 }
@@ -100,6 +102,13 @@ public class UtilsScript : MonoBehaviour
             {
                 SetEndGameScore();
                 Debug.Log("score" + Config.config.score);
+            }
+
+            if (Config.config.actions == Config.config.actionMax)
+            {
+                Config.config.deck.GetComponent<DeckScript>().NextCycle();
+                Config.config.actions = 0;
+                gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
             }
         }
     }
@@ -242,6 +251,7 @@ public class UtilsScript : MonoBehaviour
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
 
+        Config.config.actions += 1;
         Config.config.score += matchPoints;
         Debug.Log("score" + Config.config.score);
         //check to see if the board is clear
@@ -362,6 +372,8 @@ public class UtilsScript : MonoBehaviour
                 newGameObject = (GameObject)Instantiate(card, Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Quaternion.identity);
                 newGameObject.GetComponent<CardScript>().MakeVisualOnly();
                 cards.Add(newGameObject);
+                newGameObject.GetComponent<CardScript>().appearSelected = false;
+                newGameObject.GetComponent<CardScript>().SetCardAppearance();
             }
         }
 

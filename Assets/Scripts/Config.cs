@@ -19,6 +19,7 @@ public class Config : MonoBehaviour
     public float countdown;
     public float draggedTokenOffset;
     public float selectedCardOpacity;
+    public bool prettyColors = false;
 
     //score
     public int matchPoints;
@@ -69,6 +70,9 @@ public class Config : MonoBehaviour
     public int easy;
     public int medium;
     public int hard;
+
+    public int actionMax;
+    public int actions;
 
 
     private void Awake()
@@ -158,7 +162,7 @@ public class Config : MonoBehaviour
 
         wastePile = GameObject.Find("WastePile");
 
-        deck = GameObject.Find("Deck");
+        deck = GameObject.Find("DeckButton");
 
         score = 0;
     }
@@ -214,14 +218,17 @@ public class Config : MonoBehaviour
     {
         if (dif.Equals("easy")){
             maxReactorVal = easy;
+            actionMax = easy;
         }
         if (dif.Equals("medium"))
         {
             maxReactorVal = medium;
+            actionMax = medium;
         }
         if (dif.Equals("hard"))
         {
             maxReactorVal = hard;
+            actionMax = hard;
         }
     }
 

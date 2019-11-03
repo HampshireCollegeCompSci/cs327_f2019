@@ -329,6 +329,9 @@ MonoBehaviour:
   turnsTillReset: 0
   delayToShowGameSummary: 0
   countdown: 0
+  draggedTokenOffset: 0
+  selectedCardOpacity: 0
+  prettyColors: 0
   matchPoints: 0
   emptyReactorPoints: 0
   perfectGamePoints: 0
@@ -350,6 +353,11 @@ MonoBehaviour:
   deck: {fileID: 0}
   cardsToDeal: 0
   gamePaused: 0
+  easy: 0
+  medium: 0
+  hard: 0
+  actionMax: 0
+  actions: 0
   json: 
 --- !u!4 &1182164522
 Transform:

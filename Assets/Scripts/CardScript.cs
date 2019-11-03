@@ -12,11 +12,23 @@ public class CardScript : MonoBehaviour
     public string cardSuit;
     public bool hidden;
     public bool appearSelected;
+    public Color originalColor;
+    public Color newColor;
+
     Vector3 originalTransform;
 
     void Start()
     {
         originalTransform = Config.config.cardScale * .1f;
+        if (Config.config.prettyColors)
+        {
+            originalColor = new Color(Random.Range(0.4f, 1), Random.Range(0.4f, 1f), Random.Range(0.4f, 1f), 1);
+        }
+
+        else
+        {
+            originalColor = new Color(1, 1, 1, 1);
+        }
         SetCardAppearance();
     }
 
@@ -48,6 +60,10 @@ public class CardScript : MonoBehaviour
         if (appearSelected)
         {
             gameObject.transform.localScale = originalTransform * 1.1f;
+            newColor = gameObject.GetComponent<SpriteRenderer>().material.color;
+            newColor.a = Config.config.selectedCardOpacity;
+            gameObject.GetComponent<SpriteRenderer>().material.color = newColor;
+
             //gameObject.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
         }
 
@@ -55,6 +71,7 @@ public class CardScript : MonoBehaviour
         else if (appearSelected == false)
         {
             gameObject.transform.localScale = originalTransform;
+            gameObject.GetComponent<SpriteRenderer>().material.color = originalColor;
             //gameObject.transform.localScale = new Vector3(1, 1, 1);
         }
 
@@ -75,6 +92,7 @@ public class CardScript : MonoBehaviour
         {
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<ReactorScript>().cardList.Insert(0, gameObject);
+            destination.GetComponent<ReactorScript>().soundController.CardToReactorSound();
         }
 
         else if (destination.CompareTag("Wastepile"))

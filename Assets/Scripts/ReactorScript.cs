@@ -17,6 +17,7 @@ public class ReactorScript : MonoBehaviour
         utils = UtilsScript.global;
     }
 
+
     private void CheckGameOver()
     {
         if (CountReactorCard() >= Config.config.maxReactorVal)

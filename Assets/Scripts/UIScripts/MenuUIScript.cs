@@ -121,4 +121,9 @@ public class MenuUIScript : MonoBehaviour
     {
         Config.config.setDifficulty("medium");
     }
+
+    public void MakeActionsMax()
+    {
+        Config.config.actions = Config.config.actionMax;
+    }
 }
