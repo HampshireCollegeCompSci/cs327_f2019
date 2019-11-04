@@ -233,7 +233,7 @@ public class UtilsScript : MonoBehaviour
         }
 
         //if we click on something else tries to move the selected cards 
-        else if (hit.collider != null && selectedCards.Count != 0)
+        else if (hit.collider != null && selectedCards.Count != 0 && !hit.collider.GetComponent<CardScript>().hidden)
         {
             selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
             //we are no longer changing a list that we are also iterating over
