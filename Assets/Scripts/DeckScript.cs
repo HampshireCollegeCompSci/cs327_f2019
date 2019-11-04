@@ -178,14 +178,17 @@ public class DeckScript : MonoBehaviour
     {
         for (int f = 0; f < foundations.Count; f++)
         {
-            GameObject topFoundationCard = foundations[f].GetComponent<FoundationScript>().cardList[0];
-            for (int r = 0; r < reactors.Count; r++)
-            {
-                //  does this top card's suit match the reactor's suit
-                if (topFoundationCard.GetComponent<CardScript>().cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
+            if (foundations[f].GetComponent<FoundationScript>().cardList.Count != 0) {
+
+                GameObject topFoundationCard = foundations[f].GetComponent<FoundationScript>().cardList[0];
+                for (int r = 0; r < reactors.Count; r++)
                 {
-                    topFoundationCard.GetComponent<CardScript>().MoveCard(reactors[r]);
-                    break;
+                    //  does this top card's suit match the reactor's suit
+                    if (topFoundationCard.GetComponent<CardScript>().cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
+                    {
+                        topFoundationCard.GetComponent<CardScript>().MoveCard(reactors[r]);
+                        break;
+                    }
                 }
             }
         }

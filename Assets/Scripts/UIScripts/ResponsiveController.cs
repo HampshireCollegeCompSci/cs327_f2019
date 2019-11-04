@@ -8,16 +8,13 @@ public class ResponsiveController : MonoBehaviour
     GameObject[] cards, foundations, reactors, reactorHolders, decks;
     bool updated;
     float width, height, backGroundSizeX, backGroundSizeY;
-    Vector3[] cardOriginalScale, deckOriginalScale;
-    Vector3 foundationOriginalScale, singleReactorOriginalScale, reactorHolderOriginalScale, backgroundOriginalScale;
+    Vector3 backgroundOriginalScale;
 
     // Start is called before the first frame update
     void Start()
     {
         width = Config.config.GetScreenToWorldWidth();
         height = Config.config.GetScreenToWorldHeight();
-        cardOriginalScale = new Vector3[52];
-        deckOriginalScale = new Vector3[3];
 
         //resize background image
         backGroundSizeX = GameObject.FindGameObjectWithTag("Background").GetComponent<SpriteRenderer>().bounds.size.x;
@@ -38,54 +35,35 @@ public class ResponsiveController : MonoBehaviour
             //find cards by tag
             cards = GameObject.FindGameObjectsWithTag("Card");
 
-            for (int i = 0; i < cards.Length; i++)
-            {
-                cardOriginalScale[i] = cards[i].transform.localScale;
-            }
-
             //find decks
             decks = GameObject.FindGameObjectsWithTag("Deck");
-            for (int i = 0; i < decks.Length; i++)
-            {
-                deckOriginalScale[i] = decks[i].transform.localScale;
-            }
-            
 
             //find foundation
             foundations = GameObject.FindGameObjectsWithTag("Foundation");
-            foundationOriginalScale = foundations[0].transform.localScale;
-
-            //find reactor 
-            //reactors = GameObject.FindGameObjectsWithTag("Reactor");
-            //singleReactorOriginalScale = reactors[0].transform.localScale;
-
-            //find reactor holder
-            //reactorHolders = GameObject.FindGameObjectsWithTag("ReactorHolder");
-            //reactorHolderOriginalScale = reactorHolders[0].transform.localScale;
-
         }
 
         else if (Config.config.GetScreenToWorldWidth() != width)
         {
+            float scale = Config.config.GetScreenToWorldWidth() / width;
             width = Config.config.GetScreenToWorldWidth();
 
             //scale cards by tag
 
             for (int i = 0; i < cards.Length; i++)
             {
-                cards[i].transform.localScale = cardOriginalScale[i] * width * Config.config.relativeCardScale;
+                cards[i].transform.localScale *= scale;
             }
 
             //scale deck
             for (int i = 0; i < decks.Length; i++)
             {
-                decks[i].transform.localScale = deckOriginalScale[i] * width * Config.config.relativeCardScale;
+                decks[i].transform.localScale *= scale;
             }
 
             //scale foundation
             for (int i = 0; i < foundations.Length; i++)
             {
-                foundations[i].transform.localScale = foundationOriginalScale * width * Config.config.relativeCardScale;
+                foundations[i].transform.localScale *= scale;
             }
 
             //scale reactor 
@@ -102,7 +80,7 @@ public class ResponsiveController : MonoBehaviour
             //}
 
             //scale background
-            GameObject.FindGameObjectWithTag("Background").transform.localScale = new Vector2(backgroundOriginalScale.x* width / backGroundSizeX, backgroundOriginalScale.y * height / backGroundSizeY);
+            GameObject.FindGameObjectWithTag("Background").transform.localScale = new Vector2(backgroundOriginalScale.x * width / backGroundSizeX, backgroundOriginalScale.y * height / backGroundSizeY);
 
         }
     }
