@@ -166,12 +166,13 @@ public class DeckScript : MonoBehaviour
             }
 
             soundController.DeckReshuffle();
-            NextCycle();
+            //NextCycle();
             DeckReset();
         }
 
         deckCounter.text = cardList.Count.ToString();
     }
+
 
     // moves all of the top foundation cards into their appropriate reactors
     public void NextCycle()
