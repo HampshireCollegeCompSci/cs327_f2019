@@ -117,6 +117,7 @@ public class DeckScript : MonoBehaviour
             cardList[0].SetActive(true);
             cardList[0].GetComponent<CardScript>().hidden = false;
             cardList[0].GetComponent<CardScript>().MoveCard(foundations[i]);
+            foundations[i].GetComponent<FoundationScript>().CheckTopCard();
         }
         //for (int i = 0; i < 10; i++)
         //{
