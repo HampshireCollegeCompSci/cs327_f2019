@@ -29,4 +29,14 @@ public class ReactorScoreSetScript : MonoBehaviour
         reactorScore2.text = reactor2.GetComponent<ReactorScript>().CountReactorCard() + "/" + Config.config.maxReactorVal;
         reactorScore3.text = reactor3.GetComponent<ReactorScript>().CountReactorCard() + "/" + Config.config.maxReactorVal;
     }
+
+    void OnGUI()
+    {
+        reactorScore0.transform.position = Camera.main.WorldToScreenPoint(reactor0.transform.position) - new Vector3(0, 140, 0);
+        reactorScore1.transform.position = Camera.main.WorldToScreenPoint(reactor1.transform.position) - new Vector3(0, 140, 0);
+        reactorScore2.transform.position = Camera.main.WorldToScreenPoint(reactor2.transform.position) - new Vector3(0, 140, 0);
+        reactorScore3.transform.position = Camera.main.WorldToScreenPoint(reactor3.transform.position) - new Vector3(0, 140, 0);
+    }
+
+
 }
