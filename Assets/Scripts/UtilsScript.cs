@@ -9,7 +9,7 @@ public class UtilsScript : MonoBehaviour
     public List<GameObject> selectedCards;
     private List<GameObject> selectedCardsCopy = new List<GameObject>();
     public GameObject matchedPile;
-    public GameObject gameUI;
+    public GameObject reactor;
     public SoundController soundController;
     public int indexCounter;
     public RaycastHit2D hit;
@@ -25,7 +25,7 @@ public class UtilsScript : MonoBehaviour
     public void SetCards()
     {
         matchedPile = GameObject.Find("MatchedPile");
-        gameUI = GameObject.Find("GameUI");
+        reactor = GameObject.Find("Reactors");
         soundController = GameObject.Find("Sound").GetComponent<SoundController>();
     }
 
@@ -57,7 +57,7 @@ public class UtilsScript : MonoBehaviour
                 }
 
                 //sets the reactor scores
-                gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
+                reactor.GetComponent<ReactorScoreSetScript>().SetReactorScore();
 
                 //checks if the game has been won
 
@@ -71,7 +71,7 @@ public class UtilsScript : MonoBehaviour
 
                 Click();
 
-                gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
+                reactor.GetComponent<ReactorScoreSetScript>().SetReactorScore();
 
                 foreach (GameObject card in selectedCardsCopy)
                 {
@@ -108,7 +108,7 @@ public class UtilsScript : MonoBehaviour
             {
                 Config.config.deck.GetComponent<DeckScript>().NextCycle();
                 Config.config.actions = 0;
-                gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
+                reactor.GetComponent<ReactorScoreSetScript>().SetReactorScore();
             }
         }
     }
@@ -167,7 +167,7 @@ public class UtilsScript : MonoBehaviour
         }*/
 
         //if we click a deck activates deck and deselected our cards
-        if (hit.collider!=null && !hit.collider.gameObject.CompareTag("Card"))
+        if (hit.collider != null && !hit.collider.gameObject.CompareTag("Card"))
         {
             if (hit.collider.gameObject.CompareTag("Deck"))
             {
@@ -223,7 +223,7 @@ public class UtilsScript : MonoBehaviour
 
 
         //if we click on our first selected card deselect all cards
-        else if (hit.collider != null && selectedCards.Count!=0 && selectedCards[0] == hit.collider.gameObject)
+        else if (hit.collider != null && selectedCards.Count != 0 && selectedCards[0] == hit.collider.gameObject)
         {
             for (int i = 0; i < selectedCards.Count; i++)
             {
@@ -377,7 +377,7 @@ public class UtilsScript : MonoBehaviour
             }
         }
 
-        for(int i = 0; i < cards.Count; i++)
+        for (int i = 0; i < cards.Count; i++)
         {
             if (i == 0)
             {
