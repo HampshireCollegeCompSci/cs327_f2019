@@ -356,6 +356,9 @@ MonoBehaviour:
   easy: 0
   medium: 0
   hard: 0
+  easyMoveCount: 0
+  mediumMoveCount: 0
+  hardMoveCount: 0
   actionMax: 0
   actions: 0
   json: 
