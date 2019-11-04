@@ -1,5 +1,4 @@
 {
-    "reactorLimit": 18,
     "foundationStartingSize": 7,
     "wastepileCardsToShow": 3,
     "nonTopXOffset": 0.25,
@@ -11,9 +10,9 @@
     "emptyReactorPoint": 1000,
     "perfectGamePoints": 2800,
     "delayToShowGameSummary": 1.5,
-    "easy": 21,
-    "medium": 18,
-    "hard": 15,
+    "easyReactorLimit": 21,
+    "mediumReactorLimit": 18,
+    "hardReactorLimit": 15,
     "easyMoveCount": 21,
     "mediumMoveCount": 18,
     "hardMoveCount": 15,

@@ -134,7 +134,6 @@ public class Config : MonoBehaviour
     {
         wastepileCardsToShow = gameInfo.wastepileCardsToShow;
         foundationStartSize = gameInfo.foundationStartingSize;
-        maxReactorVal = gameInfo.reactorLimit;
         nonTopXOffset = foundationStackDensity * gameInfo.nonTopXOffset;
         print(nonTopXOffset);
         cardsToDeal = gameInfo.cardsToDeal;
@@ -144,9 +143,9 @@ public class Config : MonoBehaviour
         emptyReactorPoints = gameInfo.emptyReactorPoints;
         perfectGamePoints = gameInfo.perfectGamePoints;
         delayToShowGameSummary = gameInfo.delayToShowGameSummary;
-        easy = gameInfo.easy;
-        medium = gameInfo.medium;
-        hard = gameInfo.hard;
+        easy = gameInfo.easyReactorLimit;
+        medium = gameInfo.mediumReactorLimit;
+        hard = gameInfo.hardReactorLimit;
         easyMoveCount = gameInfo.easyMoveCount;
         mediumMoveCount = gameInfo.mediumMoveCount;
         hardMoveCount = gameInfo.hardMoveCount;
