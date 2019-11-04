@@ -11,9 +11,12 @@
     "emptyReactorPoint": 1000,
     "perfectGamePoints": 2800,
     "delayToShowGameSummary": 1.5,
-    "easy":21,
-    "medium":18,
-    "hard":15,
+    "easy": 21,
+    "medium": 18,
+    "hard": 15,
+    "easyMoveCount": 21,
+    "mediumMoveCount": 18,
+    "hardMoveCount": 15,
     "selectedCardOpacity": 0.25
 
 }
