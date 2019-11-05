@@ -117,6 +117,7 @@ public class DeckScript : MonoBehaviour
             cardList[0].SetActive(true);
             cardList[0].GetComponent<CardScript>().hidden = false;
             cardList[0].GetComponent<CardScript>().MoveCard(foundations[i]);
+            foundations[i].GetComponent<FoundationScript>().CheckTopCard();
         }
         //for (int i = 0; i < 10; i++)
         //{
@@ -165,26 +166,30 @@ public class DeckScript : MonoBehaviour
             }
 
             soundController.DeckReshuffle();
-            NextCycle();
+            //NextCycle();
             DeckReset();
         }
 
         deckCounter.text = cardList.Count.ToString();
     }
 
+
     // moves all of the top foundation cards into their appropriate reactors
     public void NextCycle()
     {
         for (int f = 0; f < foundations.Count; f++)
         {
-            GameObject topFoundationCard = foundations[f].GetComponent<FoundationScript>().cardList[0];
-            for (int r = 0; r < reactors.Count; r++)
-            {
-                //  does this top card's suit match the reactor's suit
-                if (topFoundationCard.GetComponent<CardScript>().cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
+            if (foundations[f].GetComponent<FoundationScript>().cardList.Count != 0) {
+
+                GameObject topFoundationCard = foundations[f].GetComponent<FoundationScript>().cardList[0];
+                for (int r = 0; r < reactors.Count; r++)
                 {
-                    topFoundationCard.GetComponent<CardScript>().MoveCard(reactors[r]);
-                    break;
+                    //  does this top card's suit match the reactor's suit
+                    if (topFoundationCard.GetComponent<CardScript>().cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
+                    {
+                        topFoundationCard.GetComponent<CardScript>().MoveCard(reactors[r]);
+                        break;
+                    }
                 }
             }
         }

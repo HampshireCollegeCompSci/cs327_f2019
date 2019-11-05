@@ -28,6 +28,11 @@ public class MenuUIScript : MonoBehaviour
         SceneManager.LoadScene("GameplayScene");
     }
 
+    public void UndoButton()
+    {
+        UndoScript.undoScript.undo();
+    }
+
     public void Restart()
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();

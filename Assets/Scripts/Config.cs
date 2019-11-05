@@ -19,7 +19,7 @@ public class Config : MonoBehaviour
     public float countdown;
     public float draggedTokenOffset;
     public float selectedCardOpacity;
-    public bool prettyColors = false;
+    public bool prettyColors;
 
     //score
     public int matchPoints;
@@ -70,6 +70,10 @@ public class Config : MonoBehaviour
     public int easy;
     public int medium;
     public int hard;
+
+    public int easyMoveCount;
+    public int mediumMoveCount;
+    public int hardMoveCount;
 
     public int actionMax;
     public int actions;
@@ -130,7 +134,6 @@ public class Config : MonoBehaviour
     {
         wastepileCardsToShow = gameInfo.wastepileCardsToShow;
         foundationStartSize = gameInfo.foundationStartingSize;
-        maxReactorVal = gameInfo.reactorLimit;
         nonTopXOffset = foundationStackDensity * gameInfo.nonTopXOffset;
         print(nonTopXOffset);
         cardsToDeal = gameInfo.cardsToDeal;
@@ -140,9 +143,12 @@ public class Config : MonoBehaviour
         emptyReactorPoints = gameInfo.emptyReactorPoints;
         perfectGamePoints = gameInfo.perfectGamePoints;
         delayToShowGameSummary = gameInfo.delayToShowGameSummary;
-        easy = gameInfo.easy;
-        medium = gameInfo.medium;
-        hard = gameInfo.hard;
+        easy = gameInfo.easyReactorLimit;
+        medium = gameInfo.mediumReactorLimit;
+        hard = gameInfo.hardReactorLimit;
+        easyMoveCount = gameInfo.easyMoveCount;
+        mediumMoveCount = gameInfo.mediumMoveCount;
+        hardMoveCount = gameInfo.hardMoveCount;
         draggedTokenOffset = gameInfo.draggedTokenOffset;
         selectedCardOpacity = gameInfo.selectedCardOpacity;
     }
@@ -218,17 +224,17 @@ public class Config : MonoBehaviour
     {
         if (dif.Equals("easy")){
             maxReactorVal = easy;
-            actionMax = easy;
+            actionMax = easyMoveCount;
         }
         if (dif.Equals("medium"))
         {
             maxReactorVal = medium;
-            actionMax = medium;
+            actionMax = mediumMoveCount;
         }
         if (dif.Equals("hard"))
         {
             maxReactorVal = hard;
-            actionMax = hard;
+            actionMax = hardMoveCount;
         }
     }
 

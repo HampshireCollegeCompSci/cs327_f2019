@@ -18,11 +18,25 @@ public class WastepileScript : MonoBehaviour
 
     void Update()
     {
-        return;
+        CheckHologram();
+    }
+
+    public void CheckHologram()
+    {
+        if (cardList.Count != 0)
+        {
+            cardList[0].gameObject.GetComponent<CardScript>().ShowHologram();
+
+            for (int i = 1; i < cardList.Count; i++)
+            {
+                cardList[i].GetComponent<CardScript>().DestroyHologram();
+            }
+        }
     }
 
     public void RemoveCard(GameObject card)
     {
+        card.GetComponent<CardScript>().DestroyHologram();
         cardList.Remove(card);
     }
 
@@ -30,7 +44,7 @@ public class WastepileScript : MonoBehaviour
     {
         int positionCounter = 0;
         float xOffset = 0;
-    
+
         for (int i = 0; i < cardList.Count; i++)  // go through the list
         {
             // as we go through, place cards to the right and behind of the previous one
