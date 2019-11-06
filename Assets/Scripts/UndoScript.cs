@@ -71,7 +71,7 @@ public class UndoScript : MonoBehaviour
                     lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().hidden = true;
                     lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetCardAppearance();
                 }
-                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin);
+                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, false);
             }
             else if (lastMove.moveType == "match")
             {
@@ -80,14 +80,14 @@ public class UndoScript : MonoBehaviour
                     lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().hidden = true;
                     lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetCardAppearance();
                 }
-                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin);
+                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, false);
                 lastMove = moveLog.Pop();
                 if (lastMove.nextCardWasHidden)
                 {
                     lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().hidden = true;
                     lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetCardAppearance();
                 }
-                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin);
+                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, false);
                 Config.config.score -= Config.config.matchPoints;
                 Debug.Log("score" + Config.config.score);
             }

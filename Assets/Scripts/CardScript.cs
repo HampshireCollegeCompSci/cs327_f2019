@@ -89,18 +89,24 @@ public class CardScript : MonoBehaviour
         gameObject.GetComponent<BoxCollider2D>().offset = gameObject.GetComponent<SpriteRenderer>().sprite.bounds.center;
     }
 
-    public void MoveCard(GameObject destination)
+    public void MoveCard(GameObject destination, bool doLog = true)
     {
         if (destination.CompareTag("Foundation"))
         {
-            UndoScript.undoScript.logMove("move", gameObject);
+            if (doLog)
+            {
+                UndoScript.undoScript.logMove("move", gameObject);
+            }
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<FoundationScript>().cardList.Insert(0, gameObject);
         }
 
         else if (destination.CompareTag("Reactor"))
         {
-            UndoScript.undoScript.logMove("move", gameObject);
+            if (doLog)
+            {
+                UndoScript.undoScript.logMove("move", gameObject);
+            }
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<ReactorScript>().cardList.Insert(0, gameObject);
             destination.GetComponent<ReactorScript>().soundController.CardToReactorSound();
@@ -108,6 +114,10 @@ public class CardScript : MonoBehaviour
 
         else if (destination.CompareTag("Wastepile"))
         {
+            if (doLog)
+            {
+                UndoScript.undoScript.logMove("draw", gameObject);
+            }
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<WastepileScript>().cardList.Insert(0, gameObject);
         }
@@ -118,7 +128,10 @@ public class CardScript : MonoBehaviour
         }
         else if (destination.CompareTag("MatchedPile"))
         {
-            UndoScript.undoScript.logMove("match", gameObject);
+            if (doLog)
+            {
+                UndoScript.undoScript.logMove("match", gameObject);
+            }
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<MatchedPileScript>().cardList.Insert(0, gameObject);
         }
