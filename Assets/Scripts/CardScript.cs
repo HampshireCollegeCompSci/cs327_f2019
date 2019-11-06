@@ -89,13 +89,20 @@ public class CardScript : MonoBehaviour
         gameObject.GetComponent<BoxCollider2D>().offset = gameObject.GetComponent<SpriteRenderer>().sprite.bounds.center;
     }
 
-    public void MoveCard(GameObject destination, bool doLog = true)
+    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true)
     {
         if (destination.CompareTag("Foundation"))
         {
             if (doLog)
             {
-                UndoScript.undoScript.logMove("move", gameObject);
+                if (isAction)
+                {
+                    UndoScript.undoScript.logMove("move", gameObject);
+                }
+                else
+                {
+                    UndoScript.undoScript.logMove("move", gameObject, false);
+                }
             }
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<FoundationScript>().cardList.Insert(0, gameObject);
@@ -105,7 +112,14 @@ public class CardScript : MonoBehaviour
         {
             if (doLog)
             {
-                UndoScript.undoScript.logMove("move", gameObject);
+                if (isAction)
+                {
+                    UndoScript.undoScript.logMove("move", gameObject);
+                }
+                else
+                {
+                    UndoScript.undoScript.logMove("move", gameObject, false);
+                }
             }
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<ReactorScript>().cardList.Insert(0, gameObject);
@@ -116,7 +130,14 @@ public class CardScript : MonoBehaviour
         {
             if (doLog)
             {
-                UndoScript.undoScript.logMove("draw", gameObject);
+                if (isAction)
+                {
+                    UndoScript.undoScript.logMove("draw", gameObject);
+                }
+                else
+                {
+                    UndoScript.undoScript.logMove("draw", gameObject, false);
+                }
             }
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<WastepileScript>().cardList.Insert(0, gameObject);
@@ -130,7 +151,14 @@ public class CardScript : MonoBehaviour
         {
             if (doLog)
             {
-                UndoScript.undoScript.logMove("match", gameObject);
+                if (isAction)
+                {
+                    UndoScript.undoScript.logMove("match", gameObject);
+                }
+                else
+                {
+                    UndoScript.undoScript.logMove("match", gameObject, false);
+                }
             }
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<MatchedPileScript>().cardList.Insert(0, gameObject);

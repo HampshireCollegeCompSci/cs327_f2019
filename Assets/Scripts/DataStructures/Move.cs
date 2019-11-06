@@ -8,12 +8,14 @@ public class Move
     public GameObject origin;
     public string moveType;
     public bool nextCardWasHidden;
+    public bool isAction;
 
-    public Move(string moveType, GameObject card, GameObject origin, bool nextCardWasHidden)
+    public Move(string moveType, GameObject card, GameObject origin, bool nextCardWasHidden, bool isAction)
     {
         this.card = card;
         this.origin = origin;
         this.moveType = moveType;
         this.nextCardWasHidden = nextCardWasHidden;
+        this.isAction = isAction;
     }
 }

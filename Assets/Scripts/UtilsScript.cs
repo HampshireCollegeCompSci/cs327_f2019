@@ -135,7 +135,7 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    public int countCardsToSelect(GameObject selectedCard) //takes the input of a selected card and counts how many cards are below it in a foundation
+    public int countCardsToSelect(GameObject selectedCard) //takes the input of a selected card and counts how many cards are above it in a foundation
     {
         for (indexCounter = hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList.Count - 1; indexCounter > 0; indexCounter--)
         {
