@@ -12,8 +12,22 @@ public class UndoScript : MonoBehaviour
     {
         moveLog = new Stack<Move>();
     }
-    public void logMove(string moveType, GameObject card, GameObject origin, bool nextCardWasHidden)
+    public void logMove(string moveType, GameObject card)
     {
+        GameObject origin = card.GetComponent<CardScript>().container;
+        bool nextCardWasHidden;
+        if (card.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList.Count == 1)
+        {
+            nextCardWasHidden = false;
+        }
+        else if (card.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[1].GetComponent<CardScript>().hidden)
+        {
+            nextCardWasHidden = true;
+        }
+        else
+        {
+            nextCardWasHidden = false;
+        }
         Move move = new Move(moveType, card, origin, nextCardWasHidden);
         moveLog.Push(move);
         print("There are " + moveLog.Count + " moves logged.");
@@ -21,14 +35,15 @@ public class UndoScript : MonoBehaviour
 
     public void undo()
     {
-        if (moveLog.Peek() != null)
+        if (moveLog.Count > 0)
         {
             Move lastMove = moveLog.Pop();
             if (lastMove.moveType == "move")
             {
                 if (lastMove.nextCardWasHidden)
                 {
-                    lastMove.origin.GetComponent<FoundationScript>().cardList.Last().GetComponent<CardScript>().hidden = true;
+                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().hidden = true;
+                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetCardAppearance();
                 }
                 lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin);
             }
