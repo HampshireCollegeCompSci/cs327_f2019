@@ -12,7 +12,7 @@ public class UndoScript : MonoBehaviour
     {
         moveLog = new Stack<Move>();
     }
-    public void logMove(string moveType, GameObject card)
+    public void logMove(string moveType, GameObject card, bool isAction = true)
     {
         GameObject origin = card.GetComponent<CardScript>().container;
         bool nextCardWasHidden = false;
@@ -54,7 +54,7 @@ public class UndoScript : MonoBehaviour
             //Special Case
         }
 
-        Move move = new Move(moveType, card, origin, nextCardWasHidden);
+        Move move = new Move(moveType, card, origin, nextCardWasHidden, isAction);
         moveLog.Push(move);
         print("There are " + moveLog.Count + " moves logged.");
     }
@@ -63,49 +63,52 @@ public class UndoScript : MonoBehaviour
     {
         if (moveLog.Count > 0)
         {
-            Move lastMove = moveLog.Pop();
+            Move lastMove = null;
             if (lastMove.moveType == "move")
             {
-                if (lastMove.nextCardWasHidden)
-                {
-                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().hidden = true;
-                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetCardAppearance();
-                }
-                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, false);
-            }
-            else if (lastMove.moveType == "match")
-            {
-                if (lastMove.nextCardWasHidden)
-                {
-                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().hidden = true;
-                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetCardAppearance();
-                }
-                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, false);
                 lastMove = moveLog.Pop();
                 if (lastMove.nextCardWasHidden)
                 {
                     lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().hidden = true;
                     lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetCardAppearance();
                 }
-                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, false);
-                Config.config.score -= Config.config.matchPoints;
-                Debug.Log("score" + Config.config.score);
+                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+                if (lastMove.isAction)
+                {
+                    Config.config.actions -= 1;
+                }
             }
-            else if (lastMove.moveType == "draw")
+            else if (lastMove.moveType == "match")
             {
-                lastMove.card.GetComponent<CardScript>().hidden = true;
-                lastMove.card.GetComponent<CardScript>().SetCardAppearance();
-                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, false);
                 for (int i = 0; i < 2; i++)
                 {
                     lastMove = moveLog.Pop();
                     lastMove.card.GetComponent<CardScript>().hidden = true;
                     lastMove.card.GetComponent<CardScript>().SetCardAppearance();
-                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, false);
+                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+                    if (lastMove.isAction)
+                    {
+                        Config.config.actions -= 1;
+                    }
+                }
+                Config.config.score -= Config.config.matchPoints;
+                Debug.Log("score" + Config.config.score);
+            }
+            else if (lastMove.moveType == "draw")
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    lastMove = moveLog.Pop();
+                    lastMove.card.GetComponent<CardScript>().hidden = true;
+                    lastMove.card.GetComponent<CardScript>().SetCardAppearance();
+                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+                    if (lastMove.isAction)
+                    {
+                        Config.config.actions -= 1;
+                    }
                 }
                 
             }
-            Config.config.actions -= 1;
         }
     }
 

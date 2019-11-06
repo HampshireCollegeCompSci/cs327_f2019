@@ -107,10 +107,10 @@ public class FoundationScript : MonoBehaviour
 
                 if (input.CompareTag("Reactor") || input.CompareTag("Foundation") && input.GetComponent<FoundationScript>().cardList.Count == 0)
                 {
-
+                    utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input);
                     foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
                     {
-                        card.GetComponent<CardScript>().MoveCard(input);
+                        card.GetComponent<CardScript>().MoveCard(input, isAction:false);
                     }
 
                     Config.config.actions += 1; //adds to the action count
