@@ -152,6 +152,7 @@ public class DeckScript : MonoBehaviour
     // user wants to deal cards, other things might need to be done before that
     public void ProcessAction(GameObject input)
     {
+        utils.DeselectCards();
 
         if (cardList.Count != 0) // can the deck can be drawn from
         {
@@ -179,7 +180,8 @@ public class DeckScript : MonoBehaviour
     {
         for (int f = 0; f < foundations.Count; f++)
         {
-            if (foundations[f].GetComponent<FoundationScript>().cardList.Count != 0) {
+            if (foundations[f].GetComponent<FoundationScript>().cardList.Count != 0)
+            {
 
                 GameObject topFoundationCard = foundations[f].GetComponent<FoundationScript>().cardList[0];
                 for (int r = 0; r < reactors.Count; r++)
@@ -244,7 +246,7 @@ public class DeckScript : MonoBehaviour
             {
                 cardList[0].GetComponent<CardScript>().MoveCard(wastePile, false);
             }
-            
+
         }
 
         Config.config.actions += 1; //adds to the action count
