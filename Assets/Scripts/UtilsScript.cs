@@ -248,8 +248,6 @@ public class UtilsScript : MonoBehaviour
     public void Match(GameObject card1, GameObject card2)
     {
         soundController.CardMatchSound();
-        UndoScript.undoScript.logMove("match", card1);
-        UndoScript.undoScript.logMove("match", card2);
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
 

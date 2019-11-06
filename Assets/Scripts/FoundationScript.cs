@@ -110,7 +110,6 @@ public class FoundationScript : MonoBehaviour
 
                     foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
                     {
-                        UndoScript.undoScript.logMove("move", card);
                         card.GetComponent<CardScript>().MoveCard(input);
                     }
 
@@ -167,7 +166,6 @@ public class FoundationScript : MonoBehaviour
 
             foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
             {
-                UndoScript.undoScript.logMove("move", card);
                 card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
             }
 
@@ -177,7 +175,6 @@ public class FoundationScript : MonoBehaviour
 
         else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
         {
-            UndoScript.undoScript.logMove("move", utils.selectedCards[0]);
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
 
             Config.config.actions += 1; //adds to the action count

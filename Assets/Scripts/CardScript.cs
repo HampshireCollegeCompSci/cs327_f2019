@@ -93,12 +93,14 @@ public class CardScript : MonoBehaviour
     {
         if (destination.CompareTag("Foundation"))
         {
+            UndoScript.undoScript.logMove("move", gameObject);
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<FoundationScript>().cardList.Insert(0, gameObject);
         }
 
         else if (destination.CompareTag("Reactor"))
         {
+            UndoScript.undoScript.logMove("move", gameObject);
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<ReactorScript>().cardList.Insert(0, gameObject);
             destination.GetComponent<ReactorScript>().soundController.CardToReactorSound();
@@ -116,6 +118,7 @@ public class CardScript : MonoBehaviour
         }
         else if (destination.CompareTag("MatchedPile"))
         {
+            UndoScript.undoScript.logMove("match", gameObject);
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<MatchedPileScript>().cardList.Insert(0, gameObject);
         }
