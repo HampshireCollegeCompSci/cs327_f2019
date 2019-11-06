@@ -93,11 +93,17 @@ public class UndoScript : MonoBehaviour
             }
             else if (lastMove.moveType == "draw")
             {
-
-            }
-            else if (lastMove.moveType == "waste")
-            {
-
+                lastMove.card.GetComponent<CardScript>().hidden = true;
+                lastMove.card.GetComponent<CardScript>().SetCardAppearance();
+                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, false);
+                for (int i = 0; i < 2; i++)
+                {
+                    lastMove = moveLog.Pop();
+                    lastMove.card.GetComponent<CardScript>().hidden = true;
+                    lastMove.card.GetComponent<CardScript>().SetCardAppearance();
+                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, false);
+                }
+                
             }
             Config.config.actions -= 1;
         }
