@@ -15,19 +15,45 @@ public class UndoScript : MonoBehaviour
     public void logMove(string moveType, GameObject card)
     {
         GameObject origin = card.GetComponent<CardScript>().container;
-        bool nextCardWasHidden;
-        if (card.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList.Count == 1)
+        bool nextCardWasHidden = false;
+        if (origin.TryGetComponent(typeof(FoundationScript), out Component component))
         {
-            nextCardWasHidden = false;
+            if (card.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList.Count == 1)
+            {
+                nextCardWasHidden = false;
+            }
+            else if (card.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[1].GetComponent<CardScript>().hidden)
+            {
+                nextCardWasHidden = true;
+            }
         }
-        else if (card.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[1].GetComponent<CardScript>().hidden)
+        else if (origin.TryGetComponent(typeof(ReactorScript), out component))
         {
-            nextCardWasHidden = true;
+            if (card.GetComponent<CardScript>().container.GetComponent<ReactorScript>().cardList.Count == 1)
+            {
+                nextCardWasHidden = false;
+            }
+            else if (card.GetComponent<CardScript>().container.GetComponent<ReactorScript>().cardList[1].GetComponent<CardScript>().hidden)
+            {
+                nextCardWasHidden = true;
+            }
         }
-        else
+        else if (origin.TryGetComponent(typeof(WastepileScript), out component))
         {
-            nextCardWasHidden = false;
+            if (card.GetComponent<CardScript>().container.GetComponent<WastepileScript>().cardList.Count == 1)
+            {
+                nextCardWasHidden = false;
+            }
+            else if (card.GetComponent<CardScript>().container.GetComponent<WastepileScript>().cardList[1].GetComponent<CardScript>().hidden)
+            {
+                nextCardWasHidden = true;
+            }
         }
+        else if (origin.TryGetComponent(typeof(DeckScript), out component))
+        {
+            //Special Case
+        }
+
         Move move = new Move(moveType, card, origin, nextCardWasHidden);
         moveLog.Push(move);
         print("There are " + moveLog.Count + " moves logged.");
@@ -49,7 +75,21 @@ public class UndoScript : MonoBehaviour
             }
             else if (lastMove.moveType == "match")
             {
-
+                if (lastMove.nextCardWasHidden)
+                {
+                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().hidden = true;
+                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetCardAppearance();
+                }
+                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin);
+                lastMove = moveLog.Pop();
+                if (lastMove.nextCardWasHidden)
+                {
+                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().hidden = true;
+                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetCardAppearance();
+                }
+                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin);
+                Config.config.score -= Config.config.matchPoints;
+                Debug.Log("score" + Config.config.score);
             }
             else if (lastMove.moveType == "draw")
             {
@@ -59,6 +99,7 @@ public class UndoScript : MonoBehaviour
             {
 
             }
+            Config.config.actions -= 1;
         }
     }
 
