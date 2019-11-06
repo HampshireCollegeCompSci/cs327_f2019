@@ -36,7 +36,7 @@ public class ResponsiveController : MonoBehaviour
             cards = GameObject.FindGameObjectsWithTag("Card");
 
             //find decks
-            decks = GameObject.FindGameObjectsWithTag("Deck");
+            //decks = GameObject.FindGameObjectsWithTag("Deck");
 
             //find foundation
             foundations = GameObject.FindGameObjectsWithTag("Foundation");
@@ -55,10 +55,10 @@ public class ResponsiveController : MonoBehaviour
             }
 
             //scale deck
-            for (int i = 0; i < decks.Length; i++)
-            {
-                decks[i].transform.localScale *= scale;
-            }
+            //for (int i = 0; i < decks.Length; i++)
+            //{
+            //    decks[i].transform.localScale *= scale;
+            //}
 
             //scale foundation
             for (int i = 0; i < foundations.Length; i++)
