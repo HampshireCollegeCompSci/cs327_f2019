@@ -22,14 +22,14 @@ public class SoundController : MonoBehaviour
 
     public void CardToReactorSound()
     {
-        AudioClip sound = Resources.Load<AudioClip>("Audio/token_place_in_reactor");
+        AudioClip sound = Resources.Load<AudioClip>("Audio/token_placed_in_reactor");
         soundController.clip = sound;
         soundController.Play();
     }
 
     public void CardStackSound()
     {
-        AudioClip sound = Resources.Load<AudioClip>("Audio/token_stack_7");
+        AudioClip sound = Resources.Load<AudioClip>("Audio/token_stack");
         soundController.clip = sound;
         soundController.Play();
     }
@@ -43,7 +43,7 @@ public class SoundController : MonoBehaviour
 
     public void CardMatchSound()
     {
-        AudioClip sound = Resources.Load<AudioClip>("Audio/CardMatchC");
+        AudioClip sound = Resources.Load<AudioClip>("Audio/card_match_c");
         soundController.clip = sound;
         soundController.Play();
     }

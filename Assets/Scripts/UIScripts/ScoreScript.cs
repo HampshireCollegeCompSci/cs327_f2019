@@ -10,8 +10,7 @@ public class ScoreScript : MonoBehaviour
 
     void Start()
     {
-        score = Config.config.score;
-        gameScore.text = Config.config.score.ToString();
+        UpdateScore();
     }
 
     void Update()

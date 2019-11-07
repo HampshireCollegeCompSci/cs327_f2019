@@ -22,7 +22,6 @@ public class GameInfo
     //cardsToDeal = int
     //(how many cards to deal per click on the deck)
 
-    public int reactorLimit;
     public int foundationStartingSize;
     public int wastepileCardsToShow;
     public float nonTopXOffset;
@@ -34,4 +33,11 @@ public class GameInfo
     public int emptyReactorPoints;
     public int perfectGamePoints;
     public float delayToShowGameSummary;
+    public int easyReactorLimit;
+    public int mediumReactorLimit;
+    public int hardReactorLimit;
+    public int easyMoveCount;
+    public int mediumMoveCount;
+    public int hardMoveCount;
+    public float selectedCardOpacity;
 }

@@ -18,11 +18,25 @@ public class WastepileScript : MonoBehaviour
 
     void Update()
     {
-        return;
+        CheckHologram();
+    }
+
+    public void CheckHologram()
+    {
+        if (cardList.Count != 0)
+        {
+            cardList[0].gameObject.GetComponent<CardScript>().ShowHologram();
+
+            for (int i = 1; i < cardList.Count; i++)
+            {
+                cardList[i].GetComponent<CardScript>().DestroyHologram();
+            }
+        }
     }
 
     public void RemoveCard(GameObject card)
     {
+        card.GetComponent<CardScript>().DestroyHologram();
         cardList.Remove(card);
     }
 
@@ -30,7 +44,7 @@ public class WastepileScript : MonoBehaviour
     {
         int positionCounter = 0;
         float xOffset = 0;
-    
+
         for (int i = 0; i < cardList.Count; i++)  // go through the list
         {
             // as we go through, place cards to the right and behind of the previous one
@@ -59,6 +73,8 @@ public class WastepileScript : MonoBehaviour
                 {
                     card.GetComponent<CardScript>().MoveCard(input);
                 }
+
+                Config.config.actions += 1; //adds to the action count
             }
         }
 
@@ -109,12 +125,14 @@ public class WastepileScript : MonoBehaviour
             {
                 card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
             }
+            Config.config.actions += 1; //adds to the action count
         }
 
         else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
         {
             soundController.CardToReactorSound();
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
+            Config.config.actions += 1; //adds to the action count
         }
 
         return;

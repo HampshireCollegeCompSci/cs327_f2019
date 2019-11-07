@@ -28,6 +28,11 @@ public class MenuUIScript : MonoBehaviour
         SceneManager.LoadScene("GameplayScene");
     }
 
+    public void UndoButton()
+    {
+        UndoScript.undoScript.undo();
+    }
+
     public void Restart()
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
@@ -111,14 +116,19 @@ public class MenuUIScript : MonoBehaviour
     }
     public void hardDifficulty()
     {
-        Config.config.setDifficulty(15);
+        Config.config.setDifficulty("hard");
     }
     public void easyDifficulty()
     {
-        Config.config.setDifficulty(21);
+        Config.config.setDifficulty("easy");
     }
     public void mediumDifficulty()
     {
-        Config.config.setDifficulty(18);
+        Config.config.setDifficulty("medium");
+    }
+
+    public void MakeActionsMax()
+    {
+        Config.config.actions = Config.config.actionMax;
     }
 }

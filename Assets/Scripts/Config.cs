@@ -17,6 +17,9 @@ public class Config : MonoBehaviour
     public int turnsTillReset;
     public float delayToShowGameSummary;
     public float countdown;
+    public float draggedTokenOffset;
+    public float selectedCardOpacity;
+    public bool prettyColors;
 
     //score
     public int matchPoints;
@@ -64,6 +67,16 @@ public class Config : MonoBehaviour
     private string JSON;
     GameInfo gameInfo;
 
+    public int easy;
+    public int medium;
+    public int hard;
+
+    public int easyMoveCount;
+    public int mediumMoveCount;
+    public int hardMoveCount;
+
+    public int actionMax;
+    public int actions;
 
 
     private void Awake()
@@ -121,7 +134,6 @@ public class Config : MonoBehaviour
     {
         wastepileCardsToShow = gameInfo.wastepileCardsToShow;
         foundationStartSize = gameInfo.foundationStartingSize;
-        maxReactorVal = gameInfo.reactorLimit;
         nonTopXOffset = foundationStackDensity * gameInfo.nonTopXOffset;
         print(nonTopXOffset);
         cardsToDeal = gameInfo.cardsToDeal;
@@ -131,6 +143,14 @@ public class Config : MonoBehaviour
         emptyReactorPoints = gameInfo.emptyReactorPoints;
         perfectGamePoints = gameInfo.perfectGamePoints;
         delayToShowGameSummary = gameInfo.delayToShowGameSummary;
+        easy = gameInfo.easyReactorLimit;
+        medium = gameInfo.mediumReactorLimit;
+        hard = gameInfo.hardReactorLimit;
+        easyMoveCount = gameInfo.easyMoveCount;
+        mediumMoveCount = gameInfo.mediumMoveCount;
+        hardMoveCount = gameInfo.hardMoveCount;
+        draggedTokenOffset = gameInfo.draggedTokenOffset;
+        selectedCardOpacity = gameInfo.selectedCardOpacity;
     }
 
     public void SetCards()
@@ -148,7 +168,7 @@ public class Config : MonoBehaviour
 
         wastePile = GameObject.Find("WastePile");
 
-        deck = GameObject.Find("Deck");
+        deck = GameObject.Find("DeckButton");
 
         score = 0;
     }
@@ -200,9 +220,22 @@ public class Config : MonoBehaviour
         return width;
 
     }
-    public void setDifficulty(int val)
+    public void setDifficulty(string dif)
     {
-        maxReactorVal = val;
+        if (dif.Equals("easy")){
+            maxReactorVal = easy;
+            actionMax = easyMoveCount;
+        }
+        if (dif.Equals("medium"))
+        {
+            maxReactorVal = medium;
+            actionMax = mediumMoveCount;
+        }
+        if (dif.Equals("hard"))
+        {
+            maxReactorVal = hard;
+            actionMax = hardMoveCount;
+        }
     }
 
 

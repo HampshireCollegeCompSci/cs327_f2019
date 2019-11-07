@@ -14,23 +14,38 @@ public class FoundationScript : MonoBehaviour
         SetCardPositions();
     }
 
-    void Update()
+    private void Update()
     {
-        return;
+        CheckHologram();
+    }
+
+    public void CheckHologram()
+    {
+        if (cardList.Count != 0)
+        {
+            cardList[0].gameObject.GetComponent<CardScript>().ShowHologram();
+
+            for (int i = 1; i < cardList.Count; i++)
+            {
+                cardList[i].GetComponent<CardScript>().DestroyHologram();
+            }
+        }
     }
 
     public void RemoveCard(GameObject card)
     {
+        card.GetComponent<CardScript>().DestroyHologram();
         cardList.Remove(card);
-        checkTopCard();
+        CheckTopCard();
     }
 
-    public void checkTopCard()
+    public void CheckTopCard()
     {
         if (cardList.Count != 0 && cardList[0].gameObject.GetComponent<CardScript>().hidden)
         {
             cardList[0].gameObject.GetComponent<CardScript>().hidden = false;
             cardList[0].gameObject.GetComponent<CardScript>().SetCardAppearance();
+
             Config.config.GetComponent<SoundController>().CardRevealSound();
         }
     }
@@ -46,7 +61,7 @@ public class FoundationScript : MonoBehaviour
     {
         int positionCounter = 0;
         float yOffset = 0;
-        
+
         for (int i = cardList.Count - 1; i >= 0; i--) // go backwards through the list
         {
             // as we go through, place cards above and in-front the previous one
@@ -54,7 +69,7 @@ public class FoundationScript : MonoBehaviour
 
             if (cardList[i].GetComponent<CardScript>().hidden)  // don't show hidden cards as much
             {
-                if(cardList.Count > 12) // especially if the stack is large
+                if (cardList.Count > 12) // especially if the stack is large
                 {
                     yOffset += 0.05f;
                 }
@@ -74,6 +89,7 @@ public class FoundationScript : MonoBehaviour
 
             positionCounter++;
         }
+
     }
 
     public void ProcessAction(GameObject input)
@@ -88,9 +104,24 @@ public class FoundationScript : MonoBehaviour
                 {
                     return;
                 }
-                foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
+
+                if (input.CompareTag("Reactor") || input.CompareTag("Foundation") && input.GetComponent<FoundationScript>().cardList.Count == 0)
                 {
-                    card.GetComponent<CardScript>().MoveCard(input);
+
+                    foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
+                    {
+                        if (card.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[1].GetComponent<CardScript>().hidden)
+                        {
+                            UndoScript.undoScript.logMove("move", card, this.gameObject, true);
+                        }
+                        else
+                        {
+                            UndoScript.undoScript.logMove("move", card, this.gameObject, false);
+                        }
+                        card.GetComponent<CardScript>().MoveCard(input);
+                    }
+
+                    Config.config.actions += 1; //adds to the action count
                 }
             }
         }
@@ -138,16 +169,39 @@ public class FoundationScript : MonoBehaviour
 
         else if ((utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1) == input.GetComponent<CardScript>().cardNum && input.GetComponent<CardScript>().container.CompareTag("Foundation"))
         {
+
             soundController.CardStackSound();
+
             foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
             {
+                if (card.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[1].GetComponent<CardScript>().hidden)
+                {
+                    UndoScript.undoScript.logMove("move", card, this.gameObject, true);
+                }
+                else
+                {
+                    UndoScript.undoScript.logMove("move", card, this.gameObject, false);
+                }
                 card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
             }
+
+
+            Config.config.actions += 1; //adds to the action count
         }
 
         else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
         {
+            if (utils.selectedCards[0].GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[1].GetComponent<CardScript>().hidden)
+            {
+                UndoScript.undoScript.logMove("move", utils.selectedCards[0], this.gameObject, true);
+            }
+            else
+            {
+                UndoScript.undoScript.logMove("move", utils.selectedCards[0], this.gameObject, false);
+            }
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
+
+            Config.config.actions += 1; //adds to the action count
         }
     }
 }

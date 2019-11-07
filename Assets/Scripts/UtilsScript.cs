@@ -70,6 +70,7 @@ public class UtilsScript : MonoBehaviour
             {
 
                 Click();
+
                 gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
 
                 foreach (GameObject card in selectedCardsCopy)
@@ -79,6 +80,11 @@ public class UtilsScript : MonoBehaviour
 
                 selectedCardsCopy.Clear();
                 dragOn = false;
+                int foo = selectedCards.Count;
+                for (int i = 0; i < foo; i++)
+                {
+                    DeselectCard(selectedCards[0]);
+                }
             }
 
             if (dragOn == true && SceneManager.GetActiveScene().buildIndex == 2)
@@ -96,6 +102,13 @@ public class UtilsScript : MonoBehaviour
             {
                 SetEndGameScore();
                 Debug.Log("score" + Config.config.score);
+            }
+
+            if (Config.config.actions == Config.config.actionMax)
+            {
+                Config.config.deck.GetComponent<DeckScript>().NextCycle();
+                Config.config.actions = 0;
+                gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
             }
         }
     }
@@ -164,8 +177,7 @@ public class UtilsScript : MonoBehaviour
             if (selectedCards.Count != 0)
             {
                 selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
-                int selectedCardsLength = selectedCards.Count;
-                for (int i = 0; i < selectedCardsLength; i++)
+                for (int i = 0; i < selectedCards.Count; i++)
                 {
                     DeselectCard(selectedCards[0]);
                 }
@@ -177,8 +189,7 @@ public class UtilsScript : MonoBehaviour
         else if (hit.collider != null && hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Deck"))
         {
             hit.collider.gameObject.GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
-            int selectedCardsLength = selectedCards.Count;
-            for (int i = 0; i < selectedCardsLength; i++)
+            for (int i = 0; i < selectedCards.Count; i++)
             {
                 DeselectCard(selectedCards[0]);
             }
@@ -214,8 +225,7 @@ public class UtilsScript : MonoBehaviour
         //if we click on our first selected card deselect all cards
         else if (hit.collider != null && selectedCards.Count!=0 && selectedCards[0] == hit.collider.gameObject)
         {
-            int selectedCardsLength = selectedCards.Count;
-            for (int i = 0; i < selectedCardsLength; i++)
+            for (int i = 0; i < selectedCards.Count; i++)
             {
                 Debug.Log(i);
                 DeselectCard(selectedCards[0]);
@@ -223,12 +233,11 @@ public class UtilsScript : MonoBehaviour
         }
 
         //if we click on something else tries to move the selected cards 
-        else if (hit.collider != null && selectedCards.Count != 0)
+        else if (hit.collider != null && selectedCards.Count != 0 && !hit.collider.GetComponent<CardScript>().hidden)
         {
             selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
             //we are no longer changing a list that we are also iterating over
-            int selectedCardsLength = selectedCards.Count;
-            for (int i = 0; i < selectedCardsLength; i++)
+            for (int i = 0; i < selectedCards.Count; i++)
             {
                 DeselectCard(selectedCards[0]);
             }
@@ -242,6 +251,7 @@ public class UtilsScript : MonoBehaviour
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
 
+        Config.config.actions += 1;
         Config.config.score += matchPoints;
         Debug.Log("score" + Config.config.score);
         //check to see if the board is clear
@@ -362,16 +372,24 @@ public class UtilsScript : MonoBehaviour
                 newGameObject = (GameObject)Instantiate(card, Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Quaternion.identity);
                 newGameObject.GetComponent<CardScript>().MakeVisualOnly();
                 cards.Add(newGameObject);
+                newGameObject.GetComponent<CardScript>().appearSelected = false;
+                newGameObject.GetComponent<CardScript>().SetCardAppearance();
             }
         }
 
-        foreach (GameObject card in cards)
+        for(int i = 0; i < cards.Count; i++)
         {
-            card.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y + card.transform.position.y, 1));
+            if (i == 0)
+            {
+                cards[i].transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
+                Input.mousePosition.y + i * Config.config.draggedTokenOffset, 1));
+            }
+
+            else
+            {
+                cards[i].transform.position =
+                    new Vector3(cards[i - 1].transform.position.x, cards[i - 1].transform.position.y + Config.config.draggedTokenOffset, cards[i - 1].transform.position.z - 0.05f);
+            }
         }
     }
-
-
-
-
 }
