@@ -16,8 +16,8 @@ public class CardScript : MonoBehaviour
     public Color originalColor;
     public Color newColor;
 
-    public GameObject hologramObject;
-    public GameObject hologram;
+    private GameObject hologramObject;
+    private GameObject hologram;
 
     Vector3 originalTransform;
 

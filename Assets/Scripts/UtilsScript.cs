@@ -374,14 +374,6 @@ public class UtilsScript : MonoBehaviour
                 cards.Add(newGameObject);
                 newGameObject.GetComponent<CardScript>().appearSelected = false;
                 newGameObject.GetComponent<CardScript>().SetCardAppearance();
-                newGameObject.GetComponent<CardScript>().ShowHologram();
-                if (card.GetComponent<CardScript>().hologram != null){
-                    GameObject hologramPrefab = Resources.Load<GameObject>("Prefabs/Holograms/hologram");
-                    newGameObject.GetComponent<CardScript>().hologram = Instantiate(hologramPrefab, gameObject.transform.position - new Vector3(0, -0.5f, 0), gameObject.transform.rotation);
-                    GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/spades");
-                    newGameObject.GetComponent<CardScript>().hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
-                    newGameObject.GetComponent<CardScript>().ShowHologram();
-                }
             }
         }
 
