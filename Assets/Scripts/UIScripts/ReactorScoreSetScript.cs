@@ -35,10 +35,10 @@ public class ReactorScoreSetScript : MonoBehaviour
         if (reactorScore0 != null && reactorScore1 != null && reactorScore2 != null && reactorScore3 != null
             && reactor0 != null && reactor1 != null && reactor2 != null && reactor3 != null)
         {
-            reactorScore0.transform.position = Camera.main.WorldToScreenPoint(reactor0.transform.position) - new Vector3(0, 140, 0);
-            reactorScore1.transform.position = Camera.main.WorldToScreenPoint(reactor1.transform.position) - new Vector3(0, 140, 0);
-            reactorScore2.transform.position = Camera.main.WorldToScreenPoint(reactor2.transform.position) - new Vector3(0, 140, 0);
-            reactorScore3.transform.position = Camera.main.WorldToScreenPoint(reactor3.transform.position) - new Vector3(0, 140, 0);
+            reactorScore0.transform.position = reactor0.transform.position - new Vector3(0, 1.5f, 0);
+            reactorScore1.transform.position = reactor1.transform.position - new Vector3(0, 1.5f, 0);
+            reactorScore2.transform.position = reactor2.transform.position - new Vector3(0, 1.5f, 0);
+            reactorScore3.transform.position = reactor3.transform.position - new Vector3(0, 1.5f, 0);
         }
     }
 

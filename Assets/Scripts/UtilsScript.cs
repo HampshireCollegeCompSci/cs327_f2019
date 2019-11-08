@@ -374,6 +374,7 @@ public class UtilsScript : MonoBehaviour
                 cards.Add(newGameObject);
                 newGameObject.GetComponent<CardScript>().appearSelected = false;
                 newGameObject.GetComponent<CardScript>().SetCardAppearance();
+                newGameObject.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
             }
         }
 
