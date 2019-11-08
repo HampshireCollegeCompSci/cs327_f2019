@@ -13,6 +13,6 @@ public class ActionCountScript : MonoBehaviour
     }
     void Update()
     {
-        actionText.text = Config.config.actions + "/" + Config.config.actionMax;
+        actionText.text = (Config.config.actionMax - Config.config.actions).ToString();
     }
 }

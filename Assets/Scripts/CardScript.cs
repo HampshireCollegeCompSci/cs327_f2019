@@ -89,16 +89,38 @@ public class CardScript : MonoBehaviour
         gameObject.GetComponent<BoxCollider2D>().offset = gameObject.GetComponent<SpriteRenderer>().sprite.bounds.center;
     }
 
-    public void MoveCard(GameObject destination)
+    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true)
     {
         if (destination.CompareTag("Foundation"))
         {
+            if (doLog)
+            {
+                if (isAction)
+                {
+                    UndoScript.undoScript.logMove("move", gameObject);
+                }
+                else
+                {
+                    UndoScript.undoScript.logMove("move", gameObject, false);
+                }
+            }
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<FoundationScript>().cardList.Insert(0, gameObject);
         }
 
         else if (destination.CompareTag("Reactor"))
         {
+            if (doLog)
+            {
+                if (isAction)
+                {
+                    UndoScript.undoScript.logMove("move", gameObject);
+                }
+                else
+                {
+                    UndoScript.undoScript.logMove("move", gameObject, false);
+                }
+            }
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<ReactorScript>().cardList.Insert(0, gameObject);
             destination.GetComponent<ReactorScript>().soundController.CardToReactorSound();
@@ -106,6 +128,17 @@ public class CardScript : MonoBehaviour
 
         else if (destination.CompareTag("Wastepile"))
         {
+            if (doLog)
+            {
+                if (isAction)
+                {
+                    UndoScript.undoScript.logMove("draw", gameObject);
+                }
+                else
+                {
+                    UndoScript.undoScript.logMove("draw", gameObject, false);
+                }
+            }
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<WastepileScript>().cardList.Insert(0, gameObject);
         }
@@ -116,6 +149,17 @@ public class CardScript : MonoBehaviour
         }
         else if (destination.CompareTag("MatchedPile"))
         {
+            if (doLog)
+            {
+                if (isAction)
+                {
+                    UndoScript.undoScript.logMove("match", gameObject);
+                }
+                else
+                {
+                    UndoScript.undoScript.logMove("match", gameObject, false);
+                }
+            }
             container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<MatchedPileScript>().cardList.Insert(0, gameObject);
         }
@@ -136,27 +180,43 @@ public class CardScript : MonoBehaviour
         {
             GameObject hologramPrefab = Resources.Load<GameObject>("Prefabs/Holograms/hologram");
             hologram = Instantiate(hologramPrefab, gameObject.transform.position - new Vector3(0, -0.5f, 0), gameObject.transform.rotation);
+            GameObject hologramFoodPrefab = Resources.Load<GameObject>("Prefabs/Holograms/generalFood");
 
-            if (cardSuit == "spades")
-            {
-                GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/spades");
-                hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
-            }
-            else if (cardSuit == "diamonds")
-            {
-                GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/rhombus");
-                hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
-            }
-            else if (cardSuit == "hearts")
-            {
-                GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/hearts");
-                hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
-            }
-            else if (cardSuit == "clubs")
-            {
-                GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/clubs");
-                hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
-            }
+            string cardHologramName;
+            if (cardNum == 1)
+                cardHologramName = "ace_" + cardSuit + "_food";
+            else if (cardNum == 11)
+                cardHologramName = "jack_" + cardSuit + "_food";
+            else if (cardNum == 12)
+                cardHologramName = "queen_" + cardSuit + "_food";
+            else if (cardNum == 13)
+                cardHologramName = "king_" + cardSuit + "_food";
+            else
+                cardHologramName = cardNum + "_" + cardSuit + "_food";
+
+            hologramFoodPrefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/FoodHolograms/" + cardHologramName);
+            hologramObject = Instantiate(hologramFoodPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
+
+            //if (cardSuit == "spades")
+            //{
+            //    GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/spades");
+            //    hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
+            //}
+            //else if (cardSuit == "diamonds")
+            //{
+            //    GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/rhombus");
+            //    hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
+            //}
+            //else if (cardSuit == "hearts")
+            //{
+            //    GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/hearts");
+            //    hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
+            //}
+            //else if (cardSuit == "clubs")
+            //{
+            //    GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/clubs");
+            //    hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
+            //}
         }
         else
         {

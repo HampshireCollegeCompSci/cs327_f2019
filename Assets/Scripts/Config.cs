@@ -135,7 +135,6 @@ public class Config : MonoBehaviour
         wastepileCardsToShow = gameInfo.wastepileCardsToShow;
         foundationStartSize = gameInfo.foundationStartingSize;
         nonTopXOffset = foundationStackDensity * gameInfo.nonTopXOffset;
-        print(nonTopXOffset);
         cardsToDeal = gameInfo.cardsToDeal;
         relativeCardScale = gameInfo.relativeCardScale;
         turnsTillReset = gameInfo.turnsTillReset;

@@ -40,7 +40,7 @@ public class DeckScript : MonoBehaviour
         importSeed = false;
         Shuffle();
         SetUpFoundations();
-        Deal();
+        Deal(false);
         SetCardPositions();
 
         deckCounter.text = cardList.Count.ToString();
@@ -110,13 +110,13 @@ public class DeckScript : MonoBehaviour
                 // set to hidden as they might be unhidden
                 cardList[0].GetComponent<CardScript>().hidden = true;
                 // MoveCard() should be removing the card from its current cardList so taking index 0 should work
-                cardList[0].GetComponent<CardScript>().MoveCard(foundations[i]);
+                cardList[0].GetComponent<CardScript>().MoveCard(foundations[i], false);
             }
 
             // adding and revealing the top card of the foundation
             cardList[0].SetActive(true);
             cardList[0].GetComponent<CardScript>().hidden = false;
-            cardList[0].GetComponent<CardScript>().MoveCard(foundations[i]);
+            cardList[0].GetComponent<CardScript>().MoveCard(foundations[i], false);
             foundations[i].GetComponent<FoundationScript>().CheckTopCard();
         }
         //for (int i = 0; i < 10; i++)
@@ -152,6 +152,7 @@ public class DeckScript : MonoBehaviour
     // user wants to deal cards, other things might need to be done before that
     public void ProcessAction(GameObject input)
     {
+        utils.DeselectCards();
 
         if (cardList.Count != 0) // can the deck can be drawn from
         {
@@ -179,7 +180,8 @@ public class DeckScript : MonoBehaviour
     {
         for (int f = 0; f < foundations.Count; f++)
         {
-            if (foundations[f].GetComponent<FoundationScript>().cardList.Count != 0) {
+            if (foundations[f].GetComponent<FoundationScript>().cardList.Count != 0)
+            {
 
                 GameObject topFoundationCard = foundations[f].GetComponent<FoundationScript>().cardList[0];
                 for (int r = 0; r < reactors.Count; r++)
@@ -205,7 +207,7 @@ public class DeckScript : MonoBehaviour
         // if there are any cards in the deck's cardList before they will be on the bottom after
         while (wasteCardList.Count > 0)
         {
-            wasteCardList[0].GetComponent<CardScript>().MoveCard(this.gameObject);
+            wasteCardList[0].GetComponent<CardScript>().MoveCard(this.gameObject, false);
             cardList[0].GetComponent<CardScript>().hidden = true;
             cardList[0].GetComponent<CardScript>().SetCardAppearance();
         }
@@ -222,7 +224,7 @@ public class DeckScript : MonoBehaviour
     }
 
     // deals cards
-    public void Deal()
+    public void Deal(bool log = true)
     {
         for (int i = 0; i < Config.config.cardsToDeal; i++) // try to deal set number of cards
         {
@@ -236,7 +238,15 @@ public class DeckScript : MonoBehaviour
             cardList[0].SetActive(true);
             cardList[0].GetComponent<CardScript>().hidden = false;
             cardList[0].GetComponent<CardScript>().SetCardAppearance();
-            cardList[0].GetComponent<CardScript>().MoveCard(wastePile);
+            if (log)
+            {
+                cardList[0].GetComponent<CardScript>().MoveCard(wastePile);
+            }
+            else
+            {
+                cardList[0].GetComponent<CardScript>().MoveCard(wastePile, false);
+            }
+
         }
 
         Config.config.actions += 1; //adds to the action count

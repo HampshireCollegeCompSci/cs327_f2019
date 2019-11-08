@@ -135,7 +135,7 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    public int countCardsToSelect(GameObject selectedCard) //takes the input of a selected card and counts how many cards are below it in a foundation
+    public int countCardsToSelect(GameObject selectedCard) //takes the input of a selected card and counts how many cards are above it in a foundation
     {
         for (indexCounter = hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList.Count - 1; indexCounter > 0; indexCounter--)
         {
@@ -167,7 +167,7 @@ public class UtilsScript : MonoBehaviour
         }*/
 
         //if we click a deck activates deck and deselected our cards
-        if (hit.collider!=null && !hit.collider.gameObject.CompareTag("Card"))
+        if (hit.collider != null && !hit.collider.gameObject.CompareTag("Card"))
         {
             if (hit.collider.gameObject.CompareTag("Deck"))
             {
@@ -223,7 +223,7 @@ public class UtilsScript : MonoBehaviour
 
 
         //if we click on our first selected card deselect all cards
-        else if (hit.collider != null && selectedCards.Count!=0 && selectedCards[0] == hit.collider.gameObject)
+        else if (hit.collider != null && selectedCards.Count != 0 && selectedCards[0] == hit.collider.gameObject)
         {
             for (int i = 0; i < selectedCards.Count; i++)
             {
@@ -374,10 +374,11 @@ public class UtilsScript : MonoBehaviour
                 cards.Add(newGameObject);
                 newGameObject.GetComponent<CardScript>().appearSelected = false;
                 newGameObject.GetComponent<CardScript>().SetCardAppearance();
+                newGameObject.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
             }
         }
 
-        for(int i = 0; i < cards.Count; i++)
+        for (int i = 0; i < cards.Count; i++)
         {
             if (i == 0)
             {
@@ -389,6 +390,19 @@ public class UtilsScript : MonoBehaviour
             {
                 cards[i].transform.position =
                     new Vector3(cards[i - 1].transform.position.x, cards[i - 1].transform.position.y + Config.config.draggedTokenOffset, cards[i - 1].transform.position.z - 0.05f);
+            }
+        }
+    }
+
+    public void DeselectCards()
+    {
+
+        if (selectedCards.Count != 0)
+        {
+            selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
+            for (int i = 0; i < selectedCards.Count; i++)
+            {
+                DeselectCard(selectedCards[0]);
             }
         }
     }
