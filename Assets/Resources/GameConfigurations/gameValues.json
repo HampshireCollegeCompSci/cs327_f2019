@@ -16,6 +16,11 @@
     "easyMoveCount": 21,
     "mediumMoveCount": 18,
     "hardMoveCount": 15,
-    "selectedCardOpacity": 0.25
-
+    "selectedCardOpacity": 0.25,
+    "gameStateTxtEnglish": [ "You Won!", "You Lost..." ],
+    "menuSceneButtonsTxtEnglish": [ "Play", "Tutorial", "Credits" ],
+    "levelSceneButtonsTxtEnglish": [ "Easy", "Medium", "Hard", "Return" ],
+    "pauseSceneButtonsTxtEnglish": [ "Return to Game", "Restart", "Settings", "Main Menu" ],
+    "summarySceneButtonsTxtEnglish": [ "Main Menu", "Play Again" ],
+    "scoreActionLabelsTxtEnglish": [ "Score", "Action" ]
 }
