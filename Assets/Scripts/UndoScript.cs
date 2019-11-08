@@ -64,7 +64,7 @@ public class UndoScript : MonoBehaviour
         if (moveLog.Count > 0)
         {
             Move lastMove = null;
-            if (lastMove.moveType == "move")
+            if (moveLog.Peek().moveType == "move")
             {
                 lastMove = moveLog.Pop();
                 if (lastMove.nextCardWasHidden)
@@ -78,7 +78,7 @@ public class UndoScript : MonoBehaviour
                     Config.config.actions -= 1;
                 }
             }
-            else if (lastMove.moveType == "match")
+            else if (moveLog.Peek().moveType == "match")
             {
                 for (int i = 0; i < 2; i++)
                 {
@@ -94,7 +94,7 @@ public class UndoScript : MonoBehaviour
                 Config.config.score -= Config.config.matchPoints;
                 Debug.Log("score" + Config.config.score);
             }
-            else if (lastMove.moveType == "draw")
+            else if (moveLog.Peek().moveType == "draw")
             {
                 for (int i = 0; i < 3; i++)
                 {
