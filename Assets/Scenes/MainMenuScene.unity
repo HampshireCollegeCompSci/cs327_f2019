@@ -223,6 +223,11 @@ MonoBehaviour:
   hardMoveCount: 0
   actionMax: 0
   actions: 0
+  gameStateTxtEnglish: []
+  menuSceneButtonsTxtEnglish: []
+  levelSceneButtonsTxtEnglish: []
+  pauseSceneButtonsTxtEnglish: []
+  summarySceneButtonsTxtEnglish: []
   json: 
 --- !u!4 &1182164522
 Transform:
@@ -1028,7 +1033,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: e540a988728b247429f9960e5dfdfc3f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c674c3268eaa5428bb621b4039f06816, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
