@@ -14,6 +14,7 @@ public class UndoScript : MonoBehaviour
     }
     public void logMove(string moveType, GameObject card, bool isAction = true)
     {
+        print("Is action: " + isAction);
         GameObject origin = card.GetComponent<CardScript>().container;
         bool nextCardWasHidden = false;
         if (origin.TryGetComponent(typeof(FoundationScript), out Component component))
@@ -64,7 +65,37 @@ public class UndoScript : MonoBehaviour
         if (moveLog.Count > 0)
         {
             Move lastMove = null;
-            if (moveLog.Peek().moveType == "move")
+            if (moveLog.Peek().isAction)
+            {
+                Stack<Move> stackUndo = new Stack<Move>();
+                stackUndo.Push(moveLog.Pop());
+                while (true)
+                {
+                    if (stackUndo.Peek().isAction)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        stackUndo.Push(moveLog.Pop());
+                    }
+                }
+                while (stackUndo.Count != 0)
+                {
+                    lastMove = stackUndo.Pop();
+                    if (lastMove.nextCardWasHidden)
+                    {
+                        lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().hidden = true;
+                        lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetCardAppearance();
+                    }
+                    if (lastMove.isAction)
+                    {
+                        Config.config.actions -= 1;
+                    }
+                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+                }
+            }
+            else if (moveLog.Peek().moveType == "move")
             {
                 lastMove = moveLog.Pop();
                 if (lastMove.nextCardWasHidden)
@@ -86,11 +117,8 @@ public class UndoScript : MonoBehaviour
                     lastMove.card.GetComponent<CardScript>().hidden = true;
                     lastMove.card.GetComponent<CardScript>().SetCardAppearance();
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
-                    if (lastMove.isAction)
-                    {
-                        Config.config.actions -= 1;
-                    }
                 }
+                //Config.config.actions -= 1;
                 Config.config.score -= Config.config.matchPoints;
                 Debug.Log("score" + Config.config.score);
             }
