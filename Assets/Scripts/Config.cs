@@ -78,6 +78,12 @@ public class Config : MonoBehaviour
     public int actionMax;
     public int actions;
 
+    //button txt
+    public string[] gameStateTxtEnglish;
+    public string[] menuSceneButtonsTxtEnglish;
+    public string[] levelSceneButtonsTxtEnglish;
+    public string[] pauseSceneButtonsTxtEnglish;
+    public string[] summarySceneButtonsTxtEnglish;
 
     private void Awake()
     {
@@ -150,6 +156,11 @@ public class Config : MonoBehaviour
         hardMoveCount = gameInfo.hardMoveCount;
         draggedTokenOffset = gameInfo.draggedTokenOffset;
         selectedCardOpacity = gameInfo.selectedCardOpacity;
+        gameStateTxtEnglish = gameInfo.gameStateTxtEnglish;
+        menuSceneButtonsTxtEnglish = gameInfo.menuSceneButtonsTxtEnglish;
+        levelSceneButtonsTxtEnglish = gameInfo.levelSceneButtonsTxtEnglish;
+        pauseSceneButtonsTxtEnglish = gameInfo.pauseSceneButtonsTxtEnglish;
+        summarySceneButtonsTxtEnglish = gameInfo.summarySceneButtonsTxtEnglish;
     }
 
     public void SetCards()
@@ -221,7 +232,8 @@ public class Config : MonoBehaviour
     }
     public void setDifficulty(string dif)
     {
-        if (dif.Equals("easy")){
+        if (dif.Equals("easy"))
+        {
             maxReactorVal = easy;
             actionMax = easyMoveCount;
         }

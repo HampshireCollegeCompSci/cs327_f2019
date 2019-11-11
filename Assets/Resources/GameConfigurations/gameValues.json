@@ -21,6 +21,6 @@
     "menuSceneButtonsTxtEnglish": [ "Play", "Tutorial", "Credits" ],
     "levelSceneButtonsTxtEnglish": [ "Easy", "Medium", "Hard", "Return" ],
     "pauseSceneButtonsTxtEnglish": [ "Return to Game", "Restart", "Settings", "Main Menu" ],
-    "summarySceneButtonsTxtEnglish": [ "Main Menu", "Play Again" ],
+    "summarySceneButtonsTxtEnglish": [ "Main\n Menu", "Play\n Again" ],
     "scoreActionLabelsTxtEnglish": [ "Score", "Action" ]
 }

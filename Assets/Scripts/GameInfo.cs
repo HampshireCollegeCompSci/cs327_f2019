@@ -40,4 +40,9 @@ public class GameInfo
     public int mediumMoveCount;
     public int hardMoveCount;
     public float selectedCardOpacity;
+    public string[] gameStateTxtEnglish;
+    public string[] menuSceneButtonsTxtEnglish;
+    public string[] levelSceneButtonsTxtEnglish;
+    public string[] pauseSceneButtonsTxtEnglish;
+    public string[] summarySceneButtonsTxtEnglish;
 }
