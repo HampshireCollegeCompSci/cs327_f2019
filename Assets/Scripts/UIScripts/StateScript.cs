@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class StateScript : MonoBehaviour
 {
     public Text gameState;
-    
+
 
     private void Start()
     {
@@ -18,14 +18,14 @@ public class StateScript : MonoBehaviour
 
         if (win)
         {
-            gameState.text = "You Won!";
+            gameState.text = Config.config.gameStateTxtEnglish[0];
         }
 
         else
         {
-            gameState.text = "You Lost!";
+            gameState.text = Config.config.gameStateTxtEnglish[1];
         }
     }
 
-    
+
 }

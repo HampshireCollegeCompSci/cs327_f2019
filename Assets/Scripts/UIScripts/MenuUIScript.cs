@@ -2,21 +2,73 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MenuUIScript : MonoBehaviour
 {
+
+    private void Start()
+    {
+        //update main menu button txt
+        if (GameObject.Find("Play") != null)
+        {
+            GameObject playButton = GameObject.Find("Play");
+            playButton.GetComponentInChildren<Text>().text = Config.config.menuSceneButtonsTxtEnglish[0].ToUpper();
+        }
+        if (GameObject.Find("Tutorial") != null)
+        {
+            GameObject playButton = GameObject.Find("Tutorial");
+            playButton.GetComponentInChildren<Text>().text = Config.config.menuSceneButtonsTxtEnglish[1].ToUpper();
+        }
+        if (GameObject.Find("Credits") != null)
+        {
+            GameObject playButton = GameObject.Find("Credits");
+            playButton.GetComponentInChildren<Text>().text = Config.config.menuSceneButtonsTxtEnglish[2].ToUpper();
+        }
+
+        //update level txt
+        if (GameObject.Find("Easy") != null)
+        {
+            GameObject playButton = GameObject.Find("Easy");
+            playButton.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[0].ToUpper();
+        }
+        if (GameObject.Find("Normal") != null)
+        {
+            GameObject playButton = GameObject.Find("Normal");
+            playButton.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[1].ToUpper();
+        }
+        if (GameObject.Find("Hard") != null)
+        {
+            GameObject playButton = GameObject.Find("Hard");
+            playButton.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[2].ToUpper();
+        }
+        // update return txt
+        if (GameObject.Find("Return") != null)
+        {
+            GameObject playButton = GameObject.Find("Return");
+            playButton.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[3].ToUpper();
+        }
+        //update summary txt
+        if (GameObject.Find("MainMenu") != null)
+        {
+            GameObject playButton = GameObject.Find("MainMenu");
+            playButton.GetComponentInChildren<Text>().text = Config.config.summarySceneButtonsTxtEnglish[0].ToUpper();
+        }
+        if (GameObject.Find("PlayAgain") != null)
+        {
+            GameObject playButton = GameObject.Find("PlayAgain");
+            playButton.GetComponentInChildren<Text>().text = Config.config.summarySceneButtonsTxtEnglish[1].ToUpper();
+        }
+
+    }
+
     public void Play()
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         SceneManager.LoadScene("LevelSelectScene");
     }
 
-    public void Quit()
-    {
-        Application.Quit();
-    }
-
-    public void NewGame(int difficulty)
+    public void NewGame()
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         Config.config.GetComponent<MusicController>().GameMusic();
@@ -60,11 +112,6 @@ public class MenuUIScript : MonoBehaviour
         Config.config.GetComponent<MusicController>().MainMenuMusic();
     }
 
-    public void About()
-    {
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
-        SceneManager.LoadScene("AboutScene");
-    }
 
     //possibly be renamed to settings
     public void Sound()
@@ -114,17 +161,20 @@ public class MenuUIScript : MonoBehaviour
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         SceneManager.LoadScene("TutorialScene");
     }
-    public void hardDifficulty()
+    public void HardDifficulty()
     {
         Config.config.setDifficulty("hard");
+        NewGame();
     }
-    public void easyDifficulty()
+    public void EasyDifficulty()
     {
         Config.config.setDifficulty("easy");
+        NewGame();
     }
-    public void mediumDifficulty()
+    public void MediumDifficulty()
     {
         Config.config.setDifficulty("medium");
+        NewGame();
     }
 
     public void MakeActionsMax()
