@@ -1,14 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WastepileScript : MonoBehaviour
 {
     public UtilsScript utils;
-    public List<GameObject> cardList;
     public SoundController soundController;
-    int counter;
-    int cardMax;
+    public GameObject contentPanel;
+    public GameObject cardContainer;
+    public List<GameObject> cardList;
+    public List<GameObject> cardContainers;
 
     private void Start()
     {
@@ -34,30 +36,85 @@ public class WastepileScript : MonoBehaviour
         }
     }
 
+    public void AddCard(GameObject card)
+    {
+        cardList.Insert(0, card);
+        cardContainers.Insert(0, Instantiate(cardContainer));
+        cardContainers[0].transform.SetParent(contentPanel.transform, false);
+        card.transform.SetParent(cardContainers[0].transform, false);
+
+        //cardContainers[0].GetComponent<LayoutElement>().preferredWidth = card.GetComponent<Renderer>().bounds.size.x;
+        //cardContainers[0].GetComponent<LayoutElement>().preferredHeight = card.GetComponent<Renderer>().bounds.size.y;
+
+        card.transform.parent.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1);
+        card.transform.parent.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1);
+
+        //LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)contentPanel.transform);
+
+        card.transform.position = new Vector3(card.transform.parent.position.x, card.transform.parent.position.y, -1 - (cardList.Count * 0.01f));
+
+        card.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+        StartCoroutine(UpdateScrollBar());
+    }
+
     public void RemoveCard(GameObject card)
     {
+        GameObject parentCardContainer = card.transform.parent.gameObject;
+        card.transform.parent = null;
+        cardContainers.Remove(parentCardContainer);
+        Destroy(parentCardContainer);
+
         card.GetComponent<CardScript>().DestroyHologram();
+        card.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.None;
         cardList.Remove(card);
+
+        StartCoroutine(UpdateScrollBar());
+    }
+
+    IEnumerator UpdateScrollBar()
+    {
+        yield return null;
+        gameObject.GetComponent<ScrollRect>().horizontalNormalizedPosition = 1;
+    }
+
+    public void DraggingCard(GameObject card, bool isDragging)
+    {
+        //Debug.Log(card.GetComponent<Renderer>().bounds.size.x);
+        if (isDragging)
+        {
+            card.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.None;
+            gameObject.GetComponent<ScrollRect>().horizontal = false;
+        }
+        else
+        {
+            if (card.GetComponent<CardScript>().container == this.gameObject)
+            {
+                card.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+            }
+            gameObject.GetComponent<ScrollRect>().horizontal = true;
+        }
+        //Debug.Log(gameObject.GetComponent<ScrollRect>().horizontal);
     }
 
     public void SetCardPositions()
     {
-        int positionCounter = 0;
-        float xOffset = 0;
+        return;
+        //int positionCounter = 0;
+        //float xOffset = 0;
 
-        for (int i = 0; i < cardList.Count; i++)  // go through the list
-        {
-            // as we go through, place cards to the right and behind of the previous one
-            cardList[i].transform.position = gameObject.transform.position + new Vector3(xOffset, 0, positionCounter * 0.1f);
+        //for (int i = 0; i < cardList.Count; i++)  // go through the list
+        //{
+        //    // as we go through, place cards to the right and behind of the previous one
+        //    cardList[i].transform.position = gameObject.transform.position + new Vector3(xOffset, 0, positionCounter * 0.1f);
 
-            //if (counter <= Config.config.wastepileCardsToShow)
-            //{
-            //    xOffset += 0.8f;
-            //}
-            xOffset += 0.8f;
+        //    //if (counter <= Config.config.wastepileCardsToShow)
+        //    //{
+        //    //    xOffset += 0.8f;
+        //    //}
+        //    xOffset += 0.8f;
 
-            positionCounter++;
-        }
+        //    positionCounter++;
+        //}
     }
     public void ProcessAction(GameObject input)
     {

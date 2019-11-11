@@ -15,7 +15,8 @@ public class UtilsScript : MonoBehaviour
     public RaycastHit2D hit;
     private bool dragOn;
     private GameObject newGameObject;
-
+    private bool draggingWastepile = false;
+    private GameObject wastePile;
 
     public int matchPoints = Config.config.matchPoints;
     public int emptyReactorPoints = Config.config.emptyReactorPoints;
@@ -27,6 +28,7 @@ public class UtilsScript : MonoBehaviour
         matchedPile = GameObject.Find("MatchedPile");
         gameUI = GameObject.Find("GameUI");
         soundController = GameObject.Find("Sound").GetComponent<SoundController>();
+        wastePile = GameObject.Find("Scroll View");
     }
 
     void Awake()
@@ -115,6 +117,13 @@ public class UtilsScript : MonoBehaviour
 
     public void SelectCard(GameObject inputCard)
     {
+        if (inputCard.GetComponent<CardScript>().container.CompareTag("Wastepile"))
+        {
+            //Debug.Log("start waste drag");
+            inputCard.GetComponent<CardScript>().container.GetComponent<WastepileScript>().DraggingCard(inputCard, true);
+            draggingWastepile = true;
+        }
+
         selectedCards.Add(inputCard);
         inputCard.GetComponent<CardScript>().appearSelected = true;
         inputCard.GetComponent<CardScript>().SetCardAppearance();
@@ -122,6 +131,13 @@ public class UtilsScript : MonoBehaviour
 
     public void DeselectCard(GameObject inputCard)
     {
+        if (draggingWastepile)
+        {
+            //Debug.Log("end waste drag");
+            wastePile.GetComponent<WastepileScript>().DraggingCard(inputCard, false);
+            draggingWastepile = false;
+        }
+
         inputCard.GetComponent<CardScript>().appearSelected = false;
         inputCard.GetComponent<CardScript>().SetCardAppearance();
         selectedCards.Remove(inputCard);

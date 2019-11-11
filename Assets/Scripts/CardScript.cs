@@ -140,7 +140,8 @@ public class CardScript : MonoBehaviour
                 }
             }
             container.SendMessage("RemoveCard", gameObject);
-            destination.GetComponent<WastepileScript>().cardList.Insert(0, gameObject);
+            destination.SendMessage("AddCard", gameObject);
+            //destination.GetComponent<WastepileScript>().cardList.Insert(0, gameObject);
         }
         else if (destination.CompareTag("Deck"))
         {
