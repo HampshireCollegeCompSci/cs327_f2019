@@ -110,7 +110,7 @@ public class FoundationScript : MonoBehaviour
                     utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input);
                     foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
                     {
-                        card.GetComponent<CardScript>().MoveCard(input, isAction:false);
+                        card.GetComponent<CardScript>().MoveCard(input, true, false);
                     }
 
                     Config.config.actions += 1; //adds to the action count
@@ -163,13 +163,11 @@ public class FoundationScript : MonoBehaviour
         {
 
             soundController.CardStackSound();
-
+            utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
             foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
             {
-                card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
+                card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container, true, false);
             }
-
-
             Config.config.actions += 1; //adds to the action count
         }
 

@@ -65,7 +65,7 @@ public class UndoScript : MonoBehaviour
         if (moveLog.Count > 0)
         {
             Move lastMove = null;
-            if (moveLog.Peek().isAction)
+            if (!moveLog.Peek().isAction)
             {
                 Stack<Move> stackUndo = new Stack<Move>();
                 stackUndo.Push(moveLog.Pop());
