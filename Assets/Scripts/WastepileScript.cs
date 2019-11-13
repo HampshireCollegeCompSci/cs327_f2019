@@ -175,7 +175,9 @@ public class WastepileScript : MonoBehaviour
             }
         }
 
-        else if ((utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1) == input.GetComponent<CardScript>().cardNum && input.GetComponent<CardScript>().container.CompareTag("Foundation"))
+        else if (input.GetComponent<CardScript>().container.CompareTag("Foundation") &&
+           utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1 ==
+           input.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardNum) //this is checking the inputs containers top card allowing you to click on 
         {
             soundController.CardStackSound();
             foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
