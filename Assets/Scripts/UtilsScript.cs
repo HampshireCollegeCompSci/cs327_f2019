@@ -103,7 +103,7 @@ public class UtilsScript : MonoBehaviour
             if (Config.config.gameOver)
             {
                 SetEndGameScore();
-                Debug.Log("score" + Config.config.score);
+                //Debug.Log("score" + Config.config.score);
             }
 
             if (Config.config.actions == Config.config.actionMax)
@@ -157,7 +157,7 @@ public class UtilsScript : MonoBehaviour
         {
             if (selectedCard == hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[indexCounter])
             {
-                Debug.Log("indexCounter " + (indexCounter + 1));
+                //Debug.Log("indexCounter " + (indexCounter + 1));
                 return indexCounter;
             }
         }
@@ -243,7 +243,7 @@ public class UtilsScript : MonoBehaviour
         {
             for (int i = 0; i < selectedCards.Count; i++)
             {
-                Debug.Log(i);
+                //Debug.Log(i);
                 DeselectCard(selectedCards[0]);
             }
         }
@@ -269,7 +269,7 @@ public class UtilsScript : MonoBehaviour
 
         //Config.config.actions += 1;
         Config.config.score += matchPoints;
-        Debug.Log("score" + Config.config.score);
+        //Debug.Log("score" + Config.config.score);
         //check to see if the board is clear
     }
 
@@ -277,8 +277,8 @@ public class UtilsScript : MonoBehaviour
     public bool IsMatch(GameObject card1, GameObject card2)
     {
 
-        Debug.Log(card1.GetComponent<CardScript>().cardSuit + card1.GetComponent<CardScript>().cardNum);
-        Debug.Log(card2.GetComponent<CardScript>().cardSuit + card2.GetComponent<CardScript>().cardNum);
+        //Debug.Log(card1.GetComponent<CardScript>().cardSuit + card1.GetComponent<CardScript>().cardNum);
+        //Debug.Log(card2.GetComponent<CardScript>().cardSuit + card2.GetComponent<CardScript>().cardNum);
         //just to make it cleaner because this utils.blah blah blah is yucky
         //basically a string of if/else cases for matching
         string card1Suit = card1.GetComponent<CardScript>().cardSuit;
@@ -345,7 +345,7 @@ public class UtilsScript : MonoBehaviour
         //otherwise not a match 
         else
         {
-            Debug.Log("Suits don't match");
+            //Debug.Log("Suits don't match");
             return false;
         }
     }
