@@ -107,10 +107,10 @@ public class FoundationScript : MonoBehaviour
 
                 if (input.CompareTag("Reactor") || input.CompareTag("Foundation") && input.GetComponent<FoundationScript>().cardList.Count == 0)
                 {
-                    utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
-                    for (int i = 1; i < utils.selectedCards.Count; i++) //goes through and moves all selesctedCards to clicked location
+                    utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input);
+                    foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
                     {
-                        utils.selectedCards[i].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container, true, false);
+                        card.GetComponent<CardScript>().MoveCard(input, true, false);
                     }
 
                     Config.config.actions += 1; //adds to the action count
@@ -165,13 +165,11 @@ public class FoundationScript : MonoBehaviour
         {
 
             soundController.CardStackSound();
-
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
-            for (int i = 1; i<utils.selectedCards.Count;i++) //goes through and moves all selesctedCards to clicked location
+            foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
             {
-                utils.selectedCards[i].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container, true, false);
+                card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container, true, false);
             }
-
             Config.config.actions += 1; //adds to the action count
         }
 
