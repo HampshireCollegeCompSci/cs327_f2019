@@ -9,57 +9,73 @@ public class MenuUIScript : MonoBehaviour
 
     private void Start()
     {
+        //stop animation from start
+        Animator[] animators = gameObject.GetComponentsInChildren<Animator>();
+        foreach (Animator anim in animators)
+            anim.enabled = false;
+
         //update main menu button txt
         if (GameObject.Find("Play") != null)
         {
-            GameObject playButton = GameObject.Find("Play");
-            playButton.GetComponentInChildren<Text>().text = Config.config.menuSceneButtonsTxtEnglish[0].ToUpper();
+            GameObject button = GameObject.Find("Play");
+            button.GetComponentInChildren<Text>().text = Config.config.menuSceneButtonsTxtEnglish[0].ToUpper();
         }
         if (GameObject.Find("Tutorial") != null)
         {
-            GameObject playButton = GameObject.Find("Tutorial");
-            playButton.GetComponentInChildren<Text>().text = Config.config.menuSceneButtonsTxtEnglish[1].ToUpper();
+            GameObject button = GameObject.Find("Tutorial");
+            button.GetComponentInChildren<Text>().text = Config.config.menuSceneButtonsTxtEnglish[1].ToUpper();
         }
         if (GameObject.Find("Credits") != null)
         {
-            GameObject playButton = GameObject.Find("Credits");
-            playButton.GetComponentInChildren<Text>().text = Config.config.menuSceneButtonsTxtEnglish[2].ToUpper();
+            GameObject button = GameObject.Find("Credits");
+            button.GetComponentInChildren<Text>().text = Config.config.menuSceneButtonsTxtEnglish[2].ToUpper();
+        }
+        if (GameObject.Find("Loading") != null)
+        {
+            GameObject txt = GameObject.Find("Loading");
+            txt.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish.ToUpper();
         }
 
         //update level txt
         if (GameObject.Find("Easy") != null)
         {
-            GameObject playButton = GameObject.Find("Easy");
-            playButton.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[0].ToUpper();
+            GameObject button = GameObject.Find("Easy");
+            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[0].ToUpper();
         }
         if (GameObject.Find("Normal") != null)
         {
-            GameObject playButton = GameObject.Find("Normal");
-            playButton.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[1].ToUpper();
+            GameObject button = GameObject.Find("Normal");
+            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[1].ToUpper();
         }
         if (GameObject.Find("Hard") != null)
         {
-            GameObject playButton = GameObject.Find("Hard");
-            playButton.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[2].ToUpper();
+            GameObject button = GameObject.Find("Hard");
+            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[2].ToUpper();
         }
         // update return txt
         if (GameObject.Find("Return") != null)
         {
-            GameObject playButton = GameObject.Find("Return");
-            playButton.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[3].ToUpper();
+            GameObject button = GameObject.Find("Return");
+            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[3].ToUpper();
         }
         //update summary txt
         if (GameObject.Find("MainMenu") != null)
         {
-            GameObject playButton = GameObject.Find("MainMenu");
-            playButton.GetComponentInChildren<Text>().text = Config.config.summarySceneButtonsTxtEnglish[0].ToUpper();
+            GameObject button = GameObject.Find("MainMenu");
+            button.GetComponentInChildren<Text>().text = Config.config.summarySceneButtonsTxtEnglish[0].ToUpper();
         }
         if (GameObject.Find("PlayAgain") != null)
         {
-            GameObject playButton = GameObject.Find("PlayAgain");
-            playButton.GetComponentInChildren<Text>().text = Config.config.summarySceneButtonsTxtEnglish[1].ToUpper();
+            GameObject button = GameObject.Find("PlayAgain");
+            button.GetComponentInChildren<Text>().text = Config.config.summarySceneButtonsTxtEnglish[1].ToUpper();
         }
 
+    }
+
+    public void StartMainMenuAnim()
+    {
+        gameObject.GetComponentInChildren<Animator>().enabled = true;
+        gameObject.GetComponentInChildren<Animator>().Play("MenuButtonPressAnim");
     }
 
     public void Play()
@@ -181,4 +197,5 @@ public class MenuUIScript : MonoBehaviour
     {
         Config.config.actions = Config.config.actionMax;
     }
+
 }

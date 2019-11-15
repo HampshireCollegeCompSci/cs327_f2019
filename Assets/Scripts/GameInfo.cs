@@ -42,6 +42,7 @@ public class GameInfo
     public float selectedCardOpacity;
     public string[] gameStateTxtEnglish;
     public string[] menuSceneButtonsTxtEnglish;
+    public string loadingSceneTxtEnglish;
     public string[] levelSceneButtonsTxtEnglish;
     public string[] pauseSceneButtonsTxtEnglish;
     public string[] summarySceneButtonsTxtEnglish;
