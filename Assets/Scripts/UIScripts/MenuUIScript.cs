@@ -14,6 +14,7 @@ public class MenuUIScript : MonoBehaviour
         foreach (Animator anim in animators)
             anim.enabled = false;
 
+
         //update main menu button txt
         if (GameObject.Find("Play") != null)
         {
@@ -72,12 +73,6 @@ public class MenuUIScript : MonoBehaviour
 
     }
 
-    public void StartMainMenuAnim()
-    {
-        gameObject.GetComponentInChildren<Animator>().enabled = true;
-        gameObject.GetComponentInChildren<Animator>().Play("MenuButtonPressAnim");
-    }
-
     public void Play()
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
@@ -99,6 +94,8 @@ public class MenuUIScript : MonoBehaviour
     public void UndoButton()
     {
         UndoScript.undoScript.undo();
+        GameObject.Find("Undo").GetComponentInChildren<Animator>().enabled = true;
+        //GameObject.Find("Undo").GetComponentInChildren<Animator>().Play("MenuButtonPressAnim");
     }
 
     public void Restart()
