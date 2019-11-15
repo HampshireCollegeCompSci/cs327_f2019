@@ -196,7 +196,8 @@ public class CardScript : MonoBehaviour
                 cardHologramName = cardNum + "_" + cardSuit + "_food";
 
             hologramFoodPrefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/FoodHolograms/" + cardHologramName);
-            hologramObject = Instantiate(hologramFoodPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
+            hologramObject = Instantiate(hologramFoodPrefab, gameObject.transform.position - new Vector3(0, -0.6f, 0), gameObject.transform.rotation);
+            hologramObject.GetComponent<SpriteRenderer>().sortingOrder = 1;
 
             //if (cardSuit == "spades")
             //{
@@ -224,7 +225,8 @@ public class CardScript : MonoBehaviour
             hologram.SetActive(true);
             hologramObject.SetActive(true);
             hologram.transform.position = gameObject.transform.position - new Vector3(0, -0.5f, 0);
-            hologramObject.transform.position = gameObject.transform.position - new Vector3(0, -1.1f, 0);
+            hologramObject.transform.position = gameObject.transform.position - new Vector3(0, -0.6f, 0);
+            hologramObject.GetComponent<SpriteRenderer>().sortingOrder = 1;
         }
     }
 

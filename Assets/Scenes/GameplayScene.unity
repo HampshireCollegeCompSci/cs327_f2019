@@ -941,7 +941,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.56, y: 0.64238715}
   m_AnchorMax: {x: 0.7325, y: 0.72041786}
-  m_AnchoredPosition: {x: 2, y: -6.6999817}
+  m_AnchoredPosition: {x: 4, y: 0}
   m_SizeDelta: {x: -3.8, y: 15.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &338821814
@@ -1959,8 +1959,9 @@ GameObject:
   - component: {fileID: 944386652}
   - component: {fileID: 944386651}
   - component: {fileID: 944386654}
+  - component: {fileID: 944386655}
   m_Layer: 5
-  m_Name: Undo(placeholder)
+  m_Name: Undo
   m_TagString: Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2017,7 +2018,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 0f8638e6f83eccf4193c52f6276e3b6c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 82863b88c9ce23b4d8e2a32da7ca8d02, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2042,7 +2043,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 944386649}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -2091,6 +2092,25 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!95 &944386655
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 944386649}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 644701509af8de9488f30c4198675924, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1048323403 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3465283733490406803, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
@@ -3037,7 +3057,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.29250002, y: 0.64238715}
   m_AnchorMax: {x: 0.535, y: 0.72041786}
-  m_AnchoredPosition: {x: 2.8499908, y: -4.8299994}
+  m_AnchoredPosition: {x: -39, y: 2.5301208}
   m_SizeDelta: {x: 4.299988, y: 10.040003}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1489602704
@@ -4066,7 +4086,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.2475, y: 0.7484813}
   m_AnchorMax: {x: 0.2475, y: 0.7484813}
-  m_AnchoredPosition: {x: -33.29998, y: 6.2094727}
+  m_AnchoredPosition: {x: -33.299988, y: 6.2094727}
   m_SizeDelta: {x: 165.29999, y: 56.599976}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2007725037
