@@ -52,8 +52,8 @@ public class WastepileScript : MonoBehaviour
         //LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)contentPanel.transform);
 
         card.transform.position = new Vector3(card.transform.parent.position.x, card.transform.parent.position.y, -1 - (cardList.Count * 0.01f));
+        card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.VisibleInsideMask);
 
-        card.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
         StartCoroutine(UpdateScrollBar());
     }
 
@@ -64,8 +64,8 @@ public class WastepileScript : MonoBehaviour
         cardContainers.Remove(parentCardContainer);
         Destroy(parentCardContainer);
 
+        card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.None);
         card.GetComponent<CardScript>().DestroyHologram();
-        card.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.None;
         cardList.Remove(card);
 
         StartCoroutine(UpdateScrollBar());
@@ -82,14 +82,14 @@ public class WastepileScript : MonoBehaviour
         //Debug.Log(card.GetComponent<Renderer>().bounds.size.x);
         if (isDragging)
         {
-            card.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.None;
+            card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.None);
             gameObject.GetComponent<ScrollRect>().horizontal = false;
         }
         else
         {
             if (card.GetComponent<CardScript>().container == this.gameObject)
             {
-                card.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.VisibleInsideMask);
             }
             gameObject.GetComponent<ScrollRect>().horizontal = true;
         }

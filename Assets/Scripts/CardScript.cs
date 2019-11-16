@@ -89,6 +89,16 @@ public class CardScript : MonoBehaviour
         gameObject.GetComponent<BoxCollider2D>().offset = gameObject.GetComponent<SpriteRenderer>().sprite.bounds.center;
     }
 
+    public void UpdateMaskInteraction(SpriteMaskInteraction update)
+    {
+        gameObject.GetComponent<SpriteRenderer>().maskInteraction = update;
+        if (hologram != null && hologramObject != null)
+        {
+            hologram.GetComponent<SpriteRenderer>().maskInteraction = update;
+            hologramObject.GetComponent<SpriteRenderer>().maskInteraction = update;
+        }
+    }
+
     public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true)
     {
         if (destination.CompareTag("Foundation"))
@@ -224,10 +234,14 @@ public class CardScript : MonoBehaviour
         {
             hologram.SetActive(true);
             hologramObject.SetActive(true);
+            hologram.transform.parent = this.gameObject.transform;
+            hologramObject.transform.parent = this.gameObject.transform;
             hologram.transform.position = gameObject.transform.position - new Vector3(0, -0.5f, 0);
             hologramObject.transform.position = gameObject.transform.position - new Vector3(0, -0.6f, 0);
             hologramObject.GetComponent<SpriteRenderer>().sortingOrder = 1;
         }
+
+        UpdateMaskInteraction(gameObject.GetComponent<SpriteRenderer>().maskInteraction);
     }
 
     public void DestroyHologram()
