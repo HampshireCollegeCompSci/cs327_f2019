@@ -27,14 +27,14 @@ public class FoundationScript : MonoBehaviour
 
             for (int i = 1; i < cardList.Count; i++)
             {
-                cardList[i].GetComponent<CardScript>().DestroyHologram();
+                cardList[i].GetComponent<CardScript>().HideHologram();
             }
         }
     }
 
     public void RemoveCard(GameObject card)
     {
-        card.GetComponent<CardScript>().DestroyHologram();
+        card.GetComponent<CardScript>().HideHologram();
         cardList.Remove(card);
         CheckTopCard();
     }

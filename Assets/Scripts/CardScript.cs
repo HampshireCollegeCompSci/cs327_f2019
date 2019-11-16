@@ -244,7 +244,7 @@ public class CardScript : MonoBehaviour
         UpdateMaskInteraction(gameObject.GetComponent<SpriteRenderer>().maskInteraction);
     }
 
-    public void DestroyHologram()
+    public void HideHologram()
     {
         if (hologram != null)
         {

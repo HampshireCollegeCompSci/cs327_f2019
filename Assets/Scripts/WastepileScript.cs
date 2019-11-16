@@ -31,7 +31,7 @@ public class WastepileScript : MonoBehaviour
 
             for (int i = 1; i < cardList.Count; i++)
             {
-                cardList[i].GetComponent<CardScript>().DestroyHologram();
+                cardList[i].GetComponent<CardScript>().HideHologram();
             }
         }
     }
@@ -65,7 +65,7 @@ public class WastepileScript : MonoBehaviour
         Destroy(parentCardContainer);
 
         card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.None);
-        card.GetComponent<CardScript>().DestroyHologram();
+        card.GetComponent<CardScript>().HideHologram();
         cardList.Remove(card);
 
         StartCoroutine(UpdateScrollBar());
