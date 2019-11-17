@@ -14,22 +14,30 @@ public class FoundationScript : MonoBehaviour
         SetCardPositions();
     }
 
-    private void Update()
-    {
-        CheckHologram();
-    }
-
-    public void CheckHologram()
+    public void CheckHologram(bool hide)
     {
         if (cardList.Count != 0)
         {
             cardList[0].gameObject.GetComponent<CardScript>().ShowHologram();
 
-            for (int i = 1; i < cardList.Count; i++)
+            if (hide)
             {
-                cardList[i].GetComponent<CardScript>().HideHologram();
+                for (int i = 1; i < cardList.Count; i++)
+                {
+                    if (cardList[i].GetComponent<CardScript>().HideHologram())
+                    {
+                        return;
+                    }
+                }
             }
         }
+    }
+
+    public void AddCard(GameObject card)
+    {
+        cardList.Insert(0, card);
+        card.transform.SetParent(gameObject.transform);
+        CheckHologram(true);
     }
 
     public void RemoveCard(GameObject card)
@@ -37,6 +45,7 @@ public class FoundationScript : MonoBehaviour
         card.GetComponent<CardScript>().HideHologram();
         cardList.Remove(card);
         CheckTopCard();
+        CheckHologram(false);
     }
 
     public void CheckTopCard()
@@ -84,7 +93,7 @@ public class FoundationScript : MonoBehaviour
             }
             else
             {
-                yOffset += 0.35f;
+                yOffset += 0.4f;
             }
 
             positionCounter++;

@@ -32,6 +32,12 @@ public class ReactorScript : MonoBehaviour
         }
     }
 
+    public void AddCard(GameObject card)
+    {
+        cardList.Insert(0, card);
+        card.transform.SetParent(gameObject.transform);
+    }
+
     public void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
