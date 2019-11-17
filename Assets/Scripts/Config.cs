@@ -81,6 +81,7 @@ public class Config : MonoBehaviour
     //button txt
     public string[] gameStateTxtEnglish;
     public string[] menuSceneButtonsTxtEnglish;
+    public string loadingSceneTxtEnglish;
     public string[] levelSceneButtonsTxtEnglish;
     public string[] pauseSceneButtonsTxtEnglish;
     public string[] summarySceneButtonsTxtEnglish;
@@ -158,6 +159,7 @@ public class Config : MonoBehaviour
         selectedCardOpacity = gameInfo.selectedCardOpacity;
         gameStateTxtEnglish = gameInfo.gameStateTxtEnglish;
         menuSceneButtonsTxtEnglish = gameInfo.menuSceneButtonsTxtEnglish;
+        loadingSceneTxtEnglish = gameInfo.loadingSceneTxtEnglish;
         levelSceneButtonsTxtEnglish = gameInfo.levelSceneButtonsTxtEnglish;
         pauseSceneButtonsTxtEnglish = gameInfo.pauseSceneButtonsTxtEnglish;
         summarySceneButtonsTxtEnglish = gameInfo.summarySceneButtonsTxtEnglish;
@@ -213,7 +215,6 @@ public class Config : MonoBehaviour
 
     public float GetScreenToWorldHeight()
     {
-
         Vector2 topRightCorner = new Vector2(1, 1);
         Vector2 edgeVector = Camera.main.ViewportToWorldPoint(topRightCorner);
         var height = edgeVector.y * 2;

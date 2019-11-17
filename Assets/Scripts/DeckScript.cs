@@ -28,11 +28,9 @@ public class DeckScript : MonoBehaviour
 
     void Start()
     {
-        //foundationStartSize = Config.config.foundationStartSize;
-        print("foundation start Size in DeckScript: " + foundationStartSize);
-        myPrefab = (GameObject)Resources.Load("Prefabs/Card", typeof(GameObject));
-        myPrefab.GetComponent<BoxCollider2D>().size = new Vector2Int(1, 1);
-        myPrefab.GetComponent<BoxCollider2D>().offset = new Vector2Int(0, 0);
+        //myPrefab = (GameObject)Resources.Load("Prefabs/Card", typeof(GameObject));
+        //myPrefab.GetComponent<BoxCollider2D>().size = new Vector2Int(1, 1);
+        //myPrefab.GetComponent<BoxCollider2D>().offset = new Vector2Int(0, 0);
 
         utils = UtilsScript.global;
 
@@ -52,7 +50,10 @@ public class DeckScript : MonoBehaviour
         cardList = new List<GameObject>();
         for (int i = 0; i < 52; i++)
         {
-            cardList.Add(Instantiate(myPrefab));
+            GameObject newCard = Instantiate(myPrefab);
+            //newCard.transform.localScale = new Vector3(0.15f, 0.15f, 1);
+            AddCard(newCard);
+            //cardList.Add(Instantiate(myPrefab));
         }
 
         // order: club ace, 2, 3... 10, jack, queen, king, diamonds... hearts... spades
@@ -119,11 +120,14 @@ public class DeckScript : MonoBehaviour
             cardList[0].GetComponent<CardScript>().MoveCard(foundations[i], false);
             foundations[i].GetComponent<FoundationScript>().CheckTopCard();
         }
-        //for (int i = 0; i < 10; i++)
-        //{
-        //    cardList[0].GetComponent<CardScript>().hidden = false;
-        //    cardList[0].GetComponent<CardScript>().MoveCard(foundations[0]);
-        //}
+    }
+
+    public void AddCard(GameObject card)
+    {
+        cardList.Insert(0, card);
+        card.transform.SetParent(gameObject.transform);
+        card.transform.localPosition = Vector3.zero;
+        card.SetActive(false);
     }
 
     public void RemoveCard(GameObject card)
@@ -133,21 +137,7 @@ public class DeckScript : MonoBehaviour
 
     // top card is cardList[0]
     public void SetCardPositions()
-    {
-        int positionCounter = 0;
-        float yOffset = 0;
-
-        for (int i = cardList.Count - 1; i >= 0; i--)  // go backwards through the list
-        {
-            // as we go through, place cards below and in-front of the previous one
-            cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -1 - positionCounter * 0.1f);
-
-            positionCounter++;
-            yOffset -= 0.03f;
-
-            cardList[i].SetActive(false);
-        }
-    }
+    { }
 
     // user wants to deal cards, other things might need to be done before that
     public void ProcessAction(GameObject input)

@@ -17,21 +17,21 @@ public class WastepileScript : MonoBehaviour
         utils = UtilsScript.global;
     }
 
-
-    void Update()
-    {
-        CheckHologram();
-    }
-
-    public void CheckHologram()
+    public void CheckHologram(bool hide)
     {
         if (cardList.Count != 0)
         {
             cardList[0].gameObject.GetComponent<CardScript>().ShowHologram();
 
-            for (int i = 1; i < cardList.Count; i++)
+            if (hide)
             {
-                cardList[i].GetComponent<CardScript>().DestroyHologram();
+                for (int i = 1; i < cardList.Count; i++)
+                {
+                    if (cardList[i].GetComponent<CardScript>().HideHologram())
+                    {
+                        return;
+                    }
+                }
             }
         }
     }
@@ -41,7 +41,7 @@ public class WastepileScript : MonoBehaviour
         cardList.Insert(0, card);
         cardContainers.Insert(0, Instantiate(cardContainer));
         cardContainers[0].transform.SetParent(contentPanel.transform, false);
-        card.transform.SetParent(cardContainers[0].transform, false);
+        card.transform.SetParent(cardContainers[0].transform);
 
         //cardContainers[0].GetComponent<LayoutElement>().preferredWidth = card.GetComponent<Renderer>().bounds.size.x;
         //cardContainers[0].GetComponent<LayoutElement>().preferredHeight = card.GetComponent<Renderer>().bounds.size.y;
@@ -52,8 +52,10 @@ public class WastepileScript : MonoBehaviour
         //LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)contentPanel.transform);
 
         card.transform.position = new Vector3(card.transform.parent.position.x, card.transform.parent.position.y, -1 - (cardList.Count * 0.01f));
+        card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.VisibleInsideMask);
 
-        card.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+        CheckHologram(true);
+
         StartCoroutine(UpdateScrollBar());
     }
 
@@ -64,9 +66,11 @@ public class WastepileScript : MonoBehaviour
         cardContainers.Remove(parentCardContainer);
         Destroy(parentCardContainer);
 
-        card.GetComponent<CardScript>().DestroyHologram();
-        card.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.None;
+        card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.None);
+        card.GetComponent<CardScript>().HideHologram();
         cardList.Remove(card);
+
+        CheckHologram(false);
 
         StartCoroutine(UpdateScrollBar());
     }
@@ -82,40 +86,20 @@ public class WastepileScript : MonoBehaviour
         //Debug.Log(card.GetComponent<Renderer>().bounds.size.x);
         if (isDragging)
         {
-            card.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.None;
+            card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.None);
             gameObject.GetComponent<ScrollRect>().horizontal = false;
         }
         else
         {
             if (card.GetComponent<CardScript>().container == this.gameObject)
             {
-                card.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.VisibleInsideMask);
             }
             gameObject.GetComponent<ScrollRect>().horizontal = true;
         }
         //Debug.Log(gameObject.GetComponent<ScrollRect>().horizontal);
     }
 
-    public void SetCardPositions()
-    {
-        return;
-        //int positionCounter = 0;
-        //float xOffset = 0;
-
-        //for (int i = 0; i < cardList.Count; i++)  // go through the list
-        //{
-        //    // as we go through, place cards to the right and behind of the previous one
-        //    cardList[i].transform.position = gameObject.transform.position + new Vector3(xOffset, 0, positionCounter * 0.1f);
-
-        //    //if (counter <= Config.config.wastepileCardsToShow)
-        //    //{
-        //    //    xOffset += 0.8f;
-        //    //}
-        //    xOffset += 0.8f;
-
-        //    positionCounter++;
-        //}
-    }
     public void ProcessAction(GameObject input)
     {
         if (!input.CompareTag("Card"))
@@ -123,6 +107,10 @@ public class WastepileScript : MonoBehaviour
             if ((input.CompareTag("Foundation") || input.CompareTag("Reactor")) && utils.selectedCards.Count != 0)
             {
                 if (input.CompareTag("Reactor") && (utils.selectedCards.Count != 1 || utils.selectedCards[0].GetComponent<CardScript>().cardSuit != input.GetComponent<ReactorScript>().suit))
+                {
+                    return;
+                }
+                if (input.CompareTag("Foundation") && input.GetComponent<FoundationScript>().cardList.Count > 0)
                 {
                     return;
                 }
@@ -200,4 +188,7 @@ public class WastepileScript : MonoBehaviour
     {
         return cardList;
     }
+
+    public void SetCardPositions()
+    { }
 }
