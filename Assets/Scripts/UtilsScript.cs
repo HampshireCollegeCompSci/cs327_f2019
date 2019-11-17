@@ -52,9 +52,9 @@ public class UtilsScript : MonoBehaviour
             {
 
                 Click();
-                ShowPossibleMoves.showPossibleMoves.ShowMoves();
                 if (selectedCards.Count > 0)
                 {
+                    ShowPossibleMoves.showPossibleMoves.ShowMoves(selectedCards[0]);
                     soundController.CardPressSound();
                     dragOn = true;
                 }
