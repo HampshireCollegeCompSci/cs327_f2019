@@ -198,6 +198,7 @@ public class CardScript : MonoBehaviour
         if (hologram == null)
         {
             GameObject hologramPrefab = Resources.Load<GameObject>("Prefabs/Holograms/hologram");
+            hologram = Instantiate(hologramPrefab, gameObject.transform.position - new Vector3(0, -0.5f, 0), gameObject.transform.rotation);
             GameObject hologramFoodPrefab = Resources.Load<GameObject>("Prefabs/Holograms/generalFood");
 
             string cardHologramName;
@@ -213,21 +214,7 @@ public class CardScript : MonoBehaviour
                 cardHologramName = cardNum + "_" + cardSuit + "_food";
 
             hologramFoodPrefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/FoodHolograms/" + cardHologramName);
-
-            hologram = Instantiate(hologramPrefab, Vector3.one, gameObject.transform.rotation);
-            hologramObject = Instantiate(hologramFoodPrefab, Vector3.one, gameObject.transform.rotation);
-
-            hologram.transform.parent = this.gameObject.transform;
-            hologramObject.transform.parent = this.gameObject.transform;
-
-            hologram.transform.localScale = Vector3.one;
-            hologramObject.transform.localScale = Vector3.one;
-
-            hologram.transform.localPosition = new Vector3(0.2f, 5, 0);
-            hologramObject.transform.localPosition = new Vector3(0, 5, 0);
-
-            hologram.GetComponent<SpriteRenderer>().sortingOrder = 1;
-            hologramObject.GetComponent<SpriteRenderer>().sortingOrder = 1;
+            hologramObject = Instantiate(hologramFoodPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
 
             //if (cardSuit == "spades")
             //{
@@ -254,9 +241,9 @@ public class CardScript : MonoBehaviour
         {
             hologram.SetActive(true);
             hologramObject.SetActive(true);
+            hologram.transform.position = gameObject.transform.position - new Vector3(0, -0.5f, 0);
+            hologramObject.transform.position = gameObject.transform.position - new Vector3(0, -1.1f, 0);
         }
-
-        UpdateMaskInteraction(gameObject.GetComponent<SpriteRenderer>().maskInteraction);
     }
 
     public bool HideHologram()
@@ -268,6 +255,27 @@ public class CardScript : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public void DestroyHologram()
+    {
+        if (hologram != null)
+        {
+            hologram.SetActive(false);
+            hologramObject.SetActive(false);
+        }
+    }
+
+    public void GlowOn()
+    {
+        glowOn = true;
+        SetCardAppearance();
+    }
+
+    public void GlowOff()
+    {
+        glowOn = false;
+        SetCardAppearance();
     }
 }
 
