@@ -215,7 +215,6 @@ public class Config : MonoBehaviour
 
     public float GetScreenToWorldHeight()
     {
-
         Vector2 topRightCorner = new Vector2(1, 1);
         Vector2 edgeVector = Camera.main.ViewportToWorldPoint(topRightCorner);
         var height = edgeVector.y * 2;

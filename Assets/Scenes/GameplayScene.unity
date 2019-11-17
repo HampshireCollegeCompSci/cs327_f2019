@@ -1591,7 +1591,6 @@ GameObject:
   - component: {fileID: 602213202}
   - component: {fileID: 602213201}
   - component: {fileID: 602213200}
-  - component: {fileID: 602213203}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1664,18 +1663,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &602213203
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 602213199}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b50b7d58f675484a919bfab750d6aa3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &612237308
 GameObject:
   m_ObjectHideFlags: 0
@@ -1874,7 +1861,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0.67665, y: 1.1851}
+  m_AnchoredPosition: {x: 0.67663574, y: 1.1851196}
   m_SizeDelta: {x: 1.3533, y: 2.3037}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &618915850
@@ -1925,7 +1912,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 733436959}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -2}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 618915849}
@@ -1934,8 +1921,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -3.0887, y: -0.077}
-  m_SizeDelta: {x: 1.3268, y: 2.3369}
+  m_AnchoredPosition: {x: -3.11, y: -0.031}
+  m_SizeDelta: {x: 1.389, y: 2.439}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &733436961
 MonoBehaviour:
@@ -2010,7 +1997,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.1, y: 0}
+  m_Offset: {x: -0.014689326, y: -0.032811165}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2021,7 +2008,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.5, y: 2.3369}
+  m_Size: {x: 1.2243807, y: 2.2712774}
   m_EdgeRadius: 0
 --- !u!1 &787894275 stripped
 GameObject:
@@ -2046,9 +2033,7 @@ GameObject:
   - component: {fileID: 944386650}
   - component: {fileID: 944386653}
   - component: {fileID: 944386652}
-  - component: {fileID: 944386651}
   - component: {fileID: 944386654}
-  - component: {fileID: 944386655}
   m_Layer: 5
   m_Name: Undo
   m_TagString: Button
@@ -2075,18 +2060,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -4.700012}
   m_SizeDelta: {x: 130.9, y: 130.9}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &944386651
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 944386649}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d0ffdd8699454043bd1cd4b4b5852af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &944386652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2132,7 +2105,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 944386649}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -2181,25 +2154,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!95 &944386655
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 944386649}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 644701509af8de9488f30c4198675924, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1048323403 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3465283733490406803, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
@@ -3679,6 +3633,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1615020385}
   - component: {fileID: 1615020384}
+  - component: {fileID: 1615020386}
   m_Layer: 0
   m_Name: Start
   m_TagString: Untagged
@@ -3716,6 +3671,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1615020386
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1615020383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b50b7d58f675484a919bfab750d6aa3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1616627633
 GameObject:
   m_ObjectHideFlags: 0

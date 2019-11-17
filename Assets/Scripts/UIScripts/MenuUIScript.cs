@@ -10,10 +10,9 @@ public class MenuUIScript : MonoBehaviour
     private void Start()
     {
         //stop animation from start
-        Animator[] animators = gameObject.GetComponentsInChildren<Animator>();
-        foreach (Animator anim in animators)
-            anim.enabled = false;
-
+        //Animator[] animators = gameObject.GetComponentsInChildren<Animator>();
+        //foreach (Animator anim in animators)
+        //    anim.enabled = false;
 
         //update main menu button txt
         if (GameObject.Find("Play") != null)
@@ -59,6 +58,22 @@ public class MenuUIScript : MonoBehaviour
             GameObject button = GameObject.Find("Return");
             button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[3].ToUpper();
         }
+        //update pause menu txt
+        if (GameObject.Find("Resume") != null)
+        {
+            GameObject button = GameObject.Find("Resume");
+            button.GetComponentInChildren<Text>().text = Config.config.pauseSceneButtonsTxtEnglish[0].ToUpper();
+        }
+        if (GameObject.Find("Restart") != null)
+        {
+            GameObject button = GameObject.Find("Restart");
+            button.GetComponentInChildren<Text>().text = Config.config.pauseSceneButtonsTxtEnglish[1].ToUpper();
+        }
+        if (GameObject.Find("Settings") != null)
+        {
+            GameObject button = GameObject.Find("Settings");
+            button.GetComponentInChildren<Text>().text = Config.config.pauseSceneButtonsTxtEnglish[2].ToUpper();
+        }
         //update summary txt
         if (GameObject.Find("MainMenu") != null)
         {
@@ -82,13 +97,14 @@ public class MenuUIScript : MonoBehaviour
     public void NewGame()
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
-        Config.config.GetComponent<MusicController>().GameMusic();
-        //restarts the level there will be more added to this method later but for now we don't have dificulty
         Config.config.gameOver = false;
         Config.config.gameWin = false;
         Config.config.gamePaused = false;
         gameObject.SetActive(false);
-        SceneManager.LoadScene("GameplayScene");
+
+        //loading scene
+        SceneManager.LoadScene("LoadingScene", LoadSceneMode.Additive);
+
     }
 
     public void UndoButton()
