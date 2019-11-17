@@ -7,6 +7,7 @@ public class StartScript : MonoBehaviour
 {
     public GameObject config;
     public GameObject utils;
+    public GameObject showpossiblemoves;
     public int listLen;
     public int counter;
     void Start()
@@ -25,6 +26,9 @@ public class StartScript : MonoBehaviour
         {
             utils.GetComponent<UtilsScript>().selectedCards.RemoveAt(0);
         }
+
+        showpossiblemoves = GameObject.Find("ShowPossibleMoves");
+        showpossiblemoves.GetComponent<ShowPossibleMoves>().SetCards();
     }
 
 }
