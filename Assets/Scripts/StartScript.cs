@@ -11,7 +11,8 @@ public class StartScript : MonoBehaviour
     public int counter;
     void Start()
     {
-        SceneManager.UnloadSceneAsync("LoadingScene");
+        if (SceneManager.GetActiveScene().name == "LoadingScene")
+            SceneManager.UnloadSceneAsync("LoadingScene");
 
         config = GameObject.Find("Config");
         config.GetComponent<Config>().SetCards();
