@@ -52,6 +52,7 @@ public class UtilsScript : MonoBehaviour
             {
 
                 Click();
+                ShowPossibleMoves.showPossibleMoves.ShowMoves();
                 if (selectedCards.Count > 0)
                 {
                     soundController.CardPressSound();
@@ -72,6 +73,7 @@ public class UtilsScript : MonoBehaviour
             {
 
                 Click();
+                ShowPossibleMoves.showPossibleMoves.HideMoves();
 
                 gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
 

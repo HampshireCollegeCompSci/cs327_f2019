@@ -15,6 +15,7 @@ public class CardScript : MonoBehaviour
     public bool appearSelected;
     public Color originalColor;
     public Color newColor;
+    public bool glowOn = false;
 
     private GameObject hologramObject;
     private GameObject hologram;
@@ -82,6 +83,16 @@ public class CardScript : MonoBehaviour
                 hologramObject.GetComponent<SpriteRenderer>().color = originalColor;
             }
             //gameObject.transform.localScale = new Vector3(1, 1, 1);
+        }
+
+        if (glowOn)
+        {
+            gameObject.transform.Find("Glow").gameObject.SetActive(true);
+        }
+
+        else
+        {
+            gameObject.transform.Find("Glow").gameObject.SetActive(false);
         }
 
         //set collider scale to match sprite scale
@@ -235,6 +246,18 @@ public class CardScript : MonoBehaviour
             hologram.SetActive(false);
             hologramObject.SetActive(false);
         }
+    }
+
+    public void GlowOn()
+    {
+        glowOn = true;
+        SetCardAppearance();
+    }
+
+    public void GlowOff()
+    {
+        glowOn = false;
+        SetCardAppearance();
     }
 }
 
