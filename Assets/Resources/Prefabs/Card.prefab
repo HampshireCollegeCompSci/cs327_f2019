@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 4532920606021333943}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.55, y: 0.55, z: 1}
   m_Children: []
   m_Father: {fileID: 5176008346855944175}
   m_RootOrder: 0
@@ -185,7 +185,7 @@ MonoBehaviour:
   appearSelected: 0
   originalColor: {r: 0, g: 0, b: 0, a: 0}
   newColor: {r: 0, g: 0, b: 0, a: 0}
-  glow: {fileID: 0}
+  glowOn: 0
 --- !u!61 &5589543899514788396
 BoxCollider2D:
   m_ObjectHideFlags: 0
