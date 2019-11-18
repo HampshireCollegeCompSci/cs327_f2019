@@ -54,6 +54,7 @@ public class UndoScript : MonoBehaviour
         {
             //Special Case
         }
+        print("next card was hidden: " + nextCardWasHidden);
 
         Move move = new Move(moveType, card, origin, nextCardWasHidden, isAction);
         moveLog.Push(move);
@@ -80,20 +81,20 @@ public class UndoScript : MonoBehaviour
                         stackUndo.Push(moveLog.Pop());
                     }
                 }
+                int cardsMoved = 0;
                 while (stackUndo.Count != 0)
                 {
                     lastMove = stackUndo.Pop();
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
-                    if (lastMove.nextCardWasHidden)
-                    {
-                        lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().hidden = true;
-                        lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetCardAppearance();
-                    }
-                    if (lastMove.isAction)
-                    {
-                        Config.config.actions -= 1;
-                    } 
+                    cardsMoved++;
                 }
+
+                if (lastMove.nextCardWasHidden)
+                {
+                    lastMove.origin.GetComponent<FoundationScript>().cardList[cardsMoved].GetComponent<CardScript>().hidden = true;
+                    lastMove.origin.GetComponent<FoundationScript>().cardList[cardsMoved].GetComponent<CardScript>().SetCardAppearance();
+                }
+                Config.config.actions -= 1;
             }
             else if (moveLog.Peek().moveType == "move")
             {
