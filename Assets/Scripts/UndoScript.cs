@@ -95,6 +95,7 @@ public class UndoScript : MonoBehaviour
                     lastMove.origin.GetComponent<FoundationScript>().cardList[cardsMoved].GetComponent<CardScript>().SetCardAppearance();
                 }
                 Config.config.actions -= 1;
+                return;
             }
             else if (moveLog.Peek().moveType == "move")
             {
@@ -109,6 +110,7 @@ public class UndoScript : MonoBehaviour
                 {
                     Config.config.actions -= 1;
                 }
+                return;
             }
             else if (moveLog.Peek().moveType == "match")
             {
@@ -122,10 +124,11 @@ public class UndoScript : MonoBehaviour
                 //Config.config.actions -= 1;
                 Config.config.score -= Config.config.matchPoints;
                 Debug.Log("score" + Config.config.score);
+                return;
             }
             else if (moveLog.Peek().moveType == "draw")
             {
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < Config.config.cardsToDeal; i++)
                 {
                     lastMove = moveLog.Pop();
                     lastMove.card.GetComponent<CardScript>().hidden = true;
@@ -136,6 +139,7 @@ public class UndoScript : MonoBehaviour
                         Config.config.actions -= 1;
                     }
                 }
+                return;
                 
             }
         }
