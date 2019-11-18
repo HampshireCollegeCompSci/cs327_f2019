@@ -93,7 +93,7 @@ public class FoundationScript : MonoBehaviour
             }
             else
             {
-                yOffset += 0.4f;
+                yOffset += 0.45f;
             }
 
             positionCounter++;

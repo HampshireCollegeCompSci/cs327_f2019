@@ -56,6 +56,7 @@ public class WastepileScript : MonoBehaviour
 
         CheckHologram(true);
 
+        Debug.Log(gameObject.GetComponent<ScrollRect>().horizontalNormalizedPosition + " add");
         StartCoroutine(UpdateScrollBar());
     }
 
@@ -72,6 +73,7 @@ public class WastepileScript : MonoBehaviour
 
         CheckHologram(false);
 
+        Debug.Log(gameObject.GetComponent<ScrollRect>().horizontalNormalizedPosition + " remove");
         StartCoroutine(UpdateScrollBar());
     }
 
@@ -79,6 +81,7 @@ public class WastepileScript : MonoBehaviour
     {
         yield return null;
         gameObject.GetComponent<ScrollRect>().horizontalNormalizedPosition = 1;
+        Debug.Log("scrolling");
     }
 
     public void DraggingCard(GameObject card, bool isDragging)
