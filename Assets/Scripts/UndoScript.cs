@@ -83,6 +83,7 @@ public class UndoScript : MonoBehaviour
                 while (stackUndo.Count != 0)
                 {
                     lastMove = stackUndo.Pop();
+                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
                     if (lastMove.nextCardWasHidden)
                     {
                         lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().hidden = true;
@@ -91,8 +92,7 @@ public class UndoScript : MonoBehaviour
                     if (lastMove.isAction)
                     {
                         Config.config.actions -= 1;
-                    }
-                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+                    } 
                 }
             }
             else if (moveLog.Peek().moveType == "move")
