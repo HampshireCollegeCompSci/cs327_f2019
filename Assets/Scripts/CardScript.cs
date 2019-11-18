@@ -220,14 +220,11 @@ public class CardScript : MonoBehaviour
             hologram.transform.parent = this.gameObject.transform;
             hologramObject.transform.parent = this.gameObject.transform;
 
-            hologram.transform.localScale = Vector3.one;
-            hologramObject.transform.localScale = Vector3.one;
+            hologram.transform.localPosition = new Vector3(0, 4, -1);
+            hologramObject.transform.localPosition = new Vector3(0, 4.3f, 0);
 
-            hologram.transform.localPosition = new Vector3(0.2f, 5, -1);
-            hologramObject.transform.localPosition = new Vector3(0, 5, 0);
-
-            //hologram.GetComponent<SpriteRenderer>().sortingOrder = 1;
-            //hologramObject.GetComponent<SpriteRenderer>().sortingOrder = 1;
+            hologram.GetComponent<SpriteRenderer>().sortingOrder = 0;
+            hologramObject.GetComponent<SpriteRenderer>().sortingOrder = 1;
 
             //if (cardSuit == "spades")
             //{
