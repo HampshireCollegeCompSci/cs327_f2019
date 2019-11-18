@@ -123,7 +123,6 @@ public class UndoScript : MonoBehaviour
                 }
                 //Config.config.actions -= 1;
                 Config.config.score -= Config.config.matchPoints;
-                Debug.Log("score" + Config.config.score);
                 return;
             }
             else if (moveLog.Peek().moveType == "draw")
