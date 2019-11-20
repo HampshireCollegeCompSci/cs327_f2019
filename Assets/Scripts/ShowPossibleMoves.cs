@@ -18,6 +18,8 @@ public class ShowPossibleMoves : MonoBehaviour
 
     private GameObject[] foundationList;
     private GameObject[] reactorList;
+    private bool cardIsFromFoundation;
+    private bool cardIsTopOfStack;
 
     public void SetCards()
     {
@@ -49,12 +51,22 @@ public class ShowPossibleMoves : MonoBehaviour
 
     private List<GameObject> FindMoves(GameObject selectedCard)
     {
+        cardIsFromFoundation = (selectedCard.GetComponent<CardScript>().container.GetComponent<FoundationScript>() != null);
+        if (cardIsFromFoundation)
+        {
+            cardIsTopOfStack = (selectedCard == selectedCard.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[0]);
+        }
+        else
+        {
+            cardIsTopOfStack = true;
+        }
+
         List<GameObject> output = new List<GameObject>();
         foreach (GameObject foundation in foundationList)
         {
             if (foundation.GetComponent<FoundationScript>().cardList.Count > 0)
             {
-                if (UtilsScript.global.IsMatch(foundation.GetComponent<FoundationScript>().cardList[0], selectedCard) || foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardNum == (selectedCard.GetComponent<CardScript>().cardNum + 1))
+                if ((UtilsScript.global.IsMatch(foundation.GetComponent<FoundationScript>().cardList[0], selectedCard) && cardIsTopOfStack) || (foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardNum == (selectedCard.GetComponent<CardScript>().cardNum + 1) && cardIsFromFoundation))
                 {
                     output.Add(foundation.GetComponent<FoundationScript>().cardList[0]);
                 }
