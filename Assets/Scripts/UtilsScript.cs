@@ -54,7 +54,7 @@ public class UtilsScript : MonoBehaviour
                 Click();
                 if (selectedCards.Count > 0)
                 {
-                    ShowPossibleMoves.showPossibleMoves.ShowMoves(selectedCards[0]);
+                    //ShowPossibleMoves.showPossibleMoves.ShowMoves(selectedCards[0]);
                     soundController.CardPressSound();
                     dragOn = true;
                 }
@@ -73,7 +73,7 @@ public class UtilsScript : MonoBehaviour
             {
 
                 Click();
-                ShowPossibleMoves.showPossibleMoves.HideMoves();
+                //ShowPossibleMoves.showPossibleMoves.HideMoves();
 
                 gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
 
@@ -267,14 +267,30 @@ public class UtilsScript : MonoBehaviour
     public void Match(GameObject card1, GameObject card2)
     {
         soundController.CardMatchSound();
-        card1.GetComponent<CardScript>().MoveCard(matchedPile);
-        card2.GetComponent<CardScript>().MoveCard(matchedPile);
+        Vector3 p = card1.transform.position;
+        Quaternion t = card1.transform.rotation;
+        p.z += 2;
+
+        Config.config.GetComponent<SoundController>().ReactorExplodeSound();
+        GameObject myPrefab = (GameObject)Resources.Load("Prefabs/MatchExplosion", typeof(GameObject));
+        Instantiate(myPrefab, p, t);
+
 
         //Config.config.actions += 1;
         Config.config.score += matchPoints;
         //Debug.Log("score" + Config.config.score);
         //check to see if the board is clear
+        card2.transform.position = card1.transform.position;
+        StartCoroutine(animatorwait(card1,card2));
     }
+    IEnumerator animatorwait(GameObject card1, GameObject card2)
+    {
+
+        yield return new WaitForSeconds(.5f);
+        card1.GetComponent<CardScript>().MoveCard(matchedPile);
+        card2.GetComponent<CardScript>().MoveCard(matchedPile);
+    }
+
 
     //checks if suit match AND value match
     public bool IsMatch(GameObject card1, GameObject card2)

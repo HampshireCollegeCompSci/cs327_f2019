@@ -27,8 +27,8 @@ public class StartScript : MonoBehaviour
             utils.GetComponent<UtilsScript>().selectedCards.RemoveAt(0);
         }
 
-        showpossiblemoves = GameObject.Find("ShowPossibleMoves");
-        showpossiblemoves.GetComponent<ShowPossibleMoves>().SetCards();
+        //showpossiblemoves = GameObject.Find("ShowPossibleMoves");
+        //showpossiblemoves.GetComponent<ShowPossibleMoves>().SetCards();
     }
 
 }

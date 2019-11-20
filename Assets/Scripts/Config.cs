@@ -86,6 +86,9 @@ public class Config : MonoBehaviour
     public string[] pauseSceneButtonsTxtEnglish;
     public string[] summarySceneButtonsTxtEnglish;
 
+    //Animation
+    public GameObject matchExplosion;
+
     private void Awake()
     {
         if (config == null)
