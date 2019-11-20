@@ -216,6 +216,7 @@ public class DeckScript : MonoBehaviour
     // deals cards
     public void Deal(bool log = true)
     {
+        List<GameObject> toMoveList = new List<GameObject>();
         for (int i = 0; i < Config.config.cardsToDeal; i++) // try to deal set number of cards
         {
             if (cardList.Count == 0) // are there no more cards in the deck?
@@ -228,6 +229,10 @@ public class DeckScript : MonoBehaviour
             cardList[0].SetActive(true);
             cardList[0].GetComponent<CardScript>().hidden = false;
             cardList[0].GetComponent<CardScript>().SetCardAppearance();
+
+            //toMoveList.Add(cardList[0]);
+            //cardList.RemoveAt(0);
+
             if (log)
             {
                 cardList[0].GetComponent<CardScript>().MoveCard(wastePile);
@@ -236,8 +241,13 @@ public class DeckScript : MonoBehaviour
             {
                 cardList[0].GetComponent<CardScript>().MoveCard(wastePile, false);
             }
-
         }
+
+        //if (toMoveList.Count != 0)
+        //{
+        //    wastePile.GetComponent<WastepileScript>().AddCards(toMoveList);
+        //    Config.config.actions += 1; //adds to the action count
+        //}
 
         Config.config.actions += 1; //adds to the action count
     }

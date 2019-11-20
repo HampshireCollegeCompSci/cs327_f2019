@@ -11,11 +11,18 @@ public class WastepileScript : MonoBehaviour
     public GameObject cardContainer;
     public List<GameObject> cardList;
     public List<GameObject> cardContainers;
+    private ScrollRect scrollRect;
 
     private void Start()
     {
         utils = UtilsScript.global;
+        scrollRect = gameObject.GetComponent<ScrollRect>();
     }
+
+    //public void Update()
+    //{
+    //    Debug.Log(scrollRect.content.localPosition);
+    //}
 
     public void CheckHologram(bool hide)
     {
@@ -34,6 +41,26 @@ public class WastepileScript : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void AddCards(List<GameObject> cards)
+    {
+        for (int i = 0; i < cards.Count; i++)
+        {
+            cards[i].GetComponent<CardScript>().container = gameObject;
+            AddCard(cards[i]);
+        }
+
+        //scrollRect.horizontal = false;
+        scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
+
+        Vector3 temp = scrollRect.content.localPosition;
+        temp.x = 6;
+        scrollRect.content.localPosition = temp;
+        
+        CheckHologram(true);
+
+        StartCoroutine(UpdateScrollBar());
     }
 
     public void AddCard(GameObject card)
@@ -56,8 +83,8 @@ public class WastepileScript : MonoBehaviour
 
         CheckHologram(true);
 
-        Debug.Log(gameObject.GetComponent<ScrollRect>().horizontalNormalizedPosition + " add");
-        StartCoroutine(UpdateScrollBar());
+        //Debug.Log(gameObject.GetComponent<ScrollRect>().horizontalNormalizedPosition + " add");
+        //StartCoroutine(UpdateScrollBar());
     }
 
     public void RemoveCard(GameObject card)
@@ -73,15 +100,15 @@ public class WastepileScript : MonoBehaviour
 
         CheckHologram(false);
 
-        Debug.Log(gameObject.GetComponent<ScrollRect>().horizontalNormalizedPosition + " remove");
-        StartCoroutine(UpdateScrollBar());
+        //Debug.Log(gameObject.GetComponent<ScrollRect>().horizontalNormalizedPosition + " remove");
+        //StartCoroutine(UpdateScrollBar());
     }
 
     IEnumerator UpdateScrollBar()
     {
         yield return null;
-        gameObject.GetComponent<ScrollRect>().horizontalNormalizedPosition = 1;
-        Debug.Log("scrolling");
+        scrollRect.horizontalNormalizedPosition = 1;
+        //Debug.Log(gameObject.GetComponent<ScrollRect>().horizontalNormalizedPosition + " scroll");
     }
 
     public void DraggingCard(GameObject card, bool isDragging)
@@ -90,7 +117,7 @@ public class WastepileScript : MonoBehaviour
         if (isDragging)
         {
             card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.None);
-            gameObject.GetComponent<ScrollRect>().horizontal = false;
+            scrollRect.horizontal = false;
         }
         else
         {
@@ -98,7 +125,7 @@ public class WastepileScript : MonoBehaviour
             {
                 card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.VisibleInsideMask);
             }
-            gameObject.GetComponent<ScrollRect>().horizontal = true;
+            scrollRect.horizontal = true;
         }
         //Debug.Log(gameObject.GetComponent<ScrollRect>().horizontal);
     }
