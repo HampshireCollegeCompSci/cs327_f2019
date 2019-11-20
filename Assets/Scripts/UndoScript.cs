@@ -12,7 +12,7 @@ public class UndoScript : MonoBehaviour
     {
         moveLog = new Stack<Move>();
     }
-    public void logMove(string moveType, GameObject card, bool isAction = true)
+    public void logMove(string moveType, GameObject card, bool isAction = true, int actionsRemaining = 1)
     {
         print("Is action: " + isAction);
         GameObject origin = card.GetComponent<CardScript>().container;
@@ -50,13 +50,10 @@ public class UndoScript : MonoBehaviour
                 nextCardWasHidden = true;
             }
         }
-        else if (origin.TryGetComponent(typeof(DeckScript), out component))
-        {
-            //Special Case
-        }
+
         print("next card was hidden: " + nextCardWasHidden);
 
-        Move move = new Move(moveType, card, origin, nextCardWasHidden, isAction);
+        Move move = new Move(moveType, card, origin, nextCardWasHidden, isAction, actionsRemaining);
         moveLog.Push(move);
         print("There are " + moveLog.Count + " moves logged.");
     }
@@ -94,7 +91,7 @@ public class UndoScript : MonoBehaviour
                     lastMove.origin.GetComponent<FoundationScript>().cardList[cardsMoved].GetComponent<CardScript>().hidden = true;
                     lastMove.origin.GetComponent<FoundationScript>().cardList[cardsMoved].GetComponent<CardScript>().SetCardAppearance();
                 }
-                Config.config.actions -= 1;
+                Config.config.actions = lastMove.remainingActions;
                 return;
             }
             else if (moveLog.Peek().moveType == "move")
@@ -108,7 +105,7 @@ public class UndoScript : MonoBehaviour
                 lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
                 if (lastMove.isAction)
                 {
-                    Config.config.actions -= 1;
+                    Config.config.actions = lastMove.remainingActions;
                 }
                 return;
             }
@@ -117,11 +114,14 @@ public class UndoScript : MonoBehaviour
                 for (int i = 0; i < 2; i++)
                 {
                     lastMove = moveLog.Pop();
-                    lastMove.card.GetComponent<CardScript>().hidden = true;
-                    lastMove.card.GetComponent<CardScript>().SetCardAppearance();
+                    if (lastMove.nextCardWasHidden)
+                    {
+                        lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().hidden = true;
+                        lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetCardAppearance();
+                    }
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+                    
                 }
-                //Config.config.actions -= 1;
                 Config.config.score -= Config.config.matchPoints;
                 return;
             }
@@ -135,11 +135,25 @@ public class UndoScript : MonoBehaviour
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
                     if (lastMove.isAction)
                     {
-                        Config.config.actions -= 1;
+                        Config.config.actions = lastMove.remainingActions;
                     }
                 }
                 return;
                 
+            }
+            else if (moveLog.Peek().moveType == "cycle")
+            {
+                while (moveLog.Peek().moveType == "cycle")
+                {
+                    lastMove = moveLog.Pop();
+                    if (lastMove.nextCardWasHidden)
+                    {
+                        lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().hidden = true;
+                        lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetCardAppearance();
+                    }
+                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+                }
+                Config.config.actions = lastMove.remainingActions;
             }
         }
     }

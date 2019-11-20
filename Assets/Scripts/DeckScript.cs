@@ -179,7 +179,7 @@ public class DeckScript : MonoBehaviour
                     //  does this top card's suit match the reactor's suit
                     if (topFoundationCard.GetComponent<CardScript>().cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
                     {
-                        topFoundationCard.GetComponent<CardScript>().MoveCard(reactors[r]);
+                        topFoundationCard.GetComponent<CardScript>().MoveCard(reactors[r], isCycle: true);
                         break;
                     }
                 }

@@ -102,7 +102,7 @@ public class CardScript : MonoBehaviour
         }
     }
 
-    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true)
+    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false)
     {
         if (destination.CompareTag("Foundation"))
         {
@@ -110,11 +110,11 @@ public class CardScript : MonoBehaviour
             {
                 if (isAction)
                 {
-                    UndoScript.undoScript.logMove("move", gameObject);
+                    UndoScript.undoScript.logMove("move", gameObject, actionsRemaining: Config.config.actions);
                 }
                 else
                 {
-                    UndoScript.undoScript.logMove("move", gameObject, false);
+                    UndoScript.undoScript.logMove("move", gameObject, false, actionsRemaining: Config.config.actions);
                 }
             }
             container.SendMessage("RemoveCard", gameObject);
@@ -126,13 +126,17 @@ public class CardScript : MonoBehaviour
         {
             if (doLog)
             {
-                if (isAction)
+                if (isAction && !isCycle)
                 {
-                    UndoScript.undoScript.logMove("move", gameObject);
+                    UndoScript.undoScript.logMove("move", gameObject, actionsRemaining: Config.config.actions);
+                }
+                else if (isCycle)
+                {
+                    UndoScript.undoScript.logMove("cycle", gameObject, actionsRemaining: Config.config.actions);
                 }
                 else
                 {
-                    UndoScript.undoScript.logMove("move", gameObject, false);
+                    UndoScript.undoScript.logMove("move", gameObject, false, actionsRemaining: Config.config.actions);
                 }
             }
             container.SendMessage("RemoveCard", gameObject);
@@ -147,11 +151,11 @@ public class CardScript : MonoBehaviour
             {
                 if (isAction)
                 {
-                    UndoScript.undoScript.logMove("draw", gameObject);
+                    UndoScript.undoScript.logMove("draw", gameObject, actionsRemaining: Config.config.actions);
                 }
                 else
                 {
-                    UndoScript.undoScript.logMove("draw", gameObject, false);
+                    UndoScript.undoScript.logMove("draw", gameObject, false, actionsRemaining: Config.config.actions);
                 }
             }
             container.SendMessage("RemoveCard", gameObject);
@@ -170,11 +174,11 @@ public class CardScript : MonoBehaviour
             {
                 if (isAction)
                 {
-                    UndoScript.undoScript.logMove("match", gameObject);
+                    UndoScript.undoScript.logMove("match", gameObject, actionsRemaining: Config.config.actions);
                 }
                 else
                 {
-                    UndoScript.undoScript.logMove("match", gameObject, false);
+                    UndoScript.undoScript.logMove("match", gameObject, false, actionsRemaining: Config.config.actions);
                 }
             }
             container.SendMessage("RemoveCard", gameObject);
