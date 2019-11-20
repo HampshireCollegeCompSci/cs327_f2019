@@ -77,7 +77,7 @@ public class ShowPossibleMoves : MonoBehaviour
         {
             if (reactor.GetComponent<ReactorScript>().cardList.Count > 0)
             {
-                if (UtilsScript.global.IsMatch(reactor.GetComponent<ReactorScript>().cardList[0], selectedCard))
+                if (UtilsScript.global.IsMatch(reactor.GetComponent<ReactorScript>().cardList[0], selectedCard) && cardIsTopOfStack)
                 {
                     output.Add(reactor.GetComponent<ReactorScript>().cardList[0]);
                 }
