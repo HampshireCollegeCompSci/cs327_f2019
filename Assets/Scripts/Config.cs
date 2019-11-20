@@ -116,9 +116,10 @@ public class Config : MonoBehaviour
         if (gameOver && SceneManager.GetActiveScene().name != "SummaryScene")
         {
             //delay to show summary
-            if (countdown < 0)
+            if (countdown <= 0)
             {
                 SceneManager.LoadScene("SummaryScene");
+
                 if (gameWin)
                 {
                     gameObject.GetComponent<MusicController>().WinMusic();
@@ -127,8 +128,8 @@ public class Config : MonoBehaviour
                 {
                     gameObject.GetComponent<MusicController>().LoseMusic();
                 }
-                countdown = delayToShowGameSummary;
             }
+
             else
             {
                 countdown -= Time.deltaTime;
