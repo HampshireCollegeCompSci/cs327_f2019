@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Config : MonoBehaviour
 {
@@ -66,6 +67,7 @@ public class Config : MonoBehaviour
     private int foundationCount = 0;
     private string JSON;
     GameInfo gameInfo;
+    GameObject fadeOutImage;
 
     public int easy;
     public int medium;
@@ -105,7 +107,6 @@ public class Config : MonoBehaviour
         gameInfo = CreateFromJSON(path);
         ConfigFromJSON();
         SetCards();
-        countdown = delayToShowGameSummary;
         gameObject.GetComponent<MusicController>().MainMenuMusic();
     }
 
@@ -115,6 +116,7 @@ public class Config : MonoBehaviour
         //handle game end
         if (gameOver && SceneManager.GetActiveScene().name != "SummaryScene")
         {
+            fadeOutImage.SetActive(true);
             //delay to show summary
             if (countdown <= 0)
             {
@@ -133,9 +135,13 @@ public class Config : MonoBehaviour
             else
             {
                 countdown -= Time.deltaTime;
+
+                if (!gameWin)
+                {
+                    fadeOutImage.GetComponent<Image>().color = new Color(0, 0, 0, (countdown - delayToShowGameSummary) * (1 - 0) / (0 - delayToShowGameSummary) + 0);
+                }
             }
         }
-
     }
 
     public void ConfigFromJSON()
@@ -183,6 +189,14 @@ public class Config : MonoBehaviour
 
         deck = GameObject.Find("DeckButton");
 
+        fadeOutImage = GameObject.Find("FadeOutImage");
+
+        if (fadeOutImage != null)
+        {
+            fadeOutImage.SetActive(false);
+        }
+
+        countdown = delayToShowGameSummary;
         score = 0;
     }
 
