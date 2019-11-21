@@ -10,6 +10,7 @@ public class DeckScript : MonoBehaviour
 
     public UtilsScript utils;
     public GameObject wastePile;
+    private WastepileScript wastePileScript;
     public List<GameObject> foundations;
     public List<GameObject> reactors;
 
@@ -48,6 +49,7 @@ public class DeckScript : MonoBehaviour
         //myPrefab.GetComponent<BoxCollider2D>().offset = new Vector2Int(0, 0);
 
         utils = UtilsScript.global;
+        wastePileScript = wastePile.GetComponent<WastepileScript>();
 
         InstantiateCards(gameObject);
         importSeed = false;
@@ -166,7 +168,7 @@ public class DeckScript : MonoBehaviour
         }
         else // we need to try repopulating the deck
         {
-            if (wastePile.GetComponent<WastepileScript>().GetCardList().Count == 0) // is it not possible to repopulate the deck?
+            if (wastePileScript.GetCardList().Count == 0) // is it not possible to repopulate the deck?
             {
                 return;
             }
@@ -231,6 +233,11 @@ public class DeckScript : MonoBehaviour
     // deals cards
     public void Deal(bool log = true)
     {
+        if (wastePileScript.isScrolling())
+        {
+            return;
+        }
+
         List<GameObject> toMoveList = new List<GameObject>();
         for (int i = 0; i < Config.config.cardsToDeal; i++) // try to deal set number of cards
         {
@@ -241,30 +248,40 @@ public class DeckScript : MonoBehaviour
 
             // reveal card and move from deck list top into waste
 
-            cardList[0].SetActive(true);
-            cardList[0].GetComponent<CardScript>().hidden = false;
-            cardList[0].GetComponent<CardScript>().SetCardAppearance();
+            //cardList[0].SetActive(true);
+            //cardList[0].GetComponent<CardScript>().hidden = false;
+            //cardList[0].GetComponent<CardScript>().SetCardAppearance();
 
-            //toMoveList.Add(cardList[0]);
-            //cardList.RemoveAt(0);
+            toMoveList.Add(cardList[0]);
 
             if (log)
             {
-                cardList[0].GetComponent<CardScript>().MoveCard(wastePile);
+                UndoScript.undoScript.logMove("draw", cardList[0]);
             }
             else
             {
-                cardList[0].GetComponent<CardScript>().MoveCard(wastePile, false);
+                UndoScript.undoScript.logMove("draw", cardList[0], false);
             }
+
+            cardList.RemoveAt(0);
+
+            //if (log)
+            //{
+            //    cardList[0].GetComponent<CardScript>().MoveCard(wastePile);
+            //}
+            //else
+            //{
+            //    cardList[0].GetComponent<CardScript>().MoveCard(wastePile, false);
+            //}
         }
 
-        //if (toMoveList.Count != 0)
-        //{
-        //    wastePile.GetComponent<WastepileScript>().AddCards(toMoveList);
-        //    Config.config.actions += 1; //adds to the action count
-        //}
+        if (toMoveList.Count != 0)
+        {
+            wastePileScript.AddCards(toMoveList);
+            Config.config.actions += 1; //adds to the action count
+        }
 
-        Config.config.actions += 1; //adds to the action count
+        //Config.config.actions += 1; //adds to the action count
     }
 
     public void ImportShuffleSeed(int seed)

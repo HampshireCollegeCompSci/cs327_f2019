@@ -12,16 +12,19 @@ public class WastepileScript : MonoBehaviour
     public List<GameObject> cardList;
     public List<GameObject> cardContainers;
     private ScrollRect scrollRect;
+    private bool scrolling;
 
     private void Start()
     {
         utils = UtilsScript.global;
         scrollRect = gameObject.GetComponent<ScrollRect>();
+        scrolling = false;
     }
 
     //public void Update()
     //{
-    //    Debug.Log(scrollRect.content.localPosition);
+    //    Debug.Log(scrollRect.horizontalNormalizedPosition + "sb");
+    //    Debug.Log(scrollRect.content.position.x + "content");
     //}
 
     public void CheckHologram(bool hide)
@@ -43,28 +46,80 @@ public class WastepileScript : MonoBehaviour
         }
     }
 
+    public bool isScrolling()
+    {
+        return scrolling;
+    }
     public void AddCards(List<GameObject> cards)
     {
+        // disable scrolling, flag it, and start the animation process
+        scrollRect.horizontal = false;
+        scrollRect.horizontalScrollbar.interactable = false;
+        scrolling = true;
+        StartCoroutine(UpdateScrollBar(cards));
+    }
+
+    IEnumerator UpdateScrollBar(List<GameObject> cards)
+    {
+        // first, try scrolling a little
+        scrollRect.horizontalNormalizedPosition += 0.1f;
+        yield return null;
+
+        // if we are not adding the first cards and
+        // if we scrolled (can we scroll check)
+        if (cardList.Count != 0 && scrollRect.horizontalNormalizedPosition != 0)
+        {
+            // hide the hologram and scroll to the left (scroll rect is flipped btw)
+            cardList[0].GetComponent<CardScript>().HideHologram();
+            while (scrollRect.horizontalNormalizedPosition < 1)
+            {
+                yield return new WaitForSeconds(0.01f);
+                scrollRect.horizontalNormalizedPosition += 0.1f;
+            }
+        }
+        else
+        {
+            Debug.Log("skipped");
+        }
+
+        // add the new cards
         for (int i = 0; i < cards.Count; i++)
         {
-            cards[i].GetComponent<CardScript>().container = gameObject;
             AddCard(cards[i]);
         }
 
-        //scrollRect.horizontal = false;
+        // we need unrestricted scroll for the following shenanigans
         scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
 
-        Vector3 temp = scrollRect.content.localPosition;
-        temp.x = 6;
+        // move the scroll rect's content so that the new cards are hidden to the left side of the belt
+        Vector3 temp;
+        temp = scrollRect.content.localPosition;
+        temp.x = 3 + cards.Count;
         scrollRect.content.localPosition = temp;
-        
-        CheckHologram(true);
 
-        StartCoroutine(UpdateScrollBar());
+        // "scroll" the scroll rect's content back onto the belt 
+        while (scrollRect.content.localPosition.x > cards.Count)
+        {
+            yield return new WaitForSeconds(.01f);
+            temp = scrollRect.content.localPosition;
+            temp.x -= 0.1f;
+            scrollRect.content.localPosition = temp;
+        }
+
+        // set everything back to how it was
+        scrollRect.movementType = ScrollRect.MovementType.Clamped;
+        scrollRect.horizontal = true;
+        scrollRect.horizontalScrollbar.interactable = true;
+        scrolling = false;
     }
 
     public void AddCard(GameObject card)
     {
+        card.SetActive(true);
+        card.GetComponent<CardScript>().hidden = false;
+        card.GetComponent<CardScript>().SetCardAppearance();
+        card.GetComponent<CardScript>().container = gameObject;
+
         cardList.Insert(0, card);
         cardContainers.Insert(0, Instantiate(cardContainer));
         cardContainers[0].transform.SetParent(contentPanel.transform, false);
@@ -102,13 +157,6 @@ public class WastepileScript : MonoBehaviour
 
         //Debug.Log(gameObject.GetComponent<ScrollRect>().horizontalNormalizedPosition + " remove");
         //StartCoroutine(UpdateScrollBar());
-    }
-
-    IEnumerator UpdateScrollBar()
-    {
-        yield return null;
-        scrollRect.horizontalNormalizedPosition = 1;
-        //Debug.Log(gameObject.GetComponent<ScrollRect>().horizontalNormalizedPosition + " scroll");
     }
 
     public void DraggingCard(GameObject card, bool isDragging)
