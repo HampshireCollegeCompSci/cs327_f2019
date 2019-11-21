@@ -12,12 +12,14 @@ public class UndoScript : MonoBehaviour
     {
         moveLog = new Stack<Move>();
     }
+    /*
+     *logMove takes a number of  paramaters, detects if the card below the moved card was hidden, then logs the move.
+     */
     public void logMove(string moveType, GameObject card, bool isAction = true, int actionsRemaining = 1)
     {
-        print("Is action: " + isAction);
-        GameObject origin = card.GetComponent<CardScript>().container;
-        bool nextCardWasHidden = false;
-        if (origin.TryGetComponent(typeof(FoundationScript), out Component component))
+        GameObject origin = card.GetComponent<CardScript>().container; //get the cards original location
+        bool nextCardWasHidden = false; //default nextCardWasHidden to false
+        if (origin.TryGetComponent(typeof(FoundationScript), out Component component)) //see what the origin was and check the appropriate location for hidden card.
         {
             if (card.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList.Count == 1)
             {
@@ -50,24 +52,23 @@ public class UndoScript : MonoBehaviour
                 nextCardWasHidden = true;
             }
         }
-
-        print("next card was hidden: " + nextCardWasHidden);
-
-        Move move = new Move(moveType, card, origin, nextCardWasHidden, isAction, actionsRemaining);
-        moveLog.Push(move);
-        print("There are " + moveLog.Count + " moves logged.");
+        Move move = new Move(moveType, card, origin, nextCardWasHidden, isAction, actionsRemaining); //create the log of the move
+        moveLog.Push(move); //push the log to the undo stack
     }
 
+    /*
+     *undo is the function which reads from the moveLog and resets cards, score, moves, etc to their old state. 
+     */
     public void undo()
     {
-        if (moveLog.Count > 0)
+        if (moveLog.Count > 0) //only run if there's something in the stack
         {
             Move lastMove = null;
-            if (!moveLog.Peek().isAction)
+            if (!moveLog.Peek().isAction) //if the lastMove wasn't an action that means it was a stack of tokens moved at once
             {
                 Stack<Move> stackUndo = new Stack<Move>();
                 stackUndo.Push(moveLog.Pop());
-                while (true)
+                while (true) //invert the stack
                 {
                     if (stackUndo.Peek().isAction)
                     {
@@ -79,14 +80,14 @@ public class UndoScript : MonoBehaviour
                     }
                 }
                 int cardsMoved = 0;
-                while (stackUndo.Count != 0)
+                while (stackUndo.Count != 0) //move them to the the correct foundation
                 {
                     lastMove = stackUndo.Pop();
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
                     cardsMoved++;
                 }
 
-                if (lastMove.nextCardWasHidden)
+                if (lastMove.nextCardWasHidden) //if the card under the stack was hidden, re-hide it
                 {
                     lastMove.origin.GetComponent<FoundationScript>().cardList[cardsMoved].GetComponent<CardScript>().hidden = true;
                     lastMove.origin.GetComponent<FoundationScript>().cardList[cardsMoved].GetComponent<CardScript>().SetCardAppearance();
@@ -94,7 +95,7 @@ public class UndoScript : MonoBehaviour
                 Config.config.actions = lastMove.remainingActions;
                 return;
             }
-            else if (moveLog.Peek().moveType == "move")
+            else if (moveLog.Peek().moveType == "move") //standard behavior, move a single token back where it was
             {
                 lastMove = moveLog.Pop();
                 if (lastMove.nextCardWasHidden)
@@ -109,7 +110,7 @@ public class UndoScript : MonoBehaviour
                 }
                 return;
             }
-            else if (moveLog.Peek().moveType == "match")
+            else if (moveLog.Peek().moveType == "match") //undo a match, removing the score gained and moving both cards back to their original locations
             {
                 for (int i = 0; i < 2; i++)
                 {
@@ -125,7 +126,7 @@ public class UndoScript : MonoBehaviour
                 Config.config.score -= Config.config.matchPoints;
                 return;
             }
-            else if (moveLog.Peek().moveType == "draw")
+            else if (moveLog.Peek().moveType == "draw") //move the last three drawn cards back to the deck (assuming the last action was to draw from the deck)
             {
                 for (int i = 0; i < Config.config.cardsToDeal; i++)
                 {
@@ -141,7 +142,7 @@ public class UndoScript : MonoBehaviour
                 return;
                 
             }
-            else if (moveLog.Peek().moveType == "cycle")
+            else if (moveLog.Peek().moveType == "cycle") //undo a cycle turning over, resets all tokens moved up, along with the move counter
             {
                 while (moveLog.Peek().moveType == "cycle")
                 {
