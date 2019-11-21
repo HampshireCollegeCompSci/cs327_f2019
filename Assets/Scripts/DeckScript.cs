@@ -224,6 +224,7 @@ public class DeckScript : MonoBehaviour
         //     Shuffle();
         // }
 
+        return;
         if (dealOnDeckReset) // auto deal cards
         {
             Deal();

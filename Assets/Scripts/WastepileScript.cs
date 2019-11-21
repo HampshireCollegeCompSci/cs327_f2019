@@ -12,20 +12,21 @@ public class WastepileScript : MonoBehaviour
     public List<GameObject> cardList;
     public List<GameObject> cardContainers;
     private ScrollRect scrollRect;
+    private RectTransform contentRectTransform;
     private bool scrolling;
 
     private void Start()
     {
         utils = UtilsScript.global;
         scrollRect = gameObject.GetComponent<ScrollRect>();
+        contentRectTransform = contentPanel.GetComponent<RectTransform>();
         scrolling = false;
     }
 
-    //public void Update()
-    //{
-    //    Debug.Log(scrollRect.horizontalNormalizedPosition + "sb");
-    //    Debug.Log(scrollRect.content.position.x + "content");
-    //}
+    public void Update()
+    {
+        //Debug.Log(contentPanel.GetComponent<RectTransform>().anchoredPosition);
+    }
 
     public void CheckHologram(bool hide)
     {
@@ -56,25 +57,25 @@ public class WastepileScript : MonoBehaviour
         scrollRect.horizontal = false;
         scrollRect.horizontalScrollbar.interactable = false;
         scrolling = true;
-        StartCoroutine(UpdateScrollBar(cards));
+        StartCoroutine(ScrollBarAdding(cards));
     }
 
-    IEnumerator UpdateScrollBar(List<GameObject> cards)
+    IEnumerator ScrollBarAdding(List<GameObject> cards)
     {
-        // first, try scrolling a little
-        scrollRect.horizontalNormalizedPosition += 0.1f;
-        yield return null;
+        Vector3 temp = contentRectTransform.anchoredPosition;
 
         // if we are not adding the first cards and
-        // if we scrolled (can we scroll check)
-        if (cardList.Count != 0 && scrollRect.horizontalNormalizedPosition != 0)
+        // if the contents have been moved from their default position
+        if (temp.x != 0)
         {
-            // hide the hologram and scroll to the left (scroll rect is flipped btw)
+            // hide the hologram and scroll to the left
             cardList[0].GetComponent<CardScript>().HideHologram();
-            while (scrollRect.horizontalNormalizedPosition < 1)
+
+            while (temp.x > 0)
             {
                 yield return new WaitForSeconds(0.01f);
-                scrollRect.horizontalNormalizedPosition += 0.1f;
+                temp.x -= 0.2f;
+                contentRectTransform.anchoredPosition = temp;
             }
         }
 
@@ -88,29 +89,20 @@ public class WastepileScript : MonoBehaviour
         scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
 
         // move the scroll rect's content so that the new cards are hidden to the left side of the belt
-        //Debug.Log(scrollRect.content.localPosition.x + " 0");
-        Vector3 temp;
-        temp = scrollRect.content.localPosition;
-        temp.x = 3 + cards.Count;
-        scrollRect.content.localPosition = temp;
-        //Debug.Log(scrollRect.content.localPosition.x + " 1");
+        temp.x = cards.Count;
+        contentRectTransform.anchoredPosition = temp;
 
         // "scroll" the scroll rect's content back onto the belt
-        // need to deal with floating points precision loss, it's going up by 0.000001 every 10 iterations
-        double within = 3 + 0.01d;
-        while (scrollRect.content.localPosition.x > within)
+        while (temp.x > 0)
         {
-            yield return new WaitForSeconds(.01f);
-            temp = scrollRect.content.localPosition;
+            yield return new WaitForSeconds(0.01f);
             temp.x -= 0.1f;
-            scrollRect.content.localPosition = temp;
-            //Debug.Log(scrollRect.content.localPosition.x);
+            contentRectTransform.anchoredPosition = temp;
         }
 
-        temp = scrollRect.content.localPosition;
+        // the float lossed some precision, so make it 0 for the first check in this function
         temp.x = 0;
-        scrollRect.content.localPosition = temp;
-        //Debug.Log(scrollRect.content.localPosition.x + " 2");
+        contentRectTransform.anchoredPosition = temp;
 
         // set everything back to how it was
         scrollRect.movementType = ScrollRect.MovementType.Clamped;
@@ -160,9 +152,44 @@ public class WastepileScript : MonoBehaviour
         cardList.Remove(card);
 
         CheckHologram(false);
+        StartCoroutine(ScrollBarRemoving());
+    }
 
-        //Debug.Log(gameObject.GetComponent<ScrollRect>().horizontalNormalizedPosition + " remove");
-        //StartCoroutine(UpdateScrollBar());
+    IEnumerator ScrollBarRemoving()
+    {
+        if (cardList.Count == 0)
+        {
+            yield break;
+        }
+
+        // disable scrolling and flag it
+        scrollRect.horizontal = false;
+        scrollRect.horizontalScrollbar.interactable = false;
+        scrolling = true;
+
+        // we need unrestricted scroll for the following shenanigans
+        scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
+
+        Vector3 temp = contentRectTransform.anchoredPosition;
+        temp.x = -1;
+        contentRectTransform.anchoredPosition = temp;
+
+        // "scroll" the scroll rect's content back so that the first token is left on the belt
+        while (temp.x < 0)
+        {
+            yield return new WaitForSeconds(.01f);
+            temp.x += 0.1f;
+            contentRectTransform.anchoredPosition = temp;
+        }
+
+        temp.x = 0;
+        contentRectTransform.anchoredPosition = temp;
+
+        // set everything back to how it was
+        scrollRect.movementType = ScrollRect.MovementType.Clamped;
+        scrollRect.horizontal = true;
+        scrollRect.horizontalScrollbar.interactable = true;
+        scrolling = false;
     }
 
     public void DraggingCard(GameObject card, bool isDragging)
