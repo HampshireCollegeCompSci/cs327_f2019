@@ -46,7 +46,7 @@ public class ReactorScript : MonoBehaviour
     public void SetCardPositions()
     {
         int positionCounter = 0;
-        float yOffset = -0.5f;
+        float yOffset = -0.6f;
 
         for (int i = cardList.Count - 1; i >= 0; i--)  // go backwards through the list
         {
@@ -56,11 +56,11 @@ public class ReactorScript : MonoBehaviour
             // 4 tokens can visibly fit in the container at once, so hide the bottom ones if over 4
             if (!(cardList.Count > 4 && positionCounter < cardList.Count - 4))
             {
-                yOffset += 0.35f;
+                yOffset += 0.45f;
             }
             else
             {
-                yOffset += 0;
+                yOffset += 0.05f;
             }
 
             positionCounter += 1;
