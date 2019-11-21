@@ -77,10 +77,6 @@ public class WastepileScript : MonoBehaviour
                 scrollRect.horizontalNormalizedPosition += 0.1f;
             }
         }
-        else
-        {
-            Debug.Log("skipped");
-        }
 
         // add the new cards
         for (int i = 0; i < cards.Count; i++)
@@ -92,19 +88,29 @@ public class WastepileScript : MonoBehaviour
         scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
 
         // move the scroll rect's content so that the new cards are hidden to the left side of the belt
+        //Debug.Log(scrollRect.content.localPosition.x + " 0");
         Vector3 temp;
         temp = scrollRect.content.localPosition;
         temp.x = 3 + cards.Count;
         scrollRect.content.localPosition = temp;
+        //Debug.Log(scrollRect.content.localPosition.x + " 1");
 
-        // "scroll" the scroll rect's content back onto the belt 
-        while (scrollRect.content.localPosition.x > cards.Count)
+        // "scroll" the scroll rect's content back onto the belt
+        // need to deal with floating points precision loss, it's going up by 0.000001 every 10 iterations
+        double within = 3 + 0.01d;
+        while (scrollRect.content.localPosition.x > within)
         {
             yield return new WaitForSeconds(.01f);
             temp = scrollRect.content.localPosition;
             temp.x -= 0.1f;
             scrollRect.content.localPosition = temp;
+            //Debug.Log(scrollRect.content.localPosition.x);
         }
+
+        temp = scrollRect.content.localPosition;
+        temp.x = 0;
+        scrollRect.content.localPosition = temp;
+        //Debug.Log(scrollRect.content.localPosition.x + " 2");
 
         // set everything back to how it was
         scrollRect.movementType = ScrollRect.MovementType.Clamped;
