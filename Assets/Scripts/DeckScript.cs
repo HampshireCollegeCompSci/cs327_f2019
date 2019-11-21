@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class DeckScript : MonoBehaviour
 {
+    public static DeckScript deckScript;
+
     public UtilsScript utils;
     public GameObject wastePile;
     public List<GameObject> foundations;
@@ -26,6 +28,19 @@ public class DeckScript : MonoBehaviour
     public bool importSeed;
     public int shuffleSeed;
 
+
+    private void Awake()
+    {
+        if (deckScript == null)
+        {
+            DontDestroyOnLoad(gameObject); //makes instance persist across scenes
+            deckScript = this;
+        }
+        else if (deckScript != this)
+        {
+            Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
+        }
+    }
     void Start()
     {
         //myPrefab = (GameObject)Resources.Load("Prefabs/Card", typeof(GameObject));
@@ -34,7 +49,7 @@ public class DeckScript : MonoBehaviour
 
         utils = UtilsScript.global;
 
-        InstantiateCards();
+        InstantiateCards(gameObject);
         importSeed = false;
         Shuffle();
         SetUpFoundations();
@@ -45,7 +60,7 @@ public class DeckScript : MonoBehaviour
     }
 
     // sets up card list
-    public void InstantiateCards()
+    public void InstantiateCards(GameObject target)
     {
         cardList = new List<GameObject>();
         for (int i = 0; i < 52; i++)
@@ -93,7 +108,7 @@ public class DeckScript : MonoBehaviour
                 cardList[cardIndex].GetComponent<CardScript>().cardFrontSprite = sprites[cardIndex];
                 cardList[cardIndex].GetComponent<CardScript>().hidden = true;
                 cardList[cardIndex].GetComponent<CardScript>().appearSelected = false;
-                cardList[cardIndex].GetComponent<CardScript>().container = this.gameObject;
+                cardList[cardIndex].GetComponent<CardScript>().container = target;
 
                 cardIndex += 1;
             }

@@ -113,7 +113,7 @@ public class MenuUIScript : MonoBehaviour
     public void UndoButton()
     {
         UndoScript.undoScript.undo();
-        GameObject.Find("Undo").GetComponentInChildren<Animator>().enabled = true;
+        //GameObject.Find("Undo").GetComponentInChildren<Animator>().enabled = true;
         //GameObject.Find("Undo").GetComponentInChildren<Animator>().Play("MenuButtonPressAnim");
     }
 
