@@ -22,7 +22,7 @@
     "menuSceneButtonsTxtEnglish": [ "Play", "Tutorial", "Credits" ],
     "loadingSceneTxtEnglish": "Loading",
     "levelSceneButtonsTxtEnglish": [ "Easy", "Medium", "Hard", "Return" ],
-    "pauseSceneButtonsTxtEnglish": [ "Return to Game", "Restart", "Settings", "Main Menu" ],
+    "pauseSceneButtonsTxtEnglish": [ "Resume", "Restart", "Settings", "Main Menu" ],
     "summarySceneButtonsTxtEnglish": [ "Main\n Menu", "Play\n Again" ],
     "scoreActionLabelsTxtEnglish": [ "Score", "Action" ]
 }

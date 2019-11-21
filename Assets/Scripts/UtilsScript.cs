@@ -54,6 +54,7 @@ public class UtilsScript : MonoBehaviour
                 Click();
                 if (selectedCards.Count > 0)
                 {
+                    ShowPossibleMoves.showPossibleMoves.ShowMoves(selectedCards[0]);
                     soundController.CardPressSound();
                     dragOn = true;
                 }
@@ -72,6 +73,7 @@ public class UtilsScript : MonoBehaviour
             {
 
                 Click();
+                ShowPossibleMoves.showPossibleMoves.HideMoves();
 
                 gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
 
@@ -187,7 +189,8 @@ public class UtilsScript : MonoBehaviour
         {
             if (hit.collider.gameObject.CompareTag("Deck"))
             {
-                hit.collider.gameObject.GetComponent<DeckScript>().ProcessAction(hit.collider.gameObject);
+                return;
+                //hit.collider.gameObject.GetComponent<DeckScript>().ProcessAction(hit.collider.gameObject);
             }
 
             if (selectedCards.Count != 0)
