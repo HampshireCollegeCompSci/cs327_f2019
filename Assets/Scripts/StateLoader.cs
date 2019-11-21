@@ -7,6 +7,11 @@ public class StateLoader : MonoBehaviour
 {
     Config config = Config.config;
 
+    public void writeState()
+    {
+
+    }
+
     public void loadState(string path)
     {
         //load the json into a GameState
@@ -18,6 +23,12 @@ public class StateLoader : MonoBehaviour
         //set up simple variables
         config.actions = state.actions;
         config.score = state.score;
+
+        //set up reactors
+        for (int i = 0; i < state.foundation1.Length; i++)
+        {
+
+        }
 
         //set up deck
     }
