@@ -127,6 +127,9 @@ public class ShowPossibleMoves : MonoBehaviour
             }
         }
 
-        wastepile.GetComponent<WastepileScript>().cardList[0].GetComponent<CardScript>().GlowOff();
+        if (wastepile.GetComponent<WastepileScript>().GetCardList().Count != 0)
+        {
+            wastepile.GetComponent<WastepileScript>().cardList[0].GetComponent<CardScript>().GlowOff();
+        }
     }
 }
