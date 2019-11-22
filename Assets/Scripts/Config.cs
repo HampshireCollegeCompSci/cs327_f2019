@@ -47,7 +47,6 @@ public class Config : MonoBehaviour
     public GameObject foundation2;
     public GameObject foundation3;
     public GameObject foundation4;
-    public GameObject[] foundations;
 
     public GameObject reactor1;
     public GameObject reactor2;
@@ -55,13 +54,16 @@ public class Config : MonoBehaviour
     public GameObject reactor4;
     public GameObject[] reactors;
 
-    private GameObject[] foundationList;
+    public GameObject[] foundationList;
 
     public GameObject wastePile;
 
     //deck
     public GameObject deck;
     public int cardsToDeal;
+
+    //matches
+    public GameObject matches;
 
     //UI
     public bool gamePaused;
@@ -71,6 +73,8 @@ public class Config : MonoBehaviour
     private string JSON;
     GameInfo gameInfo;
     GameObject fadeOutImage;
+
+    public string difficulty;
 
     public int easy;
     public int medium;
@@ -112,8 +116,7 @@ public class Config : MonoBehaviour
         SetCards();
         gameObject.GetComponent<MusicController>().MainMenuMusic();
 
-        foundations = new GameObject[] {foundation1, foundation2, foundation3, foundation4 };
-        reactors = new GameObject[] {reactor1, reactor2, reactor3, reactor4 };
+
     }
 
 
@@ -191,6 +194,7 @@ public class Config : MonoBehaviour
         reactor2 = GameObject.Find("ReactorPile (1)");
         reactor3 = GameObject.Find("ReactorPile (2)");
         reactor4 = GameObject.Find("ReactorPile (3)");
+        reactors = new GameObject[] { reactor1, reactor2, reactor3, reactor4 };
 
         wastePile = GameObject.Find("WastePile");
 
@@ -259,16 +263,19 @@ public class Config : MonoBehaviour
         {
             maxReactorVal = easy;
             actionMax = easyMoveCount;
+            difficulty = "easy";
         }
         if (dif.Equals("medium"))
         {
             maxReactorVal = medium;
             actionMax = mediumMoveCount;
+            difficulty = "medium";
         }
         if (dif.Equals("hard"))
         {
             maxReactorVal = hard;
             actionMax = hardMoveCount;
+            difficulty = "hard";
         }
     }
 

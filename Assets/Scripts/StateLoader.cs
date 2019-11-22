@@ -13,7 +13,7 @@ public class StateLoader : MonoBehaviour
         //save foundations
         int i = 0;
         int x = 0;
-        foreach (GameObject foundation in Config.config.foundations)
+        foreach (GameObject foundation in Config.config.foundationList)
         {
             string[] tempArray = new string[foundation.GetComponent<FoundationScript>().cardList.Count];
             foreach (GameObject token in foundation.GetComponent<FoundationScript>().cardList)
@@ -39,12 +39,42 @@ public class StateLoader : MonoBehaviour
             i++;
         }
         //save wastepile
+        i = 0;
+        string[] wastePileArray = new string[Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count];
         foreach (GameObject token in Config.config.wastePile.GetComponent<WastepileScript>().cardList)
         {
-
+            wastePileArray.SetValue(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString(), i);
+            i++;
         }
+        gameState.wastePile = wastePileArray;
+        //save deck
+        i = 0;
+        string[] deckArray = new string[Config.config.deck.GetComponent<DeckScript>().cardList.Count];
+        foreach (GameObject token in Config.config.deck.GetComponent<DeckScript>().cardList)
+        {
+            deckArray.SetValue(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString(), i);
+            i++;
+        }
+        gameState.deck = deckArray;
+        //save matches
+        i = 0;
+        string[] matchArray = new string[Config.config.matches.GetComponent<MatchedPileScript>().cardList.Count];
+        foreach (GameObject token in Config.config.matches.GetComponent<MatchedPileScript>().cardList)
+        {
+            matchArray.SetValue(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString(), i);
+            i++;
+        }
+        gameState.matches = matchArray;
+        //save undo
+        gameState.moveLog = UndoScript.undoScript.moveLog;
+        //save other data
+        gameState.score = Config.config.score;
+        gameState.actions = Config.config.actions;
+        gameState.difficulty = Config.config.difficulty;
 
-        //File.WriteAllText(Application.dataPath + "/save.txt", json);
+        string json = JsonUtility.ToJson(gameState);
+
+        File.WriteAllText("Desktop/save.txt", json);
     }
 
     public void loadState(string path)
