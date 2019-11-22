@@ -91,6 +91,7 @@ public class UndoScript : MonoBehaviour
                 {
                     lastMove.origin.GetComponent<FoundationScript>().cardList[cardsMoved].GetComponent<CardScript>().hidden = true;
                     lastMove.origin.GetComponent<FoundationScript>().cardList[cardsMoved].GetComponent<CardScript>().SetCardAppearance();
+                    lastMove.origin.GetComponent<FoundationScript>().SetCardPositions();
                 }
                 Config.config.actions = lastMove.remainingActions;
                 return;
