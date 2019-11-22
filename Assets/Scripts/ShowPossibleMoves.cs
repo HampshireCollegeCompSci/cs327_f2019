@@ -18,6 +18,8 @@ public class ShowPossibleMoves : MonoBehaviour
 
     public GameObject wastepile;
 
+    public GameObject matchedpile;
+
     private GameObject[] foundationList;
     private GameObject[] reactorList;
     private bool cardIsFromFoundation;
@@ -39,6 +41,8 @@ public class ShowPossibleMoves : MonoBehaviour
         reactorList = new GameObject[] {reactor1, reactor2, reactor3, reactor4 };
 
         wastepile = GameObject.Find("Scroll View");
+
+        matchedpile = GameObject.Find("MatchedPile");
     }
 
     private void Awake()
@@ -130,9 +134,11 @@ public class ShowPossibleMoves : MonoBehaviour
             }
         }
 
-        if (wastepile.GetComponent<WastepileScript>().GetCardList().Count != 0)
+        wastepile.GetComponent<WastepileScript>().cardList[0].GetComponent<CardScript>().GlowOff();
+
+        foreach (GameObject card in matchedpile.GetComponent<MatchedPileScript>().cardList)
         {
-            wastepile.GetComponent<WastepileScript>().cardList[0].GetComponent<CardScript>().GlowOff();
+            card.GetComponent<CardScript>().GlowOff();
         }
     }
 }
