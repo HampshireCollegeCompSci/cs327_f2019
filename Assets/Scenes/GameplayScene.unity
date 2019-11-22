@@ -2370,6 +2370,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   utils: {fileID: 1574574478}
   soundController: {fileID: 307181958}
+  deck: {fileID: 1524850547}
   contentPanel: {fileID: 225234669}
   cardContainer: {fileID: 4445628893480912193, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
     type: 3}
