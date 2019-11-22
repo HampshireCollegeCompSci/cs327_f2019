@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using System.IO;
 [System.Serializable]
 
@@ -9,7 +11,8 @@ public class GameState
     public string[] matches;
     public string[][] foundations;
     public string[][] reactors;
+    public Stack<Move> moveLog;
     public int score;
     public int actions;
-    public int difficulty; // 1 = Easy, 2 = Medium, 3 = Hard
+    public string difficulty;
 }

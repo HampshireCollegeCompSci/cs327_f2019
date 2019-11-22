@@ -6,6 +6,10 @@ public class MatchedPileScript : MonoBehaviour
 {
     public List<GameObject> cardList;
 
+    private void Start()
+    {
+        Config.config.matches = gameObject;
+    }
     public void AddCard(GameObject card)
     {
         cardList.Insert(0, card);

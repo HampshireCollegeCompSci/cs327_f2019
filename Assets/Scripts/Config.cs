@@ -62,6 +62,9 @@ public class Config : MonoBehaviour
     public GameObject deck;
     public int cardsToDeal;
 
+    //matches
+    public GameObject matches;
+
     //UI
     public bool gamePaused;
 
@@ -70,6 +73,8 @@ public class Config : MonoBehaviour
     private string JSON;
     GameInfo gameInfo;
     GameObject fadeOutImage;
+
+    public string difficulty;
 
     public int easy;
     public int medium;
@@ -257,16 +262,19 @@ public class Config : MonoBehaviour
         {
             maxReactorVal = easy;
             actionMax = easyMoveCount;
+            difficulty = "easy";
         }
         if (dif.Equals("medium"))
         {
             maxReactorVal = medium;
             actionMax = mediumMoveCount;
+            difficulty = "medium";
         }
         if (dif.Equals("hard"))
         {
             maxReactorVal = hard;
             actionMax = hardMoveCount;
+            difficulty = "hard";
         }
     }
 
