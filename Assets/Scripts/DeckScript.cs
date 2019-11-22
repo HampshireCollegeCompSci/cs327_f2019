@@ -44,10 +44,6 @@ public class DeckScript : MonoBehaviour
     }
     void Start()
     {
-        //myPrefab = (GameObject)Resources.Load("Prefabs/Card", typeof(GameObject));
-        //myPrefab.GetComponent<BoxCollider2D>().size = new Vector2Int(1, 1);
-        //myPrefab.GetComponent<BoxCollider2D>().offset = new Vector2Int(0, 0);
-
         utils = UtilsScript.global;
         wastePileScript = wastePile.GetComponent<WastepileScript>();
 
@@ -127,20 +123,31 @@ public class DeckScript : MonoBehaviour
                 cardList[0].SetActive(true);
                 // set to hidden as they might be unhidden
                 cardList[0].GetComponent<CardScript>().hidden = true;
-                // MoveCard() should be removing the card from its current cardList so taking index 0 should work
-                cardList[0].GetComponent<CardScript>().MoveCard(foundations[i], false);
+
+                cardList[0].GetComponent<CardScript>().container = foundations[i];
+                foundations[i].GetComponent<FoundationScript>().AddCard(cardList[0], false);
+                cardList.RemoveAt(0);
+                //cardList[0].GetComponent<CardScript>().MoveCard(foundations[i], false);
             }
 
             // adding and revealing the top card of the foundation
             cardList[0].SetActive(true);
             cardList[0].GetComponent<CardScript>().hidden = false;
-            cardList[0].GetComponent<CardScript>().MoveCard(foundations[i], false);
-            foundations[i].GetComponent<FoundationScript>().CheckTopCard();
+            cardList[0].gameObject.GetComponent<CardScript>().ShowHologram();
+
+            cardList[0].GetComponent<CardScript>().container = foundations[i];
+            foundations[i].GetComponent<FoundationScript>().AddCard(cardList[0], false);
+            cardList.RemoveAt(0);
+            //cardList[0].GetComponent<CardScript>().MoveCard(foundations[i], false);
+            //foundations[i].GetComponent<FoundationScript>().CheckTopCard();
+
+            foundations[i].GetComponent<FoundationScript>().SetCardPositions();
         }
     }
 
     public void AddCard(GameObject card)
     {
+        card.GetComponent<CardScript>().HideHologram();
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
         card.transform.localPosition = Vector3.zero;

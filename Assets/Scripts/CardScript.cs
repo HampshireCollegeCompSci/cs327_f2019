@@ -102,7 +102,7 @@ public class CardScript : MonoBehaviour
         }
     }
 
-    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false)
+    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool updateHolograms = true)
     {
         if (destination.CompareTag("Foundation"))
         {
@@ -118,8 +118,7 @@ public class CardScript : MonoBehaviour
                 }
             }
             container.SendMessage("RemoveCard", gameObject);
-            destination.SendMessage("AddCard", gameObject);
-            //destination.GetComponent<FoundationScript>().cardList.Insert(0, gameObject);
+            destination.GetComponent<FoundationScript>().AddCard(gameObject);
         }
 
         else if (destination.CompareTag("Reactor"))
@@ -140,9 +139,7 @@ public class CardScript : MonoBehaviour
                 }
             }
             container.SendMessage("RemoveCard", gameObject);
-            destination.SendMessage("AddCard", gameObject);
-            //destination.GetComponent<ReactorScript>().cardList.Insert(0, gameObject);
-            destination.GetComponent<ReactorScript>().soundController.CardToReactorSound();
+            destination.GetComponent<ReactorScript>().AddCard(gameObject);
         }
 
         else if (destination.CompareTag("Wastepile"))
@@ -159,14 +156,12 @@ public class CardScript : MonoBehaviour
                 }
             }
             container.SendMessage("RemoveCard", gameObject);
-            destination.SendMessage("AddCard", gameObject);
-            //destination.GetComponent<WastepileScript>().cardList.Insert(0, gameObject);
+            destination.GetComponent<WastepileScript>().AddCard(gameObject);
         }
         else if (destination.CompareTag("Deck"))
         {
             container.SendMessage("RemoveCard", gameObject);
-            destination.SendMessage("AddCard", gameObject);
-            //destination.GetComponent<DeckScript>().cardList.Insert(0, gameObject);
+            destination.GetComponent<DeckScript>().AddCard(gameObject);
         }
         else if (destination.CompareTag("MatchedPile"))
         {
@@ -182,9 +177,9 @@ public class CardScript : MonoBehaviour
                 }
             }
             container.SendMessage("RemoveCard", gameObject);
-            destination.SendMessage("AddCard", gameObject);
-            //destination.GetComponent<MatchedPileScript>().cardList.Insert(0, gameObject);
+            destination.GetComponent<MatchedPileScript>().AddCard(gameObject);
         }
+
         container.SendMessage("SetCardPositions");
         container = destination;
         destination.SendMessage("SetCardPositions");
@@ -199,6 +194,10 @@ public class CardScript : MonoBehaviour
 
     public void ShowHologram()
     {
+        if (hologram != null)
+        {
+            return;
+        }
 
         GameObject hologramPrefab = Resources.Load<GameObject>("Prefabs/Holograms/hologram");
         GameObject hologramFoodPrefab = Resources.Load<GameObject>("Prefabs/Holograms/generalFood");
@@ -252,8 +251,10 @@ public class CardScript : MonoBehaviour
 
     public bool HideHologram()
     {
+        //Debug.Log("Try HideHologram");
         if (hologram != null)
         {
+            //Debug.Log("HideHologram");
             Destroy(hologram);
             Destroy(hologramObject);
             return true;

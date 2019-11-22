@@ -11,16 +11,15 @@ public class FoundationScript : MonoBehaviour
     void Start()
     {
         utils = UtilsScript.global;
-        SetCardPositions();
     }
 
-    public void CheckHologram(bool hide)
+    public void CheckHologram(bool tryHidingBeneath)
     {
         if (cardList.Count != 0)
         {
             cardList[0].gameObject.GetComponent<CardScript>().ShowHologram();
 
-            if (hide)
+            if (tryHidingBeneath)
             {
                 for (int i = 1; i < cardList.Count; i++)
                 {
@@ -33,16 +32,19 @@ public class FoundationScript : MonoBehaviour
         }
     }
 
-    public void AddCard(GameObject card)
+    public void AddCard(GameObject card, bool checkHolo = true)
     {
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
-        CheckHologram(true);
+        
+        if (checkHolo)
+        {
+            CheckHologram(true);
+        }
     }
 
     public void RemoveCard(GameObject card)
     {
-        card.GetComponent<CardScript>().HideHologram();
         cardList.Remove(card);
         CheckTopCard();
         CheckHologram(false);
@@ -103,8 +105,6 @@ public class FoundationScript : MonoBehaviour
 
     public void ProcessAction(GameObject input)
     {
-        Debug.Log("matchcheck");
-
         if (!input.CompareTag("Card"))
         {
             if ((input.CompareTag("Foundation") || input.CompareTag("Reactor")) && utils.selectedCards.Count != 0)
