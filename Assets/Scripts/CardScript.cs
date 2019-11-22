@@ -268,16 +268,25 @@ public class CardScript : MonoBehaviour
         return false;
     }
 
-    public void GlowOn()
+    public bool GlowOn()
     {
-        glowOn = true;
-        SetCardAppearance();
+        if(!glowOn)
+        {
+            glowOn = true;
+            SetCardAppearance();
+            return true;
+        }
+        return false;
     }
 
-    public void GlowOff()
+    public bool GlowOff()
     {
-        glowOn = false;
-        SetCardAppearance();
+        if (glowOn)
+        {
+            glowOn = false;
+            SetCardAppearance();
+        }
+        return false;
     }
 }
 

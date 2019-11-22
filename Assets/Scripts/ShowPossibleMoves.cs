@@ -115,15 +115,18 @@ public class ShowPossibleMoves : MonoBehaviour
         {
             foreach (GameObject card in foundation.GetComponent<FoundationScript>().cardList)
             {
-                card.GetComponent<CardScript>().GlowOff();
+                if (card.GetComponent<CardScript>().hidden || card.GetComponent<CardScript>().GlowOff())
+                {
+                    break;
+                }
             }
         }
 
         foreach (GameObject reactor in reactorList)
         {
-            foreach (GameObject card in reactor.GetComponent<ReactorScript>().cardList)
+            if (reactor.GetComponent<ReactorScript>().cardList.Count != 0)
             {
-                card.GetComponent<CardScript>().GlowOff();
+                reactor.GetComponent<ReactorScript>().cardList[0].GetComponent<CardScript>().GlowOff();
             }
         }
 
