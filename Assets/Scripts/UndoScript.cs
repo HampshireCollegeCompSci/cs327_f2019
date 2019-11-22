@@ -134,10 +134,10 @@ public class UndoScript : MonoBehaviour
                     lastMove.card.GetComponent<CardScript>().hidden = true;
                     lastMove.card.GetComponent<CardScript>().SetCardAppearance();
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
-                    if (lastMove.isAction)
-                    {
-                        Config.config.actions = lastMove.remainingActions;
-                    }
+                }
+                if (lastMove.isAction)
+                {
+                    Config.config.actions = lastMove.remainingActions;
                 }
                 return;
                 
