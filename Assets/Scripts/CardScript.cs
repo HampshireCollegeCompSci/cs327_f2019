@@ -199,78 +199,72 @@ public class CardScript : MonoBehaviour
 
     public void ShowHologram()
     {
-        if (hologram == null)
-        {
-            GameObject hologramPrefab = Resources.Load<GameObject>("Prefabs/Holograms/hologram");
-            GameObject hologramFoodPrefab = Resources.Load<GameObject>("Prefabs/Holograms/generalFood");
 
-            string cardHologramName;
-            if (cardNum == 1)
-                cardHologramName = "ace_" + cardSuit + "_food";
-            else if (cardNum == 11)
-                cardHologramName = "jack_" + cardSuit + "_food";
-            else if (cardNum == 12)
-                cardHologramName = "queen_" + cardSuit + "_food";
-            else if (cardNum == 13)
-                cardHologramName = "king_" + cardSuit + "_food";
-            else
-                cardHologramName = cardNum + "_" + cardSuit + "_food";
+        GameObject hologramPrefab = Resources.Load<GameObject>("Prefabs/Holograms/hologram");
+        GameObject hologramFoodPrefab = Resources.Load<GameObject>("Prefabs/Holograms/generalFood");
 
-            hologramFoodPrefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/FoodHolograms/" + cardHologramName);
-
-            hologram = Instantiate(hologramPrefab, Vector3.one, gameObject.transform.rotation);
-            hologramObject = Instantiate(hologramFoodPrefab, Vector3.one, gameObject.transform.rotation);
-
-            hologram.transform.parent = this.gameObject.transform;
-            hologramObject.transform.parent = this.gameObject.transform;
-
-            hologram.transform.localPosition = new Vector3(0.35f, 4, -1);
-            hologramObject.transform.localPosition = new Vector3(0, 4.3f, 0);
-
-            //if (cardSuit == "spades")
-            //{
-            //    GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/spades");
-            //    hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
-            //}
-            //else if (cardSuit == "diamonds")
-            //{
-            //    GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/rhombus");
-            //    hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
-            //}
-            //else if (cardSuit == "hearts")
-            //{
-            //    GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/hearts");
-            //    hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
-            //}
-            //else if (cardSuit == "clubs")
-            //{
-            //    GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/clubs");
-            //    hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
-            //}
-        }
+        string cardHologramName;
+        if (cardNum == 1)
+            cardHologramName = "ace_" + cardSuit + "_food";
+        else if (cardNum == 11)
+            cardHologramName = "jack_" + cardSuit + "_food";
+        else if (cardNum == 12)
+            cardHologramName = "queen_" + cardSuit + "_food";
+        else if (cardNum == 13)
+            cardHologramName = "king_" + cardSuit + "_food";
         else
-        {
-            hologram.SetActive(true);
-            hologramObject.SetActive(true);
-        }
+            cardHologramName = cardNum + "_" + cardSuit + "_food";
+
+        hologramFoodPrefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/FoodHolograms/" + cardHologramName);
+
+        hologram = Instantiate(hologramPrefab, Vector3.one, gameObject.transform.rotation);
+        hologramObject = Instantiate(hologramFoodPrefab, Vector3.one, gameObject.transform.rotation);
+
+        hologram.transform.parent = this.gameObject.transform;
+        hologramObject.transform.parent = this.gameObject.transform;
+
+        hologram.transform.localPosition = new Vector3(0.35f, 4, -1);
+        hologramObject.transform.localPosition = new Vector3(0, 4.3f, 0);
+
+        //if (cardSuit == "spades")
+        //{
+        //    GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/spades");
+        //    hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
+        //}
+        //else if (cardSuit == "diamonds")
+        //{
+        //    GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/rhombus");
+        //    hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
+        //}
+        //else if (cardSuit == "hearts")
+        //{
+        //    GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/hearts");
+        //    hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
+        //}
+        //else if (cardSuit == "clubs")
+        //{
+        //    GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/clubs");
+        //    hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
+        //}
 
         UpdateMaskInteraction(gameObject.GetComponent<SpriteRenderer>().maskInteraction);
     }
 
     public bool HideHologram()
     {
-        if (hologram != null && hologram.activeSelf)
+        if (hologram != null)
         {
-            hologram.SetActive(false);
-            hologramObject.SetActive(false);
+            Destroy(hologram);
+            Destroy(hologramObject);
             return true;
         }
         return false;
+
     }
 
     public bool GlowOn()
     {
-        if(!glowOn)
+        if (!glowOn)
         {
             glowOn = true;
             SetCardAppearance();
