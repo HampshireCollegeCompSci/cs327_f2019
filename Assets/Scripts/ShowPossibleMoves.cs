@@ -72,7 +72,7 @@ public class ShowPossibleMoves : MonoBehaviour
         {
             if (foundation.GetComponent<FoundationScript>().cardList.Count > 0)
             {
-                if ((UtilsScript.global.IsMatch(foundation.GetComponent<FoundationScript>().cardList[0], selectedCard) && cardIsTopOfStack) || (foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardNum == (selectedCard.GetComponent<CardScript>().cardNum + 1) && (cardIsFromFoundation || cardIsFromFoundation)))
+                if ((UtilsScript.global.IsMatch(foundation.GetComponent<FoundationScript>().cardList[0], selectedCard) && cardIsTopOfStack) || (foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardNum == (selectedCard.GetComponent<CardScript>().cardNum + 1) && (cardIsFromFoundation || cardIsFromWastepile)))
                 {
                     output.Add(foundation.GetComponent<FoundationScript>().cardList[0]);
                 }
