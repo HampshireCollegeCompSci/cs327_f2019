@@ -13,7 +13,7 @@ public class StateLoader : MonoBehaviour
         //save foundations
         int i = 0;
         int x = 0;
-        foreach (GameObject foundation in Config.config.foundations)
+        foreach (GameObject foundation in Config.config.foundationList)
         {
             string[] tempArray = new string[foundation.GetComponent<FoundationScript>().cardList.Count];
             foreach (GameObject token in foundation.GetComponent<FoundationScript>().cardList)
@@ -74,7 +74,7 @@ public class StateLoader : MonoBehaviour
 
         string json = JsonUtility.ToJson(gameState);
 
-        File.WriteAllText("C:/Users/Per/Desktop/save.txt", json);
+        File.WriteAllText("Desktop/save.txt", json);
     }
 
     public void loadState(string path)

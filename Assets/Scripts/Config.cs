@@ -46,7 +46,6 @@ public class Config : MonoBehaviour
     public GameObject foundation2;
     public GameObject foundation3;
     public GameObject foundation4;
-    public GameObject[] foundations;
 
     public GameObject reactor1;
     public GameObject reactor2;
@@ -54,7 +53,7 @@ public class Config : MonoBehaviour
     public GameObject reactor4;
     public GameObject[] reactors;
 
-    private GameObject[] foundationList;
+    public GameObject[] foundationList;
 
     public GameObject wastePile;
 
@@ -116,8 +115,7 @@ public class Config : MonoBehaviour
         SetCards();
         gameObject.GetComponent<MusicController>().MainMenuMusic();
 
-        foundations = new GameObject[] {foundation1, foundation2, foundation3, foundation4 };
-        reactors = new GameObject[] {reactor1, reactor2, reactor3, reactor4 };
+
     }
 
 
@@ -194,6 +192,7 @@ public class Config : MonoBehaviour
         reactor2 = GameObject.Find("ReactorPile (1)");
         reactor3 = GameObject.Find("ReactorPile (2)");
         reactor4 = GameObject.Find("ReactorPile (3)");
+        reactors = new GameObject[] { reactor1, reactor2, reactor3, reactor4 };
 
         wastePile = GameObject.Find("WastePile");
 
