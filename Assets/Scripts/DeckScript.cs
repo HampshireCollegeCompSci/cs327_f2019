@@ -163,7 +163,7 @@ public class DeckScript : MonoBehaviour
 
         if (cardList.Count != 0) // can the deck can be drawn from
         {
-            soundController.DeckDeal();
+            //soundController.DeckDeal();
             Deal();
         }
         else // we need to try repopulating the deck
@@ -173,7 +173,7 @@ public class DeckScript : MonoBehaviour
                 return;
             }
 
-            soundController.DeckReshuffle();
+            //soundController.DeckReshuffle();
             //NextCycle();
             DeckReset();
         }
@@ -207,28 +207,8 @@ public class DeckScript : MonoBehaviour
     // moves all wastePile cards into the deck
     public void DeckReset()
     {
-        // get all the cards from the wastepile
-        List<GameObject> wasteCardList = wastePile.GetComponent<WastepileScript>().GetCardList();
-
-        // move all the cards from waste to deck, preserves reveal order
-        // if there are any cards in the deck's cardList before they will be on the bottom after
-        while (wasteCardList.Count > 0)
-        {
-            wasteCardList[0].GetComponent<CardScript>().MoveCard(this.gameObject, false);
-            cardList[0].GetComponent<CardScript>().hidden = true;
-            cardList[0].GetComponent<CardScript>().SetCardAppearance();
-        }
-
-        // if (shuffleOnDeckReset) // seed saving for this not implemented yet
-        // {
-        //     Shuffle();
-        // }
-
-        return;
-        if (dealOnDeckReset) // auto deal cards
-        {
-            Deal();
-        }
+        wastePileScript.DeckReset();
+        soundController.DeckReshuffle();
     }
 
     // deals cards
@@ -247,12 +227,6 @@ public class DeckScript : MonoBehaviour
                 break;
             }
 
-            // reveal card and move from deck list top into waste
-
-            //cardList[0].SetActive(true);
-            //cardList[0].GetComponent<CardScript>().hidden = false;
-            //cardList[0].GetComponent<CardScript>().SetCardAppearance();
-
             toMoveList.Add(cardList[0]);
 
             if (log)
@@ -265,24 +239,14 @@ public class DeckScript : MonoBehaviour
             }
 
             cardList.RemoveAt(0);
-
-            //if (log)
-            //{
-            //    cardList[0].GetComponent<CardScript>().MoveCard(wastePile);
-            //}
-            //else
-            //{
-            //    cardList[0].GetComponent<CardScript>().MoveCard(wastePile, false);
-            //}
         }
 
         if (toMoveList.Count != 0)
         {
             wastePileScript.AddCards(toMoveList);
+            //soundController.DeckDeal();
             Config.config.actions += 1; //adds to the action count
         }
-
-        //Config.config.actions += 1; //adds to the action count
     }
 
     public void ImportShuffleSeed(int seed)

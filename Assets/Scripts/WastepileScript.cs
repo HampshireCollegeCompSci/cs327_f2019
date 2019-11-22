@@ -7,6 +7,8 @@ public class WastepileScript : MonoBehaviour
 {
     public UtilsScript utils;
     public SoundController soundController;
+    public GameObject deck;
+    private DeckScript deckScript;
     public GameObject contentPanel;
     public GameObject cardContainer;
     public List<GameObject> cardList;
@@ -18,6 +20,7 @@ public class WastepileScript : MonoBehaviour
     private void Start()
     {
         utils = UtilsScript.global;
+        deckScript = deck.GetComponent<DeckScript>();
         scrollRect = gameObject.GetComponent<ScrollRect>();
         contentRectTransform = contentPanel.GetComponent<RectTransform>();
         scrolling = false;
@@ -47,68 +50,10 @@ public class WastepileScript : MonoBehaviour
         }
     }
 
-    public bool isScrolling()
-    {
-        return scrolling;
-    }
     public void AddCards(List<GameObject> cards)
     {
-        // disable scrolling, flag it, and start the animation process
-        scrollRect.horizontal = false;
-        scrollRect.horizontalScrollbar.interactable = false;
-        scrolling = true;
+        DisableScrolling();
         StartCoroutine(ScrollBarAdding(cards));
-    }
-
-    IEnumerator ScrollBarAdding(List<GameObject> cards)
-    {
-        Vector3 temp = contentRectTransform.anchoredPosition;
-
-        // if we are not adding the first cards and
-        // if the contents have been moved from their default position
-        if (temp.x != 0)
-        {
-            // hide the hologram and scroll to the left
-            cardList[0].GetComponent<CardScript>().HideHologram();
-
-            while (temp.x > 0)
-            {
-                yield return new WaitForSeconds(0.01f);
-                temp.x -= 0.2f;
-                contentRectTransform.anchoredPosition = temp;
-            }
-        }
-
-        // add the new cards
-        for (int i = 0; i < cards.Count; i++)
-        {
-            AddCard(cards[i]);
-        }
-
-        // we need unrestricted scroll for the following shenanigans
-        scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
-
-        // move the scroll rect's content so that the new cards are hidden to the left side of the belt
-        temp.x = cards.Count;
-        contentRectTransform.anchoredPosition = temp;
-
-        // "scroll" the scroll rect's content back onto the belt
-        while (temp.x > 0)
-        {
-            yield return new WaitForSeconds(0.01f);
-            temp.x -= 0.1f;
-            contentRectTransform.anchoredPosition = temp;
-        }
-
-        // the float lossed some precision, so make it 0 for the first check in this function
-        temp.x = 0;
-        contentRectTransform.anchoredPosition = temp;
-
-        // set everything back to how it was
-        scrollRect.movementType = ScrollRect.MovementType.Clamped;
-        scrollRect.horizontal = true;
-        scrollRect.horizontalScrollbar.interactable = true;
-        scrolling = false;
     }
 
     public void AddCard(GameObject card)
@@ -142,6 +87,8 @@ public class WastepileScript : MonoBehaviour
 
     public void RemoveCard(GameObject card)
     {
+        float x = contentRectTransform.anchoredPosition.x - 1;
+
         GameObject parentCardContainer = card.transform.parent.gameObject;
         card.transform.parent = null;
         cardContainers.Remove(parentCardContainer);
@@ -152,36 +99,117 @@ public class WastepileScript : MonoBehaviour
         cardList.Remove(card);
 
         CheckHologram(false);
-        StartCoroutine(ScrollBarRemoving());
+        StartCoroutine(ScrollBarRemoving(x));
     }
 
-    IEnumerator ScrollBarRemoving()
+    private void DisableScrolling()
+    {
+        // disable scrolling and flag it
+        scrollRect.horizontal = false;
+        scrollRect.horizontalScrollbar.interactable = false;
+        scrolling = true;
+
+        // we need unrestricted scroll for later shenanigans
+        scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
+    }
+
+    IEnumerator ScrollBarAdding(List<GameObject> cards)
+    {
+        Vector3 temp = contentRectTransform.anchoredPosition;
+
+        // if we are not adding the first cards and
+        // if the contents have been moved from their default position
+        if (temp.x != 0)
+        {
+            // hide the hologram and scroll to the left
+            cardList[0].GetComponent<CardScript>().HideHologram();
+
+            while (temp.x > 0)
+            {
+                yield return new WaitForSeconds(0.01f);
+                temp.x -= 0.2f;
+                contentRectTransform.anchoredPosition = temp;
+            }
+        }
+
+        // add the new cards
+        for (int i = 0; i < cards.Count; i++)
+        {
+            AddCard(cards[i]);
+        }
+
+        // move the scroll rect's content so that the new cards are hidden to the left side of the belt
+        temp.x = cards.Count;
+        contentRectTransform.anchoredPosition = temp;
+        yield return null;
+
+        while (temp.x > 0.01f)
+        {
+            temp.x -= 0.1f;
+            contentRectTransform.anchoredPosition = temp;
+            yield return new WaitForSeconds(.01f);
+        }
+
+        ResetScrollBar(temp);
+    }
+
+    IEnumerator ScrollBarRemoving(float x)
     {
         if (cardList.Count == 0)
         {
             yield break;
         }
 
-        // disable scrolling and flag it
-        scrollRect.horizontal = false;
-        scrollRect.horizontalScrollbar.interactable = false;
-        scrolling = true;
-
-        // we need unrestricted scroll for the following shenanigans
-        scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
+        DisableScrolling();
 
         Vector3 temp = contentRectTransform.anchoredPosition;
-        temp.x = -1;
+        temp.x = x;
         contentRectTransform.anchoredPosition = temp;
+        yield return null;
 
-        // "scroll" the scroll rect's content back so that the first token is left on the belt
         while (temp.x < 0)
         {
-            yield return new WaitForSeconds(.01f);
             temp.x += 0.1f;
+            contentRectTransform.anchoredPosition = temp;
+            yield return new WaitForSeconds(.01f);
+        }
+
+        ResetScrollBar(temp);
+    }
+
+    public void DeckReset()
+    {
+        StartCoroutine(ResetDeck());
+    }
+
+    IEnumerator ResetDeck()
+    {
+        DisableScrolling();
+
+        Vector3 temp = contentRectTransform.anchoredPosition;
+        while (temp.x < cardList.Count + 1)
+        {
+            yield return new WaitForSeconds(.01f);
+            temp.x += 0.3f;
             contentRectTransform.anchoredPosition = temp;
         }
 
+        while (cardList.Count > 0)
+        {
+            cardList[0].GetComponent<CardScript>().MoveCard(deck, false);
+        }
+
+        yield return null;
+        ResetScrollBar(temp);
+        yield return new WaitForSeconds(0.2f);
+        if (deckScript.dealOnDeckReset)
+        {
+            deckScript.Deal();
+        }
+    }
+
+    public void ResetScrollBar(Vector3 temp)
+    {
         temp.x = 0;
         contentRectTransform.anchoredPosition = temp;
 
@@ -298,6 +326,11 @@ public class WastepileScript : MonoBehaviour
     public List<GameObject> GetCardList()
     {
         return cardList;
+    }
+
+    public bool isScrolling()
+    {
+        return scrolling;
     }
 
     public void SetCardPositions()

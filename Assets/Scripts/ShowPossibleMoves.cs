@@ -16,10 +16,13 @@ public class ShowPossibleMoves : MonoBehaviour
     public GameObject reactor3;
     public GameObject reactor4;
 
+    public GameObject wastepile;
+
     private GameObject[] foundationList;
     private GameObject[] reactorList;
     private bool cardIsFromFoundation;
     private bool cardIsTopOfStack;
+    private bool cardIsFromWastepile;
 
     public void SetCards()
     {
@@ -34,6 +37,8 @@ public class ShowPossibleMoves : MonoBehaviour
         reactor3 = GameObject.Find("ReactorPile (2)");
         reactor4 = GameObject.Find("ReactorPile (3)");
         reactorList = new GameObject[] {reactor1, reactor2, reactor3, reactor4 };
+
+        wastepile = GameObject.Find("Scroll View");
     }
 
     private void Awake()
@@ -51,6 +56,7 @@ public class ShowPossibleMoves : MonoBehaviour
 
     private List<GameObject> FindMoves(GameObject selectedCard)
     {
+        cardIsFromWastepile = (selectedCard.GetComponent<CardScript>().container.GetComponent<WastepileScript>() != null);
         cardIsFromFoundation = (selectedCard.GetComponent<CardScript>().container.GetComponent<FoundationScript>() != null);
         if (cardIsFromFoundation)
         {
@@ -66,7 +72,7 @@ public class ShowPossibleMoves : MonoBehaviour
         {
             if (foundation.GetComponent<FoundationScript>().cardList.Count > 0)
             {
-                if ((UtilsScript.global.IsMatch(foundation.GetComponent<FoundationScript>().cardList[0], selectedCard) && cardIsTopOfStack) || (foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardNum == (selectedCard.GetComponent<CardScript>().cardNum + 1) && cardIsFromFoundation))
+                if ((UtilsScript.global.IsMatch(foundation.GetComponent<FoundationScript>().cardList[0], selectedCard) && cardIsTopOfStack) || (foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardNum == (selectedCard.GetComponent<CardScript>().cardNum + 1) && (cardIsFromFoundation || cardIsFromWastepile)))
                 {
                     output.Add(foundation.GetComponent<FoundationScript>().cardList[0]);
                 }
@@ -82,6 +88,11 @@ public class ShowPossibleMoves : MonoBehaviour
                     output.Add(reactor.GetComponent<ReactorScript>().cardList[0]);
                 }
             }
+        }
+
+        if (UtilsScript.global.IsMatch(wastepile.GetComponent<WastepileScript>().cardList[0], selectedCard))
+        {
+            output.Add(wastepile.GetComponent<WastepileScript>().cardList[0]);
         }
 
         return output;
@@ -114,6 +125,11 @@ public class ShowPossibleMoves : MonoBehaviour
             {
                 card.GetComponent<CardScript>().GlowOff();
             }
+        }
+
+        if (wastepile.GetComponent<WastepileScript>().GetCardList().Count != 0)
+        {
+            wastepile.GetComponent<WastepileScript>().cardList[0].GetComponent<CardScript>().GlowOff();
         }
     }
 }

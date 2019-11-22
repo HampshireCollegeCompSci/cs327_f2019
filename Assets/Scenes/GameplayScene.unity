@@ -388,12 +388,12 @@ PrefabInstance:
     - target: {fileID: 3465283733490406801, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.87
+      value: -0.77
       objectReference: {fileID: 0}
     - target: {fileID: 3465283733490406801, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.76
+      value: 5.65
       objectReference: {fileID: 0}
     - target: {fileID: 3465283733490406801, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
@@ -830,12 +830,12 @@ PrefabInstance:
     - target: {fileID: 3465283733490406801, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.7
+      value: -2.75
       objectReference: {fileID: 0}
     - target: {fileID: 3465283733490406801, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.71
+      value: 5.65
       objectReference: {fileID: 0}
     - target: {fileID: 3465283733490406801, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
@@ -2370,6 +2370,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   utils: {fileID: 1574574478}
   soundController: {fileID: 307181958}
+  deck: {fileID: 1524850547}
   contentPanel: {fileID: 225234669}
   cardContainer: {fileID: 4445628893480912193, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
     type: 3}
@@ -2573,12 +2574,12 @@ PrefabInstance:
     - target: {fileID: 3465283733490406801, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.0899999
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 3465283733490406801, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.7600007
+      value: 5.65
       objectReference: {fileID: 0}
     - target: {fileID: 3465283733490406801, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
@@ -4110,12 +4111,12 @@ PrefabInstance:
     - target: {fileID: 3465283733490406801, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.19
+      value: 3.15
       objectReference: {fileID: 0}
     - target: {fileID: 3465283733490406801, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.7600007
+      value: 5.65
       objectReference: {fileID: 0}
     - target: {fileID: 3465283733490406801, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
