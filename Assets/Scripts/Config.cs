@@ -21,6 +21,7 @@ public class Config : MonoBehaviour
     public float draggedTokenOffset;
     public float selectedCardOpacity;
     public bool prettyColors;
+    public float[] cardHighlightColor;
 
     //score
     public int matchPoints;
@@ -175,6 +176,7 @@ public class Config : MonoBehaviour
         levelSceneButtonsTxtEnglish = gameInfo.levelSceneButtonsTxtEnglish;
         pauseSceneButtonsTxtEnglish = gameInfo.pauseSceneButtonsTxtEnglish;
         summarySceneButtonsTxtEnglish = gameInfo.summarySceneButtonsTxtEnglish;
+        cardHighlightColor = gameInfo.cardHighlightColor;
     }
 
     public void SetCards()
