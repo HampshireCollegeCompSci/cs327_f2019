@@ -60,11 +60,12 @@ public class StateLoader : MonoBehaviour
         config.score = state.score;
 
         //set up reactors
+        /*
         for (int i = 0; i < state.foundation1.Length; i++)
         {
 
         }
-
+        */
         //set up deck
     }
 
