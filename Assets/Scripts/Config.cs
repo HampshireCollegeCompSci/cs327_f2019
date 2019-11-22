@@ -46,11 +46,13 @@ public class Config : MonoBehaviour
     public GameObject foundation2;
     public GameObject foundation3;
     public GameObject foundation4;
+    public GameObject[] foundations;
 
     public GameObject reactor1;
     public GameObject reactor2;
     public GameObject reactor3;
     public GameObject reactor4;
+    public GameObject[] reactors;
 
     private GameObject[] foundationList;
 
@@ -108,6 +110,9 @@ public class Config : MonoBehaviour
         ConfigFromJSON();
         SetCards();
         gameObject.GetComponent<MusicController>().MainMenuMusic();
+
+        foundations = new GameObject[] {foundation1, foundation2, foundation3, foundation4 };
+        reactors = new GameObject[] {reactor1, reactor2, reactor3, reactor4 };
     }
 
 
