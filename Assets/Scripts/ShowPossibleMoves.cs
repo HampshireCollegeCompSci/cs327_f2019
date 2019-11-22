@@ -126,5 +126,7 @@ public class ShowPossibleMoves : MonoBehaviour
                 card.GetComponent<CardScript>().GlowOff();
             }
         }
+
+        wastepile.GetComponent<WastepileScript>().cardList[0].GetComponent<CardScript>().GlowOff();
     }
 }
