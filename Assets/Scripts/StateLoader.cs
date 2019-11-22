@@ -38,8 +38,13 @@ public class StateLoader : MonoBehaviour
             gameState.reactors[i].SetValue(tempArray, i);
             i++;
         }
+        //save wastepile
+        foreach (GameObject token in Config.config.wastePile.GetComponent<WastepileScript>().cardList)
+        {
 
-        File.WriteAllText(Application.dataPath + "/save.txt", json);
+        }
+
+        //File.WriteAllText(Application.dataPath + "/save.txt", json);
     }
 
     public void loadState(string path)
