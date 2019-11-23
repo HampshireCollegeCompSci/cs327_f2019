@@ -10,7 +10,7 @@ public class UndoScript : MonoBehaviour
 
     private void Start()
     {
-        moveLog = new Stack<Move>();
+        moveLog = Config.config.moveLog;
     }
     /*
      *logMove takes a number of  paramaters, detects if the card below the moved card was hidden, then logs the move.
@@ -25,34 +25,47 @@ public class UndoScript : MonoBehaviour
             {
                 nextCardWasHidden = false;
             }
-            else if (card.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[1].GetComponent<CardScript>().hidden)
+            else if (card.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[1].GetComponent<CardScript>().isHidden())
             {
                 nextCardWasHidden = true;
             }
         }
-        else if (origin.TryGetComponent(typeof(ReactorScript), out component))
+        //else if (origin.TryGetComponent(typeof(ReactorScript), out component))
+        //{
+        //    if (card.GetComponent<CardScript>().container.GetComponent<ReactorScript>().cardList.Count == 1)
+        //    {
+        //        nextCardWasHidden = false;
+        //    }
+        //    else if (card.GetComponent<CardScript>().container.GetComponent<ReactorScript>().cardList[1].GetComponent<CardScript>().isHidden())
+        //    {
+        //        nextCardWasHidden = true;
+        //    }
+        //}
+        //else if (origin.TryGetComponent(typeof(WastepileScript), out component))
+        //{
+        //    if (card.GetComponent<CardScript>().container.GetComponent<WastepileScript>().cardList.Count == 1)
+        //    {
+        //        nextCardWasHidden = false;
+        //    }
+        //    else if (card.GetComponent<CardScript>().container.GetComponent<WastepileScript>().cardList[1].GetComponent<CardScript>().isHidden())
+        //    {
+        //        nextCardWasHidden = true;
+        //    }
+        //}
+        else
         {
-            if (card.GetComponent<CardScript>().container.GetComponent<ReactorScript>().cardList.Count == 1)
-            {
-                nextCardWasHidden = false;
-            }
-            else if (card.GetComponent<CardScript>().container.GetComponent<ReactorScript>().cardList[1].GetComponent<CardScript>().hidden)
-            {
-                nextCardWasHidden = true;
-            }
+            nextCardWasHidden = false;
         }
-        else if (origin.TryGetComponent(typeof(WastepileScript), out component))
-        {
-            if (card.GetComponent<CardScript>().container.GetComponent<WastepileScript>().cardList.Count == 1)
-            {
-                nextCardWasHidden = false;
-            }
-            else if (card.GetComponent<CardScript>().container.GetComponent<WastepileScript>().cardList[1].GetComponent<CardScript>().hidden)
-            {
-                nextCardWasHidden = true;
-            }
-        }
-        Move move = new Move(moveType, card, origin, nextCardWasHidden, isAction, actionsRemaining); //create the log of the move
+
+        //create the log of the move
+        Move move = new Move() {
+            moveType = moveType,
+            card = card,
+            origin = origin,
+            nextCardWasHidden = nextCardWasHidden,
+            isAction = isAction,
+            remainingActions = actionsRemaining
+        };
         moveLog.Push(move); //push the log to the undo stack
     }
 
@@ -89,8 +102,8 @@ public class UndoScript : MonoBehaviour
 
                 if (lastMove.nextCardWasHidden) //if the card under the stack was hidden, re-hide it
                 {
-                    lastMove.origin.GetComponent<FoundationScript>().cardList[cardsMoved].GetComponent<CardScript>().hidden = true;
-                    lastMove.origin.GetComponent<FoundationScript>().cardList[cardsMoved].GetComponent<CardScript>().SetCardAppearance();
+                    lastMove.origin.GetComponent<FoundationScript>().cardList[cardsMoved].GetComponent<CardScript>().SetVisibility(false);
+                    //lastMove.origin.GetComponent<FoundationScript>().SetCardPositions();
                 }
                 Config.config.actions = lastMove.remainingActions;
                 return;
@@ -100,8 +113,7 @@ public class UndoScript : MonoBehaviour
                 lastMove = moveLog.Pop();
                 if (lastMove.nextCardWasHidden)
                 {
-                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().hidden = true;
-                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetCardAppearance();
+                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
                 }
                 lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
                 if (lastMove.isAction)
@@ -117,11 +129,10 @@ public class UndoScript : MonoBehaviour
                     lastMove = moveLog.Pop();
                     if (lastMove.nextCardWasHidden)
                     {
-                        lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().hidden = true;
-                        lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetCardAppearance();
+                        lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
                     }
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
-                    
+
                 }
                 Config.config.score -= Config.config.matchPoints;
                 return;
@@ -131,16 +142,14 @@ public class UndoScript : MonoBehaviour
                 for (int i = 0; i < Config.config.cardsToDeal; i++)
                 {
                     lastMove = moveLog.Pop();
-                    lastMove.card.GetComponent<CardScript>().hidden = true;
-                    lastMove.card.GetComponent<CardScript>().SetCardAppearance();
-                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false);
                 }
+                Config.config.wastePile.GetComponent<WastepileScript>().CheckHologram(false);
                 if (lastMove.isAction)
                 {
                     Config.config.actions = lastMove.remainingActions;
                 }
                 return;
-                
             }
             else if (moveLog.Peek().moveType == "cycle") //undo a cycle turning over, resets all tokens moved up, along with the move counter
             {
@@ -149,8 +158,7 @@ public class UndoScript : MonoBehaviour
                     lastMove = moveLog.Pop();
                     if (lastMove.nextCardWasHidden)
                     {
-                        lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().hidden = true;
-                        lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetCardAppearance();
+                        lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
                     }
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
                 }

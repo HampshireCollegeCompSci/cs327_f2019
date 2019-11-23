@@ -94,7 +94,7 @@ public class ShowPossibleMoves : MonoBehaviour
             }
         }
 
-        if (UtilsScript.global.IsMatch(wastepile.GetComponent<WastepileScript>().cardList[0], selectedCard))
+        if (wastepile.GetComponent<WastepileScript>().GetCardList().Count != 0 && UtilsScript.global.IsMatch(wastepile.GetComponent<WastepileScript>().cardList[0], selectedCard))
         {
             output.Add(wastepile.GetComponent<WastepileScript>().cardList[0]);
         }
@@ -119,7 +119,7 @@ public class ShowPossibleMoves : MonoBehaviour
         {
             foreach (GameObject card in foundation.GetComponent<FoundationScript>().cardList)
             {
-                if (card.GetComponent<CardScript>().hidden || card.GetComponent<CardScript>().GlowOff())
+                if (card.GetComponent<CardScript>().isHidden() || card.GetComponent<CardScript>().GlowOff())
                 {
                     break;
                 }
@@ -134,7 +134,10 @@ public class ShowPossibleMoves : MonoBehaviour
             }
         }
 
-        wastepile.GetComponent<WastepileScript>().cardList[0].GetComponent<CardScript>().GlowOff();
+        if (wastepile.GetComponent<WastepileScript>().GetCardList().Count != 0)
+        {
+            wastepile.GetComponent<WastepileScript>().cardList[0].GetComponent<CardScript>().GlowOff();
+        }
 
         foreach (GameObject card in matchedpile.GetComponent<MatchedPileScript>().cardList)
         {

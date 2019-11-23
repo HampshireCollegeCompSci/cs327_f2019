@@ -196,7 +196,7 @@ public class Config : MonoBehaviour
         reactor4 = GameObject.Find("ReactorPile (3)");
         reactors = new GameObject[] { reactor1, reactor2, reactor3, reactor4 };
 
-        wastePile = GameObject.Find("WastePile");
+        wastePile = GameObject.Find("Scroll View");
 
         deck = GameObject.Find("DeckButton");
 

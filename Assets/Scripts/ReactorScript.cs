@@ -32,17 +32,21 @@ public class ReactorScript : MonoBehaviour
         }
     }
 
-    public void AddCard(GameObject card)
+    public void AddCard(GameObject card, bool checkHolo = true)
     {
         card.GetComponent<CardScript>().HideHologram();
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
+
+        SetCardPositions();
         soundController.CardToReactorSound();
+        CheckGameOver();
     }
 
-    public void RemoveCard(GameObject card)
+    public void RemoveCard(GameObject card, bool checkHolo = false)
     {
         cardList.Remove(card);
+        SetCardPositions();
     }
 
     public void SetCardPositions()
@@ -67,22 +71,8 @@ public class ReactorScript : MonoBehaviour
 
             positionCounter += 1;
         }
-
-        // these two things need to be put in the correct ProcessAction() if statements
-        //soundController.CardToReactorSound();
-        CheckGameOver();
     }
 
-    //this function is run on selected card's container
-    //if click reactor then click other card,
-    //click method gets run on container of first card clicked
-    //know first card is from reactor
-    //selectedCards = list of the currently selected cards
-    //selectedCard[0] is the first card (from Reactor)
-    //check if has more than 1 card -> shouldn't 
-    //DON'T USE CLICKED CARD
-    //take input (inputCard), which is the second card
-    //match with them if they match
     public void ProcessAction(GameObject input)
     {
         GameObject card1 = utils.selectedCards[0];

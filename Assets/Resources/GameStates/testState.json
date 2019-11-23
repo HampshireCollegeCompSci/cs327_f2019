@@ -1,3 +1,225 @@
 {
-    
+    "wastePile": [
+        "spades_2",
+        "spades_8",
+        "hearts_1"
+    ],
+    "deck": [
+        "diamonds_6",
+        "diamonds_8",
+        "diamonds_9",
+        "diamonds_5",
+        "spades_9",
+        "hearts_8",
+        "hearts_11",
+        "hearts_13",
+        "spades_7",
+        "clubs_5",
+        "hearts_2",
+        "clubs_2",
+        "diamonds_13",
+        "spades_3",
+        "diamonds_11",
+        "hearts_5",
+        "clubs_7",
+        "clubs_9",
+        "spades_10",
+        "clubs_1",
+        "clubs_8"
+    ],
+    "matches": [
+        "hearts_4",
+        "diamonds_4",
+        "spades_13",
+        "clubs_13",
+        "clubs_4",
+        "spades_4",
+        "diamonds_12",
+        "hearts_12",
+        "spades_12",
+        "clubs_12",
+        "hearts_7",
+        "diamonds_7"
+    ],
+    "foundations": [
+        {
+            "stringList": [
+                "hearts_9",
+                "hearts_10",
+                "diamonds_2",
+                "diamonds_3",
+                "clubs_6",
+                "spades_11"
+            ]
+        },
+        {
+            "stringList": [
+                "spades_6",
+                "clubs_11"
+            ]
+        },
+        {
+            "stringList": [
+                "spades_1"
+            ]
+        },
+        {
+            "stringList": [
+                "spades_5",
+                "hearts_6",
+                "clubs_10",
+                "hearts_3",
+                "clubs_3",
+                "diamonds_1",
+                "diamonds_10"
+            ]
+        }
+    ],
+    "reactors": [
+        {
+            "stringList": []
+        },
+        {
+            "stringList": []
+        },
+        {
+            "stringList": []
+        },
+        {
+            "stringList": []
+        }
+    ],
+    "moveLog": [
+        {
+            "cardName": "spades_4",
+            "originName": "Foundation (2)",
+            "moveType": "move",
+            "nextCardWasHidden": true,
+            "isAction": true,
+            "remainingActions": 0
+        },
+        {
+            "cardName": "diamonds_7",
+            "originName": "Foundation (2)",
+            "moveType": "match",
+            "nextCardWasHidden": true,
+            "isAction": true,
+            "remainingActions": 1
+        },
+        {
+            "cardName": "hearts_7",
+            "originName": "Foundation (0)",
+            "moveType": "match",
+            "nextCardWasHidden": true,
+            "isAction": true,
+            "remainingActions": 1
+        },
+        {
+            "cardName": "clubs_12",
+            "originName": "Foundation (2)",
+            "moveType": "match",
+            "nextCardWasHidden": true,
+            "isAction": true,
+            "remainingActions": 1
+        },
+        {
+            "cardName": "spades_12",
+            "originName": "Foundation (0)",
+            "moveType": "match",
+            "nextCardWasHidden": true,
+            "isAction": true,
+            "remainingActions": 1
+        },
+        {
+            "cardName": "hearts_12",
+            "originName": "Foundation (3)",
+            "moveType": "match",
+            "nextCardWasHidden": true,
+            "isAction": true,
+            "remainingActions": 1
+        },
+        {
+            "cardName": "diamonds_12",
+            "originName": "Foundation (2)",
+            "moveType": "match",
+            "nextCardWasHidden": true,
+            "isAction": true,
+            "remainingActions": 1
+        },
+        {
+            "cardName": "spades_5",
+            "originName": "Foundation (1)",
+            "moveType": "move",
+            "nextCardWasHidden": true,
+            "isAction": false,
+            "remainingActions": 1
+        },
+        {
+            "cardName": "spades_4",
+            "originName": "Foundation (1)",
+            "moveType": "move",
+            "nextCardWasHidden": true,
+            "isAction": true,
+            "remainingActions": 1
+        },
+        {
+            "cardName": "hearts_9",
+            "originName": "Foundation (1)",
+            "moveType": "move",
+            "nextCardWasHidden": true,
+            "isAction": true,
+            "remainingActions": 2
+        },
+        {
+            "cardName": "spades_4",
+            "originName": "Foundation (3)",
+            "moveType": "match",
+            "nextCardWasHidden": false,
+            "isAction": true,
+            "remainingActions": 3
+        },
+        {
+            "cardName": "clubs_4",
+            "originName": "Foundation (1)",
+            "moveType": "match",
+            "nextCardWasHidden": true,
+            "isAction": true,
+            "remainingActions": 3
+        },
+        {
+            "cardName": "clubs_13",
+            "originName": "Foundation (1)",
+            "moveType": "match",
+            "nextCardWasHidden": true,
+            "isAction": true,
+            "remainingActions": 3
+        },
+        {
+            "cardName": "spades_13",
+            "originName": "Foundation (2)",
+            "moveType": "match",
+            "nextCardWasHidden": true,
+            "isAction": true,
+            "remainingActions": 3
+        },
+        {
+            "cardName": "diamonds_4",
+            "originName": "Foundation (1)",
+            "moveType": "match",
+            "nextCardWasHidden": true,
+            "isAction": true,
+            "remainingActions": 3
+        },
+        {
+            "cardName": "hearts_4",
+            "originName": "Foundation (2)",
+            "moveType": "match",
+            "nextCardWasHidden": false,
+            "isAction": true,
+            "remainingActions": 3
+        }
+    ],
+    "score": 1200,
+    "actions": 3,
+    "difficulty": "easy"
 }
