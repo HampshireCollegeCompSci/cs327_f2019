@@ -47,12 +47,12 @@ public class DeckScript : MonoBehaviour
         utils = UtilsScript.global;
         wastePileScript = wastePile.GetComponent<WastepileScript>();
 
-        InstantiateCards(gameObject);
+        cardList = new List<GameObject>();
+        InstantiateCards(this.gameObject);
         importSeed = false;
         Shuffle();
         SetUpFoundations();
         Deal(false);
-        SetCardPositions();
 
         deckCounter.text = cardList.Count.ToString();
     }
@@ -60,54 +60,50 @@ public class DeckScript : MonoBehaviour
     // sets up card list
     public void InstantiateCards(GameObject target)
     {
-        cardList = new List<GameObject>();
-        for (int i = 0; i < 52; i++)
-        {
-            GameObject newCard = Instantiate(myPrefab);
-            //newCard.transform.localScale = new Vector3(0.15f, 0.15f, 1);
-            AddCard(newCard);
-            //cardList.Add(Instantiate(myPrefab));
-        }
-
+        GameObject newCard;
+        CardScript newCardScript;
+        
         // order: club ace, 2, 3... 10, jack, queen, king, diamonds... hearts... spades
         int cardIndex = 0; // 1 - 52
         for (int suit = 0; suit < 4; suit++) // order: club, diamonds, hearts, spades
         {
             for (int num = 1; num < 14; num++) // card num: 1 - 13
             {
+                newCard = Instantiate(myPrefab);
+                newCardScript = newCard.GetComponent<CardScript>();
                 if (num > 10) // all face cards have a value of 10
                 {
-                    cardList[cardIndex].GetComponent<CardScript>().cardVal = 10;
+                    newCardScript.cardVal = 10;
                 }
                 else
                 {
-                    cardList[cardIndex].GetComponent<CardScript>().cardVal = num;
+                    newCardScript.cardVal = num;
                 }
 
-                cardList[cardIndex].GetComponent<CardScript>().cardNum = num;
+                newCardScript.cardNum = num;
 
                 if (suit == 0)
                 {
-                    cardList[cardIndex].GetComponent<CardScript>().cardSuit = "clubs";
+                    newCardScript.cardSuit = "clubs";
                 }
                 else if (suit == 1)
                 {
-                    cardList[cardIndex].GetComponent<CardScript>().cardSuit = "spades";
+                    newCardScript.cardSuit = "spades";
                 }
                 else if (suit == 2)
                 {
-                    cardList[cardIndex].GetComponent<CardScript>().cardSuit = "hearts";
+                    newCardScript.cardSuit = "hearts";
                 }
                 else if (suit == 3)
                 {
-                    cardList[cardIndex].GetComponent<CardScript>().cardSuit = "diamonds";
+                    newCardScript.cardSuit = "diamonds";
                 }
 
-                cardList[cardIndex].GetComponent<CardScript>().cardFrontSprite = sprites[cardIndex];
-                cardList[cardIndex].GetComponent<CardScript>().hidden = true;
-                cardList[cardIndex].GetComponent<CardScript>().appearSelected = false;
-                cardList[cardIndex].GetComponent<CardScript>().container = target;
-
+                newCardScript.cardFrontSprite = sprites[cardIndex];
+                newCardScript.SetVisibility(true);
+                newCardScript.container = target;
+                AddCard(newCard);
+                
                 cardIndex += 1;
             }
         }
@@ -120,32 +116,20 @@ public class DeckScript : MonoBehaviour
         {
             for (int n = 0; n < foundationStartSize - 1; n++)
             {
-                cardList[0].SetActive(true);
-                // set to hidden as they might be unhidden
-                cardList[0].GetComponent<CardScript>().hidden = true;
-
-                cardList[0].GetComponent<CardScript>().container = foundations[i];
-                foundations[i].GetComponent<FoundationScript>().AddCard(cardList[0], false);
-                cardList.RemoveAt(0);
-                //cardList[0].GetComponent<CardScript>().MoveCard(foundations[i], false);
+                cardList[0].GetComponent<CardScript>().SetVisibility(false);
+                cardList[0].GetComponent<CardScript>().MoveCard(foundations[i], doLog: false, addUpdateHolo: false);
             }
 
             // adding and revealing the top card of the foundation
-            cardList[0].SetActive(true);
-            cardList[0].GetComponent<CardScript>().hidden = false;
+            cardList[0].GetComponent<CardScript>().SetVisibility(true);
             cardList[0].gameObject.GetComponent<CardScript>().ShowHologram();
+            cardList[0].GetComponent<CardScript>().MoveCard(foundations[i], doLog: false, addUpdateHolo: false);
 
-            cardList[0].GetComponent<CardScript>().container = foundations[i];
-            foundations[i].GetComponent<FoundationScript>().AddCard(cardList[0], false);
-            cardList.RemoveAt(0);
-            //cardList[0].GetComponent<CardScript>().MoveCard(foundations[i], false);
-            //foundations[i].GetComponent<FoundationScript>().CheckTopCard();
-
-            foundations[i].GetComponent<FoundationScript>().SetCardPositions();
+            //foundations[i].GetComponent<FoundationScript>().SetCardPositions();
         }
     }
 
-    public void AddCard(GameObject card)
+    public void AddCard(GameObject card, bool checkHolo = true)
     {
         card.GetComponent<CardScript>().HideHologram();
         cardList.Insert(0, card);
@@ -154,14 +138,11 @@ public class DeckScript : MonoBehaviour
         card.SetActive(false);
     }
 
-    public void RemoveCard(GameObject card)
+    public void RemoveCard(GameObject card, bool checkHolo = false)
     {
         cardList.Remove(card);
+        card.SetActive(true);
     }
-
-    // top card is cardList[0]
-    public void SetCardPositions()
-    { }
 
     // user wants to deal cards, other things might need to be done before that
     public void ProcessAction(GameObject input)
@@ -170,7 +151,6 @@ public class DeckScript : MonoBehaviour
 
         if (cardList.Count != 0) // can the deck can be drawn from
         {
-            //soundController.DeckDeal();
             Deal();
         }
         else // we need to try repopulating the deck
@@ -180,14 +160,11 @@ public class DeckScript : MonoBehaviour
                 return;
             }
 
-            //soundController.DeckReshuffle();
-            //NextCycle();
             DeckReset();
         }
 
         deckCounter.text = cardList.Count.ToString();
     }
-
 
     // moves all of the top foundation cards into their appropriate reactors
     public void NextCycle()
@@ -196,11 +173,9 @@ public class DeckScript : MonoBehaviour
         {
             if (foundations[f].GetComponent<FoundationScript>().cardList.Count != 0)
             {
-
                 GameObject topFoundationCard = foundations[f].GetComponent<FoundationScript>().cardList[0];
                 for (int r = 0; r < reactors.Count; r++)
                 {
-                    //  does this top card's suit match the reactor's suit
                     if (topFoundationCard.GetComponent<CardScript>().cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
                     {
                         topFoundationCard.GetComponent<CardScript>().MoveCard(reactors[r], isCycle: true);
@@ -229,23 +204,12 @@ public class DeckScript : MonoBehaviour
         List<GameObject> toMoveList = new List<GameObject>();
         for (int i = 0; i < Config.config.cardsToDeal; i++) // try to deal set number of cards
         {
-            if (cardList.Count == 0) // are there no more cards in the deck?
+            if (cardList.Count <= i) // are there no more cards in the deck?
             {
                 break;
             }
 
-            toMoveList.Add(cardList[0]);
-
-            if (log)
-            {
-                UndoScript.undoScript.logMove("draw", cardList[0]);
-            }
-            else
-            {
-                UndoScript.undoScript.logMove("draw", cardList[0], false);
-            }
-
-            cardList.RemoveAt(0);
+            toMoveList.Add(cardList[i]);
         }
 
         if (toMoveList.Count != 0)

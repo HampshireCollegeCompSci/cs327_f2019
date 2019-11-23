@@ -98,6 +98,7 @@ public class UtilsScript : MonoBehaviour
 
             if (Config.config.CountFoundationCards() == 0)
             {
+                Debug.Log("gg");
                 Config.config.gameOver = true;
                 Config.config.gameWin = true;
             }
@@ -121,27 +122,23 @@ public class UtilsScript : MonoBehaviour
     {
         if (inputCard.GetComponent<CardScript>().container.CompareTag("Wastepile"))
         {
-            //Debug.Log("start waste drag");
             inputCard.GetComponent<CardScript>().container.GetComponent<WastepileScript>().DraggingCard(inputCard, true);
             draggingWastepile = true;
         }
 
         selectedCards.Add(inputCard);
-        inputCard.GetComponent<CardScript>().appearSelected = true;
-        inputCard.GetComponent<CardScript>().SetCardAppearance();
+        inputCard.GetComponent<CardScript>().SetSelected(true);
     }
 
     public void DeselectCard(GameObject inputCard)
     {
         if (draggingWastepile)
         {
-            //Debug.Log("end waste drag");
             wastePile.GetComponent<WastepileScript>().DraggingCard(inputCard, false);
             draggingWastepile = false;
         }
 
-        inputCard.GetComponent<CardScript>().appearSelected = false;
-        inputCard.GetComponent<CardScript>().SetCardAppearance();
+        inputCard.GetComponent<CardScript>().SetSelected(false);
         selectedCards.Remove(inputCard);
     }
 
@@ -234,7 +231,7 @@ public class UtilsScript : MonoBehaviour
         }
 
         //if we click a card in a foundation and we don't have any card selected and the card we're trying to select is not hidden select the card in the foundation
-        else if (hit.collider != null && selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().hidden &&
+        else if (hit.collider != null && selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().isHidden() &&
             hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Foundation"))
         {
             SelectMultipleCards(countCardsToSelect(hit.collider.gameObject));
@@ -252,7 +249,7 @@ public class UtilsScript : MonoBehaviour
         }
 
         //if we click on something else tries to move the selected cards 
-        else if (hit.collider != null && selectedCards.Count != 0 && !hit.collider.GetComponent<CardScript>().hidden)
+        else if (hit.collider != null && selectedCards.Count != 0 && !hit.collider.GetComponent<CardScript>().isHidden())
         {
             selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
             //we are no longer changing a list that we are also iterating over
@@ -391,8 +388,7 @@ public class UtilsScript : MonoBehaviour
                 newGameObject = (GameObject)Instantiate(card, Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Quaternion.identity);
                 newGameObject.GetComponent<CardScript>().MakeVisualOnly();
                 cards.Add(newGameObject);
-                newGameObject.GetComponent<CardScript>().appearSelected = false;
-                newGameObject.GetComponent<CardScript>().SetCardAppearance();
+                newGameObject.GetComponent<CardScript>().SetSelected(false);
                 newGameObject.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
             }
         }

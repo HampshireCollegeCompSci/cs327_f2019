@@ -11,52 +11,65 @@ public class CardScript : MonoBehaviour
     public int cardVal; //cardVal is what the card is worth to the reactor jack, queen, king are all 10
     public int cardNum; //cardNum is the number on the card, ace is 1 jack is 11 queen is 12 king is 13
     public string cardSuit;
-    public bool hidden;
-    public bool appearSelected;
+    private bool hidden;
     public Color originalColor;
     public Color newColor;
-    public bool glowOn = false;
+    public bool glowing;
 
     private GameObject hologramObject;
     private GameObject hologram;
 
-    Vector3 originalTransform;
-
     void Start()
     {
-        //originalTransform = Config.config.cardScale * .1f;
+        glowing = true;
+        GlowOff();
+
         if (Config.config.prettyColors)
         {
             originalColor = new Color(Random.Range(0.4f, 1), Random.Range(0.4f, 1f), Random.Range(0.4f, 1f), 1);
         }
-
         else
         {
             originalColor = new Color(1, 1, 1, 1);
         }
-        SetCardAppearance();
     }
 
 
     //all the scales in here have been modified deliberately because the cards were too small
     //this will need to be changed when the sprites for the final card designs are added
     //unless they have the same exact dimensions
-    public void SetCardAppearance()
+    //public void SetCardAppearance()
+    //{
+        //set collider scale to match sprite scale
+        //gameObject.GetComponent<BoxCollider2D>().size = gameObject.GetComponent<SpriteRenderer>().sprite.bounds.size;
+        //gameObject.GetComponent<BoxCollider2D>().offset = gameObject.GetComponent<SpriteRenderer>().sprite.bounds.center;
+    //}
+
+    public void SetVisibility(bool show)
     {
-        //shows card back if it's hidden
-        if (hidden)
+        if (show)
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
+            gameObject.GetComponent<SpriteRenderer>().sprite = cardFrontSprite;
+            hidden = false;
         }
         else
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = cardFrontSprite;
+            gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
+            HideHologram();
+            hidden = true;
         }
+    }
 
+    public bool isHidden()
+    {
+        return hidden;
+    }
+
+    public void SetSelected(bool selected)
+    {
         //makes card larger and first in sorting order if the card is selected
-        if (appearSelected)
+        if (selected)
         {
-            //gameObject.transform.localScale = originalTransform * 1.1f;
             newColor = gameObject.GetComponent<SpriteRenderer>().material.color;
             newColor.a = Config.config.selectedCardOpacity;
             gameObject.GetComponent<SpriteRenderer>().material.color = newColor;
@@ -68,7 +81,6 @@ public class CardScript : MonoBehaviour
         }
         else
         {
-            //gameObject.transform.localScale = originalTransform;
             gameObject.GetComponent<SpriteRenderer>().material.color = originalColor;
             if (hologram != null && hologramObject != null)
             {
@@ -76,20 +88,6 @@ public class CardScript : MonoBehaviour
                 hologramObject.GetComponent<SpriteRenderer>().color = originalColor;
             }
         }
-
-        if (glowOn)
-        {
-            gameObject.transform.Find("Glow").gameObject.SetActive(true);
-        }
-
-        else
-        {
-            gameObject.transform.Find("Glow").gameObject.SetActive(false);
-        }
-
-        //set collider scale to match sprite scale
-        //gameObject.GetComponent<BoxCollider2D>().size = gameObject.GetComponent<SpriteRenderer>().sprite.bounds.size;
-        //gameObject.GetComponent<BoxCollider2D>().offset = gameObject.GetComponent<SpriteRenderer>().sprite.bounds.center;
     }
 
     public void UpdateMaskInteraction(SpriteMaskInteraction update)
@@ -102,87 +100,78 @@ public class CardScript : MonoBehaviour
         }
     }
 
-    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool updateHolograms = true)
+    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool removeUpdateHolo = true, bool addUpdateHolo = true)
     {
+        if (container.CompareTag("Foundation"))
+        {
+            container.GetComponent<FoundationScript>().RemoveCard(gameObject, removeUpdateHolo);
+        }
+        else if (container.CompareTag("Reactor"))
+        {
+            container.GetComponent<ReactorScript>().RemoveCard(gameObject);
+        }
+        else if (container.CompareTag("Wastepile"))
+        {
+            container.GetComponent<WastepileScript>().RemoveCard(gameObject, removeUpdateHolo);
+        }
+        else if (container.CompareTag("Deck"))
+        {
+            container.GetComponent<DeckScript>().RemoveCard(gameObject);
+        }
+        else if (container.CompareTag("MatchedPile"))
+        {
+            container.GetComponent<MatchedPileScript>().RemoveCard(gameObject);
+        }
+
         if (destination.CompareTag("Foundation"))
         {
             if (doLog)
             {
-                if (isAction)
-                {
-                    UndoScript.undoScript.logMove("move", gameObject, actionsRemaining: Config.config.actions);
-                }
-                else
-                {
-                    UndoScript.undoScript.logMove("move", gameObject, false, actionsRemaining: Config.config.actions);
-                }
+                UndoScript.undoScript.logMove("move", gameObject, isAction, Config.config.actions);
             }
-            container.SendMessage("RemoveCard", gameObject);
-            destination.GetComponent<FoundationScript>().AddCard(gameObject);
-        }
 
+            destination.GetComponent<FoundationScript>().AddCard(gameObject, addUpdateHolo);
+        }
         else if (destination.CompareTag("Reactor"))
         {
             if (doLog)
             {
-                if (isAction && !isCycle)
+                if (isCycle)
                 {
-                    UndoScript.undoScript.logMove("move", gameObject, actionsRemaining: Config.config.actions);
-                }
-                else if (isCycle)
-                {
-                    UndoScript.undoScript.logMove("cycle", gameObject, actionsRemaining: Config.config.actions);
+                    UndoScript.undoScript.logMove("cycle", gameObject, true, Config.config.actions);
                 }
                 else
                 {
-                    UndoScript.undoScript.logMove("move", gameObject, false, actionsRemaining: Config.config.actions);
+                    UndoScript.undoScript.logMove("move", gameObject, isAction, Config.config.actions);
                 }
             }
-            container.SendMessage("RemoveCard", gameObject);
+
             destination.GetComponent<ReactorScript>().AddCard(gameObject);
         }
-
         else if (destination.CompareTag("Wastepile"))
         {
             if (doLog)
             {
-                if (isAction)
-                {
-                    UndoScript.undoScript.logMove("draw", gameObject, actionsRemaining: Config.config.actions);
-                }
-                else
-                {
-                    UndoScript.undoScript.logMove("draw", gameObject, false, actionsRemaining: Config.config.actions);
-                }
+                UndoScript.undoScript.logMove("draw", gameObject, isAction, Config.config.actions);
             }
-            container.SendMessage("RemoveCard", gameObject);
-            destination.GetComponent<WastepileScript>().AddCard(gameObject);
+
+            destination.GetComponent<WastepileScript>().AddCard(gameObject, addUpdateHolo);
         }
         else if (destination.CompareTag("Deck"))
         {
-            container.SendMessage("RemoveCard", gameObject);
             destination.GetComponent<DeckScript>().AddCard(gameObject);
         }
         else if (destination.CompareTag("MatchedPile"))
         {
             if (doLog)
             {
-                if (isAction)
-                {
-                    UndoScript.undoScript.logMove("match", gameObject, actionsRemaining: Config.config.actions);
-                }
-                else
-                {
-                    UndoScript.undoScript.logMove("match", gameObject, false, actionsRemaining: Config.config.actions);
-                }
+                UndoScript.undoScript.logMove("match", gameObject, isAction, Config.config.actions);
             }
-            container.SendMessage("RemoveCard", gameObject);
+
             destination.GetComponent<MatchedPileScript>().AddCard(gameObject);
         }
 
-        container.SendMessage("SetCardPositions");
         container = destination;
-        destination.SendMessage("SetCardPositions");
     }
 
     public void MakeVisualOnly()
@@ -265,10 +254,10 @@ public class CardScript : MonoBehaviour
 
     public bool GlowOn()
     {
-        if (!glowOn)
+        if (!glowing)
         {
-            glowOn = true;
-            SetCardAppearance();
+            gameObject.transform.Find("Glow").gameObject.SetActive(true);
+            glowing = true;
             return true;
         }
         return false;
@@ -276,10 +265,11 @@ public class CardScript : MonoBehaviour
 
     public bool GlowOff()
     {
-        if (glowOn)
+        if (glowing)
         {
-            glowOn = false;
-            SetCardAppearance();
+            gameObject.transform.Find("Glow").gameObject.SetActive(false);
+            glowing = false;
+            return true;
         }
         return false;
     }
