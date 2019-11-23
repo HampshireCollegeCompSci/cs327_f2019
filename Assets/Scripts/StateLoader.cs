@@ -7,7 +7,7 @@ public class StateLoader : MonoBehaviour
 {
     Config config = Config.config;
 
-    public void writeState(string path)
+    public void writeState(/*string path*/)
     {
         GameState gameState = new GameState();
         //save foundations
@@ -21,6 +21,7 @@ public class StateLoader : MonoBehaviour
                 tempArray.SetValue(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString(), x);
                 x++;
             }
+            print(tempArray);
             gameState.foundations[i].SetValue(tempArray, i);
             i++;
         }
@@ -73,8 +74,9 @@ public class StateLoader : MonoBehaviour
         gameState.difficulty = Config.config.difficulty;
 
         string json = JsonUtility.ToJson(gameState);
+        print(json);
 
-        File.WriteAllText("Desktop/save.txt", json);
+        File.WriteAllText("GameStates/testState.json", json);
     }
 
     public void loadState(string path)
