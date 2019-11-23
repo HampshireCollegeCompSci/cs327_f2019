@@ -1,14 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class Move
+
+[System.Serializable]
+public class AltMove
 {
-    public GameObject card;
-    public GameObject origin;
+    public string cardName;
+    public string originName;
     public string moveType;
     public bool nextCardWasHidden;
     public bool isAction;
     public int remainingActions;
 }
-
-
