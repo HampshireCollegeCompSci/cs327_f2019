@@ -6,77 +6,72 @@ using UnityEngine;
 public class StateLoader : MonoBehaviour
 {
     Config config = Config.config;
+    GameState gameState;
 
     public void writeState(/*string path*/)
     {
-        GameState gameState = new GameState();
+        gameState = new GameState() {
+            wastePile = new List<string>(),
+            deck = new List<string>(),
+            matches = new List<string>(),
+            foundations = new List<StringListWrapper>(),
+            reactors = new List<StringListWrapper>(),
+            moveLog = new Stack<Move>(),
+            score = 0,
+            actions = 0,
+            difficulty = ""
+        };
         //save foundations
-        int i = 0;
-        int x = 0;
         foreach (GameObject foundation in Config.config.foundationList)
         {
-            string[] tempArray = new string[foundation.GetComponent<FoundationScript>().cardList.Count];
+            List<string> tempList = new List<string>();
             foreach (GameObject token in foundation.GetComponent<FoundationScript>().cardList)
             {
-                tempArray.SetValue(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString(), x);
-                x++;
+                tempList.Add(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
             }
-            print(tempArray);
-            gameState.foundations[i].SetValue(tempArray, i);
-            i++;
+            gameState.foundations.Add(new StringListWrapper() { stringList = tempList });
         }
         //save reactors
-        i = 0;
-        x = 0;
         foreach (GameObject reactor in Config.config.reactors)
         {
-            string[] tempArray = new string[reactor.GetComponent<ReactorScript>().cardList.Count];
+            List<string> tempList = new List<string>();
             foreach (GameObject token in reactor.GetComponent<ReactorScript>().cardList)
             {
-                tempArray.SetValue(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString(), x);
-                x++;
+                tempList.Add(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
             }
-            gameState.reactors[i].SetValue(tempArray, i);
-            i++;
+            gameState.reactors.Add(new StringListWrapper() { stringList = tempList });
         }
         //save wastepile
-        i = 0;
-        string[] wastePileArray = new string[Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count];
+        List<string> wastePileList = new List<string>();
         foreach (GameObject token in Config.config.wastePile.GetComponent<WastepileScript>().cardList)
         {
-            wastePileArray.SetValue(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString(), i);
-            i++;
+            wastePileList.Add(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
         }
-        gameState.wastePile = wastePileArray;
+        gameState.wastePile = wastePileList;
         //save deck
-        i = 0;
-        string[] deckArray = new string[Config.config.deck.GetComponent<DeckScript>().cardList.Count];
+        List<string> deckList = new List<string>();
         foreach (GameObject token in Config.config.deck.GetComponent<DeckScript>().cardList)
         {
-            deckArray.SetValue(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString(), i);
-            i++;
+            deckList.Add(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
         }
-        gameState.deck = deckArray;
+        gameState.deck = deckList;
         //save matches
-        i = 0;
-        string[] matchArray = new string[Config.config.matches.GetComponent<MatchedPileScript>().cardList.Count];
+        List<string> matchList = new List<string>();
         foreach (GameObject token in Config.config.matches.GetComponent<MatchedPileScript>().cardList)
         {
-            matchArray.SetValue(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString(), i);
-            i++;
+            matchList.Add(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
         }
-        gameState.matches = matchArray;
+        gameState.matches = matchList;
         //save undo
-        gameState.moveLog = UndoScript.undoScript.moveLog;
+        gameState.moveLog = Config.config.moveLog;
         //save other data
         gameState.score = Config.config.score;
         gameState.actions = Config.config.actions;
         gameState.difficulty = Config.config.difficulty;
 
-        string json = JsonUtility.ToJson(gameState);
-        print(json);
+        string json = JsonUtility.ToJson(gameState, true);
 
-        File.WriteAllText("GameStates/testState.json", json);
+        File.WriteAllText("Assets/Resources/GameStates/testState.json", json);
     }
 
     public void loadState(string path)

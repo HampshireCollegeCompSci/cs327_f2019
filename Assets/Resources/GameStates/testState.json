@@ -1,3 +1,98 @@
 {
-    
+    "wastePile": [
+        "clubs_2",
+        "hearts_9"
+    ],
+    "deck": [
+        "diamonds_7",
+        "spades_6",
+        "clubs_7",
+        "diamonds_13",
+        "diamonds_8",
+        "hearts_10",
+        "spades_2",
+        "diamonds_5",
+        "clubs_3",
+        "spades_10",
+        "spades_9",
+        "clubs_9",
+        "diamonds_11",
+        "hearts_12",
+        "spades_12",
+        "spades_11",
+        "clubs_8",
+        "hearts_7",
+        "clubs_12",
+        "hearts_2",
+        "spades_5"
+    ],
+    "matches": [
+        "hearts_3",
+        "diamonds_3"
+    ],
+    "foundations": [
+        {
+            "stringList": [
+                "clubs_5",
+                "diamonds_10",
+                "diamonds_4",
+                "spades_4",
+                "clubs_6"
+            ]
+        },
+        {
+            "stringList": [
+                "diamonds_12",
+                "spades_13",
+                "hearts_11",
+                "clubs_10",
+                "hearts_1",
+                "clubs_1",
+                "spades_7"
+            ]
+        },
+        {
+            "stringList": [
+                "spades_8",
+                "diamonds_9",
+                "hearts_5",
+                "diamonds_6",
+                "spades_3",
+                "clubs_4",
+                "clubs_11"
+            ]
+        },
+        {
+            "stringList": [
+                "hearts_13",
+                "diamonds_1",
+                "clubs_13",
+                "hearts_6",
+                "hearts_8"
+            ]
+        }
+    ],
+    "reactors": [
+        {
+            "stringList": [
+                "spades_1"
+            ]
+        },
+        {
+            "stringList": []
+        },
+        {
+            "stringList": [
+                "diamonds_2"
+            ]
+        },
+        {
+            "stringList": [
+                "hearts_4"
+            ]
+        }
+    ],
+    "score": 200,
+    "actions": 5,
+    "difficulty": "easy"
 }

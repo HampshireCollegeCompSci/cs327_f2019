@@ -10,7 +10,7 @@ public class UndoScript : MonoBehaviour
 
     private void Start()
     {
-        moveLog = new Stack<Move>();
+        moveLog = Config.config.moveLog;
     }
     /*
      *logMove takes a number of  paramaters, detects if the card below the moved card was hidden, then logs the move.
@@ -52,7 +52,15 @@ public class UndoScript : MonoBehaviour
                 nextCardWasHidden = true;
             }
         }
-        Move move = new Move(moveType, card, origin, nextCardWasHidden, isAction, actionsRemaining); //create the log of the move
+        //create the log of the move
+        Move move = new Move() {
+            moveType = moveType,
+            card = card,
+            origin = origin,
+            nextCardWasHidden = nextCardWasHidden,
+            isAction = isAction,
+            remainingActions = actionsRemaining
+        }; 
         moveLog.Push(move); //push the log to the undo stack
     }
 
