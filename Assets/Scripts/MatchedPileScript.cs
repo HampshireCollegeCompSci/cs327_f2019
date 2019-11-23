@@ -12,6 +12,7 @@ public class MatchedPileScript : MonoBehaviour
     }
     public void AddCard(GameObject card)
     {
+        card.GetComponent<CardScript>().HideHologram();
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
         card.transform.localPosition = Vector3.zero;

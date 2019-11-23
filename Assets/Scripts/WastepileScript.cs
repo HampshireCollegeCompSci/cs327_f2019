@@ -26,18 +26,18 @@ public class WastepileScript : MonoBehaviour
         scrolling = false;
     }
 
-    public void Update()
-    {
-        //Debug.Log(contentPanel.GetComponent<RectTransform>().anchoredPosition);
-    }
+    //public void Update()
+    //{
+    //    Debug.Log(contentPanel.GetComponent<RectTransform>().anchoredPosition);
+    //}
 
-    public void CheckHologram(bool hide)
+    public void CheckHologram(bool tryHidingBeneath)
     {
         if (cardList.Count != 0)
         {
             cardList[0].gameObject.GetComponent<CardScript>().ShowHologram();
 
-            if (hide)
+            if (tryHidingBeneath)
             {
                 for (int i = 1; i < cardList.Count; i++)
                 {
@@ -56,7 +56,7 @@ public class WastepileScript : MonoBehaviour
         StartCoroutine(ScrollBarAdding(cards));
     }
 
-    public void AddCard(GameObject card)
+    public void AddCard(GameObject card, bool checkHolo = true)
     {
         card.SetActive(true);
         card.GetComponent<CardScript>().hidden = false;
@@ -79,7 +79,10 @@ public class WastepileScript : MonoBehaviour
         card.transform.position = new Vector3(card.transform.parent.position.x, card.transform.parent.position.y, -1 - (cardList.Count * 0.01f));
         card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.VisibleInsideMask);
 
-        CheckHologram(true);
+        if (checkHolo)
+        {
+            CheckHologram(true);
+        }
 
         //Debug.Log(gameObject.GetComponent<ScrollRect>().horizontalNormalizedPosition + " add");
         //StartCoroutine(UpdateScrollBar());
@@ -95,10 +98,9 @@ public class WastepileScript : MonoBehaviour
         Destroy(parentCardContainer);
 
         card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.None);
-        card.GetComponent<CardScript>().HideHologram();
         cardList.Remove(card);
-
         CheckHologram(false);
+
         StartCoroutine(ScrollBarRemoving(x));
     }
 
@@ -115,15 +117,18 @@ public class WastepileScript : MonoBehaviour
 
     IEnumerator ScrollBarAdding(List<GameObject> cards)
     {
+        if (cardList.Count != 0) // hide the current top tokens hologram now
+        {
+            cardList[0].GetComponent<CardScript>().HideHologram();
+        }
+
         Vector3 temp = contentRectTransform.anchoredPosition;
 
         // if we are not adding the first cards and
         // if the contents have been moved from their default position
         if (temp.x != 0)
         {
-            // hide the hologram and scroll to the left
-            cardList[0].GetComponent<CardScript>().HideHologram();
-
+            // scroll to the left
             while (temp.x > 0)
             {
                 yield return new WaitForSeconds(0.01f);
@@ -135,14 +140,18 @@ public class WastepileScript : MonoBehaviour
         // add the new cards
         for (int i = 0; i < cards.Count; i++)
         {
-            AddCard(cards[i]);
+            AddCard(cards[i], false);
         }
+
+        // show the new top tokens hologram now
+        CheckHologram(false);
 
         // move the scroll rect's content so that the new cards are hidden to the left side of the belt
         temp.x = cards.Count;
         contentRectTransform.anchoredPosition = temp;
         yield return null;
 
+        // scroll the tokens back into view
         while (temp.x > 0.01f)
         {
             temp.x -= 0.1f;
@@ -196,7 +205,16 @@ public class WastepileScript : MonoBehaviour
 
         while (cardList.Count > 0)
         {
-            cardList[0].GetComponent<CardScript>().MoveCard(deck, false);
+            cardList[0].transform.parent = null;
+            GameObject parentCardContainer = cardContainers[0];
+            cardContainers.RemoveAt(0);
+            Destroy(parentCardContainer);
+
+            cardList[0].GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.None);
+            cardList[0].GetComponent<CardScript>().container = deck;
+
+            deckScript.AddCard(cardList[0]);
+            cardList.RemoveAt(0);
         }
 
         yield return null;

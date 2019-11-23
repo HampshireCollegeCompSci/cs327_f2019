@@ -34,8 +34,10 @@ public class ReactorScript : MonoBehaviour
 
     public void AddCard(GameObject card)
     {
+        card.GetComponent<CardScript>().HideHologram();
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
+        soundController.CardToReactorSound();
     }
 
     public void RemoveCard(GameObject card)
