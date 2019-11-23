@@ -54,7 +54,6 @@ public class DeckScript : MonoBehaviour
         SetUpFoundations();
         Deal(false);
 
-        deckCounter.text = cardList.Count.ToString();
     }
 
     // sets up card list
@@ -136,12 +135,14 @@ public class DeckScript : MonoBehaviour
         card.transform.SetParent(gameObject.transform);
         card.transform.localPosition = Vector3.zero;
         card.SetActive(false);
+        deckCounter.text = cardList.Count.ToString();
     }
 
     public void RemoveCard(GameObject card, bool checkHolo = false)
     {
         cardList.Remove(card);
         card.SetActive(true);
+        deckCounter.text = cardList.Count.ToString();
     }
 
     // user wants to deal cards, other things might need to be done before that
@@ -162,8 +163,6 @@ public class DeckScript : MonoBehaviour
 
             DeckReset();
         }
-
-        deckCounter.text = cardList.Count.ToString();
     }
 
     // moves all of the top foundation cards into their appropriate reactors

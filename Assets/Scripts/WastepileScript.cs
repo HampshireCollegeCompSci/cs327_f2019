@@ -77,17 +77,15 @@ public class WastepileScript : MonoBehaviour
         // add the new cards
         for (int i = 0; i < cards.Count; i++)
         {
-            cards[i].GetComponent<CardScript>().MoveCard(gameObject, doLog: false, addUpdateHolo: false);
+            cards[i].GetComponent<CardScript>().MoveCard(gameObject, addUpdateHolo: false);
         }
 
         // show the new top tokens hologram now
         CheckHologram(false);
-        yield return null;
 
         // move the scroll rect's content so that the new cards are hidden to the left side of the belt
         temp.x = cards.Count;
         contentRectTransform.anchoredPosition = temp;
-        yield return null;
 
         // scroll the tokens back into view
         while (temp.x > 0.01f)
@@ -136,12 +134,13 @@ public class WastepileScript : MonoBehaviour
         if (checkHolo)
         {
             CheckHologram(false);
-        }
-
-        if (cardList.Count != 0)
-        {
             StartCoroutine(ScrollBarRemoving(x));
         }
+        
+        //if (cardList.Count != 0)
+        //{
+        //    StartCoroutine(ScrollBarRemoving(x));
+        //}
     }
 
     IEnumerator ScrollBarRemoving(float x)
@@ -151,7 +150,6 @@ public class WastepileScript : MonoBehaviour
         Vector3 temp = contentRectTransform.anchoredPosition;
         temp.x = x;
         contentRectTransform.anchoredPosition = temp;
-        yield return null;
 
         while (temp.x < 0)
         {
@@ -182,10 +180,9 @@ public class WastepileScript : MonoBehaviour
 
         while (cardList.Count > 0)
         {
-            cardList[0].GetComponent<CardScript>().MoveCard(deck, doLog: true, removeUpdateHolo: false);
+            cardList[0].GetComponent<CardScript>().MoveCard(deck, removeUpdateHolo: false);
         }
 
-        yield return null;
         ResetScrollBar(temp);
         yield return new WaitForSeconds(0.2f);
         if (deckScript.dealOnDeckReset)

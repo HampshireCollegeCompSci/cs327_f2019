@@ -94,7 +94,7 @@ public class ShowPossibleMoves : MonoBehaviour
             }
         }
 
-        if (UtilsScript.global.IsMatch(wastepile.GetComponent<WastepileScript>().cardList[0], selectedCard))
+        if (wastepile.GetComponent<WastepileScript>().GetCardList().Count != 0 && UtilsScript.global.IsMatch(wastepile.GetComponent<WastepileScript>().cardList[0], selectedCard))
         {
             output.Add(wastepile.GetComponent<WastepileScript>().cardList[0]);
         }

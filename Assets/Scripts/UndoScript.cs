@@ -142,9 +142,9 @@ public class UndoScript : MonoBehaviour
                 for (int i = 0; i < Config.config.cardsToDeal; i++)
                 {
                     lastMove = moveLog.Pop();
-                    lastMove.card.GetComponent<CardScript>().SetVisibility(false);
-                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false);
                 }
+                Config.config.wastePile.GetComponent<WastepileScript>().CheckHologram(false);
                 if (lastMove.isAction)
                 {
                     Config.config.actions = lastMove.remainingActions;
