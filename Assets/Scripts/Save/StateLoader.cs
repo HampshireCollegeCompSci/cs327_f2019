@@ -16,7 +16,7 @@ public class StateLoader : MonoBehaviour
             matches = new List<string>(),
             foundations = new List<StringListWrapper>(),
             reactors = new List<StringListWrapper>(),
-            moveLog = new Stack<Move>(),
+            moveLog = new Stack<AltMove>(),
             score = 0,
             actions = 0,
             difficulty = ""
@@ -63,7 +63,25 @@ public class StateLoader : MonoBehaviour
         }
         gameState.matches = matchList;
         //save undo
-        gameState.moveLog = Config.config.moveLog;
+        Stack<AltMove> altMoveLog = new Stack<AltMove>();
+        Stack<AltMove> tempMoveLog = new Stack<AltMove>();
+        foreach (Move move in Config.config.moveLog)
+        {
+            tempMoveLog.Push(new AltMove() {
+                cardName = move.card.GetComponent<CardScript>().cardSuit + "_" + move.card.GetComponent<CardScript>().cardNum.ToString(),
+                originName = move.origin.name,
+                moveType = move.moveType,
+                nextCardWasHidden = move.nextCardWasHidden,
+                isAction = move.isAction,
+                remainingActions = move.remainingActions
+            });
+        }
+        int altMoveLogSize = tempMoveLog.Count;
+        for (int i = 0; i < altMoveLogSize; i++)
+        {
+            altMoveLog.Push(tempMoveLog.Pop());
+        }
+        gameState.moveLog = altMoveLog;
         //save other data
         gameState.score = Config.config.score;
         gameState.actions = Config.config.actions;

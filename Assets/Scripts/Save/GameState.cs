@@ -10,7 +10,7 @@ public class GameState
     public List<string> matches;
     public List<StringListWrapper> foundations;
     public List<StringListWrapper> reactors;
-    public Stack<Move> moveLog;
+    public Stack<AltMove> moveLog;
     public int score;
     public int actions;
     public string difficulty;
