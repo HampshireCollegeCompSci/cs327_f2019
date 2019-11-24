@@ -79,6 +79,7 @@ public class WastepileScript : MonoBehaviour
         {
             cards[i].GetComponent<CardScript>().MoveCard(gameObject, addUpdateHolo: false);
         }
+        Config.config.actions += 1; //adds to the action count
 
         // show the new top tokens hologram now
         CheckHologram(false);
@@ -313,7 +314,8 @@ public class WastepileScript : MonoBehaviour
             Config.config.actions += 1; //adds to the action count
         }
 
-        return;
+        utils.CheckNextCycle();
+        utils.CheckGameOver();
     }
     public List<GameObject> GetCardList()
     {

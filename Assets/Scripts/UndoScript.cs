@@ -19,8 +19,6 @@ public class UndoScript : MonoBehaviour
     {
         GameObject origin = card.GetComponent<CardScript>().container; //get the cards original location
 
-        Debug.Log("logged " + isAction);
-
         //create the log of the move
         Move move = new Move() {
             moveType = moveType,
@@ -149,7 +147,7 @@ public class UndoScript : MonoBehaviour
                     }
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
                 }
-                Config.config.actions = lastMove.remainingActions;
+                undo();
                 return;
             }
         }

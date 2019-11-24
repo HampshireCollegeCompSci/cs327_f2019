@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class CardScript : MonoBehaviour
 {
-    public UtilsScript utils;
     public GameObject container;
     public Sprite cardFrontSprite;
     public Sprite cardBackSprite;
@@ -185,7 +184,6 @@ public class CardScript : MonoBehaviour
         }
 
         container = destination;
-        utils.CheckGameOver();
     }
 
     public void MakeVisualOnly()
@@ -258,8 +256,6 @@ public class CardScript : MonoBehaviour
     {
         if (isHidden())
         {
-            //Debug.Log("hey" + cardNum + cardSuit);
-            Debug.Log(hologram != null);
             return true;
         }
         if (hologram != null)

@@ -99,7 +99,6 @@ public class DeckScript : MonoBehaviour
 
                 newCardScript.cardFrontSprite = sprites[cardIndex];
                 newCardScript.SetVisibility(true);
-                newCardScript.utils = utils;
                 newCardScript.container = target;
                 AddCard(newCard);
                 
@@ -163,6 +162,8 @@ public class DeckScript : MonoBehaviour
 
             DeckReset();
         }
+        utils.CheckNextCycle();
+        utils.CheckGameOver();
     }
 
     // moves all of the top foundation cards into their appropriate reactors
@@ -215,7 +216,6 @@ public class DeckScript : MonoBehaviour
         {
             wastePileScript.AddCards(toMoveList);
             //soundController.DeckDeal();
-            Config.config.actions += 1; //adds to the action count
         }
     }
 
