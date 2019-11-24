@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class CardScript : MonoBehaviour
 {
+    public UtilsScript utils;
     public GameObject container;
     public Sprite cardFrontSprite;
     public Sprite cardBackSprite;
@@ -184,6 +185,7 @@ public class CardScript : MonoBehaviour
         }
 
         container = destination;
+        utils.CheckGameOver();
     }
 
     public void MakeVisualOnly()
