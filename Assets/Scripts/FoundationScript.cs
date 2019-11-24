@@ -7,10 +7,12 @@ public class FoundationScript : MonoBehaviour
     public UtilsScript utils;
     public List<GameObject> cardList;
     public SoundController soundController;
+    public bool startUp;
 
     void Start()
     {
         utils = UtilsScript.global;
+        startUp = true;
     }
 
     public void CheckHologram(bool tryHidingBeneath)
@@ -42,7 +44,10 @@ public class FoundationScript : MonoBehaviour
             CheckHologram(true);
         }
 
-        SetCardPositions();
+        if (!startUp)
+        {
+            SetCardPositions();
+        }
     }
 
     public void RemoveCard(GameObject card, bool checkHolo = true)
@@ -56,6 +61,11 @@ public class FoundationScript : MonoBehaviour
         }
 
         SetCardPositions();
+        
+        if (cardList.Count == 0)
+        {
+            utils.CheckGameOver();
+        }
     }
 
     public void CheckTopCard()
@@ -107,26 +117,32 @@ public class FoundationScript : MonoBehaviour
         {
             if ((input.CompareTag("Foundation") || input.CompareTag("Reactor")) && utils.selectedCards.Count != 0)
             {
-                if (input.CompareTag("Reactor") && (utils.selectedCards.Count != 1 || utils.selectedCards[0].GetComponent<CardScript>().cardSuit != input.GetComponent<ReactorScript>().suit))
+                if (input.CompareTag("Reactor"))
                 {
-                    return;
-                }
-
-                if (input.CompareTag("Reactor") || input.CompareTag("Foundation") && input.GetComponent<FoundationScript>().cardList.Count == 0)
-                {
-                    if (input.TryGetComponent(typeof(CardScript), out Component throwaway))
+                    if (utils.selectedCards.Count > 1 || utils.selectedCards[0].GetComponent<CardScript>().cardSuit != input.GetComponent<ReactorScript>().suit)
                     {
-                        utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
-                        for (int i = 1; i < utils.selectedCards.Count; i++) //goes through and moves all selesctedCards to clicked location
-                        {
-                            utils.selectedCards[i].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container, true, false);
-                        }
+                        return;
                     }
-                    else {
-                        foreach (GameObject card in utils.selectedCards)
+                    utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input);
+                }
+                else if (input.CompareTag("Foundation"))
+                {
+                    if (input.GetComponent<FoundationScript>().cardList.Count == 0)
+                    {
+                        return;
+                    }
+
+                    if (utils.selectedCards.Count > 1)
+                    {
+                        for (int i = 0; i < utils.selectedCards.Count - 1; i++) //goes through and moves all selesctedCards to clicked location
                         {
-                            card.GetComponent<CardScript>().MoveCard(input);
+                            utils.selectedCards[i].GetComponent<CardScript>().MoveCard(input, isAction: false, removeUpdateHolo: false, addUpdateHolo: false);
                         }
+                        utils.selectedCards[utils.selectedCards.Count - 1].GetComponent<CardScript>().MoveCard(input, isAction: false);
+                    }
+                    else
+                    {
+                        utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input);
                     }
 
                     Config.config.actions += 1; //adds to the action count
@@ -170,7 +186,7 @@ public class FoundationScript : MonoBehaviour
             else
             {
                 utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-                Debug.Log("matched");
+                //Debug.Log("matched");
             }
         }
         else if (input.GetComponent<CardScript>().container.CompareTag("Foundation") &&
@@ -179,7 +195,7 @@ public class FoundationScript : MonoBehaviour
             soundController.CardStackSound();
             if (utils.selectedCards.Count > 1)
             {
-                Debug.Log(utils.selectedCards.Count + " card stack move");
+                //Debug.Log(utils.selectedCards.Count + " card stack move");
                 for (int i = 0; i < utils.selectedCards.Count - 1; i++) //goes through and moves all selesctedCards to clicked location
                 {
                     utils.selectedCards[i].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container, isAction: false, removeUpdateHolo: false, addUpdateHolo: false);
@@ -196,7 +212,6 @@ public class FoundationScript : MonoBehaviour
             }
             else
             {
-                Debug.Log(utils.selectedCards.Count + " this should be 1");
                 utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
             }
 
