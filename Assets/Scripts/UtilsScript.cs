@@ -95,26 +95,6 @@ public class UtilsScript : MonoBehaviour
             {
                 ClickAndDrag(selectedCardsCopy);
             }
-
-            if (Config.config.CountFoundationCards() == 0)
-            {
-                Debug.Log("gg");
-                Config.config.gameOver = true;
-                Config.config.gameWin = true;
-            }
-
-            if (Config.config.gameOver)
-            {
-                SetEndGameScore();
-                //Debug.Log("score" + Config.config.score);
-            }
-
-            if (Config.config.actions == Config.config.actionMax)
-            {
-                Config.config.deck.GetComponent<DeckScript>().NextCycle();
-                Config.config.actions = 0;
-                gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
-            }
         }
     }
 
@@ -347,6 +327,25 @@ public class UtilsScript : MonoBehaviour
         {
             //Debug.Log("Suits don't match");
             return false;
+        }
+    }
+
+    public void CheckNextCycle()
+    {
+        if (Config.config.actions == Config.config.actionMax)
+        {
+            Config.config.deck.GetComponent<DeckScript>().NextCycle();
+            Config.config.actions = 0;
+            //gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
+        }
+    }
+
+    public void CheckGameOver()
+    {
+        if (Config.config.CountFoundationCards() == 0)
+        {
+            SetEndGameScore();
+            Config.config.GameOver(true);
         }
     }
 

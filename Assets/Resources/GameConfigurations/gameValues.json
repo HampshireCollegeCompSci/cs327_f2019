@@ -9,7 +9,7 @@
     "matchPoints": 200,
     "emptyReactorPoint": 1000,
     "perfectGamePoints": 2800,
-    "delayToShowGameSummary": 3,
+    "delayToShowGameSummary": 2,
     "easyReactorLimit": 21,
     "mediumReactorLimit": 18,
     "hardReactorLimit": 15,

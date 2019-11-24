@@ -24,7 +24,6 @@ public class DeckScript : MonoBehaviour
 
     // public bool shuffleOnDeckReset = false;
     public bool dealOnDeckReset = true;
-    public int foundationStartSize;
 
     public bool importSeed;
     public int shuffleSeed;
@@ -113,7 +112,7 @@ public class DeckScript : MonoBehaviour
     {
         for (int i = 0; i < foundations.Count; i++)
         {
-            for (int n = 0; n < foundationStartSize - 1; n++)
+            for (int n = 0; n < Config.config.foundationStartSize - 1; n++)
             {
                 cardList[0].GetComponent<CardScript>().SetVisibility(false);
                 cardList[0].GetComponent<CardScript>().MoveCard(foundations[i], doLog: false, addUpdateHolo: false);

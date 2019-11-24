@@ -32,7 +32,7 @@ public class GameInfo
     public int matchPoints;
     public int emptyReactorPoints;
     public int perfectGamePoints;
-    public float delayToShowGameSummary;
+    public int delayToShowGameSummary;
     public int easyReactorLimit;
     public int mediumReactorLimit;
     public int hardReactorLimit;
