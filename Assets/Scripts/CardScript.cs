@@ -110,7 +110,6 @@ public class CardScript : MonoBehaviour
             if (doLog)
             {
                 List<GameObject> containerCardList = container.GetComponent<FoundationScript>().cardList;
-                Debug.Log(containerCardList[1].GetComponent<CardScript>().cardNum);
                 if (containerCardList.Count > 1 && containerCardList[1].GetComponent<CardScript>().isHidden())
                 {
                     //Debug.Log("ncwh");
