@@ -99,6 +99,7 @@ public class DeckScript : MonoBehaviour
 
                 newCardScript.cardFrontSprite = sprites[cardIndex];
                 newCardScript.SetVisibility(true);
+                newCardScript.utils = utils;
                 newCardScript.container = target;
                 AddCard(newCard);
                 

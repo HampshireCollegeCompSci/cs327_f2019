@@ -61,11 +61,6 @@ public class FoundationScript : MonoBehaviour
         }
 
         SetCardPositions();
-        
-        if (cardList.Count == 0)
-        {
-            utils.CheckGameOver();
-        }
     }
 
     public void CheckTopCard()
