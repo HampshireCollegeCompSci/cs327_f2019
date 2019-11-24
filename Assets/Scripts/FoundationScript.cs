@@ -177,18 +177,18 @@ public class FoundationScript : MonoBehaviour
             utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1 == input.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardNum)
         {
             soundController.CardStackSound();
-
             if (utils.selectedCards.Count > 1)
             {
-                for (int i = 0; i < utils.selectedCards.Count - 1; i++) //goes through and moves all selesctedCards to clicked location
+                utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
+                for (int i = 1; i < utils.selectedCards.Count; i++) //goes through and moves all selesctedCards to clicked location
                 {
                     utils.selectedCards[i].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container, isAction: false, removeUpdateHolo: false, addUpdateHolo: false);
                 }
-                utils.selectedCards[utils.selectedCards.Count - 1].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
+                
             }
             else
             {
-                utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
+                utils.selectedCards[utils.selectedCards.Count - 1].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
             }
 
             Config.config.actions += 1; //adds to the action count

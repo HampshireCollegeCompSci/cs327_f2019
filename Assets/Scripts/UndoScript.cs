@@ -83,13 +83,10 @@ public class UndoScript : MonoBehaviour
                 stackUndo.Push(moveLog.Pop());
                 while (true) //invert the stack
                 {
+                    stackUndo.Push(moveLog.Pop());
                     if (stackUndo.Peek().isAction)
                     {
                         break;
-                    }
-                    else
-                    {
-                        stackUndo.Push(moveLog.Pop());
                     }
                 }
                 int cardsMoved = 0;
