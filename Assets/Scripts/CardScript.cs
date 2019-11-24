@@ -102,90 +102,6 @@ public class CardScript : MonoBehaviour
         }
     }
 
-    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool removeUpdateHolo = true, bool addUpdateHolo = true)
-    {
-        bool nextCardWasHidden = false;
-        if (container.CompareTag("Foundation"))
-        {
-            if (doLog)
-            {
-                List<GameObject> containerCardList = container.GetComponent<FoundationScript>().cardList;
-                if (containerCardList.Count > 1 && containerCardList[1].GetComponent<CardScript>().isHidden())
-                {
-                    //Debug.Log("ncwh");
-                    nextCardWasHidden = true;
-                }
-            }
-            container.GetComponent<FoundationScript>().RemoveCard(gameObject, removeUpdateHolo);
-        }
-        else if (container.CompareTag("Reactor"))
-        {
-            container.GetComponent<ReactorScript>().RemoveCard(gameObject);
-        }
-        else if (container.CompareTag("Wastepile"))
-        {
-            container.GetComponent<WastepileScript>().RemoveCard(gameObject, removeUpdateHolo);
-        }
-        else if (container.CompareTag("Deck"))
-        {
-            container.GetComponent<DeckScript>().RemoveCard(gameObject);
-        }
-        else if (container.CompareTag("MatchedPile"))
-        {
-            container.GetComponent<MatchedPileScript>().RemoveCard(gameObject);
-        }
-
-        if (destination.CompareTag("Foundation"))
-        {
-            if (doLog)
-            {
-                UndoScript.undoScript.logMove("move", gameObject, isAction, Config.config.actions, nextCardWasHidden);
-            }
-
-            destination.GetComponent<FoundationScript>().AddCard(gameObject, addUpdateHolo);
-        }
-        else if (destination.CompareTag("Reactor"))
-        {
-            if (doLog)
-            {
-                if (isCycle)
-                {
-                    UndoScript.undoScript.logMove("cycle", gameObject, true, Config.config.actions, nextCardWasHidden);
-                }
-                else
-                {
-                    UndoScript.undoScript.logMove("move", gameObject, isAction, Config.config.actions, nextCardWasHidden);
-                }
-            }
-
-            destination.GetComponent<ReactorScript>().AddCard(gameObject);
-        }
-        else if (destination.CompareTag("Wastepile"))
-        {
-            if (doLog)
-            {
-                UndoScript.undoScript.logMove("draw", gameObject, isAction, Config.config.actions, nextCardWasHidden);
-            }
-
-            destination.GetComponent<WastepileScript>().AddCard(gameObject, addUpdateHolo);
-        }
-        else if (destination.CompareTag("Deck"))
-        {
-            destination.GetComponent<DeckScript>().AddCard(gameObject);
-        }
-        else if (destination.CompareTag("MatchedPile"))
-        {
-            if (doLog)
-            {
-                UndoScript.undoScript.logMove("match", gameObject, isAction, Config.config.actions, nextCardWasHidden);
-            }
-
-            destination.GetComponent<MatchedPileScript>().AddCard(gameObject);
-        }
-
-        container = destination;
-    }
-
     public void MakeVisualOnly()
     {
         gameObject.transform.localScale = new Vector3(0.2f, 0.2f, 1);
@@ -295,6 +211,90 @@ public class CardScript : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool removeUpdateHolo = true, bool addUpdateHolo = true)
+    {
+        bool nextCardWasHidden = false;
+        if (container.CompareTag("Foundation"))
+        {
+            if (doLog)
+            {
+                List<GameObject> containerCardList = container.GetComponent<FoundationScript>().cardList;
+                if (containerCardList.Count > 1 && containerCardList[1].GetComponent<CardScript>().isHidden())
+                {
+                    //Debug.Log("ncwh");
+                    nextCardWasHidden = true;
+                }
+            }
+            container.GetComponent<FoundationScript>().RemoveCard(gameObject, removeUpdateHolo);
+        }
+        else if (container.CompareTag("Reactor"))
+        {
+            container.GetComponent<ReactorScript>().RemoveCard(gameObject);
+        }
+        else if (container.CompareTag("Wastepile"))
+        {
+            container.GetComponent<WastepileScript>().RemoveCard(gameObject, removeUpdateHolo);
+        }
+        else if (container.CompareTag("Deck"))
+        {
+            container.GetComponent<DeckScript>().RemoveCard(gameObject);
+        }
+        else if (container.CompareTag("MatchedPile"))
+        {
+            container.GetComponent<MatchedPileScript>().RemoveCard(gameObject);
+        }
+
+        if (destination.CompareTag("Foundation"))
+        {
+            if (doLog)
+            {
+                UndoScript.undoScript.logMove("move", gameObject, isAction, Config.config.actions, nextCardWasHidden);
+            }
+
+            destination.GetComponent<FoundationScript>().AddCard(gameObject, addUpdateHolo);
+        }
+        else if (destination.CompareTag("Reactor"))
+        {
+            if (doLog)
+            {
+                if (isCycle)
+                {
+                    UndoScript.undoScript.logMove("cycle", gameObject, true, Config.config.actions, nextCardWasHidden);
+                }
+                else
+                {
+                    UndoScript.undoScript.logMove("move", gameObject, isAction, Config.config.actions, nextCardWasHidden);
+                }
+            }
+
+            destination.GetComponent<ReactorScript>().AddCard(gameObject);
+        }
+        else if (destination.CompareTag("Wastepile"))
+        {
+            if (doLog)
+            {
+                UndoScript.undoScript.logMove("draw", gameObject, isAction, Config.config.actions, nextCardWasHidden);
+            }
+
+            destination.GetComponent<WastepileScript>().AddCard(gameObject, addUpdateHolo);
+        }
+        else if (destination.CompareTag("Deck"))
+        {
+            destination.GetComponent<DeckScript>().AddCard(gameObject);
+        }
+        else if (destination.CompareTag("MatchedPile"))
+        {
+            if (doLog)
+            {
+                UndoScript.undoScript.logMove("match", gameObject, isAction, Config.config.actions, nextCardWasHidden);
+            }
+
+            destination.GetComponent<MatchedPileScript>().AddCard(gameObject);
+        }
+
+        container = destination;
     }
 }
 
