@@ -125,20 +125,15 @@ public class UndoScript : MonoBehaviour
             }
             else if (moveLog.Peek().moveType == "draw") //move the last three drawn cards back to the deck (assuming the last action was to draw from the deck)
             {
-                for (int i = 0; i < Config.config.cardsToDeal; i++)
+                lastMove = moveLog.Pop();
+                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false);
+                while (moveLog.Peek().remainingActions == lastMove.remainingActions)
                 {
                     lastMove = moveLog.Pop();
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false);
-                    if (Config.config.deck.GetComponent<DeckScript>().cardList.Count == 0)
-                    {
-                        break;
-                    }
                 }
                 Config.config.wastePile.GetComponent<WastepileScript>().CheckHologram(false);
-                if (lastMove.isAction)
-                {
-                    Config.config.actions = lastMove.remainingActions;
-                }
+                Config.config.score = lastMove.remainingActions;
                 return;
             }
             else if (moveLog.Peek().moveType == "cycle") //undo a cycle turning over, resets all tokens moved up, along with the move counter
