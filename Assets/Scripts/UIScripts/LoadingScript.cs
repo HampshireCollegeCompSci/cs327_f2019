@@ -23,17 +23,17 @@ public class LoadingScript : MonoBehaviour
 
         while (!operation.isDone)
         {
-            //if (dotNum % 3 == 0)
-            //    txt.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish.ToUpper() + "...";
-            //else if (dotNum % 2 == 0)
-            //    txt.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish.ToUpper() + "..";
-            //else
-            //    txt.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish.ToUpper() + ".";
-            //dotNum++;
+            if (dotNum % 3 == 0)
+                txt.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish.ToUpper() + "...";
+            else if (dotNum % 2 == 0)
+                txt.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish.ToUpper() + "..";
+            else
+                txt.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish.ToUpper() + ".";
+            dotNum++;
             yield return null;
         }
 
-        //Config.config.GetComponent<MusicController>().GameMusic();
+        Config.config.GetComponent<MusicController>().GameMusic();
     }
 
 }

@@ -103,7 +103,7 @@ public class MenuUIScript : MonoBehaviour
         gameObject.SetActive(false);
 
         //SceneManager.LoadScene("GameplayScene");
-        Config.config.GetComponent<MusicController>().GameMusic();
+        //Config.config.GetComponent<MusicController>().GameMusic();
 
         //loading scene
         SceneManager.LoadScene("LoadingScene", LoadSceneMode.Additive);
