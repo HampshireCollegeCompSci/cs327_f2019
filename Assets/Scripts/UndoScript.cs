@@ -18,7 +18,9 @@ public class UndoScript : MonoBehaviour
     public void logMove(string moveType, GameObject card, bool isAction = true, int actionsRemaining = 1, bool nextCardWasHidden = false)
     {
         GameObject origin = card.GetComponent<CardScript>().container; //get the cards original location
-        
+
+        Debug.Log("logged " + isAction);
+
         //create the log of the move
         Move move = new Move() {
             moveType = moveType,
@@ -41,14 +43,13 @@ public class UndoScript : MonoBehaviour
             Move lastMove = null;
             if (!moveLog.Peek().isAction) //if the lastMove wasn't an action that means it was a stack of tokens moved at once
             {
-                Debug.Log("stack undo");
-
+                Debug.Log("undoing stack");
                 // list goes from bottom token to top in original stack
                 List<Move> undoList = new List<Move>();
                 undoList.Add(moveLog.Pop());
 
                 int actionTracker = undoList[0].remainingActions;
-                while (moveLog.Peek().moveType == "move" && moveLog.Peek().remainingActions == actionTracker)
+                while (!moveLog.Peek().isAction && moveLog.Peek().moveType == "move" && moveLog.Peek().remainingActions == actionTracker)
                 {
                     undoList.Insert(0, moveLog.Pop());
                 }
@@ -69,31 +70,31 @@ public class UndoScript : MonoBehaviour
                 return;
 
                 // other method, foundation script has a matching method for this as well that is commented out
-                lastMove = moveLog.Pop();
-                if (lastMove.nextCardWasHidden) //if the card under the stack was hidden, re-hide it
-                {
-                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
-                }
+                //lastMove = moveLog.Pop();
+                //if (lastMove.nextCardWasHidden) //if the card under the stack was hidden, re-hide it
+                //{
+                //    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
+                //}
 
-                Stack<Move> stackUndo = new Stack<Move>();
-                stackUndo.Push(lastMove);
-                while (true)
-                {
-                    stackUndo.Push(moveLog.Pop());
-                    if (stackUndo.Peek().isAction)
-                    {
-                        break;
-                    }
-                }
+                //Stack<Move> stackUndo = new Stack<Move>();
+                //stackUndo.Push(lastMove);
+                //while (true)
+                //{
+                //    stackUndo.Push(moveLog.Pop());
+                //    if (stackUndo.Peek().isAction)
+                //    {
+                //        break;
+                //    }
+                //}
 
-                while (stackUndo.Count() > 1) //move them to the the correct foundation
-                {
-                    stackUndo.Pop().card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false, addUpdateHolo: false);
-                }
-                stackUndo.Pop().card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+                //while (stackUndo.Count() > 1) //move them to the the correct foundation
+                //{
+                //    stackUndo.Pop().card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false, addUpdateHolo: false);
+                //}
+                //stackUndo.Pop().card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
 
-                Config.config.actions = lastMove.remainingActions;
-                return;
+                //Config.config.actions = lastMove.remainingActions;
+                //return;
             }
             else if (moveLog.Peek().moveType == "move") //standard behavior, move a single token back where it was
             {
@@ -128,13 +129,13 @@ public class UndoScript : MonoBehaviour
             {
                 lastMove = moveLog.Pop();
                 lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false);
-                while (moveLog.Peek().moveType == "draw" && moveLog.Peek().remainingActions == lastMove.remainingActions)
+                while (moveLog.Count > 0 && moveLog.Peek().moveType == "draw" && moveLog.Peek().remainingActions == lastMove.remainingActions)
                 {
                     lastMove = moveLog.Pop();
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false);
                 }
                 Config.config.wastePile.GetComponent<WastepileScript>().CheckHologram(false);
-                Config.config.score = lastMove.remainingActions;
+                Config.config.actions = lastMove.remainingActions;
                 return;
             }
             else if (moveLog.Peek().moveType == "cycle") //undo a cycle turning over, resets all tokens moved up, along with the move counter

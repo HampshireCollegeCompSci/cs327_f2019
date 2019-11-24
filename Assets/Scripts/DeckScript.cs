@@ -113,7 +113,7 @@ public class DeckScript : MonoBehaviour
     {
         for (int i = 0; i < foundations.Count; i++)
         {
-            for (int n = 0; n < 1 - 1; n++)
+            for (int n = 0; n < Config.config.foundationStartSize - 1; n++)
             {
                 cardList[0].GetComponent<CardScript>().SetVisibility(false);
                 cardList[0].GetComponent<CardScript>().MoveCard(foundations[i], doLog: false, addUpdateHolo: false);
