@@ -15,48 +15,10 @@ public class UndoScript : MonoBehaviour
     /*
      *logMove takes a number of  paramaters, detects if the card below the moved card was hidden, then logs the move.
      */
-    public void logMove(string moveType, GameObject card, bool isAction = true, int actionsRemaining = 1)
+    public void logMove(string moveType, GameObject card, bool isAction = true, int actionsRemaining = 1, bool nextCardWasHidden = false)
     {
         GameObject origin = card.GetComponent<CardScript>().container; //get the cards original location
-        bool nextCardWasHidden = false; //default nextCardWasHidden to false
-        if (origin.TryGetComponent(typeof(FoundationScript), out Component component)) //see what the origin was and check the appropriate location for hidden card.
-        {
-            if (card.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList.Count == 1)
-            {
-                nextCardWasHidden = false;
-            }
-            else if (card.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[1].GetComponent<CardScript>().isHidden())
-            {
-                nextCardWasHidden = true;
-            }
-        }
-        //else if (origin.TryGetComponent(typeof(ReactorScript), out component))
-        //{
-        //    if (card.GetComponent<CardScript>().container.GetComponent<ReactorScript>().cardList.Count == 1)
-        //    {
-        //        nextCardWasHidden = false;
-        //    }
-        //    else if (card.GetComponent<CardScript>().container.GetComponent<ReactorScript>().cardList[1].GetComponent<CardScript>().isHidden())
-        //    {
-        //        nextCardWasHidden = true;
-        //    }
-        //}
-        //else if (origin.TryGetComponent(typeof(WastepileScript), out component))
-        //{
-        //    if (card.GetComponent<CardScript>().container.GetComponent<WastepileScript>().cardList.Count == 1)
-        //    {
-        //        nextCardWasHidden = false;
-        //    }
-        //    else if (card.GetComponent<CardScript>().container.GetComponent<WastepileScript>().cardList[1].GetComponent<CardScript>().isHidden())
-        //    {
-        //        nextCardWasHidden = true;
-        //    }
-        //}
-        else
-        {
-            nextCardWasHidden = false;
-        }
-
+        
         //create the log of the move
         Move move = new Move() {
             moveType = moveType,
@@ -79,6 +41,33 @@ public class UndoScript : MonoBehaviour
             Move lastMove = null;
             if (!moveLog.Peek().isAction) //if the lastMove wasn't an action that means it was a stack of tokens moved at once
             {
+                Debug.Log("stack undo");
+
+                // list goes from bottom token to top in original stack
+                List<Move> undoList = new List<Move>();
+                undoList.Add(moveLog.Pop());
+
+                int actionTracker = undoList[0].remainingActions;
+                while (moveLog.Peek().remainingActions == actionTracker)
+                {
+                    undoList.Insert(0, moveLog.Pop());
+                }
+
+                GameObject newFoundation = undoList[0].origin;
+                // cards are removed bottom to top and nextCardWasHidden expects that it's on the top (index 0)
+                // therefore, the top of the stack is the only card that will know if the stack sat on a hidden card
+                if (undoList[undoList.Count - 1].nextCardWasHidden)
+                {
+                    newFoundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
+                }
+                for (int i = 0; i < undoList.Count - 1; i++)
+                {
+                    undoList[i].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false, removeUpdateHolo: false, addUpdateHolo: false);
+                }
+                undoList[undoList.Count - 1].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false);
+                Config.config.actions = undoList[0].remainingActions;
+                return;
+
                 Stack<Move> stackUndo = new Stack<Move>();
                 stackUndo.Push(moveLog.Pop());
                 while (true) //invert the stack

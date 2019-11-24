@@ -11,7 +11,7 @@ public class CardScript : MonoBehaviour
     public int cardVal; //cardVal is what the card is worth to the reactor jack, queen, king are all 10
     public int cardNum; //cardNum is the number on the card, ace is 1 jack is 11 queen is 12 king is 13
     public string cardSuit;
-    private bool hidden;
+    public bool hidden;
     public Color originalColor;
     public Color newColor;
     public bool glowing;
@@ -49,11 +49,13 @@ public class CardScript : MonoBehaviour
     {
         if (show)
         {
+            //Debug.Log("showing card" + cardNum + cardSuit);
             gameObject.GetComponent<SpriteRenderer>().sprite = cardFrontSprite;
             hidden = false;
         }
         else
         {
+            //Debug.Log("hiding card" + cardNum + cardSuit);
             gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
             HideHologram();
             hidden = true;
@@ -102,8 +104,19 @@ public class CardScript : MonoBehaviour
 
     public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool removeUpdateHolo = true, bool addUpdateHolo = true)
     {
+        bool nextCardWasHidden = false;
         if (container.CompareTag("Foundation"))
         {
+            if (doLog)
+            {
+                List<GameObject> containerCardList = container.GetComponent<FoundationScript>().cardList;
+                Debug.Log(containerCardList[1].GetComponent<CardScript>().cardNum);
+                if (containerCardList.Count > 1 && containerCardList[1].GetComponent<CardScript>().isHidden())
+                {
+                    //Debug.Log("ncwh");
+                    nextCardWasHidden = true;
+                }
+            }
             container.GetComponent<FoundationScript>().RemoveCard(gameObject, removeUpdateHolo);
         }
         else if (container.CompareTag("Reactor"))
@@ -127,7 +140,7 @@ public class CardScript : MonoBehaviour
         {
             if (doLog)
             {
-                UndoScript.undoScript.logMove("move", gameObject, isAction, Config.config.actions);
+                UndoScript.undoScript.logMove("move", gameObject, isAction, Config.config.actions, nextCardWasHidden);
             }
 
             destination.GetComponent<FoundationScript>().AddCard(gameObject, addUpdateHolo);
@@ -138,11 +151,11 @@ public class CardScript : MonoBehaviour
             {
                 if (isCycle)
                 {
-                    UndoScript.undoScript.logMove("cycle", gameObject, true, Config.config.actions);
+                    UndoScript.undoScript.logMove("cycle", gameObject, true, Config.config.actions, nextCardWasHidden);
                 }
                 else
                 {
-                    UndoScript.undoScript.logMove("move", gameObject, isAction, Config.config.actions);
+                    UndoScript.undoScript.logMove("move", gameObject, isAction, Config.config.actions, nextCardWasHidden);
                 }
             }
 
@@ -152,7 +165,7 @@ public class CardScript : MonoBehaviour
         {
             if (doLog)
             {
-                UndoScript.undoScript.logMove("draw", gameObject, isAction, Config.config.actions);
+                UndoScript.undoScript.logMove("draw", gameObject, isAction, Config.config.actions, nextCardWasHidden);
             }
 
             destination.GetComponent<WastepileScript>().AddCard(gameObject, addUpdateHolo);
@@ -165,7 +178,7 @@ public class CardScript : MonoBehaviour
         {
             if (doLog)
             {
-                UndoScript.undoScript.logMove("match", gameObject, isAction, Config.config.actions);
+                UndoScript.undoScript.logMove("match", gameObject, isAction, Config.config.actions, nextCardWasHidden);
             }
 
             destination.GetComponent<MatchedPileScript>().AddCard(gameObject);
@@ -185,8 +198,10 @@ public class CardScript : MonoBehaviour
     {
         if (hologram != null)
         {
+            //Debug.Log("already holo" + cardNum + cardSuit);
             return;
         }
+        //Debug.Log("showing holo" + cardNum + cardSuit);
 
         GameObject hologramPrefab = Resources.Load<GameObject>("Prefabs/Holograms/hologram");
         GameObject hologramFoodPrefab = Resources.Load<GameObject>("Prefabs/Holograms/generalFood");
@@ -240,12 +255,19 @@ public class CardScript : MonoBehaviour
 
     public bool HideHologram()
     {
-        //Debug.Log("Try HideHologram");
+        if (isHidden())
+        {
+            //Debug.Log("hey" + cardNum + cardSuit);
+            Debug.Log(hologram != null);
+            return true;
+        }
         if (hologram != null)
         {
-            //Debug.Log("HideHologram");
+            //Debug.Log("HideHologram" + cardNum + cardSuit);
             Destroy(hologram);
             Destroy(hologramObject);
+            hologram = null;
+            hologramObject = null;
             return true;
         }
         return false;
