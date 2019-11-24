@@ -127,7 +127,7 @@ public class FoundationScript : MonoBehaviour
                 }
                 else if (input.CompareTag("Foundation"))
                 {
-                    if (input.GetComponent<FoundationScript>().cardList.Count == 0)
+                    if (input.GetComponent<FoundationScript>().cardList.Count != 0)
                     {
                         return;
                     }
