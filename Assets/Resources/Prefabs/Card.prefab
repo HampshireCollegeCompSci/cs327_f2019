@@ -182,10 +182,9 @@ MonoBehaviour:
   cardNum: 0
   cardSuit: 
   hidden: 0
-  appearSelected: 0
   originalColor: {r: 0, g: 0, b: 0, a: 0}
   newColor: {r: 0, g: 0, b: 0, a: 0}
-  glowOn: 0
+  glowing: 0
 --- !u!61 &5589543899514788396
 BoxCollider2D:
   m_ObjectHideFlags: 0
