@@ -278,6 +278,10 @@ public class CardScript : MonoBehaviour
         if (!glowing)
         {
             gameObject.transform.Find("Glow").gameObject.SetActive(true);
+            gameObject.transform.Find("Glow").GetComponent<SpriteRenderer>().color = Color.HSVToRGB(Config.config.cardHighlightColor[0], Config.config.cardHighlightColor[1], Config.config.cardHighlightColor[2]);
+            Color colorAlphaPlaceholder = gameObject.transform.Find("Glow").GetComponent<SpriteRenderer>().color;
+            colorAlphaPlaceholder.a = Config.config.cardHighlightColor[3];
+            gameObject.transform.Find("Glow").GetComponent<SpriteRenderer>().color = colorAlphaPlaceholder;
             glowing = true;
             return true;
         }
