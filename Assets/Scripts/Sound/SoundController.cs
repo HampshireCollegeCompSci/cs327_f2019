@@ -15,7 +15,13 @@ public class SoundController : MonoBehaviour
 
     public void CardPressSound()
     {
+        int randomNo = Random.Range(0, 2);
         AudioClip sound = Resources.Load<AudioClip>("Audio/token_select");
+        if (randomNo == 1)
+            sound = Resources.Load<AudioClip>("Audio/token_select_B");
+        else if (randomNo == 2)
+            sound = Resources.Load<AudioClip>("Audio/token_select_C");
+
         soundController.clip = sound;
         soundController.Play();
     }
@@ -29,7 +35,15 @@ public class SoundController : MonoBehaviour
 
     public void CardStackSound()
     {
+        int randomNo = Random.Range(0, 3);
         AudioClip sound = Resources.Load<AudioClip>("Audio/token_stack");
+        if (randomNo == 1)
+            sound = Resources.Load<AudioClip>("Audio/token_stack_B");
+        else if (randomNo == 2)
+            sound = Resources.Load<AudioClip>("Audio/token_stack_C");
+        else if (randomNo == 3)
+            sound = Resources.Load<AudioClip>("Audio/token_stack_D");
+
         soundController.clip = sound;
         soundController.Play();
     }
