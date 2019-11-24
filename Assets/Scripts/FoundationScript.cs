@@ -185,6 +185,14 @@ public class FoundationScript : MonoBehaviour
                     utils.selectedCards[i].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container, isAction: false, removeUpdateHolo: false, addUpdateHolo: false);
                 }
                 utils.selectedCards[utils.selectedCards.Count - 1].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container, isAction: false);
+
+                // other method, undo script has a matching method for this as well that is commented out
+                //utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container, isAction: true, removeUpdateHolo: false, addUpdateHolo: false);
+                //for (int i = 1; i < utils.selectedCards.Count - 2; i++)
+                //{
+                //    utils.selectedCards[i].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container, isAction: false, removeUpdateHolo: false, addUpdateHolo: false);
+                //}
+                //utils.selectedCards[utils.selectedCards.Count - 1].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container, isAction: false);
             }
             else
             {

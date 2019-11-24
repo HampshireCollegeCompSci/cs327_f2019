@@ -48,7 +48,7 @@ public class UndoScript : MonoBehaviour
                 undoList.Add(moveLog.Pop());
 
                 int actionTracker = undoList[0].remainingActions;
-                while (moveLog.Peek().remainingActions == actionTracker)
+                while (moveLog.Peek().moveType == "move" && moveLog.Peek().remainingActions == actionTracker)
                 {
                     undoList.Insert(0, moveLog.Pop());
                 }
@@ -68,9 +68,16 @@ public class UndoScript : MonoBehaviour
                 Config.config.actions = undoList[0].remainingActions;
                 return;
 
+                // other method, foundation script has a matching method for this as well that is commented out
+                lastMove = moveLog.Pop();
+                if (lastMove.nextCardWasHidden) //if the card under the stack was hidden, re-hide it
+                {
+                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
+                }
+
                 Stack<Move> stackUndo = new Stack<Move>();
-                stackUndo.Push(moveLog.Pop());
-                while (true) //invert the stack
+                stackUndo.Push(lastMove);
+                while (true)
                 {
                     stackUndo.Push(moveLog.Pop());
                     if (stackUndo.Peek().isAction)
@@ -78,19 +85,13 @@ public class UndoScript : MonoBehaviour
                         break;
                     }
                 }
-                int cardsMoved = 0;
-                while (stackUndo.Count != 0) //move them to the the correct foundation
-                {
-                    lastMove = stackUndo.Pop();
-                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
-                    cardsMoved++;
-                }
 
-                if (lastMove.nextCardWasHidden) //if the card under the stack was hidden, re-hide it
+                while (stackUndo.Count() > 1) //move them to the the correct foundation
                 {
-                    lastMove.origin.GetComponent<FoundationScript>().cardList[cardsMoved].GetComponent<CardScript>().SetVisibility(false);
-                    //lastMove.origin.GetComponent<FoundationScript>().SetCardPositions();
+                    stackUndo.Pop().card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false, addUpdateHolo: false);
                 }
+                stackUndo.Pop().card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+
                 Config.config.actions = lastMove.remainingActions;
                 return;
             }
@@ -127,7 +128,7 @@ public class UndoScript : MonoBehaviour
             {
                 lastMove = moveLog.Pop();
                 lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false);
-                while (moveLog.Peek().remainingActions == lastMove.remainingActions)
+                while (moveLog.Peek().moveType == "draw" && moveLog.Peek().remainingActions == lastMove.remainingActions)
                 {
                     lastMove = moveLog.Pop();
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false);
