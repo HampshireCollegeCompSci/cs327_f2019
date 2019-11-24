@@ -164,6 +164,7 @@ public class MenuUIScript : MonoBehaviour
         //TODO save the game scene
         Config.config.gamePaused = true;
         SceneManager.LoadScene("PauseScene", LoadSceneMode.Additive);
+
     }
 
     public void ResumeGame()
