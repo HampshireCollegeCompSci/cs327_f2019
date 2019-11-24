@@ -140,6 +140,10 @@ public class UndoScript : MonoBehaviour
                 {
                     lastMove = moveLog.Pop();
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false);
+                    if (Config.config.deck.GetComponent<DeckScript>().cardList.Count == 0)
+                    {
+                        break;
+                    }
                 }
                 Config.config.wastePile.GetComponent<WastepileScript>().CheckHologram(false);
                 if (lastMove.isAction)
