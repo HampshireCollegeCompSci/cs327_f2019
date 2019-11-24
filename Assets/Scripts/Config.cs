@@ -16,8 +16,7 @@ public class Config : MonoBehaviour
     public int score;
     public float relativeCardScale;
     public int turnsTillReset;
-    public float delayToShowGameSummary;
-    public float countdown;
+    public int delayToShowGameSummary;
     public float draggedTokenOffset;
     public float selectedCardOpacity;
     public bool prettyColors;
@@ -33,12 +32,12 @@ public class Config : MonoBehaviour
 
 
     //foundations
+    public GameObject[] foundationList;
     public float foundationStackDensity;
     public int foundationStartSize;
 
     //wastepile
-    public float nonTopXOffset = 0.3f * 0.25F; // foundationStackDensity * 0.25
-    public int wastepileCardsToShow;
+    public GameObject wastePile;
 
     //reactor
     public int maxReactorVal = 18;
@@ -54,10 +53,6 @@ public class Config : MonoBehaviour
     public GameObject reactor4;
     public GameObject[] reactors;
 
-    public GameObject[] foundationList;
-
-    public GameObject wastePile;
-
     //deck
     public GameObject deck;
     public int cardsToDeal;
@@ -69,7 +64,6 @@ public class Config : MonoBehaviour
     public bool gamePaused;
 
     //internal variables
-    private int foundationCount = 0;
     private string JSON;
     GameInfo gameInfo;
     GameObject fadeOutImage;
@@ -115,49 +109,44 @@ public class Config : MonoBehaviour
         ConfigFromJSON();
         SetCards();
         gameObject.GetComponent<MusicController>().MainMenuMusic();
+    }
 
+    public void GameOver(bool didWin)
+    {
+        gameOver = true;
+        gameWin = didWin;
+        fadeOutImage.SetActive(true);
+        //delay to show summary
+        StartCoroutine(EndGame());
 
     }
 
-
-    private void Update()
+    IEnumerator EndGame()
     {
-        //handle game end
-        if (gameOver && SceneManager.GetActiveScene().name != "SummaryScene")
+        float countdown = delayToShowGameSummary;
+        while (countdown > 0)
         {
-            fadeOutImage.SetActive(true);
-            //delay to show summary
-            if (countdown <= 0)
-            {
-                SceneManager.LoadScene("SummaryScene");
+            yield return new WaitForSeconds(0.01f);
+            fadeOutImage.GetComponent<Image>().color = new Color(0, 0, 0, 1 - (countdown / delayToShowGameSummary));
+            countdown -= 0.02f;
+        }
+        fadeOutImage.GetComponent<Image>().color = new Color(0, 0, 0, 1);
 
-                if (gameWin)
-                {
-                    gameObject.GetComponent<MusicController>().WinMusic();
-                }
-                else
-                {
-                    gameObject.GetComponent<MusicController>().LoseMusic();
-                }
-            }
+        SceneManager.LoadScene("SummaryScene");
 
-            else
-            {
-                countdown -= Time.deltaTime;
-
-                if (!gameWin)
-                {
-                    fadeOutImage.GetComponent<Image>().color = new Color(0, 0, 0, (countdown - delayToShowGameSummary) * (1 - 0) / (0 - delayToShowGameSummary) + 0);
-                }
-            }
+        if (gameWin)
+        {
+            gameObject.GetComponent<MusicController>().WinMusic();
+        }
+        else
+        {
+            gameObject.GetComponent<MusicController>().LoseMusic();
         }
     }
 
     public void ConfigFromJSON()
     {
-        wastepileCardsToShow = gameInfo.wastepileCardsToShow;
         foundationStartSize = gameInfo.foundationStartingSize;
-        nonTopXOffset = foundationStackDensity * gameInfo.nonTopXOffset;
         cardsToDeal = gameInfo.cardsToDeal;
         relativeCardScale = gameInfo.relativeCardScale;
         turnsTillReset = gameInfo.turnsTillReset;
@@ -207,7 +196,6 @@ public class Config : MonoBehaviour
             fadeOutImage.SetActive(false);
         }
 
-        countdown = delayToShowGameSummary;
         score = 0;
     }
 
