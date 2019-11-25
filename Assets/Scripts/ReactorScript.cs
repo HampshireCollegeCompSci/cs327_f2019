@@ -6,6 +6,7 @@ public class ReactorScript : MonoBehaviour
 {
     public List<GameObject> cardList;
     public UtilsScript utils;
+    private ReactorScoreSetScript rsss;
     public SoundController soundController;
 
     GameObject myPrefab;
@@ -16,6 +17,7 @@ public class ReactorScript : MonoBehaviour
     void Start()
     {
         utils = UtilsScript.global;
+        rsss = utils.gameUI.GetComponent<ReactorScoreSetScript>();
     }
 
 
@@ -40,6 +42,7 @@ public class ReactorScript : MonoBehaviour
 
         SetCardPositions();
         soundController.CardToReactorSound();
+        rsss.SetReactorScore();
         CheckGameOver();
     }
 
@@ -47,6 +50,7 @@ public class ReactorScript : MonoBehaviour
     {
         cardList.Remove(card);
         SetCardPositions();
+        rsss.SetReactorScore();
     }
 
     public void SetCardPositions()

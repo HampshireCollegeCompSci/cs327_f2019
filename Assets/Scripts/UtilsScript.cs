@@ -59,9 +59,6 @@ public class UtilsScript : MonoBehaviour
                     dragOn = true;
                 }
 
-                //sets the reactor scores
-                gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
-
                 //checks if the game has been won
 
                 /*this code is if we want to check cards in the deck and the wastepile as well as the foundations to see if you can win the game
@@ -74,8 +71,6 @@ public class UtilsScript : MonoBehaviour
 
                 Click();
                 ShowPossibleMoves.showPossibleMoves.HideMoves();
-
-                gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
 
                 foreach (GameObject card in selectedCardsCopy)
                 {

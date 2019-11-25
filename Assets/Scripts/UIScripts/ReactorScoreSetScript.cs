@@ -8,6 +8,7 @@ public class ReactorScoreSetScript : MonoBehaviour
     private void Start()
     {
         SetReactorScore();
+        SetPositions();
     }
 
     public GameObject reactor0;
@@ -30,7 +31,7 @@ public class ReactorScoreSetScript : MonoBehaviour
         reactorScore3.text = reactor3.GetComponent<ReactorScript>().CountReactorCard() + "/" + Config.config.maxReactorVal;
     }
 
-    void OnGUI()
+    public void SetPositions()
     {
         if (reactorScore0 != null && reactorScore1 != null && reactorScore2 != null && reactorScore3 != null
             && reactor0 != null && reactor1 != null && reactor2 != null && reactor3 != null)
@@ -41,6 +42,4 @@ public class ReactorScoreSetScript : MonoBehaviour
             reactorScore3.transform.position = reactor3.transform.position - new Vector3(0, 1.45f, 0);
         }
     }
-
-
 }
