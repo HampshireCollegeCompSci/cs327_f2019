@@ -6,6 +6,11 @@ public class MusicController : MonoBehaviour
 {
     public AudioSource soundController;
 
+    public void LoadGap()
+    {
+        soundController.Stop();
+    }
+
     public void LoseMusic()
     {
         AudioClip sound = Resources.Load<AudioClip>("Audio/music_lose");
