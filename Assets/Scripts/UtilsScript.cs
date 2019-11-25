@@ -337,13 +337,12 @@ public class UtilsScript : MonoBehaviour
         {
             Config.config.actions = 0;
             Config.config.deck.GetComponent<DeckScript>().NextCycle();
-            //gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
         }
     }
 
     public void CheckGameOver()
     {
-        if (Config.config.CountFoundationCards() == 0)
+        if (!Config.config.gameOver && Config.config.CountFoundationCards() == 0)
         {
             SetEndGameScore();
             Config.config.GameOver(true);

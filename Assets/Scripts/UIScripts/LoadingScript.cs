@@ -23,11 +23,11 @@ public class LoadingScript : MonoBehaviour
 
         while (!operation.isDone)
         {
-            if (dotNum % 3 == 0)
+            if (dotNum % 30 == 0)
                 txt.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish.ToUpper() + "...";
-            else if (dotNum % 2 == 0)
+            else if (dotNum % 20 == 0)
                 txt.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish.ToUpper() + "..";
-            else
+            else if (dotNum % 10 == 0)
                 txt.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish.ToUpper() + ".";
             dotNum++;
             yield return null;
