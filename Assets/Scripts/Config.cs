@@ -124,24 +124,30 @@ public class Config : MonoBehaviour
     IEnumerator EndGame()
     {
         float countdown = delayToShowGameSummary;
-        while (countdown > 0)
-        {
-            yield return new WaitForSeconds(0.01f);
-            fadeOutImage.GetComponent<Image>().color = new Color(0, 0, 0, 1 - (countdown / delayToShowGameSummary));
-            countdown -= 0.02f;
-        }
-        fadeOutImage.GetComponent<Image>().color = new Color(0, 0, 0, 1);
-
-        SceneManager.LoadScene("SummaryScene");
 
         if (gameWin)
         {
             gameObject.GetComponent<MusicController>().WinMusic();
+            while (countdown > 0)
+            {
+                yield return new WaitForSeconds(0.01f);
+                fadeOutImage.GetComponent<Image>().color = new Color(1, 1, 1, 1 - (countdown / delayToShowGameSummary));
+                countdown -= 0.02f;
+            }
         }
+
         else
         {
             gameObject.GetComponent<MusicController>().LoseMusic();
+            while (countdown > 0)
+            {
+                yield return new WaitForSeconds(0.01f);
+                fadeOutImage.GetComponent<Image>().color = new Color(0, 0, 0, 1 - (countdown / delayToShowGameSummary));
+                countdown -= 0.02f;
+            }
         }
+
+        SceneManager.LoadScene("SummaryScene");
     }
 
     public void ConfigFromJSON()
