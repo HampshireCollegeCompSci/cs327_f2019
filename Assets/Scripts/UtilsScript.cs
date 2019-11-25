@@ -249,8 +249,9 @@ public class UtilsScript : MonoBehaviour
 
         //Config.config.actions += 1;
         Config.config.score += matchPoints;
-        //Debug.Log("score" + Config.config.score);
-        //check to see if the board is clear
+
+        CheckGameOver();
+        //CheckNextCycle();
     }
 
     //checks if suit match AND value match
