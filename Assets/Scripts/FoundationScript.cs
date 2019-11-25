@@ -7,12 +7,10 @@ public class FoundationScript : MonoBehaviour
     public UtilsScript utils;
     public List<GameObject> cardList;
     public SoundController soundController;
-    public bool startUp;
 
     void Start()
     {
         utils = UtilsScript.global;
-        startUp = true;
     }
 
     public void CheckHologram(bool tryHidingBeneath)
@@ -44,10 +42,7 @@ public class FoundationScript : MonoBehaviour
             CheckHologram(true);
         }
 
-        if (!startUp)
-        {
-            SetCardPositions();
-        }
+        SetCardPositions();
     }
 
     public void RemoveCard(GameObject card, bool checkHolo = true)
