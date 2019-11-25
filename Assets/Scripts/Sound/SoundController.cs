@@ -12,6 +12,15 @@ public class SoundController : MonoBehaviour
         soundController.clip = sound;
         soundController.Play();
     }
+    public void ButtonPressSound2()
+    {
+        AudioClip sound = Resources.Load<AudioClip>("Audio/token_reveal");
+        // volunme changes doesn't work
+        soundController.volume = 0.5f;
+        soundController.clip = sound;
+        soundController.Play();
+        soundController.volume = 1;
+    }
 
     public void CardPressSound()
     {
@@ -65,6 +74,8 @@ public class SoundController : MonoBehaviour
     public void DeckDeal()
     {
         AudioClip sound = Resources.Load<AudioClip>("Audio/deck_conveyer_belt_deal");
+        soundController.Stop();
+        soundController.volume = 1;
         soundController.clip = sound;
         soundController.Play();
     }
@@ -72,6 +83,8 @@ public class SoundController : MonoBehaviour
     public void DeckReshuffle()
     {
         AudioClip sound = Resources.Load<AudioClip>("Audio/deck_conveyer_belt_reshuffle");
+        soundController.Stop();
+        soundController.volume = 0.3f;
         soundController.clip = sound;
         soundController.Play();
     }

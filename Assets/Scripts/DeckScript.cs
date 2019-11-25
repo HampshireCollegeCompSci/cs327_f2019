@@ -151,6 +151,7 @@ public class DeckScript : MonoBehaviour
 
         if (cardList.Count != 0) // can the deck can be drawn from
         {
+            soundController.DeckDeal();
             Deal();
         }
         else // we need to try repopulating the deck
@@ -213,7 +214,6 @@ public class DeckScript : MonoBehaviour
         if (toMoveList.Count != 0)
         {
             wastePileScript.AddCards(toMoveList);
-            //soundController.DeckDeal();
         }
     }
 
