@@ -181,6 +181,7 @@ public class DeckScript : MonoBehaviour
                 }
             }
         }
+        utils.CheckGameOver();
     }
 
     // moves all wastePile cards into the deck
