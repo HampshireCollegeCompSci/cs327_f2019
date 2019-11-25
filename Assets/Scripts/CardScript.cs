@@ -40,9 +40,9 @@ public class CardScript : MonoBehaviour
     //unless they have the same exact dimensions
     //public void SetCardAppearance()
     //{
-        //set collider scale to match sprite scale
-        //gameObject.GetComponent<BoxCollider2D>().size = gameObject.GetComponent<SpriteRenderer>().sprite.bounds.size;
-        //gameObject.GetComponent<BoxCollider2D>().offset = gameObject.GetComponent<SpriteRenderer>().sprite.bounds.center;
+    //set collider scale to match sprite scale
+    //gameObject.GetComponent<BoxCollider2D>().size = gameObject.GetComponent<SpriteRenderer>().sprite.bounds.size;
+    //gameObject.GetComponent<BoxCollider2D>().offset = gameObject.GetComponent<SpriteRenderer>().sprite.bounds.center;
     //}
 
     public void SetVisibility(bool show)
@@ -122,8 +122,9 @@ public class CardScript : MonoBehaviour
         GameObject hologramFoodPrefab = Resources.Load<GameObject>("Prefabs/Holograms/generalFood");
 
         string cardHologramName;
-        if (cardNum == 1)
-            cardHologramName = "ace_" + cardSuit + "_food";
+
+        if (cardNum == 10)
+            cardHologramName = "10_" + cardSuit + "_food";
         else if (cardNum == 11)
             cardHologramName = "jack_" + cardSuit + "_food";
         else if (cardNum == 12)
@@ -131,7 +132,7 @@ public class CardScript : MonoBehaviour
         else if (cardNum == 13)
             cardHologramName = "king_" + cardSuit + "_food";
         else
-            cardHologramName = cardNum + "_" + cardSuit + "_food";
+            cardHologramName = "a-9" + "_" + cardSuit + "_food";
 
         hologramFoodPrefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/FoodHolograms/" + cardHologramName);
 
