@@ -125,9 +125,9 @@ public class ShowPossibleMoves : MonoBehaviour
             }
         }
 
-        if (FindReactorMoves(GameObject selectedCard).Count > 0)
+        if (FindReactorMoves(selectedCard).Count > 0)
         {
-            foreach (GameObject reactor in FindReactorMoves(GameObject selectedCard))
+            foreach (GameObject reactor in FindReactorMoves(selectedCard))
             {
                 reactor.GetComponent<ReactorScript>().GlowOn();
             }
