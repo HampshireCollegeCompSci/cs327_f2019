@@ -280,13 +280,13 @@ public class UtilsScript : MonoBehaviour
         Config.config.score += matchPoints;
         //Debug.Log("score" + Config.config.score);
         //check to see if the board is clear
-        card2.transform.position = card1.transform.position;
         StartCoroutine(animatorwait(card1,card2));
     }
     IEnumerator animatorwait(GameObject card1, GameObject card2)
     {
-
+        card2.GetComponent<CardScript>().MoveCard(card1.GetComponent<CardScript>().container);
         yield return new WaitForSeconds(.5f);
+
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
     }

@@ -16,6 +16,7 @@ public class CardScript : MonoBehaviour
     public Color originalColor;
     public Color newColor;
     public bool glowOn = false;
+    public bool aboutToBeMatched = false;
 
     private GameObject hologramObject;
     private GameObject hologram;
@@ -181,6 +182,7 @@ public class CardScript : MonoBehaviour
             destination.SendMessage("AddCard", gameObject);
             //destination.GetComponent<MatchedPileScript>().cardList.Insert(0, gameObject);
         }
+
         container.SendMessage("SetCardPositions");
         container = destination;
         destination.SendMessage("SetCardPositions");
