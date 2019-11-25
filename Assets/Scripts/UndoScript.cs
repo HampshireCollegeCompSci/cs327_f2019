@@ -52,7 +52,7 @@ public class UndoScript : MonoBehaviour
                 undoList.Add(moveLog.Pop());
 
                 int actionTracker = undoList[0].remainingActions;
-                while (!moveLog.Peek().isAction && moveLog.Peek().moveType == "move" && moveLog.Peek().remainingActions == actionTracker)
+                while (moveLog.Count != 0 && !moveLog.Peek().isAction && moveLog.Peek().moveType == "move" && moveLog.Peek().remainingActions == actionTracker)
                 {
                     undoList.Insert(0, moveLog.Pop());
                 }
@@ -132,7 +132,7 @@ public class UndoScript : MonoBehaviour
             {
                 lastMove = moveLog.Pop();
                 lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false);
-                while (moveLog.Count > 0 && moveLog.Peek().moveType == "draw" && moveLog.Peek().remainingActions == lastMove.remainingActions)
+                while (moveLog.Count != 0 && moveLog.Peek().moveType == "draw" && moveLog.Peek().remainingActions == lastMove.remainingActions)
                 {
                     lastMove = moveLog.Pop();
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false);
@@ -145,7 +145,7 @@ public class UndoScript : MonoBehaviour
             {
                 lastMove = moveLog.Pop();
                 lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false, addUpdateHolo: false);
-                while (moveLog.Count > 0 && moveLog.Peek().moveType == "deckreset" && moveLog.Peek().remainingActions == lastMove.remainingActions)
+                while (moveLog.Count != 0 && moveLog.Peek().moveType == "deckreset" && moveLog.Peek().remainingActions == lastMove.remainingActions)
                 {
                     lastMove = moveLog.Pop();
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false, addUpdateHolo: false);
@@ -156,7 +156,7 @@ public class UndoScript : MonoBehaviour
             }
             else if (moveLog.Peek().moveType == "cycle") //undo a cycle turning over, resets all tokens moved up, along with the move counter
             {
-                while (moveLog.Peek().moveType == "cycle")
+                while (moveLog.Count != 0 && moveLog.Peek().moveType == "cycle")
                 {
                     lastMove = moveLog.Pop();
                     if (lastMove.nextCardWasHidden)
@@ -165,7 +165,7 @@ public class UndoScript : MonoBehaviour
                     }
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
                 }
-                Debug.Log(lastMove.remainingActions);
+
                 if (lastMove.remainingActions == 0)
                 {
                     undo();
