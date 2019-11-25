@@ -6,6 +6,7 @@ public class ReactorScript : MonoBehaviour
 {
     public List<GameObject> cardList;
     public UtilsScript utils;
+    public GameObject gameUI;
     private ReactorScoreSetScript rsss;
     public SoundController soundController;
 
@@ -17,7 +18,7 @@ public class ReactorScript : MonoBehaviour
     void Start()
     {
         utils = UtilsScript.global;
-        rsss = utils.gameUI.GetComponent<ReactorScoreSetScript>();
+        rsss = gameUI.GetComponent<ReactorScoreSetScript>();
     }
 
 
