@@ -275,13 +275,17 @@ public class CardScript : MonoBehaviour
         {
             if (doLog)
             {
-                UndoScript.undoScript.logMove("draw", gameObject, isAction, Config.config.actions, nextCardWasHidden);
+                UndoScript.undoScript.logMove("draw", gameObject, isAction, Config.config.actions);
             }
 
             destination.GetComponent<WastepileScript>().AddCard(gameObject, addUpdateHolo);
         }
         else if (destination.CompareTag("Deck"))
         {
+            if (doLog)
+            {
+                UndoScript.undoScript.logMove("deckreset", gameObject, isAction, Config.config.actions);
+            }
             destination.GetComponent<DeckScript>().AddCard(gameObject);
         }
         else if (destination.CompareTag("MatchedPile"))

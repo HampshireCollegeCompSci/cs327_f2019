@@ -38,10 +38,15 @@ public class UndoScript : MonoBehaviour
     {
         if (moveLog.Count > 0) //only run if there's something in the stack
         {
+            if (Config.config.wastePile.GetComponent<WastepileScript>().isScrolling())
+            {
+                return;
+            }
+
             Move lastMove = null;
             if (!moveLog.Peek().isAction) //if the lastMove wasn't an action that means it was a stack of tokens moved at once
             {
-                Debug.Log("undoing stack");
+                //Debug.Log("undoing stack");
                 // list goes from bottom token to top in original stack
                 List<Move> undoList = new List<Move>();
                 undoList.Add(moveLog.Pop());
@@ -131,6 +136,19 @@ public class UndoScript : MonoBehaviour
                 {
                     lastMove = moveLog.Pop();
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false);
+                }
+                Config.config.wastePile.GetComponent<WastepileScript>().CheckHologram(false);
+                Config.config.actions = lastMove.remainingActions;
+                return;
+            }
+            else if (moveLog.Peek().moveType == "deckreset") //move the entire deck back into the wastepile
+            {
+                lastMove = moveLog.Pop();
+                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false, addUpdateHolo: false);
+                while (moveLog.Count > 0 && moveLog.Peek().moveType == "deckreset" && moveLog.Peek().remainingActions == lastMove.remainingActions)
+                {
+                    lastMove = moveLog.Pop();
+                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false, addUpdateHolo: false);
                 }
                 Config.config.wastePile.GetComponent<WastepileScript>().CheckHologram(false);
                 Config.config.actions = lastMove.remainingActions;

@@ -97,6 +97,8 @@ public class WastepileScript : MonoBehaviour
         }
 
         ResetScrollBar(temp);
+        utils.CheckNextCycle();
+        utils.CheckGameOver();
     }
 
     public void AddCard(GameObject card, bool checkHolo = true)

@@ -332,6 +332,8 @@ public class UtilsScript : MonoBehaviour
 
     public void CheckNextCycle()
     {
+        Debug.Log(Config.config.actions);
+        Debug.Log(Config.config.actionMax);
         if (Config.config.actions == Config.config.actionMax)
         {
             Config.config.actions = 0;

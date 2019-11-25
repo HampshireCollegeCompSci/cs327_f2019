@@ -162,8 +162,6 @@ public class DeckScript : MonoBehaviour
 
             DeckReset();
         }
-        utils.CheckNextCycle();
-        utils.CheckGameOver();
     }
 
     // moves all of the top foundation cards into their appropriate reactors
