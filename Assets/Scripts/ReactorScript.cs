@@ -137,6 +137,9 @@ public class ReactorScript : MonoBehaviour
                 }
             }
         }
+
+        utils.CheckNextCycle();
+        utils.CheckGameOver();
     }
 
     public int CountReactorCard()

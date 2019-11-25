@@ -218,5 +218,8 @@ public class FoundationScript : MonoBehaviour
 
             Config.config.actions += 1; //adds to the action count
         }
+
+        utils.CheckNextCycle();
+        utils.CheckGameOver();
     }
 }

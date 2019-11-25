@@ -334,8 +334,8 @@ public class UtilsScript : MonoBehaviour
     {
         if (Config.config.actions == Config.config.actionMax)
         {
-            Config.config.deck.GetComponent<DeckScript>().NextCycle();
             Config.config.actions = 0;
+            Config.config.deck.GetComponent<DeckScript>().NextCycle();
             //gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
         }
     }
