@@ -10,6 +10,7 @@ public class ReactorScript : MonoBehaviour
 
     GameObject myPrefab;
     public string suit;
+    private bool glowing = false;
 
 
     void Start()
@@ -152,5 +153,27 @@ public class ReactorScript : MonoBehaviour
         }
 
         return totalSum;
+    }
+
+    public bool GlowOn()
+    {
+        if (!glowing)
+        {
+            gameObject.transform.Find("Glow").gameObject.SetActive(true);
+            glowing = true;
+            return true;
+        }
+        return false;
+    }
+
+    public bool GlowOff()
+    {
+        if (glowing)
+        {
+            gameObject.transform.Find("Glow").gameObject.SetActive(false);
+            glowing = false;
+            return true;
+        }
+        return false;
     }
 }

@@ -102,6 +102,19 @@ public class ShowPossibleMoves : MonoBehaviour
         return output;
     }
 
+    private List<GameObject> FindReactorMoves(GameObject selectedCard)
+    {
+        List<GameObject> output = new List<GameObject>();
+        foreach (GameObject reactor in reactorList)
+        {
+            if (reactor.GetComponent<ReactorScript>().suit == selectedCard.GetComponent<CardScript>().cardSuit)
+            {
+                output.Add(reactor);
+            }
+        }
+        return output;
+    }
+
     public void ShowMoves(GameObject selectedCard)
     {
         if (FindMoves(selectedCard).Count > 0)
@@ -109,6 +122,14 @@ public class ShowPossibleMoves : MonoBehaviour
             foreach (GameObject card in FindMoves(selectedCard))
             {
                 card.GetComponent<CardScript>().GlowOn();
+            }
+        }
+
+        if (FindReactorMoves(GameObject selectedCard).Count > 0)
+        {
+            foreach (GameObject reactor in FindReactorMoves(GameObject selectedCard))
+            {
+                reactor.GetComponent<ReactorScript>().GlowOn();
             }
         }
     }
@@ -132,6 +153,7 @@ public class ShowPossibleMoves : MonoBehaviour
             {
                 reactor.GetComponent<ReactorScript>().cardList[0].GetComponent<CardScript>().GlowOff();
             }
+            reactor.GetComponent<ReactorScript>().GlowOff();
         }
 
         if (wastepile.GetComponent<WastepileScript>().GetCardList().Count != 0)
