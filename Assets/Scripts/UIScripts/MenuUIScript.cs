@@ -16,6 +16,9 @@ public class MenuUIScript : MonoBehaviour
             anim.enabled = false;
 
 
+        if (GameObject.Find("Spacebaby Loading") != null)
+            GameObject.Find("Spacebaby Loading").GetComponent<Animator>().enabled = true;
+
         //update main menu button txt
         if (GameObject.Find("Play") != null)
         {
@@ -243,9 +246,9 @@ public class MenuUIScript : MonoBehaviour
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         button.GetComponentInChildren<Animator>().enabled = true;
 
-        for (float ft = 0.3f; ft >= 0; ft -= 0.1f)
+        for (float ft = 0.2f; ft >= 0; ft -= 0.1f)
         {
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.08f);
         }
 
         button.GetComponentInChildren<Animator>().enabled = false;
