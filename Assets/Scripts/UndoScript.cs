@@ -170,9 +170,9 @@ public class UndoScript : MonoBehaviour
                 {
                     undo();
                 }
-                else
+                else if(moveLog.Count > 0)
                 {
-                    Config.config.actions += 1;
+                    Config.config.actions = moveLog.Peek().remainingActions + 1;
                 }
                 return;
             }
