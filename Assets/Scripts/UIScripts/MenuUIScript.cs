@@ -213,7 +213,8 @@ public class MenuUIScript : MonoBehaviour
 
     public void MakeActionsMax()
     {
-        Config.config.actions = Config.config.actionMax;
+        Config.config.actions = -1;
+        Config.config.deck.GetComponent<DeckScript>().NextCycle();
     }
 
 }

@@ -165,7 +165,15 @@ public class UndoScript : MonoBehaviour
                     }
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
                 }
-                undo();
+                Debug.Log(lastMove.remainingActions);
+                if (lastMove.remainingActions == 0)
+                {
+                    undo();
+                }
+                else
+                {
+                    Config.config.actions += 1;
+                }
                 return;
             }
         }
