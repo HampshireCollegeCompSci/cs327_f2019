@@ -102,4 +102,11 @@ public class SoundController : MonoBehaviour
         soundController.clip = sound;
         soundController.Play();
     }
+
+    public void WinSound()
+    {
+        AudioClip sound = Resources.Load<AudioClip>("Audio/sound_win");
+        soundController.clip = sound;
+        soundController.Play();
+    }
 }
