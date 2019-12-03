@@ -18,6 +18,7 @@ public class UtilsScript : MonoBehaviour
     private bool draggingWastepile = false;
     private GameObject wastePile;
 
+    public GameObject baby;
     public int matchPoints = Config.config.matchPoints;
     public int emptyReactorPoints = Config.config.emptyReactorPoints;
     public int PerfectGamePoints = Config.config.perfectGamePoints;
@@ -46,6 +47,7 @@ public class UtilsScript : MonoBehaviour
 
     void Update()
     {
+
         if (!Config.config.gameOver && !Config.config.gamePaused)
         {
             if (Input.GetMouseButtonDown(0) && dragOn == false && SceneManager.GetActiveScene().buildIndex == 2)
@@ -145,9 +147,6 @@ public class UtilsScript : MonoBehaviour
         //raycast to see what we clicked
         hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Vector2.zero);
 
-        //!!!
-        //BUG: UtilScript still raycast in other scenes and throws NUllPointerException.
-        //!!!
 
         //if we clicked a button activates the button
         /*
@@ -155,6 +154,9 @@ public class UtilsScript : MonoBehaviour
         {
             hit.collider.gameObject.SendMessage("ProcessAction", hit.collider.gameObject);
         }*/
+
+        //
+
 
         //if we click a deck activates deck and deselected our cards
         if (hit.collider != null && !hit.collider.gameObject.CompareTag("Card"))
@@ -173,6 +175,12 @@ public class UtilsScript : MonoBehaviour
                     DeselectCard(selectedCards[0]);
                 }
             }
+
+            else if (hit.collider != null && hit.collider.gameObject.CompareTag("Baby"))
+            {
+                baby.GetComponent<SpaceBabyController>().BabyHappyAnim();
+            }
+
             return;
         }
 
@@ -233,12 +241,15 @@ public class UtilsScript : MonoBehaviour
                 DeselectCard(selectedCards[0]);
             }
         }
+
+
     }
 
 
     public void Match(GameObject card1, GameObject card2)
     {
         soundController.CardMatchSound();
+        baby.GetComponent<SpaceBabyController>().BabyEatAnim();
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
 
