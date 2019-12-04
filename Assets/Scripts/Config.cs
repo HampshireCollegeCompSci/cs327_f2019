@@ -67,6 +67,7 @@ public class Config : MonoBehaviour
     private string JSON;
     GameInfo gameInfo;
     GameObject fadeOutImage;
+    GameObject errorImage;
 
     public string difficulty;
 
@@ -139,6 +140,7 @@ public class Config : MonoBehaviour
         else
         {
             gameObject.GetComponent<MusicController>().LoseMusic();
+            errorImage.SetActive(true);
             while (countdown > 0)
             {
                 yield return new WaitForSeconds(0.01f);
@@ -196,6 +198,9 @@ public class Config : MonoBehaviour
         deck = GameObject.Find("DeckButton");
 
         fadeOutImage = GameObject.Find("FadeOutImage");
+
+        errorImage = GameObject.Find("Error");
+		errorImage.SetActive(false);
 
         if (fadeOutImage != null)
         {
