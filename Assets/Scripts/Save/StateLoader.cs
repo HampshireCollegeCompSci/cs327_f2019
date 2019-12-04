@@ -191,7 +191,27 @@ public class StateLoader : MonoBehaviour
             }
         }
         //set up undo log
-
+        GameObject[] cards = GameObject.FindGameObjectsWithTag("Card");
+        foreach (AltMove a in state.moveLog)
+        {
+            Move tempMove = new Move();
+            string[] halves = a.cardName.Split('_');
+            string suite = halves[0];
+            string number = halves[1];  
+            foreach (GameObject card in cards)
+            {
+                if (card.GetComponent<CardScript>().cardSuit == suite && card.GetComponent<CardScript>().cardNum.ToString() == number)
+                {
+                    tempMove.card = card;
+                }
+            }
+            tempMove.origin = GameObject.Find(a.originName);
+            tempMove.isAction = a.isAction;
+            tempMove.moveType = a.moveType;
+            tempMove.nextCardWasHidden = a.nextCardWasHidden;
+            tempMove.remainingActions = a.remainingActions;
+            UndoScript.undoScript.moveLog.Push(tempMove);
+        }
     }
     
 
