@@ -7,6 +7,7 @@ public class UndoScript : MonoBehaviour
 {
     public static UndoScript undoScript;
     public Stack<Move> moveLog;
+    public Config config = Config.config;
 
     private void Start()
     {
