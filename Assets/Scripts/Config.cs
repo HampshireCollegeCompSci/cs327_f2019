@@ -198,13 +198,15 @@ public class Config : MonoBehaviour
         deck = GameObject.Find("DeckButton");
 
         fadeOutImage = GameObject.Find("FadeOutImage");
-
-        errorImage = GameObject.Find("Error");
-		errorImage.SetActive(false);
-
         if (fadeOutImage != null)
         {
             fadeOutImage.SetActive(false);
+        }
+
+        errorImage = GameObject.Find("Error");
+		if(errorImage != null)
+        {
+            errorImage.SetActive(false);
         }
 
         score = 0;
