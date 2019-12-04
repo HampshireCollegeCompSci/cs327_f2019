@@ -10,6 +10,7 @@ public class UtilsScript : MonoBehaviour
     private List<GameObject> selectedCardsCopy = new List<GameObject>();
     public GameObject matchedPile;
     public GameObject gameUI;
+    public GameObject moveCounter;
     public SoundController soundController;
     public int indexCounter;
     public RaycastHit2D hit;
@@ -38,7 +39,7 @@ public class UtilsScript : MonoBehaviour
         baby = GameObject.FindWithTag("Baby");
         if (global == null)
         {
-            DontDestroyOnLoad(gameObject); //makes instance persist across scenes
+            //DontDestroyOnLoad(gameObject); //makes instance persist across scenes
             global = this;
         }
         else if (global != this)
@@ -252,7 +253,7 @@ public class UtilsScript : MonoBehaviour
     {
         soundController.CardMatchSound();
         baby.GetComponent<SpaceBabyController>().BabyEatAnim();
-        //Config.config.actions += 1;
+        //UpdateActionCounter(1);
         Config.config.score += matchPoints;
         Vector3 p = card1.transform.position;
         Quaternion t = card1.transform.rotation;
@@ -263,7 +264,7 @@ public class UtilsScript : MonoBehaviour
         myPrefab.SetActive(true);
         myPrefab.GetComponent<Animator>().Play("MatchExplosionAnim");
         Instantiate(myPrefab, p, t);
-        //Config.config.actions += 1;
+        //UpdateActionCounter(1);
         Config.config.score += matchPoints;
         //Debug.Log("score" + Config.config.score);
         //check to see if the board is clear
@@ -358,11 +359,24 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
+    public void UpdateActionCounter(int actionUpdate, bool setAsValue = false)
+    {
+        if (setAsValue)
+        {
+            Config.config.actions = actionUpdate;
+        }
+        else
+        {
+            Config.config.actions += actionUpdate;
+        }
+
+        moveCounter.GetComponent<ActionCountScript>().UpdateActionText();
+    }
+
     public void CheckNextCycle()
     {
         if (Config.config.actions == Config.config.actionMax)
         {
-            Config.config.actions = 0;
             Config.config.deck.GetComponent<DeckScript>().NextCycle();
         }
     }

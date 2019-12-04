@@ -33,7 +33,7 @@ public class DeckScript : MonoBehaviour
     {
         if (deckScript == null)
         {
-            DontDestroyOnLoad(gameObject); //makes instance persist across scenes
+            //DontDestroyOnLoad(gameObject); //makes instance persist across scenes
             deckScript = this;
         }
         else if (deckScript != this)
@@ -41,10 +41,13 @@ public class DeckScript : MonoBehaviour
             Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
         }
     }
+
     void Start()
     {
         utils = UtilsScript.global;
         wastePileScript = wastePile.GetComponent<WastepileScript>();
+
+        utils.UpdateActionCounter(0, true);
 
         cardList = new List<GameObject>();
         InstantiateCards(this.gameObject);
@@ -164,7 +167,7 @@ public class DeckScript : MonoBehaviour
     }
 
     // moves all of the top foundation cards into their appropriate reactors
-    public void NextCycle()
+    public void NextCycle(bool manuallyTriggered = false)
     {
         for (int f = 0; f < foundations.Count; f++)
         {
@@ -181,6 +184,8 @@ public class DeckScript : MonoBehaviour
                 }
             }
         }
+
+        utils.UpdateActionCounter(0, true);
         utils.CheckGameOver();
     }
 

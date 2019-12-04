@@ -79,7 +79,11 @@ public class WastepileScript : MonoBehaviour
         {
             cards[i].GetComponent<CardScript>().MoveCard(gameObject, doLog: doLog, addUpdateHolo: false);
         }
-        Config.config.actions += 1; //adds to the action count
+
+        if (doLog)
+        {
+            utils.UpdateActionCounter(1);
+        }
 
         // show the new top tokens hologram now
         CheckHologram(false);
@@ -253,7 +257,7 @@ public class WastepileScript : MonoBehaviour
                     card.GetComponent<CardScript>().MoveCard(input);
                 }
 
-                Config.config.actions += 1; //adds to the action count
+                utils.UpdateActionCounter(1);
             }
         }
 
@@ -306,14 +310,14 @@ public class WastepileScript : MonoBehaviour
             {
                 card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
             }
-            Config.config.actions += 1; //adds to the action count
+            utils.UpdateActionCounter(1);
         }
 
         else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
         {
             soundController.CardToReactorSound();
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
-            Config.config.actions += 1; //adds to the action count
+            utils.UpdateActionCounter(1);
         }
 
         utils.CheckNextCycle();

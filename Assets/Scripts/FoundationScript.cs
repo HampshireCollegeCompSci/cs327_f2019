@@ -152,8 +152,10 @@ public class FoundationScript : MonoBehaviour
                         utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input);
                     }
 
-                    Config.config.actions += 1; //adds to the action count
+                    utils.UpdateActionCounter(1);
                 }
+
+                utils.UpdateActionCounter(1);
             }
         }
         else if (utils.IsMatch(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1) //check if selectedCards and the input card match and that selesctedCards is only one card
@@ -222,13 +224,13 @@ public class FoundationScript : MonoBehaviour
                 utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
             }
 
-            Config.config.actions += 1; //adds to the action count
+            utils.UpdateActionCounter(1);
         }
         else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
         {
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
 
-            Config.config.actions += 1; //adds to the action count
+            utils.UpdateActionCounter(1);
         }
 
         utils.CheckNextCycle();

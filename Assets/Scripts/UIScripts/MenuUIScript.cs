@@ -237,8 +237,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void MakeActionsMax()
     {
-        Config.config.actions = -1;
-        Config.config.deck.GetComponent<DeckScript>().NextCycle();
+        Config.config.deck.GetComponent<DeckScript>().NextCycle(manuallyTriggered: true);
     }
 
     IEnumerator ButtonPressedAnim(GameObject button, string scene, bool additive = false, bool unload = false)
