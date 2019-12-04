@@ -30,10 +30,12 @@ public class UtilsScript : MonoBehaviour
         gameUI = GameObject.Find("GameUI");
         soundController = GameObject.Find("Sound").GetComponent<SoundController>();
         wastePile = GameObject.Find("Scroll View");
+
     }
 
     void Awake()
     {
+        baby = GameObject.FindWithTag("Baby");
         if (global == null)
         {
             DontDestroyOnLoad(gameObject); //makes instance persist across scenes
@@ -250,15 +252,34 @@ public class UtilsScript : MonoBehaviour
     {
         soundController.CardMatchSound();
         baby.GetComponent<SpaceBabyController>().BabyEatAnim();
-        card1.GetComponent<CardScript>().MoveCard(matchedPile);
-        card2.GetComponent<CardScript>().MoveCard(matchedPile);
-
         //Config.config.actions += 1;
         Config.config.score += matchPoints;
+        Vector3 p = card1.transform.position;
+        Quaternion t = card1.transform.rotation;
+        p.z += 2;
 
+        Config.config.GetComponent<SoundController>().ReactorExplodeSound();
+        GameObject myPrefab = (GameObject)Resources.Load("Prefabs/MatchExplosionAnimation", typeof(GameObject));
+        myPrefab.SetActive(true);
+        myPrefab.GetComponent<Animator>().Play("MatchExplosionAnim");
+        Instantiate(myPrefab, p, t);
+        //Config.config.actions += 1;
+        Config.config.score += matchPoints;
+        //Debug.Log("score" + Config.config.score);
+        //check to see if the board is clear
+        StartCoroutine(animatorwait(card1, card2));
         CheckGameOver();
         //CheckNextCycle();
     }
+    IEnumerator animatorwait(GameObject card1, GameObject card2)
+    {
+        card2.GetComponent<CardScript>().MoveCard(card1.GetComponent<CardScript>().container);
+        yield return new WaitForSeconds(.5f);
+
+        card1.GetComponent<CardScript>().MoveCard(matchedPile);
+        card2.GetComponent<CardScript>().MoveCard(matchedPile);
+    }
+
 
     //checks if suit match AND value match
     public bool IsMatch(GameObject card1, GameObject card2)
