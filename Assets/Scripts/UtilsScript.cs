@@ -30,6 +30,7 @@ public class UtilsScript : MonoBehaviour
         gameUI = GameObject.Find("GameUI");
         soundController = GameObject.Find("Sound").GetComponent<SoundController>();
         wastePile = GameObject.Find("Scroll View");
+        baby = GameObject.Find("SpaceBaby");
 
     }
 
