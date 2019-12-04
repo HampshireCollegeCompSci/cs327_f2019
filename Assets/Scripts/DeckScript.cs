@@ -192,7 +192,7 @@ public class DeckScript : MonoBehaviour
     }
 
     // deals cards
-    public void Deal(bool log = true)
+    public void Deal(bool doLog = true)
     {
         if (wastePileScript.isScrolling())
         {
@@ -212,7 +212,7 @@ public class DeckScript : MonoBehaviour
 
         if (toMoveList.Count != 0)
         {
-            wastePileScript.AddCards(toMoveList);
+            wastePileScript.AddCards(toMoveList, doLog);
         }
     }
 

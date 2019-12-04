@@ -45,12 +45,12 @@ public class WastepileScript : MonoBehaviour
         }
     }
 
-    public void AddCards(List<GameObject> cards)
+    public void AddCards(List<GameObject> cards, bool doLog = true)
     {
-        StartCoroutine(ScrollBarAdding(cards));
+        StartCoroutine(ScrollBarAdding(cards, doLog));
     }
 
-    IEnumerator ScrollBarAdding(List<GameObject> cards)
+    IEnumerator ScrollBarAdding(List<GameObject> cards, bool doLog)
     {
         DisableScrolling();
 
@@ -77,7 +77,7 @@ public class WastepileScript : MonoBehaviour
         // add the new cards
         for (int i = 0; i < cards.Count; i++)
         {
-            cards[i].GetComponent<CardScript>().MoveCard(gameObject, addUpdateHolo: false);
+            cards[i].GetComponent<CardScript>().MoveCard(gameObject, doLog: doLog, addUpdateHolo: false);
         }
         Config.config.actions += 1; //adds to the action count
 
