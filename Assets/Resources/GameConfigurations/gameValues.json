@@ -18,6 +18,7 @@
     "hardMoveCount": 18,
     "selectedCardOpacity": 0.25,
     "cardHighlightColor": [ 0.5, 0.5, 1, 1 ],
+    "turnAlertThreshold": 7,
 
     "gameStateTxtEnglish": [ "You Won!", "You Lost..." ],
     "menuSceneButtonsTxtEnglish": [ "Play", "Tutorial", "Credits" ],

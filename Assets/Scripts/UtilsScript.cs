@@ -377,6 +377,33 @@ public class UtilsScript : MonoBehaviour
         }
 
         moveCounter.GetComponent<ActionCountScript>().UpdateActionText();
+
+        if (Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold)
+        {
+            Config.config.GetComponent<MusicController>().AlertMusic();
+        }
+        else
+        {
+           Config.config.GetComponent<MusicController>().GameMusic();
+        }
+
+        if (Config.config.actionMax - Config.config.actions <= 1)
+        {
+            foreach (GameObject reactor in Config.config.reactors)
+            {
+                if (reactor.GetComponent<ReactorScript>().CountReactorCard() + reactor.GetComponent<ReactorScript>().GetIncreaseOnNextCycle() >= Config.config.maxReactorVal)
+                {
+                    reactor.GetComponent<ReactorScript>().AlertOn();
+                }
+            }
+        }
+        else if (Config.config.reactor1 != null)
+        {
+            foreach (GameObject reactor in Config.config.reactors)
+            {
+                reactor.GetComponent<ReactorScript>().AlertOff();
+            }
+        }
     }
 
     public void CheckNextCycle()
