@@ -130,9 +130,9 @@ public class UndoScript : MonoBehaviour
                         lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
                     }
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
-
                 }
-                Config.config.score -= Config.config.matchPoints;
+
+                utils.UpdateScore(-Config.config.matchPoints);
                 undo();
                 return;
             }

@@ -10,6 +10,7 @@ public class UtilsScript : MonoBehaviour
     private List<GameObject> selectedCardsCopy = new List<GameObject>();
     public GameObject matchedPile;
     public GameObject gameUI;
+    public GameObject scoreBox;
     public GameObject moveCounter;
     public SoundController soundController;
     public int indexCounter;
@@ -254,7 +255,7 @@ public class UtilsScript : MonoBehaviour
         soundController.CardMatchSound();
         baby.GetComponent<SpaceBabyController>().BabyEatAnim();
         //UpdateActionCounter(1);
-        Config.config.score += matchPoints;
+        UpdateScore(matchPoints);
         Vector3 p = card1.transform.position;
         Quaternion t = card1.transform.rotation;
         p.z += 2;
@@ -358,6 +359,12 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
+    public void UpdateScore(int addScore)
+    {
+        Config.config.score += addScore;
+        scoreBox.GetComponent<ScoreScript>().UpdateScore();
+    }
+
     public void UpdateActionCounter(int actionUpdate, bool setAsValue = false)
     {
         if (setAsValue)
@@ -391,30 +398,32 @@ public class UtilsScript : MonoBehaviour
 
     public void SetEndGameScore()
     {
+        int extraScore = 0;
         if (matchedPile.GetComponent<MatchedPileScript>().cardList.Count == 52)
         {
-            Config.config.score += PerfectGamePoints;
+            extraScore += PerfectGamePoints;
         }
 
         if (Config.config.reactor1.GetComponent<ReactorScript>().cardList.Count == 0)
         {
-            Config.config.score += emptyReactorPoints;
+            extraScore += emptyReactorPoints;
         }
 
         if (Config.config.reactor2.GetComponent<ReactorScript>().cardList.Count == 0)
         {
-            Config.config.score += emptyReactorPoints;
+            extraScore += emptyReactorPoints;
         }
 
         if (Config.config.reactor3.GetComponent<ReactorScript>().cardList.Count == 0)
         {
-            Config.config.score += emptyReactorPoints;
+            extraScore += emptyReactorPoints;
         }
 
         if (Config.config.reactor4.GetComponent<ReactorScript>().cardList.Count == 0)
         {
-            Config.config.score += emptyReactorPoints;
+            extraScore += emptyReactorPoints;
         }
+        UpdateScore(extraScore);
     }
 
     public void ClickAndDrag(List<GameObject> cards)

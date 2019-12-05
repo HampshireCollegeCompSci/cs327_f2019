@@ -4359,6 +4359,7 @@ MonoBehaviour:
   selectedCards: []
   matchedPile: {fileID: 1214012893}
   gameUI: {fileID: 2058941297}
+  scoreBox: {fileID: 1489602702}
   moveCounter: {fileID: 338821812}
   soundController: {fileID: 307181958}
   indexCounter: 0
