@@ -128,12 +128,9 @@ public class WastepileScript : MonoBehaviour
 
     public void RemoveCard(GameObject card, bool checkHolo = true)
     {
-        float x = contentRectTransform.anchoredPosition.x - 1;
-
         GameObject parentCardContainer = card.transform.parent.gameObject;
         card.transform.parent = null;
         cardContainers.Remove(parentCardContainer);
-        Destroy(parentCardContainer);
 
         card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.None);
         cardList.Remove(card);
@@ -141,30 +138,32 @@ public class WastepileScript : MonoBehaviour
         if (checkHolo)
         {
             CheckHologram(false);
-            StartCoroutine(ScrollBarRemoving(x));
+            StartCoroutine(ScrollBarRemoving(parentCardContainer));
         }
-        
+        else
+        {
+            Destroy(parentCardContainer);
+        }
+
         //if (cardList.Count != 0)
         //{
         //    StartCoroutine(ScrollBarRemoving(x));
         //}
     }
 
-    IEnumerator ScrollBarRemoving(float x)
+    IEnumerator ScrollBarRemoving(GameObject parentCardContainer)
     {
         DisableScrolling();
 
         Vector3 temp = contentRectTransform.anchoredPosition;
-        temp.x = x;
-        contentRectTransform.anchoredPosition = temp;
-
-        while (temp.x < 0)
+        while (temp.x < 1)
         {
-            yield return new WaitForSeconds(.01f);
             temp.x += 0.1f;
             contentRectTransform.anchoredPosition = temp;
+            yield return new WaitForSeconds(.01f);
         }
 
+        Destroy(parentCardContainer);
         ResetScrollBar(temp);
     }
 
