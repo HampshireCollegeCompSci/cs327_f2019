@@ -133,6 +133,7 @@ public class UndoScript : MonoBehaviour
 
                 }
                 Config.config.score -= Config.config.matchPoints;
+                undo();
                 return;
             }
             else if (moveLog.Peek().moveType == "draw") //move the last three drawn cards back to the deck (assuming the last action was to draw from the deck)

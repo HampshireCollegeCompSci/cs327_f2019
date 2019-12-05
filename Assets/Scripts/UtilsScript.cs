@@ -265,7 +265,6 @@ public class UtilsScript : MonoBehaviour
         myPrefab.GetComponent<Animator>().Play("MatchExplosionAnim");
         Instantiate(myPrefab, p, t);
         //UpdateActionCounter(1);
-        Config.config.score += matchPoints;
         //Debug.Log("score" + Config.config.score);
         //check to see if the board is clear
         StartCoroutine(animatorwait(card1, card2));
