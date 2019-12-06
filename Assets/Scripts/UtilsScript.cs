@@ -263,6 +263,7 @@ public class UtilsScript : MonoBehaviour
         Config.config.GetComponent<SoundController>().ReactorExplodeSound();
         GameObject myPrefab = (GameObject)Resources.Load("Prefabs/MatchExplosionAnimation", typeof(GameObject));
         myPrefab.SetActive(true);
+        myPrefab.GetComponent<Animator>().Play("MatchExplosionAnim");
         Instantiate(myPrefab, p, t);
         //UpdateActionCounter(1);
         //Debug.Log("score" + Config.config.score);
