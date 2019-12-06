@@ -92,7 +92,7 @@ public class StateLoader : MonoBehaviour
         File.WriteAllText("Assets/Resources/GameStates/testState.json", json);
     }
 
-    public void loadState(string path = "Assets/Resources/GameStates/testState.json")
+    public void loadState(string path = "GameStates/testState")
     {
         //load the json into a GameState
         GameState state = CreateFromJSON(path);
