@@ -5,10 +5,11 @@ using UnityEngine;
 
 public class StateLoader : MonoBehaviour
 {
+    public static StateLoader saveSystem;
     Config config = Config.config;
     GameState gameState;
 
-    public void writeState(/*string path*/)
+    public void writeState(string path = "Assets/Resources/GameStates/testState.json")
     {
         gameState = new GameState() {
             wastePile = new List<string>(),
@@ -89,7 +90,7 @@ public class StateLoader : MonoBehaviour
 
         string json = JsonUtility.ToJson(gameState, true);
 
-        File.WriteAllText("Assets/Resources/GameStates/testState.json", json);
+        File.WriteAllText(path, json);
     }
 
     public void loadState(string path = "Assets/Resources/GameStates/testState.json")
@@ -219,5 +220,18 @@ public class StateLoader : MonoBehaviour
     {
         var jsonTextFile = Resources.Load<TextAsset>(path);
         return JsonUtility.FromJson<GameState>(jsonTextFile.ToString());
+    }
+
+    private void Awake()
+    {
+        if (saveSystem == null)
+        {
+            DontDestroyOnLoad(gameObject);
+            saveSystem = this;
+        }
+        else if (saveSystem != this)
+        {
+            Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
+        }
     }
 }
