@@ -81,6 +81,7 @@ public class Config : MonoBehaviour
 
     public int actionMax;
     public int actions;
+    public int turnAlertSmallThreshold;
     public int turnAlertThreshold;
 
     //button txt
@@ -178,6 +179,7 @@ public class Config : MonoBehaviour
         pauseSceneButtonsTxtEnglish = gameInfo.pauseSceneButtonsTxtEnglish;
         summarySceneButtonsTxtEnglish = gameInfo.summarySceneButtonsTxtEnglish;
         cardHighlightColor = gameInfo.cardHighlightColor;
+        turnAlertSmallThreshold = gameInfo.turnAlertSmallThreshold;
         turnAlertThreshold = gameInfo.turnAlertThreshold;
     }
 

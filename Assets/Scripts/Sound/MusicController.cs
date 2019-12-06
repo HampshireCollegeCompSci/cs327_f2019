@@ -37,7 +37,7 @@ public class MusicController : MonoBehaviour
 
     public void AlertMusic()
     {
-        AudioClip sound = Resources.Load<AudioClip>("Audio/music_lose");
+        AudioClip sound = Resources.Load<AudioClip>("Audio/music_transition");
         if (soundController.clip != sound)
         {
             soundController.clip = sound;
