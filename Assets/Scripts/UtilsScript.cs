@@ -427,7 +427,7 @@ public class UtilsScript : MonoBehaviour
         {
             Config.config.GetComponent<MusicController>().AlertMusic();
             GameObject.Find("ActionDisplay").GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/UI/Gameplay UI/gameTimer_alert");
-            GameObject.Find("TimerSiren").GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/UI/Gameplay UI/gameTimer_sirenAlert"); //@Shan this should be alternating between gameTimer_alert and just gameTimer 
+            GameObject.Find("TimerSiren").GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/UI/Gameplay UI/gameTimer_sirenAlert"); //@Shan this should be alternating between gameTimer_sirenAlert and just gameTimer_sirenOff
         }
         else
         {
