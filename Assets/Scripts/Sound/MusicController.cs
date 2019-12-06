@@ -35,6 +35,16 @@ public class MusicController : MonoBehaviour
         }
     }
 
+    public void AlertMusic()
+    {
+        AudioClip sound = Resources.Load<AudioClip>("Audio/music_lose");
+        if (soundController.clip != sound)
+        {
+            soundController.clip = sound;
+            soundController.Play();
+        }
+    }
+
     public void GameMusic()
     {
         AudioClip sound = Resources.Load<AudioClip>("Audio/music_main_theme");

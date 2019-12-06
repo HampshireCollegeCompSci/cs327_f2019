@@ -67,6 +67,7 @@ public class Config : MonoBehaviour
     private string JSON;
     GameInfo gameInfo;
     GameObject fadeOutImage;
+    GameObject errorImage;
 
     public string difficulty;
 
@@ -80,6 +81,7 @@ public class Config : MonoBehaviour
 
     public int actionMax;
     public int actions;
+    public int turnAlertThreshold;
 
     //button txt
     public string[] gameStateTxtEnglish;
@@ -139,6 +141,7 @@ public class Config : MonoBehaviour
         else
         {
             gameObject.GetComponent<MusicController>().LoseMusic();
+            errorImage.SetActive(true);
             while (countdown > 0)
             {
                 yield return new WaitForSeconds(0.01f);
@@ -175,6 +178,7 @@ public class Config : MonoBehaviour
         pauseSceneButtonsTxtEnglish = gameInfo.pauseSceneButtonsTxtEnglish;
         summarySceneButtonsTxtEnglish = gameInfo.summarySceneButtonsTxtEnglish;
         cardHighlightColor = gameInfo.cardHighlightColor;
+        turnAlertThreshold = gameInfo.turnAlertThreshold;
     }
 
     public void SetCards()
@@ -196,10 +200,15 @@ public class Config : MonoBehaviour
         deck = GameObject.Find("DeckButton");
 
         fadeOutImage = GameObject.Find("FadeOutImage");
-
         if (fadeOutImage != null)
         {
             fadeOutImage.SetActive(false);
+        }
+
+        errorImage = GameObject.Find("Error");
+		if(errorImage != null)
+        {
+            errorImage.SetActive(false);
         }
 
         score = 0;

@@ -13,6 +13,8 @@ public class ReactorScript : MonoBehaviour
     GameObject myPrefab;
     public string suit;
     private bool glowing = false;
+    private bool alert = false;
+    
 
 
     void Start()
@@ -148,6 +150,22 @@ public class ReactorScript : MonoBehaviour
         utils.CheckGameOver();
     }
 
+    public int GetIncreaseOnNextCycle()
+    {
+        int output = 0;
+        foreach (GameObject foundation in Config.config.foundationList)
+        {
+            if (foundation.GetComponent<FoundationScript>().cardList.Count > 0)
+            {
+                if (foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardSuit == suit)
+                {
+                    output += foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardVal;
+                }
+            }
+        }
+        return output;
+    }
+
     public int CountReactorCard()
     {
         int totalSum = 0;
@@ -173,10 +191,34 @@ public class ReactorScript : MonoBehaviour
 
     public bool GlowOff()
     {
-        if (glowing)
+        if (glowing && !alert)
         {
             gameObject.transform.Find("Glow").gameObject.SetActive(false);
             glowing = false;
+            return true;
+        }
+        return false;
+    }
+
+    public bool AlertOn()
+    {
+        if (!alert)
+        {
+            gameObject.transform.Find("Glow").gameObject.SetActive(true);
+            gameObject.transform.Find("Glow").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Reactors/almostfull-reactor1");
+            alert = true;
+            return true;
+        }
+        return false;
+    }
+
+    public bool AlertOff()
+    {
+        gameObject.transform.Find("Glow").GetComponent<SpriteRenderer>().GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Reactors/selectglow-reactor1");
+        if (alert)
+        {
+            gameObject.transform.Find("Glow").gameObject.SetActive(false);
+            alert = false;
             return true;
         }
         return false;

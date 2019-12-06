@@ -45,12 +45,12 @@ public class WastepileScript : MonoBehaviour
         }
     }
 
-    public void AddCards(List<GameObject> cards)
+    public void AddCards(List<GameObject> cards, bool doLog = true)
     {
-        StartCoroutine(ScrollBarAdding(cards));
+        StartCoroutine(ScrollBarAdding(cards, doLog));
     }
 
-    IEnumerator ScrollBarAdding(List<GameObject> cards)
+    IEnumerator ScrollBarAdding(List<GameObject> cards, bool doLog)
     {
         DisableScrolling();
 
@@ -77,9 +77,13 @@ public class WastepileScript : MonoBehaviour
         // add the new cards
         for (int i = 0; i < cards.Count; i++)
         {
-            cards[i].GetComponent<CardScript>().MoveCard(gameObject, addUpdateHolo: false);
+            cards[i].GetComponent<CardScript>().MoveCard(gameObject, doLog: doLog, addUpdateHolo: false);
         }
-        Config.config.actions += 1; //adds to the action count
+
+        if (doLog)
+        {
+            utils.UpdateActionCounter(1);
+        }
 
         // show the new top tokens hologram now
         CheckHologram(false);
@@ -124,12 +128,9 @@ public class WastepileScript : MonoBehaviour
 
     public void RemoveCard(GameObject card, bool checkHolo = true)
     {
-        float x = contentRectTransform.anchoredPosition.x - 1;
-
         GameObject parentCardContainer = card.transform.parent.gameObject;
         card.transform.parent = null;
         cardContainers.Remove(parentCardContainer);
-        Destroy(parentCardContainer);
 
         card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.None);
         cardList.Remove(card);
@@ -137,30 +138,32 @@ public class WastepileScript : MonoBehaviour
         if (checkHolo)
         {
             CheckHologram(false);
-            StartCoroutine(ScrollBarRemoving(x));
+            StartCoroutine(ScrollBarRemoving(parentCardContainer));
         }
-        
+        else
+        {
+            Destroy(parentCardContainer);
+        }
+
         //if (cardList.Count != 0)
         //{
         //    StartCoroutine(ScrollBarRemoving(x));
         //}
     }
 
-    IEnumerator ScrollBarRemoving(float x)
+    IEnumerator ScrollBarRemoving(GameObject parentCardContainer)
     {
         DisableScrolling();
 
         Vector3 temp = contentRectTransform.anchoredPosition;
-        temp.x = x;
-        contentRectTransform.anchoredPosition = temp;
-
-        while (temp.x < 0)
+        while (temp.x < 1)
         {
-            yield return new WaitForSeconds(.01f);
             temp.x += 0.1f;
             contentRectTransform.anchoredPosition = temp;
+            yield return new WaitForSeconds(.01f);
         }
 
+        Destroy(parentCardContainer);
         ResetScrollBar(temp);
     }
 
@@ -253,7 +256,7 @@ public class WastepileScript : MonoBehaviour
                     card.GetComponent<CardScript>().MoveCard(input);
                 }
 
-                Config.config.actions += 1; //adds to the action count
+                utils.UpdateActionCounter(1);
             }
         }
 
@@ -306,14 +309,14 @@ public class WastepileScript : MonoBehaviour
             {
                 card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
             }
-            Config.config.actions += 1; //adds to the action count
+            utils.UpdateActionCounter(1);
         }
 
         else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
         {
             soundController.CardToReactorSound();
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
-            Config.config.actions += 1; //adds to the action count
+            utils.UpdateActionCounter(1);
         }
 
         utils.CheckNextCycle();
