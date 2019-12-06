@@ -7,16 +7,23 @@ public class UndoScript : MonoBehaviour
 {
     public static UndoScript undoScript;
     public Stack<Move> moveLog;
+    public UtilsScript utils;
 
     private void Start()
     {
-        moveLog = Config.config.moveLog;
+        //moveLog = Config.config.moveLog;
+        moveLog = new Stack<Move>();
     }
     /*
      *logMove takes a number of  paramaters, detects if the card below the moved card was hidden, then logs the move.
      */
     public void logMove(string moveType, GameObject card, bool isAction = true, int actionsRemaining = 1, bool nextCardWasHidden = false)
     {
+        if (utils == null)
+        {
+            utils = UtilsScript.global;
+        }
+
         GameObject origin = card.GetComponent<CardScript>().container; //get the cards original location
 
         //create the log of the move
@@ -69,7 +76,7 @@ public class UndoScript : MonoBehaviour
                     undoList[i].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false, removeUpdateHolo: false, addUpdateHolo: false);
                 }
                 undoList[undoList.Count - 1].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false);
-                Config.config.actions = undoList[0].remainingActions;
+                utils.UpdateActionCounter(undoList[0].remainingActions, true);
                 return;
 
                 // other method, foundation script has a matching method for this as well that is commented out
@@ -96,7 +103,7 @@ public class UndoScript : MonoBehaviour
                 //}
                 //stackUndo.Pop().card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
 
-                //Config.config.actions = lastMove.remainingActions;
+                //utils.UpdateActionCounter(lastMove.remainingActions, true);
                 //return;
             }
             else if (moveLog.Peek().moveType == "move") //standard behavior, move a single token back where it was
@@ -109,7 +116,7 @@ public class UndoScript : MonoBehaviour
                 lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
                 if (lastMove.isAction)
                 {
-                    Config.config.actions = lastMove.remainingActions;
+                    utils.UpdateActionCounter(lastMove.remainingActions, true);
                 }
                 return;
             }
@@ -123,9 +130,10 @@ public class UndoScript : MonoBehaviour
                         lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
                     }
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
-
                 }
-                Config.config.score -= Config.config.matchPoints;
+
+                utils.UpdateScore(-Config.config.matchPoints);
+                undo();
                 return;
             }
             else if (moveLog.Peek().moveType == "draw") //move the last three drawn cards back to the deck (assuming the last action was to draw from the deck)
@@ -138,7 +146,7 @@ public class UndoScript : MonoBehaviour
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false);
                 }
                 Config.config.wastePile.GetComponent<WastepileScript>().CheckHologram(false);
-                Config.config.actions = lastMove.remainingActions;
+                utils.UpdateActionCounter(lastMove.remainingActions, true);
                 return;
             }
             else if (moveLog.Peek().moveType == "deckreset") //move the entire deck back into the wastepile
@@ -151,7 +159,7 @@ public class UndoScript : MonoBehaviour
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false, addUpdateHolo: false);
                 }
                 Config.config.wastePile.GetComponent<WastepileScript>().CheckHologram(false);
-                Config.config.actions = lastMove.remainingActions;
+                utils.UpdateActionCounter(lastMove.remainingActions, true);
                 return;
             }
             else if (moveLog.Peek().moveType == "cycle") //undo a cycle turning over, resets all tokens moved up, along with the move counter
@@ -172,7 +180,7 @@ public class UndoScript : MonoBehaviour
                 }
                 else if(moveLog.Count > 0)
                 {
-                    Config.config.actions = moveLog.Peek().remainingActions + 1;
+                    utils.UpdateActionCounter(moveLog.Peek().remainingActions + 1, true);
                 }
                 return;
             }
@@ -183,7 +191,7 @@ public class UndoScript : MonoBehaviour
     {
         if (undoScript == null)
         {
-            DontDestroyOnLoad(gameObject); //makes instance persist across scenes
+            //DontDestroyOnLoad(gameObject); //makes instance persist across scenes
             undoScript = this;
         }
         else if (undoScript != this)

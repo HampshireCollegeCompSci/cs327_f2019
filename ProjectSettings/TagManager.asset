@@ -13,6 +13,7 @@ TagManager:
   - Background
   - Button
   - ReactorHolder
+  - Baby
   layers:
   - Default
   - TransparentFX

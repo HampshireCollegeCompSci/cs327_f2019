@@ -70,6 +70,7 @@ public class FoundationScript : MonoBehaviour
     public void SetCardPositions()
     {
         int positionCounter = 0;
+        int hiddenCards = 0;
         float yOffset = 0;
 
         for (int i = cardList.Count - 1; i >= 0; i--) // go backwards through the list
@@ -79,17 +80,33 @@ public class FoundationScript : MonoBehaviour
 
             if (cardList[i].GetComponent<CardScript>().isHidden())  // don't show hidden cards as much
             {
-                if (cardList.Count > 12) // especially if the stack is large
+                hiddenCards++;
+                if (cardList.Count > 18)
+                {
+                    yOffset += 0.01f;
+                }
+                else if (cardList.Count > 12)
                 {
                     yOffset += 0.05f;
                 }
-                else if (cardList.Count > 10) // less so if the stack is medium
+                else if (cardList.Count > 10)
                 {
                     yOffset += 0.1f;
                 }
                 else
                 {
                     yOffset += 0.2f;
+                }
+            }
+            else if (hiddenCards > 0)
+            {
+                if (cardList.Count > 12)
+                {
+                    yOffset += 0.42f;
+                }
+                else
+                {
+                    yOffset += 0.45f;
                 }
             }
             else
@@ -135,8 +152,10 @@ public class FoundationScript : MonoBehaviour
                         utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input);
                     }
 
-                    Config.config.actions += 1; //adds to the action count
+                    utils.UpdateActionCounter(1);
                 }
+
+                utils.UpdateActionCounter(1);
             }
         }
         else if (utils.IsMatch(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1) //check if selectedCards and the input card match and that selesctedCards is only one card
@@ -205,13 +224,13 @@ public class FoundationScript : MonoBehaviour
                 utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
             }
 
-            Config.config.actions += 1; //adds to the action count
+            utils.UpdateActionCounter(1);
         }
         else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
         {
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
 
-            Config.config.actions += 1; //adds to the action count
+            utils.UpdateActionCounter(1);
         }
 
         utils.CheckNextCycle();

@@ -47,4 +47,5 @@ public class GameInfo
     public string[] levelSceneButtonsTxtEnglish;
     public string[] pauseSceneButtonsTxtEnglish;
     public string[] summarySceneButtonsTxtEnglish;
+    public int turnAlertThreshold;
 }
