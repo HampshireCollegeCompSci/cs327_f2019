@@ -28,13 +28,7 @@ public class ActionCountScript : MonoBehaviour
 
     IEnumerator ButtonAnimTrans()
     {
-
-        for (float ft = 0.2f; ft >= 0; ft -= 0.1f)
-        {
-            yield return new WaitForSeconds(0.1f);
-        }
-
+        yield return new WaitForSeconds(0.3f);
         GameObject.Find("TimerButton").GetComponent<Image>().sprite = buttonUp;
-
     }
 }
