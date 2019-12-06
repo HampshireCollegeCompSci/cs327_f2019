@@ -411,6 +411,11 @@ public class UtilsScript : MonoBehaviour
 
         moveCounter.GetComponent<ActionCountScript>().UpdateActionText();
 
+        if (Config.config.actionMax - Config.config.actions <= Config.config.turnAlertSmallThreshold && Config.config.actionMax - Config.config.actions >= Config.config.turnAlertThreshold)
+        {
+            //GameObject.Find("MoveCounter").GetComponent<Image>().SourceImage = Resources.Load<Sprite>("Sprites/UI/Gameplay UI/gameTimer_on");
+        }
+
         if (Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold)
         {
             Config.config.GetComponent<MusicController>().AlertMusic();
