@@ -153,6 +153,7 @@ public class Config : MonoBehaviour
 
         SceneManager.LoadScene("SummaryScene");
         File.Delete("Assets/Resources/GameStates/testState.json");
+        File.Delete("Assets/Resources/GameStates/testState.meta");
     }
 
     public void ConfigFromJSON()
