@@ -261,7 +261,6 @@ public class UtilsScript : MonoBehaviour
         Config.config.GetComponent<SoundController>().ReactorExplodeSound();
         GameObject myPrefab = (GameObject)Resources.Load("Prefabs/MatchExplosionAnimation", typeof(GameObject));
         myPrefab.SetActive(true);
-        myPrefab.GetComponent<Animator>().Play("MatchExplosionAnim");
         Instantiate(myPrefab, p, t);
         //Config.config.actions += 1;
         Config.config.score += matchPoints;
@@ -273,15 +272,49 @@ public class UtilsScript : MonoBehaviour
     }
     IEnumerator animatorwait(GameObject card1, GameObject card2)
     {
+        string nameOfCombo = "Recourses/Sprites/FoodHolograms/a-9_clubs_food";
+        if(card1.GetComponent<CardScript>().cardSuit == "spades"||
+            card1.GetComponent<CardScript>().cardSuit == "clubs")
+        {
+            nameOfCombo = "Recourses/Sprites/FoodHolograms/a-9_clubs_food";
+        }
+        else
+        {
+            nameOfCombo = "Prefabs/red_3_combine";
+        }
+
+
         card2.GetComponent<CardScript>().MoveCard(card1.GetComponent<CardScript>().container);
         yield return new WaitForSeconds(.5f);
+
+        Vector3 p = card1.transform.position;
+        p.y += 3;
+        Quaternion t = card1.transform.rotation;
+        GameObject comboToLoad = (GameObject)Resources.Load(nameOfCombo, typeof(GameObject));
+        comboToLoad.transform.localScale = Vector3.one * .15f;
+        Instantiate(comboToLoad, p, t);
+        comboToLoad.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, .5f);
+        StartCoroutine(FadeImage(comboToLoad));
 
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
     }
 
+    IEnumerator FadeImage(GameObject comboToLoad)
+    {
+        SpriteRenderer sprite = comboToLoad.GetComponent<SpriteRenderer>();
 
-    //checks if suit match AND value match
+        for (float i = 1; i >= 0; i -= Time.deltaTime)
+            {
+            // set color with i as alpha
+            comboToLoad.GetComponent<SpriteRenderer>().color = new Color(i, 1, 1, (i));
+            print(comboToLoad.GetComponent<SpriteRenderer>().color);
+            comboToLoad.transform.position += new Vector3(.01f,0,0);
+            yield return null;
+                
+                }
+    }
+        //checks if suit match AND value match
     public bool IsMatch(GameObject card1, GameObject card2)
     {
 
