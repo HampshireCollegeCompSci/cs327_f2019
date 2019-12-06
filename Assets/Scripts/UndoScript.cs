@@ -175,14 +175,15 @@ public class UndoScript : MonoBehaviour
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
                 }
 
-                if (lastMove.remainingActions == 0)
+                if (lastMove.remainingActions == Config.config.actionMax)
                 {
                     undo();
                 }
-                else if(moveLog.Count > 0)
+                else
                 {
-                    utils.UpdateActionCounter(moveLog.Peek().remainingActions + 1, true);
+                    utils.UpdateActionCounter(lastMove.remainingActions, true);
                 }
+
                 return;
             }
         }
