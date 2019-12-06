@@ -93,10 +93,12 @@ public class MenuUIScript : MonoBehaviour
 
     }
 
+
+
     public void Play()
     {
-        coroutine = ButtonPressedAnim(GameObject.Find("Play"), "LevelSelectScene");
-        StartCoroutine(coroutine);
+        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SceneManager.LoadScene("LevelSelectScene");
     }
 
     public void NewGame()
@@ -106,14 +108,8 @@ public class MenuUIScript : MonoBehaviour
         Config.config.gamePaused = false;
         Config.config.GetComponent<MusicController>().LoadGap();
 
-        if (Config.config.difficulty == "easy")
-            coroutine = ButtonPressedAnim(GameObject.Find("Easy"), "LoadingScene");
-        else if (Config.config.difficulty == "medium")
-            coroutine = ButtonPressedAnim(GameObject.Find("Normal"), "LoadingScene");
-        else
-            coroutine = ButtonPressedAnim(GameObject.Find("Hard"), "LoadingScene");
-
-        StartCoroutine(coroutine);
+        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SceneManager.LoadScene("LoadingScene");
 
     }
 
@@ -137,8 +133,8 @@ public class MenuUIScript : MonoBehaviour
         Config.config.gameWin = false;
         Config.config.gamePaused = false;
 
-        coroutine = ButtonPressedAnim(GameObject.Find("PlayAgain"), "GameplayScene");
-        StartCoroutine(coroutine);
+        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SceneManager.LoadScene("GameplayScene");
     }
 
     public void Restart()
@@ -148,8 +144,8 @@ public class MenuUIScript : MonoBehaviour
         Config.config.gameWin = false;
         Config.config.gamePaused = false;
 
-        coroutine = ButtonPressedAnim(GameObject.Find("Restart"), "GameplayScene");
-        StartCoroutine(coroutine);
+        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SceneManager.LoadScene("GameplayScene");
     }
 
     public void MainMenu()
@@ -161,8 +157,8 @@ public class MenuUIScript : MonoBehaviour
             Config.config.gameWin = false;
         }
 
-        coroutine = ButtonPressedAnim(GameObject.Find("MainMenu"), "MainMenuScene");
-        StartCoroutine(coroutine);
+        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SceneManager.LoadScene("MainMenuScene");
 
         Config.config.GetComponent<MusicController>().MainMenuMusic();
     }
@@ -171,14 +167,14 @@ public class MenuUIScript : MonoBehaviour
     //possibly be renamed to settings
     public void Settings()
     {
-        coroutine = ButtonPressedAnim(GameObject.Find("Settings"), "SoundScene", true);
-        StartCoroutine(coroutine);
+        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SceneManager.LoadScene("SoundScene");
     }
 
     public void Credits()
     {
-        coroutine = ButtonPressedAnim(GameObject.Find("Credits"), "CreditScene");
-        StartCoroutine(coroutine);
+        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SceneManager.LoadScene("CreditScene");
     }
 
     public void PauseGame()
@@ -194,29 +190,28 @@ public class MenuUIScript : MonoBehaviour
     {
         Config.config.gamePaused = false;
         //TODO load the saved game scene then uncomment the above code
-        coroutine = ButtonPressedAnim(GameObject.Find("Resume"), "PauseScene", false, true);
-        StartCoroutine(coroutine);
+        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SceneManager.UnloadSceneAsync("PauseScene");
     }
 
     public void Return()
     {
-        //Config.config.GetComponent<SoundController>().ButtonPressSound();
+        Config.config.GetComponent<SoundController>().ButtonPressSound();
         if (Config.config.gamePaused)
         {
-            coroutine = ButtonPressedAnim(GameObject.Find("Return"), "SoundScene", false, true);
+            SceneManager.UnloadSceneAsync("SoundScene");
         }
 
         else
         {
-            coroutine = ButtonPressedAnim(GameObject.Find("Return"), "MainMenuScene");
+            SceneManager.LoadScene("MainMenuScene");
         }
-        StartCoroutine(coroutine);
     }
 
     public void Tutorial()
     {
-        coroutine = ButtonPressedAnim(GameObject.Find("Tutorial"), "TutorialScene");
-        StartCoroutine(coroutine);
+        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SceneManager.LoadScene("TutorialScene");
     }
 
     public void HardDifficulty()
@@ -240,23 +235,23 @@ public class MenuUIScript : MonoBehaviour
         Config.config.deck.GetComponent<DeckScript>().NextCycle(manuallyTriggered: true);
     }
 
-    IEnumerator ButtonPressedAnim(GameObject button, string scene, bool additive = false, bool unload = false)
-    {
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
-        button.GetComponentInChildren<Animator>().enabled = true;
+    //IEnumerator ButtonPressedAnim(GameObject button, string scene, bool additive = false, bool unload = false)
+    //{
+    //    Config.config.GetComponent<SoundController>().ButtonPressSound();
+    //    button.GetComponentInChildren<Animator>().enabled = true;
 
-        for (float ft = 0.2f; ft >= 0; ft -= 0.1f)
-        {
-            yield return new WaitForSeconds(0.08f);
-        }
+    //    for (float ft = 0.2f; ft >= 0; ft -= 0.1f)
+    //    {
+    //        yield return new WaitForSeconds(0.08f);
+    //    }
 
-        button.GetComponentInChildren<Animator>().enabled = false;
+    //    button.GetComponentInChildren<Animator>().enabled = false;
 
-        if (!additive && !unload)
-            SceneManager.LoadScene(scene);
-        else if (additive)
-            SceneManager.LoadScene(scene, LoadSceneMode.Additive);
-        else if (unload)
-            SceneManager.UnloadSceneAsync(scene);
-    }
+    //    if (!additive && !unload)
+    //        SceneManager.LoadScene(scene);
+    //    else if (additive)
+    //        SceneManager.LoadScene(scene, LoadSceneMode.Additive);
+    //    else if (unload)
+    //        SceneManager.UnloadSceneAsync(scene);
+    //}
 }
