@@ -17,6 +17,7 @@ public class MatchedPileScript : MonoBehaviour
         card.transform.SetParent(gameObject.transform);
         card.transform.localPosition = Vector3.zero;
         card.SetActive(false);
+        //utils.CheckNextCycle(); since matching doesn't count to the action count atm
     }
 
     public void RemoveCard(GameObject card, bool checkHolo = false)

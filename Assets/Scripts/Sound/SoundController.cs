@@ -12,10 +12,25 @@ public class SoundController : MonoBehaviour
         soundController.clip = sound;
         soundController.Play();
     }
+    public void ButtonPressSound2()
+    {
+        AudioClip sound = Resources.Load<AudioClip>("Audio/token_reveal");
+        // volunme changes doesn't work
+        soundController.volume = 0.5f;
+        soundController.clip = sound;
+        soundController.Play();
+        soundController.volume = 1;
+    }
 
     public void CardPressSound()
     {
+        int randomNo = Random.Range(0, 2);
         AudioClip sound = Resources.Load<AudioClip>("Audio/token_select");
+        if (randomNo == 1)
+            sound = Resources.Load<AudioClip>("Audio/token_select_B");
+        else if (randomNo == 2)
+            sound = Resources.Load<AudioClip>("Audio/token_select_C");
+
         soundController.clip = sound;
         soundController.Play();
     }
@@ -29,7 +44,15 @@ public class SoundController : MonoBehaviour
 
     public void CardStackSound()
     {
+        int randomNo = Random.Range(0, 3);
         AudioClip sound = Resources.Load<AudioClip>("Audio/token_stack");
+        if (randomNo == 1)
+            sound = Resources.Load<AudioClip>("Audio/token_stack_B");
+        else if (randomNo == 2)
+            sound = Resources.Load<AudioClip>("Audio/token_stack_C");
+        else if (randomNo == 3)
+            sound = Resources.Load<AudioClip>("Audio/token_stack_D");
+
         soundController.clip = sound;
         soundController.Play();
     }
@@ -51,6 +74,8 @@ public class SoundController : MonoBehaviour
     public void DeckDeal()
     {
         AudioClip sound = Resources.Load<AudioClip>("Audio/deck_conveyer_belt_deal");
+        soundController.Stop();
+        soundController.volume = 1;
         soundController.clip = sound;
         soundController.Play();
     }
@@ -58,6 +83,8 @@ public class SoundController : MonoBehaviour
     public void DeckReshuffle()
     {
         AudioClip sound = Resources.Load<AudioClip>("Audio/deck_conveyer_belt_reshuffle");
+        soundController.Stop();
+        soundController.volume = 0.3f;
         soundController.clip = sound;
         soundController.Play();
     }
@@ -72,6 +99,13 @@ public class SoundController : MonoBehaviour
     public void ReactorExplodeSound()
     {
         AudioClip sound = Resources.Load<AudioClip>("Audio/reactor_explosion");
+        soundController.clip = sound;
+        soundController.Play();
+    }
+
+    public void WinSound()
+    {
+        AudioClip sound = Resources.Load<AudioClip>("Audio/sound_win");
         soundController.clip = sound;
         soundController.Play();
     }

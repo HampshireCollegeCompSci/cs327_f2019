@@ -10,6 +10,8 @@ public class UtilsScript : MonoBehaviour
     private List<GameObject> selectedCardsCopy = new List<GameObject>();
     public GameObject matchedPile;
     public GameObject gameUI;
+    public GameObject scoreBox;
+    public GameObject moveCounter;
     public SoundController soundController;
     public int indexCounter;
     public RaycastHit2D hit;
@@ -18,6 +20,7 @@ public class UtilsScript : MonoBehaviour
     private bool draggingWastepile = false;
     private GameObject wastePile;
 
+    public GameObject baby;
     public int matchPoints = Config.config.matchPoints;
     public int emptyReactorPoints = Config.config.emptyReactorPoints;
     public int PerfectGamePoints = Config.config.perfectGamePoints;
@@ -29,13 +32,15 @@ public class UtilsScript : MonoBehaviour
         gameUI = GameObject.Find("GameUI");
         soundController = GameObject.Find("Sound").GetComponent<SoundController>();
         wastePile = GameObject.Find("Scroll View");
+        baby = GameObject.Find("SpaceBaby");
     }
 
     void Awake()
     {
+        baby = GameObject.FindWithTag("Baby");
         if (global == null)
         {
-            DontDestroyOnLoad(gameObject); //makes instance persist across scenes
+            //DontDestroyOnLoad(gameObject); //makes instance persist across scenes
             global = this;
         }
         else if (global != this)
@@ -46,6 +51,7 @@ public class UtilsScript : MonoBehaviour
 
     void Update()
     {
+
         if (!Config.config.gameOver && !Config.config.gamePaused)
         {
             if (Input.GetMouseButtonDown(0) && dragOn == false && SceneManager.GetActiveScene().buildIndex == 2)
@@ -59,9 +65,6 @@ public class UtilsScript : MonoBehaviour
                     dragOn = true;
                 }
 
-                //sets the reactor scores
-                gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
-
                 //checks if the game has been won
 
                 /*this code is if we want to check cards in the deck and the wastepile as well as the foundations to see if you can win the game
@@ -74,8 +77,6 @@ public class UtilsScript : MonoBehaviour
 
                 Click();
                 ShowPossibleMoves.showPossibleMoves.HideMoves();
-
-                gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
 
                 foreach (GameObject card in selectedCardsCopy)
                 {
@@ -94,26 +95,6 @@ public class UtilsScript : MonoBehaviour
             if (dragOn == true && SceneManager.GetActiveScene().buildIndex == 2)
             {
                 ClickAndDrag(selectedCardsCopy);
-            }
-
-            if (Config.config.CountFoundationCards() == 0)
-            {
-                Debug.Log("gg");
-                Config.config.gameOver = true;
-                Config.config.gameWin = true;
-            }
-
-            if (Config.config.gameOver)
-            {
-                SetEndGameScore();
-                //Debug.Log("score" + Config.config.score);
-            }
-
-            if (Config.config.actions == Config.config.actionMax)
-            {
-                Config.config.deck.GetComponent<DeckScript>().NextCycle();
-                Config.config.actions = 0;
-                gameUI.GetComponent<ReactorScoreSetScript>().SetReactorScore();
             }
         }
     }
@@ -170,9 +151,6 @@ public class UtilsScript : MonoBehaviour
         //raycast to see what we clicked
         hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Vector2.zero);
 
-        //!!!
-        //BUG: UtilScript still raycast in other scenes and throws NUllPointerException.
-        //!!!
 
         //if we clicked a button activates the button
         /*
@@ -180,6 +158,9 @@ public class UtilsScript : MonoBehaviour
         {
             hit.collider.gameObject.SendMessage("ProcessAction", hit.collider.gameObject);
         }*/
+
+        //
+
 
         //if we click a deck activates deck and deselected our cards
         if (hit.collider != null && !hit.collider.gameObject.CompareTag("Card"))
@@ -198,6 +179,12 @@ public class UtilsScript : MonoBehaviour
                     DeselectCard(selectedCards[0]);
                 }
             }
+
+            else if (hit.collider != null && hit.collider.gameObject.CompareTag("Baby"))
+            {
+                baby.GetComponent<SpaceBabyController>().BabyHappyAnim();
+            }
+
             return;
         }
 
@@ -258,20 +245,42 @@ public class UtilsScript : MonoBehaviour
                 DeselectCard(selectedCards[0]);
             }
         }
+
+
     }
 
 
     public void Match(GameObject card1, GameObject card2)
     {
         soundController.CardMatchSound();
-        card1.GetComponent<CardScript>().MoveCard(matchedPile);
-        card2.GetComponent<CardScript>().MoveCard(matchedPile);
+        baby.GetComponent<SpaceBabyController>().BabyEatAnim();
+        //UpdateActionCounter(1);
+        UpdateScore(matchPoints);
+        Vector3 p = card1.transform.position;
+        Quaternion t = card1.transform.rotation;
+        p.z += 2;
 
-        //Config.config.actions += 1;
-        Config.config.score += matchPoints;
+        Config.config.GetComponent<SoundController>().ReactorExplodeSound();
+        GameObject myPrefab = (GameObject)Resources.Load("Prefabs/MatchExplosionAnimation", typeof(GameObject));
+        myPrefab.SetActive(true);
+        myPrefab.GetComponent<Animator>().Play("MatchExplosionAnim");
+        Instantiate(myPrefab, p, t);
+        //UpdateActionCounter(1);
         //Debug.Log("score" + Config.config.score);
         //check to see if the board is clear
+        StartCoroutine(animatorwait(card1, card2));
+        CheckGameOver();
+        //CheckNextCycle();
     }
+    IEnumerator animatorwait(GameObject card1, GameObject card2)
+    {
+        card2.GetComponent<CardScript>().MoveCard(card1.GetComponent<CardScript>().container);
+        yield return new WaitForSeconds(.5f);
+
+        card1.GetComponent<CardScript>().MoveCard(matchedPile);
+        card2.GetComponent<CardScript>().MoveCard(matchedPile);
+    }
+
 
     //checks if suit match AND value match
     public bool IsMatch(GameObject card1, GameObject card2)
@@ -350,32 +359,98 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
+    public void UpdateScore(int addScore)
+    {
+        Config.config.score += addScore;
+        scoreBox.GetComponent<ScoreScript>().UpdateScore();
+    }
+
+    public void UpdateActionCounter(int actionUpdate, bool setAsValue = false)
+    {
+        if (setAsValue)
+        {
+            Config.config.actions = actionUpdate;
+        }
+        else
+        {
+            Config.config.actions += actionUpdate;
+        }
+
+        moveCounter.GetComponent<ActionCountScript>().UpdateActionText();
+
+        if (Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold)
+        {
+            Config.config.GetComponent<MusicController>().AlertMusic();
+        }
+        else
+        {
+           Config.config.GetComponent<MusicController>().GameMusic();
+        }
+
+        if (Config.config.actionMax - Config.config.actions <= 1)
+        {
+            foreach (GameObject reactor in Config.config.reactors)
+            {
+                if (reactor.GetComponent<ReactorScript>().CountReactorCard() + reactor.GetComponent<ReactorScript>().GetIncreaseOnNextCycle() >= Config.config.maxReactorVal)
+                {
+                    reactor.GetComponent<ReactorScript>().AlertOn();
+                }
+            }
+        }
+        else if (Config.config.reactor1 != null)
+        {
+            foreach (GameObject reactor in Config.config.reactors)
+            {
+                reactor.GetComponent<ReactorScript>().AlertOff();
+            }
+        }
+    }
+
+    public void CheckNextCycle()
+    {
+        if (Config.config.actions == Config.config.actionMax)
+        {
+            Config.config.deck.GetComponent<DeckScript>().NextCycle();
+        }
+    }
+
+    public void CheckGameOver()
+    {
+        if (!Config.config.gameOver && Config.config.CountFoundationCards() == 0)
+        {
+            SetEndGameScore();
+            Config.config.GameOver(true);
+        }
+    }
+
     public void SetEndGameScore()
     {
+        int extraScore = 0;
         if (matchedPile.GetComponent<MatchedPileScript>().cardList.Count == 52)
         {
-            Config.config.score += PerfectGamePoints;
+            extraScore += PerfectGamePoints;
         }
 
         if (Config.config.reactor1.GetComponent<ReactorScript>().cardList.Count == 0)
         {
-            Config.config.score += emptyReactorPoints;
+            extraScore += emptyReactorPoints;
         }
 
         if (Config.config.reactor2.GetComponent<ReactorScript>().cardList.Count == 0)
         {
-            Config.config.score += emptyReactorPoints;
+            extraScore += emptyReactorPoints;
         }
 
         if (Config.config.reactor3.GetComponent<ReactorScript>().cardList.Count == 0)
         {
-            Config.config.score += emptyReactorPoints;
+            extraScore += emptyReactorPoints;
         }
 
         if (Config.config.reactor4.GetComponent<ReactorScript>().cardList.Count == 0)
         {
-            Config.config.score += emptyReactorPoints;
+            extraScore += emptyReactorPoints;
         }
+        UpdateScore(extraScore);
     }
 
     public void ClickAndDrag(List<GameObject> cards)

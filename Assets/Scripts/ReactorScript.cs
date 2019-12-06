@@ -6,29 +6,34 @@ public class ReactorScript : MonoBehaviour
 {
     public List<GameObject> cardList;
     public UtilsScript utils;
+    public GameObject gameUI;
+    private ReactorScoreSetScript rsss;
     public SoundController soundController;
 
     GameObject myPrefab;
     public string suit;
+    private bool glowing = false;
+    private bool alert = false;
+    
 
 
     void Start()
     {
         utils = UtilsScript.global;
+        rsss = gameUI.GetComponent<ReactorScoreSetScript>();
     }
 
 
     private void CheckGameOver()
     {
-        if (CountReactorCard() >= Config.config.maxReactorVal)
+        if (CountReactorCard() >= Config.config.maxReactorVal && !Config.config.gameOver)
         {
             Config.config.GetComponent<SoundController>().ReactorExplodeSound();
             myPrefab = (GameObject)Resources.Load("Prefabs/Explosion", typeof(GameObject));
             Instantiate(myPrefab, gameObject.transform.position, gameObject.transform.rotation);
             Destroy(gameObject);
 
-            Config.config.gameOver = true;
-            Config.config.gameWin = false;
+            Config.config.GameOver(false);
         }
     }
 
@@ -40,6 +45,7 @@ public class ReactorScript : MonoBehaviour
 
         SetCardPositions();
         soundController.CardToReactorSound();
+        rsss.SetReactorScore();
         CheckGameOver();
     }
 
@@ -47,6 +53,7 @@ public class ReactorScript : MonoBehaviour
     {
         cardList.Remove(card);
         SetCardPositions();
+        rsss.SetReactorScore();
     }
 
     public void SetCardPositions()
@@ -138,6 +145,25 @@ public class ReactorScript : MonoBehaviour
                 }
             }
         }
+
+        utils.CheckNextCycle();
+        utils.CheckGameOver();
+    }
+
+    public int GetIncreaseOnNextCycle()
+    {
+        int output = 0;
+        foreach (GameObject foundation in Config.config.foundationList)
+        {
+            if (foundation.GetComponent<FoundationScript>().cardList.Count > 0)
+            {
+                if (foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardSuit == suit)
+                {
+                    output += foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardVal;
+                }
+            }
+        }
+        return output;
     }
 
     public int CountReactorCard()
@@ -150,5 +176,51 @@ public class ReactorScript : MonoBehaviour
         }
 
         return totalSum;
+    }
+
+    public bool GlowOn()
+    {
+        if (!glowing)
+        {
+            gameObject.transform.Find("Glow").gameObject.SetActive(true);
+            glowing = true;
+            return true;
+        }
+        return false;
+    }
+
+    public bool GlowOff()
+    {
+        if (glowing && !alert)
+        {
+            gameObject.transform.Find("Glow").gameObject.SetActive(false);
+            glowing = false;
+            return true;
+        }
+        return false;
+    }
+
+    public bool AlertOn()
+    {
+        if (!alert)
+        {
+            gameObject.transform.Find("Glow").gameObject.SetActive(true);
+            gameObject.transform.Find("Glow").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Reactors/almostfull-reactor1");
+            alert = true;
+            return true;
+        }
+        return false;
+    }
+
+    public bool AlertOff()
+    {
+        gameObject.transform.Find("Glow").GetComponent<SpriteRenderer>().GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Reactors/selectglow-reactor1");
+        if (alert)
+        {
+            gameObject.transform.Find("Glow").gameObject.SetActive(false);
+            alert = false;
+            return true;
+        }
+        return false;
     }
 }

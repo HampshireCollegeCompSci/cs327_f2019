@@ -24,7 +24,6 @@ public class DeckScript : MonoBehaviour
 
     // public bool shuffleOnDeckReset = false;
     public bool dealOnDeckReset = true;
-    public int foundationStartSize;
 
     public bool importSeed;
     public int shuffleSeed;
@@ -34,7 +33,7 @@ public class DeckScript : MonoBehaviour
     {
         if (deckScript == null)
         {
-            DontDestroyOnLoad(gameObject); //makes instance persist across scenes
+            //DontDestroyOnLoad(gameObject); //makes instance persist across scenes
             deckScript = this;
         }
         else if (deckScript != this)
@@ -42,10 +41,13 @@ public class DeckScript : MonoBehaviour
             Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
         }
     }
+
     void Start()
     {
         utils = UtilsScript.global;
         wastePileScript = wastePile.GetComponent<WastepileScript>();
+
+        utils.UpdateActionCounter(0, true);
 
         cardList = new List<GameObject>();
         InstantiateCards(this.gameObject);
@@ -113,7 +115,7 @@ public class DeckScript : MonoBehaviour
     {
         for (int i = 0; i < foundations.Count; i++)
         {
-            for (int n = 0; n < foundationStartSize - 1; n++)
+            for (int n = 0; n < Config.config.foundationStartSize - 1; n++)
             {
                 cardList[0].GetComponent<CardScript>().SetVisibility(false);
                 cardList[0].GetComponent<CardScript>().MoveCard(foundations[i], doLog: false, addUpdateHolo: false);
@@ -123,8 +125,6 @@ public class DeckScript : MonoBehaviour
             cardList[0].GetComponent<CardScript>().SetVisibility(true);
             cardList[0].gameObject.GetComponent<CardScript>().ShowHologram();
             cardList[0].GetComponent<CardScript>().MoveCard(foundations[i], doLog: false, addUpdateHolo: false);
-
-            //foundations[i].GetComponent<FoundationScript>().SetCardPositions();
         }
     }
 
@@ -152,6 +152,7 @@ public class DeckScript : MonoBehaviour
 
         if (cardList.Count != 0) // can the deck can be drawn from
         {
+            soundController.DeckDeal();
             Deal();
         }
         else // we need to try repopulating the deck
@@ -166,7 +167,7 @@ public class DeckScript : MonoBehaviour
     }
 
     // moves all of the top foundation cards into their appropriate reactors
-    public void NextCycle()
+    public void NextCycle(bool manuallyTriggered = false)
     {
         for (int f = 0; f < foundations.Count; f++)
         {
@@ -183,6 +184,9 @@ public class DeckScript : MonoBehaviour
                 }
             }
         }
+
+        utils.UpdateActionCounter(0, true);
+        utils.CheckGameOver();
     }
 
     // moves all wastePile cards into the deck
@@ -193,7 +197,7 @@ public class DeckScript : MonoBehaviour
     }
 
     // deals cards
-    public void Deal(bool log = true)
+    public void Deal(bool doLog = true)
     {
         if (wastePileScript.isScrolling())
         {
@@ -213,9 +217,7 @@ public class DeckScript : MonoBehaviour
 
         if (toMoveList.Count != 0)
         {
-            wastePileScript.AddCards(toMoveList);
-            //soundController.DeckDeal();
-            Config.config.actions += 1; //adds to the action count
+            wastePileScript.AddCards(toMoveList, doLog);
         }
     }
 

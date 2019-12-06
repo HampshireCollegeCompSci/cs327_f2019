@@ -6,13 +6,18 @@ using UnityEngine.UI;
 
 public class MenuUIScript : MonoBehaviour
 {
+    private IEnumerator coroutine;
 
     private void Start()
     {
         //stop animation from start
-        //Animator[] animators = gameObject.GetComponentsInChildren<Animator>();
-        //foreach (Animator anim in animators)
-        //    anim.enabled = false;
+        Animator[] animators = gameObject.GetComponentsInChildren<Animator>();
+        foreach (Animator anim in animators)
+            anim.enabled = false;
+
+
+        if (GameObject.Find("Spacebaby Loading") != null)
+            GameObject.Find("Spacebaby Loading").GetComponent<Animator>().enabled = true;
 
         //update main menu button txt
         if (GameObject.Find("Play") != null)
@@ -90,72 +95,90 @@ public class MenuUIScript : MonoBehaviour
 
     public void Play()
     {
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
-        SceneManager.LoadScene("LevelSelectScene");
+        coroutine = ButtonPressedAnim(GameObject.Find("Play"), "LevelSelectScene");
+        StartCoroutine(coroutine);
     }
 
     public void NewGame()
     {
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
         Config.config.gameOver = false;
         Config.config.gameWin = false;
         Config.config.gamePaused = false;
-        gameObject.SetActive(false);
+        Config.config.GetComponent<MusicController>().LoadGap();
 
-        SceneManager.LoadScene("GameplayScene");
-        Config.config.GetComponent<MusicController>().GameMusic();
+        if (Config.config.difficulty == "easy")
+            coroutine = ButtonPressedAnim(GameObject.Find("Easy"), "LoadingScene");
+        else if (Config.config.difficulty == "medium")
+            coroutine = ButtonPressedAnim(GameObject.Find("Normal"), "LoadingScene");
+        else
+            coroutine = ButtonPressedAnim(GameObject.Find("Hard"), "LoadingScene");
 
-        //loading scene
-        //SceneManager.LoadScene("LoadingScene", LoadSceneMode.Additive);
+        StartCoroutine(coroutine);
 
     }
 
     public void UndoButton()
     {
         UndoScript.undoScript.undo();
-        //GameObject.Find("Undo").GetComponentInChildren<Animator>().enabled = true;
-        //GameObject.Find("Undo").GetComponentInChildren<Animator>().Play("MenuButtonPressAnim");
+        Config.config.GetComponent<SoundController>().ButtonPressSound2();
+
+        Animator undoAnim = GameObject.Find("Undo").GetComponentInChildren<Animator>();
+        if (!undoAnim.enabled)
+            undoAnim.enabled = true;
+        else
+            undoAnim.Play("");
+
+    }
+
+    public void PlayAgain()
+    {
+        Config.config.GetComponent<MusicController>().GameMusic();
+        Config.config.gameOver = false;
+        Config.config.gameWin = false;
+        Config.config.gamePaused = false;
+
+        coroutine = ButtonPressedAnim(GameObject.Find("PlayAgain"), "GameplayScene");
+        StartCoroutine(coroutine);
     }
 
     public void Restart()
     {
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
         Config.config.GetComponent<MusicController>().GameMusic();
-        SceneManager.LoadScene("GameplayScene");//resets the level
         Config.config.gameOver = false;
         Config.config.gameWin = false;
         Config.config.gamePaused = false;
+
+        coroutine = ButtonPressedAnim(GameObject.Find("Restart"), "GameplayScene");
+        StartCoroutine(coroutine);
     }
 
     public void MainMenu()
     {
         Config.config.gamePaused = false;
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
         if (Config.config != null)
         {
-            SceneManager.LoadScene("MainMenuScene");
             Config.config.gameOver = false;
             Config.config.gameWin = false;
         }
-        else
-        {
-            SceneManager.LoadScene("MainMenuScene");
-        }
+
+        coroutine = ButtonPressedAnim(GameObject.Find("MainMenu"), "MainMenuScene");
+        StartCoroutine(coroutine);
+
         Config.config.GetComponent<MusicController>().MainMenuMusic();
     }
 
 
     //possibly be renamed to settings
-    public void Sound()
+    public void Settings()
     {
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
-        SceneManager.LoadScene("SoundScene", LoadSceneMode.Additive);
+        coroutine = ButtonPressedAnim(GameObject.Find("Settings"), "SoundScene", true);
+        StartCoroutine(coroutine);
     }
 
     public void Credits()
     {
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
-        SceneManager.LoadScene("CreditScene");
+        coroutine = ButtonPressedAnim(GameObject.Find("Credits"), "CreditScene");
+        StartCoroutine(coroutine);
     }
 
     public void PauseGame()
@@ -164,35 +187,38 @@ public class MenuUIScript : MonoBehaviour
         //TODO save the game scene
         Config.config.gamePaused = true;
         SceneManager.LoadScene("PauseScene", LoadSceneMode.Additive);
+
     }
 
     public void ResumeGame()
     {
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
         Config.config.gamePaused = false;
         //TODO load the saved game scene then uncomment the above code
-        SceneManager.UnloadSceneAsync("PauseScene");
+        coroutine = ButtonPressedAnim(GameObject.Find("Resume"), "PauseScene", false, true);
+        StartCoroutine(coroutine);
     }
 
     public void Return()
     {
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        //Config.config.GetComponent<SoundController>().ButtonPressSound();
         if (Config.config.gamePaused)
         {
-            SceneManager.UnloadSceneAsync("SoundScene");
+            coroutine = ButtonPressedAnim(GameObject.Find("Return"), "SoundScene", false, true);
         }
 
         else
         {
-            SceneManager.LoadScene("MainMenuScene");
+            coroutine = ButtonPressedAnim(GameObject.Find("Return"), "MainMenuScene");
         }
+        StartCoroutine(coroutine);
     }
 
     public void Tutorial()
     {
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
-        SceneManager.LoadScene("TutorialScene");
+        coroutine = ButtonPressedAnim(GameObject.Find("Tutorial"), "TutorialScene");
+        StartCoroutine(coroutine);
     }
+
     public void HardDifficulty()
     {
         Config.config.setDifficulty("hard");
@@ -211,7 +237,26 @@ public class MenuUIScript : MonoBehaviour
 
     public void MakeActionsMax()
     {
-        Config.config.actions = Config.config.actionMax;
+        Config.config.deck.GetComponent<DeckScript>().NextCycle(manuallyTriggered: true);
     }
 
+    IEnumerator ButtonPressedAnim(GameObject button, string scene, bool additive = false, bool unload = false)
+    {
+        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        button.GetComponentInChildren<Animator>().enabled = true;
+
+        for (float ft = 0.2f; ft >= 0; ft -= 0.1f)
+        {
+            yield return new WaitForSeconds(0.08f);
+        }
+
+        button.GetComponentInChildren<Animator>().enabled = false;
+
+        if (!additive && !unload)
+            SceneManager.LoadScene(scene);
+        else if (additive)
+            SceneManager.LoadScene(scene, LoadSceneMode.Additive);
+        else if (unload)
+            SceneManager.UnloadSceneAsync(scene);
+    }
 }

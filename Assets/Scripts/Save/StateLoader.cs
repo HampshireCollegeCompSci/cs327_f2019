@@ -27,7 +27,7 @@ public class StateLoader : MonoBehaviour
             List<string> tempList = new List<string>();
             foreach (GameObject token in foundation.GetComponent<FoundationScript>().cardList)
             {
-                tempList.Add(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
+                tempList.Insert(0,token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
             }
             gameState.foundations.Add(new StringListWrapper() { stringList = tempList });
         }
@@ -37,7 +37,7 @@ public class StateLoader : MonoBehaviour
             List<string> tempList = new List<string>();
             foreach (GameObject token in reactor.GetComponent<ReactorScript>().cardList)
             {
-                tempList.Add(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
+                tempList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
             }
             gameState.reactors.Add(new StringListWrapper() { stringList = tempList });
         }
@@ -45,21 +45,21 @@ public class StateLoader : MonoBehaviour
         List<string> wastePileList = new List<string>();
         foreach (GameObject token in Config.config.wastePile.GetComponent<WastepileScript>().cardList)
         {
-            wastePileList.Add(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
+            wastePileList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
         }
         gameState.wastePile = wastePileList;
         //save deck
         List<string> deckList = new List<string>();
         foreach (GameObject token in Config.config.deck.GetComponent<DeckScript>().cardList)
         {
-            deckList.Add(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
+            deckList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
         }
         gameState.deck = deckList;
         //save matches
         List<string> matchList = new List<string>();
         foreach (GameObject token in Config.config.matches.GetComponent<MatchedPileScript>().cardList)
         {
-            matchList.Add(token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
+            matchList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
         }
         gameState.matches = matchList;
         //save undo
@@ -92,7 +92,7 @@ public class StateLoader : MonoBehaviour
         File.WriteAllText("Assets/Resources/GameStates/testState.json", json);
     }
 
-    public void loadState(string path)
+    public void loadState(string path = "Assets/Resources/GameStates/testState.json")
     {
         //load the json into a GameState
         GameState state = CreateFromJSON(path);
@@ -103,16 +103,117 @@ public class StateLoader : MonoBehaviour
         //set up simple variables
         config.actions = state.actions;
         config.score = state.score;
-
-        //set up reactors
-        /*
-        for (int i = 0; i < state.foundation1.Length; i++)
+        config.difficulty = state.difficulty;
+        //set up foundations
+        int i = 0;
+        foreach (StringListWrapper lw in state.foundations)
         {
-
+            foreach (string s in lw.stringList)
+            {
+                string[] halves = s.Split('_');
+                string suite = halves[0];
+                string number = halves[1];
+                foreach (GameObject token in GameObject.Find("DeckButton").GetComponent<DeckScript>().cardList)
+                {
+                    if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
+                    {
+                        token.GetComponent<CardScript>().MoveCard(config.foundationList[i]);
+                        break;
+                    }
+                }
+            }
+            i++;
         }
-        */
+        //set up reactors
+        i = 0;
+        foreach (StringListWrapper lw in state.reactors)
+        {
+            foreach (string s in lw.stringList)
+            {
+                string[] halves = s.Split('_');
+                string suite = halves[0];
+                string number = halves[1];
+                foreach (GameObject token in GameObject.Find("DeckButton").GetComponent<DeckScript>().cardList)
+                {
+                    if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
+                    {
+                        token.GetComponent<CardScript>().MoveCard(config.reactors[i]);
+                        break;
+                    }
+                }
+            }
+            i++;
+        }
+        //set up wastepile
+        foreach (string s in state.wastePile)
+        {
+            string[] halves = s.Split('_');
+            string suite = halves[0];
+            string number = halves[1];
+            foreach (GameObject token in GameObject.Find("DeckButton").GetComponent<DeckScript>().cardList)
+            {
+                if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
+                {
+                    token.GetComponent<CardScript>().MoveCard(config.wastePile);
+                    break;
+                }
+            }
+        }
+        //set up matches
+        foreach (string s in state.matches)
+        {
+            string[] halves = s.Split('_');
+            string suite = halves[0];
+            string number = halves[1];
+            foreach (GameObject token in GameObject.Find("DeckButton").GetComponent<DeckScript>().cardList)
+            {
+                if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
+                {
+                    token.GetComponent<CardScript>().MoveCard(config.matches);
+                    break;
+                }
+            }
+        }
         //set up deck
+        List<GameObject> tempList = GameObject.Find("DeckButton").GetComponent<DeckScript>().cardList;
+        foreach (string s in state.deck)
+        {
+            string[] halves = s.Split('_');
+            string suite = halves[0];
+            string number = halves[1];
+            foreach (GameObject token in tempList)
+            {
+                if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
+                {
+                    token.GetComponent<CardScript>().MoveCard(config.matches);
+                    break;
+                }
+            }
+        }
+        //set up undo log
+        GameObject[] cards = GameObject.FindGameObjectsWithTag("Card");
+        foreach (AltMove a in state.moveLog)
+        {
+            Move tempMove = new Move();
+            string[] halves = a.cardName.Split('_');
+            string suite = halves[0];
+            string number = halves[1];  
+            foreach (GameObject card in cards)
+            {
+                if (card.GetComponent<CardScript>().cardSuit == suite && card.GetComponent<CardScript>().cardNum.ToString() == number)
+                {
+                    tempMove.card = card;
+                }
+            }
+            tempMove.origin = GameObject.Find(a.originName);
+            tempMove.isAction = a.isAction;
+            tempMove.moveType = a.moveType;
+            tempMove.nextCardWasHidden = a.nextCardWasHidden;
+            tempMove.remainingActions = a.remainingActions;
+            UndoScript.undoScript.moveLog.Push(tempMove);
+        }
     }
+    
 
     public static GameState CreateFromJSON(string path)
     {
