@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UtilsScript : MonoBehaviour
 {
@@ -412,14 +413,20 @@ public class UtilsScript : MonoBehaviour
 
         moveCounter.GetComponent<ActionCountScript>().UpdateActionText();
 
+        if (Config.config.actionMax - Config.config.actions >= Config.config.turnAlertSmallThreshold)
+        {
+            GameObject.Find("ActionDisplay").GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/UI/Gameplay UI/gameTimer");
+        }
+
         if (Config.config.actionMax - Config.config.actions <= Config.config.turnAlertSmallThreshold && Config.config.actionMax - Config.config.actions >= Config.config.turnAlertThreshold)
         {
-            GameObject.Find("ActionDisplay").GetComponent<Image>().SourceImage = Resources.Load<Sprite>("Sprites/UI/Gameplay UI/gameTimer_on");
+            GameObject.Find("ActionDisplay").GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/UI/Gameplay UI/gameTimer_on");
         }
 
         if (Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold)
         {
             Config.config.GetComponent<MusicController>().AlertMusic();
+            GameObject.Find("ActionDisplay").GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/UI/Gameplay UI/gameTimer_alert"); //@Shan this should be alternating between gameTimer_alert and just gameTimer 
         }
         else
         {
