@@ -414,7 +414,7 @@ public class UtilsScript : MonoBehaviour
 
         if (Config.config.actionMax - Config.config.actions <= Config.config.turnAlertSmallThreshold && Config.config.actionMax - Config.config.actions >= Config.config.turnAlertThreshold)
         {
-            //GameObject.Find("MoveCounter").GetComponent<Image>().SourceImage = Resources.Load<Sprite>("Sprites/UI/Gameplay UI/gameTimer_on");
+            GameObject.Find("ActionDisplay").GetComponent<Image>().SourceImage = Resources.Load<Sprite>("Sprites/UI/Gameplay UI/gameTimer_on");
         }
 
         if (Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold)
