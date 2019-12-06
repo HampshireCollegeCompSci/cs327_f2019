@@ -426,7 +426,8 @@ public class UtilsScript : MonoBehaviour
         if (Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold)
         {
             Config.config.GetComponent<MusicController>().AlertMusic();
-            GameObject.Find("ActionDisplay").GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/UI/Gameplay UI/gameTimer_alert"); //@Shan this should be alternating between gameTimer_alert and just gameTimer 
+            GameObject.Find("ActionDisplay").GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/UI/Gameplay UI/gameTimer_alert");
+            GameObject.Find("TimerSiren").GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/UI/Gameplay UI/gameTimer_sirenAlert"); //@Shan this should be alternating between gameTimer_alert and just gameTimer 
         }
         else
         {
