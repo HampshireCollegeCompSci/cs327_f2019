@@ -21,8 +21,7 @@ public class CardScript : MonoBehaviour
 
     void Start()
     {
-        glowing = true;
-        GlowOff();
+        glowing = false;
 
         if (Config.config.prettyColors)
         {
