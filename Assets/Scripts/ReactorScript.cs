@@ -172,7 +172,10 @@ public class ReactorScript : MonoBehaviour
         int cardListVal = cardList.Count;
         for (int i = 0; i < cardListVal; i++)
         {
-            totalSum += cardList[i].gameObject.GetComponent<CardScript>().cardVal;
+            if (cardList[i].gameObject.GetComponent<CardScript>().cardSuit == suit)
+            {
+                totalSum += cardList[i].gameObject.GetComponent<CardScript>().cardVal;
+            }
         }
 
         return totalSum;

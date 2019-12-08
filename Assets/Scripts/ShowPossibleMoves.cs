@@ -26,6 +26,9 @@ public class ShowPossibleMoves : MonoBehaviour
     private bool cardIsTopOfStack;
     private bool cardIsFromWastepile;
 
+    private List<GameObject> cardMoves;
+    private GameObject reactorMove;
+
     public void SetCards()
     {
         foundation1 = GameObject.Find("Foundation (0)");
@@ -102,40 +105,50 @@ public class ShowPossibleMoves : MonoBehaviour
         return output;
     }
 
-    private List<GameObject> FindReactorMoves(GameObject selectedCard)
+    private GameObject FindReactorMove(GameObject selectedCard)
     {
-        List<GameObject> output = new List<GameObject>();
         foreach (GameObject reactor in reactorList)
         {
             if (reactor.GetComponent<ReactorScript>().suit == selectedCard.GetComponent<CardScript>().cardSuit)
             {
-                output.Add(reactor);
+                return reactor;
             }
         }
-        return output;
+        return null;
     }
 
     public void ShowMoves(GameObject selectedCard)
     {
-        if (FindMoves(selectedCard).Count > 0)
+        cardMoves = FindMoves(selectedCard);
+        if (cardMoves.Count > 0)
         {
-            foreach (GameObject card in FindMoves(selectedCard))
+            foreach (GameObject card in cardMoves)
             {
                 card.GetComponent<CardScript>().GlowOn();
             }
         }
 
-        if (FindReactorMoves(selectedCard).Count > 0)
+        reactorMove = FindReactorMove(selectedCard);
+        if (reactorMove != null)
         {
-            foreach (GameObject reactor in FindReactorMoves(selectedCard))
-            {
-                reactor.GetComponent<ReactorScript>().GlowOn();
-            }
+            reactorMove.GetComponent<ReactorScript>().GlowOn();
         }
     }
 
     public void HideMoves()
     {
+        foreach (GameObject card in cardMoves)
+        {
+            card.GetComponent<CardScript>().GlowOff();
+        }
+
+        if (reactorMove != null)
+        {
+            reactorMove.GetComponent<ReactorScript>().GlowOff();
+        }
+
+        return;
+
         foreach (GameObject foundation in foundationList)
         {
             foreach (GameObject card in foundation.GetComponent<FoundationScript>().cardList)

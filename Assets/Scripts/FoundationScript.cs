@@ -151,8 +151,6 @@ public class FoundationScript : MonoBehaviour
                     {
                         utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input);
                     }
-
-                    utils.UpdateActionCounter(1);
                 }
 
                 utils.UpdateActionCounter(1);

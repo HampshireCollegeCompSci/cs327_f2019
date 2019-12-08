@@ -18,6 +18,8 @@ public class DeckScript : MonoBehaviour
     public List<Sprite> sprites;
     public List<GameObject> cardList;
 
+    private Image buttonImage;
+    public List<Sprite> buttonAnimation;
     public Text deckCounter;
 
     public SoundController soundController;
@@ -46,6 +48,7 @@ public class DeckScript : MonoBehaviour
     {
         utils = UtilsScript.global;
         wastePileScript = wastePile.GetComponent<WastepileScript>();
+        buttonImage = gameObject.GetComponent<Image>();
 
         utils.UpdateActionCounter(0, true);
 
@@ -150,10 +153,21 @@ public class DeckScript : MonoBehaviour
     {
         utils.DeselectCards();
 
+        if (wastePileScript.isScrolling())
+        {
+            return;
+        }
+
         if (cardList.Count != 0) // can the deck can be drawn from
         {
             soundController.DeckDeal();
             Deal();
+
+            //Animator dealAnim = gameObject.GetComponent<Animator>();
+            //dealAnim.enabled = true;
+            //dealAnim.Play("ConveyorButtonAnim");
+
+            StartCoroutine(ButtonDown());
         }
         else // we need to try repopulating the deck
         {
@@ -163,6 +177,30 @@ public class DeckScript : MonoBehaviour
             }
 
             DeckReset();
+            StartCoroutine(ButtonDown());
+        }
+    }
+
+    IEnumerator ButtonDown()
+    {
+        for (int i = 1; i < buttonAnimation.Count; i++)
+        {
+            buttonImage.sprite = buttonAnimation[i];
+            yield return new WaitForSeconds(0.08f);
+        }
+    }
+
+    public void StartButtonUp()
+    {
+        StartCoroutine(ButtonUp());
+    }
+
+    IEnumerator ButtonUp()
+    {
+        for (int i = buttonAnimation.Count - 2; i > 0; i--)
+        {
+            buttonImage.sprite = buttonAnimation[i];
+            yield return new WaitForSeconds(0.08f);
         }
     }
 
@@ -199,11 +237,6 @@ public class DeckScript : MonoBehaviour
     // deals cards
     public void Deal(bool doLog = true)
     {
-        if (wastePileScript.isScrolling())
-        {
-            return;
-        }
-
         List<GameObject> toMoveList = new List<GameObject>();
         for (int i = 0; i < Config.config.cardsToDeal; i++) // try to deal set number of cards
         {
