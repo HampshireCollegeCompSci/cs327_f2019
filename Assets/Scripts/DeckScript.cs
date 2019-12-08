@@ -177,21 +177,16 @@ public class DeckScript : MonoBehaviour
             }
 
             DeckReset();
-            StartCoroutine(ButtonDown(false));
+            StartCoroutine(ButtonDown());
         }
     }
 
-    IEnumerator ButtonDown(bool triggerButtonUp = true)
+    IEnumerator ButtonDown()
     {
         for (int i = 1; i < buttonAnimation.Count; i++)
         {
             buttonImage.sprite = buttonAnimation[i];
             yield return new WaitForSeconds(0.08f);
-        }
-
-        if (triggerButtonUp)
-        {
-            StartCoroutine(ButtonUp());
         }
     }
 

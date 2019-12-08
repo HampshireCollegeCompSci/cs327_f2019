@@ -13,6 +13,13 @@ public class WastepileScript : MonoBehaviour
     public GameObject cardContainer;
     public List<GameObject> cardList;
     public List<GameObject> cardContainers;
+
+    //public List<GameObject> conveyorBeltPieces;
+    //private List<Transform> conveyorTransforms;
+    //private int conveyorCount;
+    //private double startX;
+    //private double endX;
+
     private ScrollRect scrollRect;
     private RectTransform contentRectTransform;
     private bool scrolling;
@@ -21,9 +28,66 @@ public class WastepileScript : MonoBehaviour
     {
         utils = UtilsScript.global;
         deckScript = deck.GetComponent<DeckScript>();
+
+        //conveyorTransforms = new List<Transform>();
+        //for (int i = 0; i < conveyorBeltPieces.Count; i++)
+        //{
+        //    conveyorTransforms.Add(conveyorBeltPieces[i].GetComponent<Transform>());
+        //}
+        //conveyorCount = conveyorTransforms.Count - 1;
+        //startX = -3.28 - 2.28;
+        //endX = 5.84 + 2.28;
+        //Debug.Log(startX + " " + endX);
+
+
         scrollRect = gameObject.GetComponent<ScrollRect>();
         contentRectTransform = contentPanel.GetComponent<RectTransform>();
         scrolling = false;
+        //OnEnable();
+    }
+
+    void OnEnable()
+    {
+        //Subscribe to the ScrollRect event
+        //scrollRect.onValueChanged.AddListener(Conveyor);
+    }
+
+    //private void Conveyor(Vector2 value)
+    //{
+    //    //Debug.Log("ScrollRect Changed: " + value);
+    //    //Debug.Log("0 " + conveyorTransforms[0].position.x + " " + startX);
+    //    //Debug.Log("1 " + conveyorTransforms[conveyorCount].position.x + " " + endX);
+
+    //    if (conveyorTransforms[conveyorCount].position.x <= 3.56)
+    //    {
+    //        Transform conveyorTransformTemp = conveyorTransforms[0];
+    //        conveyorTransforms.RemoveAt(0);
+
+    //        Vector3 temp = conveyorTransformTemp.position;
+    //        temp.x = 5.84f;
+    //        conveyorTransformTemp.position = temp;
+
+    //        conveyorTransforms.Add(conveyorTransformTemp);
+    //        Debug.Log("front to back");
+    //    }
+    //    else if (conveyorTransforms[0].position.x >= -1)
+    //    {
+    //        Transform conveyorTransformTemp = conveyorTransforms[conveyorCount];
+    //        conveyorTransforms.RemoveAt(conveyorCount);
+
+    //        Vector3 temp = conveyorTransformTemp.position;
+    //        temp.x = -3.28f;
+    //        conveyorTransformTemp.position = temp;
+
+    //        conveyorTransforms.Insert(0, conveyorTransformTemp);
+    //        Debug.Log("back to front");
+    //    }
+    //}
+
+    void OnDisable()
+    {
+        //Un-Subscribe To ScrollRect Event
+        //scrollRect.onValueChanged.RemoveListener(Conveyor);
     }
 
     public void CheckHologram(bool tryHidingBeneath)
@@ -100,6 +164,8 @@ public class WastepileScript : MonoBehaviour
             contentRectTransform.anchoredPosition = temp;
         }
 
+        deckScript.StartButtonUp();
+
         ResetScrollBar(temp);
         utils.CheckNextCycle();
         utils.CheckGameOver();
@@ -135,7 +201,7 @@ public class WastepileScript : MonoBehaviour
         card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.None);
         cardList.Remove(card);
 
-        if (checkHolo)
+        if (checkHolo && cardList.Count != 0)
         {
             CheckHologram(false);
             StartCoroutine(ScrollBarRemoving(parentCardContainer));
@@ -190,8 +256,7 @@ public class WastepileScript : MonoBehaviour
         }
 
         //ResetScrollBar(temp);
-        yield return new WaitForSeconds(0.2f);
-        deckScript.StartButtonUp();
+        yield return new WaitForSeconds(0.5f);
         if (deckScript.dealOnDeckReset)
         {
             deckScript.Deal();
