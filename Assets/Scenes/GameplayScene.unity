@@ -4662,6 +4662,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectedCards: []
   matchedPile: {fileID: 1214012893}
+  explosionPrefab: {fileID: 4031254262428589365, guid: 3a28ce96f97e3fd4f9107ecc217d5158,
+    type: 3}
   gameUI: {fileID: 2058941297}
   scoreBox: {fileID: 1489602702}
   moveCounter: {fileID: 338821812}

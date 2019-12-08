@@ -9,6 +9,7 @@ public class UtilsScript : MonoBehaviour
     public List<GameObject> selectedCards;
     private List<GameObject> selectedCardsCopy = new List<GameObject>();
     public GameObject matchedPile;
+    public GameObject explosionPrefab;
     public GameObject gameUI;
     public GameObject scoreBox;
     public GameObject moveCounter;
@@ -252,26 +253,19 @@ public class UtilsScript : MonoBehaviour
 
     public void Match(GameObject card1, GameObject card2)
     {
-        soundController.CardMatchSound();
-        baby.GetComponent<SpaceBabyController>().BabyEatAnim();
-        //UpdateActionCounter(1);
-        UpdateScore(matchPoints);
+        soundController.CardStackSound();
+        
         Vector3 p = card1.transform.position;
         Quaternion t = card1.transform.rotation;
         p.z += 2;
 
-        Config.config.GetComponent<SoundController>().ReactorExplodeSound();
-        GameObject myPrefab = (GameObject)Resources.Load("Prefabs/MatchExplosionAnimation", typeof(GameObject));
-        myPrefab.SetActive(true);
-        Instantiate(myPrefab, p, t);
-        //UpdateActionCounter(1);
-        //Debug.Log("score" + Config.config.score);
-        //check to see if the board is clear
-        StartCoroutine(animatorwait(card1, card2));
-        CheckGameOver();
-        //CheckNextCycle();
+        //GameObject myPrefab = (GameObject)Resources.Load("Prefabs/MatchExplosionAnimation", typeof(GameObject));
+        //myPrefab.SetActive(true);
+        GameObject matchExplosion = Instantiate(explosionPrefab, p, t);
+
+        StartCoroutine(animatorwait(card1, card2, matchExplosion));
     }
-    IEnumerator animatorwait(GameObject card1, GameObject card2)
+    IEnumerator animatorwait(GameObject card1, GameObject card2, GameObject matchExplosion)
     {
         string nameOfCombo = "Sprites/FoodHolograms/a-9_clubs_food";
         CardScript cardVals = card1.GetComponent<CardScript>();
@@ -342,6 +336,19 @@ public class UtilsScript : MonoBehaviour
 
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
+
+
+        soundController.CardMatchSound();
+        baby.GetComponent<SpaceBabyController>().BabyEatAnim();
+
+        //UpdateActionCounter(1);
+        UpdateScore(matchPoints);
+
+        yield return new WaitForSeconds(1);
+        Destroy(matchExplosion);
+
+        CheckGameOver();
+        //CheckNextCycle();
     }
 
     IEnumerator FadeImage(GameObject comboToLoad)
@@ -356,6 +363,8 @@ public class UtilsScript : MonoBehaviour
             yield return null;
                 
                 }
+
+        Destroy(comboToLoad);
     }
         //checks if suit match AND value match
     public bool IsMatch(GameObject card1, GameObject card2)
