@@ -1352,7 +1352,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.25363937, y: 0.29864055}
   m_AnchorMax: {x: 0.25363937, y: 0.7196798}
-  m_AnchoredPosition: {x: -29.999989, y: 0.41500092}
+  m_AnchoredPosition: {x: -29.999996, y: 0.41500092}
   m_SizeDelta: {x: 62.3, y: 3.7000008}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &341220269
@@ -4094,8 +4094,9 @@ GameObject:
   - component: {fileID: 1524850548}
   - component: {fileID: 1524850551}
   - component: {fileID: 1524850552}
-  - component: {fileID: 1524850550}
   - component: {fileID: 1524850554}
+  - component: {fileID: 1524850550}
+  - component: {fileID: 1524850553}
   m_Layer: 0
   m_Name: DeckButton
   m_TagString: Deck
@@ -4183,6 +4184,11 @@ MonoBehaviour:
   - {fileID: 21300000, guid: f893ac89295cfe045907413cf564b0b1, type: 3}
   - {fileID: 21300000, guid: e36b94a835f4e684f8edcd3eae3ec106, type: 3}
   cardList: []
+  buttonAnimation:
+  - {fileID: 21300000, guid: 74da7e6bd4e46774e959055ba0abe631, type: 3}
+  - {fileID: 21300000, guid: 0f3b986c2d5e25648a7c4dbbed143a6e, type: 3}
+  - {fileID: 21300000, guid: 0e3b9af9b8c122e42a4faba2b04736a3, type: 3}
+  - {fileID: 21300000, guid: 238183fd241b9c240a0a46c6289a64ca, type: 3}
   deckCounter: {fileID: 1865176403}
   soundController: {fileID: 307181958}
   dealOnDeckReset: 1
@@ -4227,7 +4233,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 59ba0e0bfa223404a9bbacbc91e98cce, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 74da7e6bd4e46774e959055ba0abe631, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4271,6 +4277,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1524850547}
   m_CullTransparentMesh: 0
+--- !u!95 &1524850553
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1524850547}
+  m_Enabled: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ab7773fe56d027d4a906535cc5db37e3, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &1524850554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4289,7 +4314,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}

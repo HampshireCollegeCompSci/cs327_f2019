@@ -189,8 +189,9 @@ public class WastepileScript : MonoBehaviour
             cardList[0].GetComponent<CardScript>().MoveCard(deck, removeUpdateHolo: false);
         }
 
-        ResetScrollBar(temp);
+        //ResetScrollBar(temp);
         yield return new WaitForSeconds(0.2f);
+        deckScript.StartButtonUp();
         if (deckScript.dealOnDeckReset)
         {
             deckScript.Deal();
