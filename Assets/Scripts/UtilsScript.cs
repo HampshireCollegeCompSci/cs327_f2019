@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class UtilsScript : MonoBehaviour
 {
@@ -264,7 +263,6 @@ public class UtilsScript : MonoBehaviour
         Config.config.GetComponent<SoundController>().ReactorExplodeSound();
         GameObject myPrefab = (GameObject)Resources.Load("Prefabs/MatchExplosionAnimation", typeof(GameObject));
         myPrefab.SetActive(true);
-        myPrefab.GetComponent<Animator>().Play("MatchExplosionAnim");
         Instantiate(myPrefab, p, t);
         //UpdateActionCounter(1);
         //Debug.Log("score" + Config.config.score);
@@ -275,17 +273,53 @@ public class UtilsScript : MonoBehaviour
     }
     IEnumerator animatorwait(GameObject card1, GameObject card2)
     {
-        string nameOfCombo = "Recourses/Sprites/FoodHolograms/a-9_clubs_food";
-        if(card1.GetComponent<CardScript>().cardSuit == "spades"||
-            card1.GetComponent<CardScript>().cardSuit == "clubs")
+        string nameOfCombo = "Sprites/FoodHolograms/a-9_clubs_food";
+        CardScript cardVals = card1.GetComponent<CardScript>();
+        if (cardVals.cardSuit == "clubs" || cardVals.cardSuit == "spades")
         {
-            nameOfCombo = "Recourses/Sprites/FoodHolograms/a-9_clubs_food";
+            if (cardVals.cardNum < 10) nameOfCombo = "Sprites/BlackCombinedHolograms/black_a-9_combine";
+            else
+            {
+                switch (cardVals.cardNum)
+                {
+                    case 10:
+                        nameOfCombo = "Sprites/BlackCombinedHolograms/black_10_combine";
+                        break;
+                    case 11:
+                        nameOfCombo = "Sprites/BlackCombinedHolograms/black_jack_combine";
+                        break;
+                    case 12:
+                        nameOfCombo = "Sprites/BlackCombinedHolograms/black_queen_combine";
+                        break;
+                    case 13:
+                        nameOfCombo = "Sprites/BlackCombinedHolograms/black_king_combine";
+                        break;
+                }
+            }
         }
-        else
+        if (cardVals.cardSuit == "hearts" || cardVals.cardSuit ==  "diamonds")
         {
-            nameOfCombo = "Prefabs/red_3_combine";
-        }
+            if (cardVals.cardNum < 10) nameOfCombo = "Sprites/RedCombinedHolograms/red_a-9_combine";
+            else
+            {
+                switch (cardVals.cardNum)
+                {
+                    case 10:
+                        nameOfCombo = "Sprites/RedCombinedHolograms/red_10_combine";
+                        break;
+                    case 11:
+                        nameOfCombo = "Sprites/RedCombinedHolograms/red_jack_combine";
+                        break;
+                    case 12:
+                        nameOfCombo = "Sprites/RedCombinedHolograms/red_queen_combine";
+                        break;
+                    case 13:
+                        nameOfCombo = "Sprites/RedCombinedHolograms/red_king_combine";
 
+                        break;
+                }
+            }
+        }
 
         card2.GetComponent<CardScript>().MoveCard(card1.GetComponent<CardScript>().container);
         yield return new WaitForSeconds(.5f);
@@ -293,10 +327,17 @@ public class UtilsScript : MonoBehaviour
         Vector3 p = card1.transform.position;
         p.y += 3;
         Quaternion t = card1.transform.rotation;
-        GameObject comboToLoad = (GameObject)Resources.Load(nameOfCombo, typeof(GameObject));
+        
+        GameObject comboToLoad = new GameObject("combo");
+        SpriteRenderer Srenderer = comboToLoad.AddComponent<SpriteRenderer>();
+        Srenderer.sortingLayerName = "UI";
+
+        Sprite sprite = Resources.Load<Sprite>(nameOfCombo);
+        print(sprite);
+        Srenderer.sprite = sprite;
         comboToLoad.transform.localScale = Vector3.one * .15f;
-        Instantiate(comboToLoad, p, t);
-        comboToLoad.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, .5f);
+        //Instantiate(comboToLoad, p, t);
+
         StartCoroutine(FadeImage(comboToLoad));
 
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
@@ -307,11 +348,10 @@ public class UtilsScript : MonoBehaviour
     {
         SpriteRenderer sprite = comboToLoad.GetComponent<SpriteRenderer>();
 
-        for (float i = 1; i >= 0; i -= Time.deltaTime)
+        for (float i = 1; i >= 0; i -= Time.deltaTime/4)
             {
-            // set color with i as alpha
-            comboToLoad.GetComponent<SpriteRenderer>().color = new Color(i, 1, 1, (i));
-            print(comboToLoad.GetComponent<SpriteRenderer>().color);
+            // set color with i as alpha \\
+            comboToLoad.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, (i));
             comboToLoad.transform.position += new Vector3(.01f,0,0);
             yield return null;
                 
@@ -413,21 +453,9 @@ public class UtilsScript : MonoBehaviour
 
         moveCounter.GetComponent<ActionCountScript>().UpdateActionText();
 
-        if (Config.config.actionMax - Config.config.actions >= Config.config.turnAlertSmallThreshold)
-        {
-            GameObject.Find("ActionDisplay").GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/UI/Gameplay UI/gameTimer");
-        }
-
-        if (Config.config.actionMax - Config.config.actions <= Config.config.turnAlertSmallThreshold && Config.config.actionMax - Config.config.actions >= Config.config.turnAlertThreshold)
-        {
-            GameObject.Find("ActionDisplay").GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/UI/Gameplay UI/gameTimer_on");
-        }
-
         if (Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold)
         {
             Config.config.GetComponent<MusicController>().AlertMusic();
-            GameObject.Find("ActionDisplay").GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/UI/Gameplay UI/gameTimer_alert");
-            GameObject.Find("TimerSiren").GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/UI/Gameplay UI/gameTimer_sirenAlert"); //@Shan this should be alternating between gameTimer_sirenAlert and just gameTimer_sirenOff
         }
         else
         {
