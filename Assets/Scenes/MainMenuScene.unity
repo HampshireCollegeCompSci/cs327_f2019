@@ -428,6 +428,7 @@ MonoBehaviour:
   hardMoveCount: 0
   actionMax: 0
   actions: 0
+  turnAlertThreshold: 0
   gameStateTxtEnglish: []
   menuSceneButtonsTxtEnglish: []
   loadingSceneTxtEnglish: 
@@ -1177,6 +1178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53d2c23039b95f54a98bf75c816da902, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  utils: {fileID: 0}
 --- !u!4 &1857838903
 Transform:
   m_ObjectHideFlags: 0
@@ -1321,7 +1323,7 @@ PrefabInstance:
     - target: {fileID: 7084158331729663617, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -2.5350037
+      value: -2.5350075
       objectReference: {fileID: 0}
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
