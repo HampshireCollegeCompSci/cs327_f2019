@@ -315,6 +315,7 @@ public class UtilsScript : MonoBehaviour
                 }
             }
         }
+        soundController.FoodMatch(cardVals.cardSuit);
 
         card2.GetComponent<CardScript>().MoveCard(card1.GetComponent<CardScript>().container);
         yield return new WaitForSeconds(.5f);
@@ -359,15 +360,14 @@ public class UtilsScript : MonoBehaviour
     {
         SpriteRenderer sprite = comboToLoad.GetComponent<SpriteRenderer>();
 
-        for (float i = 1; i >= 0; i -= Time.deltaTime/4)
-            {
+        for (float i = 1; i >= 0; i -= Time.deltaTime / 4)
+        {
             // set color with i as alpha \\
             comboToLoad.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, (i));
-            comboToLoad.transform.position += new Vector3(.01f,0,0);
+            comboToLoad.transform.position += new Vector3(.01f, 0, 0);
             yield return null;
-                
-                }
 
+        } 
         Destroy(comboToLoad);
     }
         //checks if suit match AND value match

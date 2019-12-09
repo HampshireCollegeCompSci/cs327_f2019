@@ -109,4 +109,33 @@ public class SoundController : MonoBehaviour
         soundController.clip = sound;
         soundController.Play();
     }
+    public void FoodMatch(string suit)
+    {
+        if(suit == "hearts")
+        {
+            AudioClip sound = Resources.Load<AudioClip>("Audio/food_mushroom");
+            soundController.clip = sound;
+            soundController.Play();
+        }
+        if (suit == "diamonds")
+        {
+            AudioClip sound = Resources.Load<AudioClip>("Audio/food_bug");
+            soundController.clip = sound;
+            soundController.Play();
+        }
+        if (suit == "spades")
+        {
+            AudioClip sound = Resources.Load<AudioClip>("Audio/food_rock");
+            soundController.clip = sound;
+            soundController.Play();
+        }
+        if (suit == "clubs")
+        {
+            AudioClip sound = Resources.Load<AudioClip>("Audio/food_fruit");
+            soundController.clip = sound;
+            soundController.Play();
+        }
+
+
+    }
 }
