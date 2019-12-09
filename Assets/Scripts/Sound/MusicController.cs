@@ -78,20 +78,20 @@ public class MusicController : MonoBehaviour
         if (playing1)
         {
             soundTrack2.clip = newTrack;
-            StartCoroutine(FadeOut(soundTrack1, 1f));
-            StartCoroutine(FadeIn(soundTrack2, 1f));
+            StartCoroutine(FadeOut(soundTrack1));
+            StartCoroutine(FadeIn(soundTrack2));
         }
         else
         {
             soundTrack1.clip = newTrack;
-            StartCoroutine(FadeOut(soundTrack2, 1f));
-            StartCoroutine(FadeIn(soundTrack1, 1f));
+            StartCoroutine(FadeOut(soundTrack2));
+            StartCoroutine(FadeIn(soundTrack1));
         }
         playing1 = !playing1;
     }
 
     // https://medium.com/@wyattferguson/how-to-fade-out-in-audio-in-unity-8fce422ab1a8
-    public static IEnumerator FadeOut(AudioSource audioSource, float FadeTime)
+    public static IEnumerator FadeOut(AudioSource audioSource, float FadeTime = 2f)
     {
         if (!audioSource.isPlaying)
         {
@@ -108,11 +108,11 @@ public class MusicController : MonoBehaviour
         audioSource.clip = null;
         Resources.UnloadUnusedAssets();
     }
-    public static IEnumerator FadeIn(AudioSource audioSource, float FadeTime)
+    public static IEnumerator FadeIn(AudioSource audioSource, float FadeTime = 2f)
     {
         audioSource.volume = 0;
         audioSource.Play();
-        while (audioSource.volume < 1)
+        while (audioSource.volume < 0.5)
         {
             audioSource.volume += Time.deltaTime / FadeTime;
             yield return null;
