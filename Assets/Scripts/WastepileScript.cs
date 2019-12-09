@@ -187,6 +187,12 @@ public class WastepileScript : MonoBehaviour
         if (checkHolo)
         {
             CheckHologram(true);
+
+            if (deckScript.deckCounter.text == "EMPTY")
+            {
+                deckScript.deckCounter.fontSize = 45;
+                deckScript.deckCounter.text = "FLIP";
+            }
         }
     }
 
@@ -206,6 +212,12 @@ public class WastepileScript : MonoBehaviour
         }
         else
         {
+            if (cardList.Count == 0 && deckScript.cardList.Count == 0)
+            {
+                deckScript.deckCounter.fontSize = 40;
+                deckScript.deckCounter.text = "EMPTY";
+            }
+
             Destroy(parentCardContainer);
         }
 

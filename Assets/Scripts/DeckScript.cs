@@ -138,6 +138,8 @@ public class DeckScript : MonoBehaviour
         card.transform.SetParent(gameObject.transform);
         card.transform.localPosition = Vector3.zero;
         card.SetActive(false);
+
+        deckCounter.fontSize = 50;
         deckCounter.text = cardList.Count.ToString();
     }
 
@@ -145,7 +147,17 @@ public class DeckScript : MonoBehaviour
     {
         cardList.Remove(card);
         card.SetActive(true);
-        deckCounter.text = cardList.Count.ToString();
+
+        if (cardList.Count == 0)
+        {
+            deckCounter.fontSize = 45;
+            deckCounter.text = "FLIP";
+        }
+        else if (!checkHolo)
+        {
+            deckCounter.fontSize = 50;
+            deckCounter.text = cardList.Count.ToString();
+        }
     }
 
     // user wants to deal cards, other things might need to be done before that
