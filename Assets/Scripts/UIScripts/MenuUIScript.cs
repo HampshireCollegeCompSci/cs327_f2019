@@ -128,7 +128,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void PlayAgain()
     {
-        Config.config.GetComponent<MusicController>().GameMusic();
+        Config.config.GetComponent<MusicController>().GameMusic(startNew: true);
         Config.config.gameOver = false;
         Config.config.gameWin = false;
         Config.config.gamePaused = false;
@@ -139,7 +139,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void Restart()
     {
-        Config.config.GetComponent<MusicController>().GameMusic();
+        Config.config.GetComponent<MusicController>().GameMusic(startNew: true);
         Config.config.gameOver = false;
         Config.config.gameWin = false;
         Config.config.gamePaused = false;
