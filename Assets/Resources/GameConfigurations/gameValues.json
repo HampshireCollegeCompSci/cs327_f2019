@@ -1,9 +1,10 @@
 {
     "foundationStartingSize": 7,
-    "wastepileCardsToShow": 3,
-    "nonTopXOffset": 0.25,
+	"wastepileAnimationSpeedSlow": 7,
+	"wastepileAnimationSpeedFast": 15,
     "draggedTokenOffset": 0.5,
     "cardsToDeal": 3,
+	"cardsToReactorspeed": 15,
     "relativeCardScale": 0.12,
     "turnsTillReset": 18,
     "matchPoints": 200,

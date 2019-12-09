@@ -45,7 +45,7 @@ public class UndoScript : MonoBehaviour
     {
         if (moveLog.Count > 0) //only run if there's something in the stack
         {
-            if (Config.config.wastePile.GetComponent<WastepileScript>().isScrolling())
+            if (utils.IsInputStopped())
             {
                 return;
             }

@@ -5,8 +5,21 @@ using UnityEngine;
 
 public class StateLoader : MonoBehaviour
 {
+    public static StateLoader saveSystem;
     Config config = Config.config;
-    GameState gameState;
+    public GameState gameState;
+    private void Awake()
+    {
+        if (saveSystem == null)
+        {
+            DontDestroyOnLoad(gameObject); //makes instance persist across scenes
+            saveSystem = this;
+        }
+        else if (saveSystem != this)
+        {
+            Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
+        }
+    }
 
     public void writeState(/*string path*/)
     {
@@ -95,11 +108,13 @@ public class StateLoader : MonoBehaviour
     public void loadState(string path = "GameStates/testState")
     {
         //load the json into a GameState
-        GameState state = CreateFromJSON(path);
-
+        gameState = CreateFromJSON(path);
+    }
+    public void unpackState(GameState state)
+    {
         //create unsorted full deck.
         DeckScript.deckScript.InstantiateCards(GameObject.Find("DeckButton"));
-        
+
         //set up simple variables
         config.actions = state.actions;
         config.score = state.score;
@@ -197,7 +212,7 @@ public class StateLoader : MonoBehaviour
             Move tempMove = new Move();
             string[] halves = a.cardName.Split('_');
             string suite = halves[0];
-            string number = halves[1];  
+            string number = halves[1];
             foreach (GameObject card in cards)
             {
                 if (card.GetComponent<CardScript>().cardSuit == suite && card.GetComponent<CardScript>().cardNum.ToString() == number)
@@ -213,8 +228,7 @@ public class StateLoader : MonoBehaviour
             UndoScript.undoScript.moveLog.Push(tempMove);
         }
     }
-    
-
+       
     public static GameState CreateFromJSON(string path)
     {
         var jsonTextFile = Resources.Load<TextAsset>(path);

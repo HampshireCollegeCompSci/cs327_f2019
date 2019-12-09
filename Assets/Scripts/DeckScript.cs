@@ -138,6 +138,8 @@ public class DeckScript : MonoBehaviour
         card.transform.SetParent(gameObject.transform);
         card.transform.localPosition = Vector3.zero;
         card.SetActive(false);
+
+        deckCounter.fontSize = 50;
         deckCounter.text = cardList.Count.ToString();
     }
 
@@ -145,7 +147,17 @@ public class DeckScript : MonoBehaviour
     {
         cardList.Remove(card);
         card.SetActive(true);
-        deckCounter.text = cardList.Count.ToString();
+
+        if (cardList.Count == 0)
+        {
+            deckCounter.fontSize = 45;
+            deckCounter.text = "FLIP";
+        }
+        else if (!checkHolo)
+        {
+            deckCounter.fontSize = 50;
+            deckCounter.text = cardList.Count.ToString();
+        }
     }
 
     // user wants to deal cards, other things might need to be done before that
@@ -153,7 +165,7 @@ public class DeckScript : MonoBehaviour
     {
         utils.DeselectCards();
 
-        if (wastePileScript.isScrolling())
+        if (utils.IsInputStopped()) // the deck button directly calls ProcessAction
         {
             return;
         }
@@ -205,7 +217,18 @@ public class DeckScript : MonoBehaviour
     }
 
     // moves all of the top foundation cards into their appropriate reactors
-    public void NextCycle(bool manuallyTriggered = false)
+    public void StartNextCycle(bool manuallyTriggered = false)
+    {
+        if (utils.IsInputStopped())
+        {
+            return;
+        }
+
+        utils.SetInputStopped(true);
+        StartCoroutine(NextCycle());
+    }
+
+    IEnumerator NextCycle()
     {
         for (int f = 0; f < foundations.Count; f++)
         {
@@ -216,16 +239,37 @@ public class DeckScript : MonoBehaviour
                 {
                     if (topFoundationCard.GetComponent<CardScript>().cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
                     {
+                        topFoundationCard.GetComponent<CardScript>().HideHologram();
+                        topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
+                        Vector3 target = reactors[r].transform.position;
+
+                        while (topFoundationCard.transform.position != target)
+                        {   
+                            topFoundationCard.transform.position = Vector3.MoveTowards(topFoundationCard.transform.position, target,
+                                Time.deltaTime * Config.config.cardsToReactorspeed);
+                            yield return null;
+                        }
+
+                        topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
                         topFoundationCard.GetComponent<CardScript>().MoveCard(reactors[r], isCycle: true);
+
+                        if (Config.config.gameOver)
+                        {
+                            yield break;
+                        }
+
                         break;
                     }
                 }
             }
         }
 
+        utils.SetInputStopped(false);
         utils.UpdateActionCounter(0, true);
         utils.CheckGameOver();
     }
+
+
 
     // moves all wastePile cards into the deck
     public void DeckReset()

@@ -22,7 +22,6 @@ public class WastepileScript : MonoBehaviour
 
     private ScrollRect scrollRect;
     private RectTransform contentRectTransform;
-    private bool scrolling;
 
     private void Start()
     {
@@ -42,7 +41,6 @@ public class WastepileScript : MonoBehaviour
 
         scrollRect = gameObject.GetComponent<ScrollRect>();
         contentRectTransform = contentPanel.GetComponent<RectTransform>();
-        scrolling = false;
         //OnEnable();
     }
 
@@ -132,8 +130,8 @@ public class WastepileScript : MonoBehaviour
             // scroll to the left
             while (temp.x > 0)
             {
-                yield return new WaitForSeconds(0.01f);
-                temp.x -= 0.2f;
+                yield return null;
+                temp.x -= Time.deltaTime * Config.config.wastepileAnimationSpeedFast;
                 contentRectTransform.anchoredPosition = temp;
             }
         }
@@ -157,10 +155,10 @@ public class WastepileScript : MonoBehaviour
         contentRectTransform.anchoredPosition = temp;
 
         // scroll the tokens back into view
-        while (temp.x > 0.01f)
+        while (temp.x > 0)
         {
-            yield return new WaitForSeconds(.01f);
-            temp.x -= 0.1f;
+            yield return null;
+            temp.x -= Time.deltaTime * Config.config.wastepileAnimationSpeedSlow;
             contentRectTransform.anchoredPosition = temp;
         }
 
@@ -189,6 +187,12 @@ public class WastepileScript : MonoBehaviour
         if (checkHolo)
         {
             CheckHologram(true);
+
+            if (deckScript.deckCounter.text == "EMPTY")
+            {
+                deckScript.deckCounter.fontSize = 45;
+                deckScript.deckCounter.text = "FLIP";
+            }
         }
     }
 
@@ -208,6 +212,12 @@ public class WastepileScript : MonoBehaviour
         }
         else
         {
+            if (cardList.Count == 0 && deckScript.cardList.Count == 0)
+            {
+                deckScript.deckCounter.fontSize = 40;
+                deckScript.deckCounter.text = "EMPTY";
+            }
+
             Destroy(parentCardContainer);
         }
 
@@ -224,9 +234,9 @@ public class WastepileScript : MonoBehaviour
         Vector3 temp = contentRectTransform.anchoredPosition;
         while (temp.x < 1)
         {
-            temp.x += 0.1f;
+            temp.x += Time.deltaTime * Config.config.wastepileAnimationSpeedSlow;
             contentRectTransform.anchoredPosition = temp;
-            yield return new WaitForSeconds(.01f);
+            yield return null;
         }
 
         Destroy(parentCardContainer);
@@ -245,8 +255,8 @@ public class WastepileScript : MonoBehaviour
         Vector3 temp = contentRectTransform.anchoredPosition;
         while (temp.x < cardList.Count + 1)
         {
-            yield return new WaitForSeconds(.01f);
-            temp.x += 0.3f;
+            yield return null;
+            temp.x += Time.deltaTime * Config.config.wastepileAnimationSpeedFast;
             contentRectTransform.anchoredPosition = temp;
         }
 
@@ -268,7 +278,7 @@ public class WastepileScript : MonoBehaviour
         // disable scrolling and flag it
         scrollRect.horizontal = false;
         scrollRect.horizontalScrollbar.interactable = false;
-        scrolling = true;
+        utils.SetInputStopped(true);
 
         // we need unrestricted scroll for later shenanigans
         scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
@@ -283,7 +293,7 @@ public class WastepileScript : MonoBehaviour
         scrollRect.movementType = ScrollRect.MovementType.Clamped;
         scrollRect.horizontal = true;
         scrollRect.horizontalScrollbar.interactable = true;
-        scrolling = false;
+        utils.SetInputStopped(false);
     }
 
     public void DraggingCard(GameObject card, bool isDragging)
@@ -392,10 +402,4 @@ public class WastepileScript : MonoBehaviour
     {
         return cardList;
     }
-
-    public bool isScrolling()
-    {
-        return scrolling;
-    }
-
 }

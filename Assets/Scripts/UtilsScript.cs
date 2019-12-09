@@ -9,6 +9,7 @@ public class UtilsScript : MonoBehaviour
     public List<GameObject> selectedCards;
     private List<GameObject> selectedCardsCopy = new List<GameObject>();
     public GameObject matchedPile;
+    public GameObject explosionPrefab;
     public GameObject gameUI;
     public GameObject scoreBox;
     public GameObject moveCounter;
@@ -19,6 +20,9 @@ public class UtilsScript : MonoBehaviour
     private GameObject newGameObject;
     private bool draggingWastepile = false;
     private GameObject wastePile;
+
+    private bool inputStopped = false;
+    private bool isMatching = false;
 
     public GameObject baby;
     public int matchPoints = Config.config.matchPoints;
@@ -148,19 +152,13 @@ public class UtilsScript : MonoBehaviour
     //sends out a raycast to see you selected something
     public void Click()
     {
+        if (IsInputStopped())
+        {
+            return;
+        }
+
         //raycast to see what we clicked
         hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Vector2.zero);
-
-
-        //if we clicked a button activates the button
-        /*
-        if (hit.collider.gameObject.CompareTag("Button"))
-        {
-            hit.collider.gameObject.SendMessage("ProcessAction", hit.collider.gameObject);
-        }*/
-
-        //
-
 
         //if we click a deck activates deck and deselected our cards
         if (hit.collider != null && !hit.collider.gameObject.CompareTag("Card"))
@@ -252,26 +250,23 @@ public class UtilsScript : MonoBehaviour
 
     public void Match(GameObject card1, GameObject card2)
     {
-        soundController.CardMatchSound();
-        baby.GetComponent<SpaceBabyController>().BabyEatAnim();
-        //UpdateActionCounter(1);
-        UpdateScore(matchPoints);
+        // these must be in this order
+        SetInputStopped(true);
+        isMatching = true; // a wastepile animation will overwrite the above without this
+
+        soundController.CardStackSound();
+        
         Vector3 p = card1.transform.position;
         Quaternion t = card1.transform.rotation;
         p.z += 2;
 
-        Config.config.GetComponent<SoundController>().ReactorExplodeSound();
-        GameObject myPrefab = (GameObject)Resources.Load("Prefabs/MatchExplosionAnimation", typeof(GameObject));
-        myPrefab.SetActive(true);
-        Instantiate(myPrefab, p, t);
-        //UpdateActionCounter(1);
-        //Debug.Log("score" + Config.config.score);
-        //check to see if the board is clear
-        StartCoroutine(animatorwait(card1, card2));
-        CheckGameOver();
-        //CheckNextCycle();
+        //GameObject myPrefab = (GameObject)Resources.Load("Prefabs/MatchExplosionAnimation", typeof(GameObject));
+        //myPrefab.SetActive(true);
+        GameObject matchExplosion = Instantiate(explosionPrefab, p, t);
+
+        StartCoroutine(animatorwait(card1, card2, matchExplosion));
     }
-    IEnumerator animatorwait(GameObject card1, GameObject card2)
+    IEnumerator animatorwait(GameObject card1, GameObject card2, GameObject matchExplosion)
     {
         string nameOfCombo = "Sprites/FoodHolograms/a-9_clubs_food";
         CardScript cardVals = card1.GetComponent<CardScript>();
@@ -342,6 +337,22 @@ public class UtilsScript : MonoBehaviour
 
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
+
+        // these must be in this order
+        isMatching = false;
+        SetInputStopped(false);
+
+        soundController.CardMatchSound();
+        baby.GetComponent<SpaceBabyController>().BabyEatAnim();
+
+        //UpdateActionCounter(1);
+        UpdateScore(matchPoints);
+
+        yield return new WaitForSeconds(1);
+        Destroy(matchExplosion);
+
+        CheckGameOver();
+        //CheckNextCycle();
     }
 
     IEnumerator FadeImage(GameObject comboToLoad)
@@ -356,6 +367,8 @@ public class UtilsScript : MonoBehaviour
             yield return null;
                 
                 }
+
+        Destroy(comboToLoad);
     }
         //checks if suit match AND value match
     public bool IsMatch(GameObject card1, GameObject card2)
@@ -485,7 +498,7 @@ public class UtilsScript : MonoBehaviour
     {
         if (Config.config.actions == Config.config.actionMax)
         {
-            Config.config.deck.GetComponent<DeckScript>().NextCycle();
+            Config.config.deck.GetComponent<DeckScript>().StartNextCycle();
         }
     }
 
@@ -569,6 +582,19 @@ public class UtilsScript : MonoBehaviour
             {
                 DeselectCard(selectedCards[0]);
             }
+        }
+    }
+
+    public bool IsInputStopped()
+    {
+        return inputStopped;
+    }
+
+    public void SetInputStopped(bool setTo)
+    {
+        if (!isMatching)
+        {
+            inputStopped = setTo;
         }
     }
 }

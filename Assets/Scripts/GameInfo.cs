@@ -23,10 +23,11 @@ public class GameInfo
     //(how many cards to deal per click on the deck)
 
     public int foundationStartingSize;
-    public int wastepileCardsToShow;
-    public float nonTopXOffset;
+    public byte wastepileAnimationSpeedSlow;
+    public byte wastepileAnimationSpeedFast;
     public float draggedTokenOffset;
-    public int cardsToDeal;
+    public byte cardsToDeal;
+    public byte cardsToReactorspeed;
     public float relativeCardScale;
     public int turnsTillReset;
     public int matchPoints;
