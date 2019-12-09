@@ -12,7 +12,10 @@ public class MusicController : MonoBehaviour
     public void LoadGap()
     {
         soundTrack1.Stop();
+        soundTrack1.clip = null;
         soundTrack2.Stop();
+        soundTrack2.clip = null;
+        Resources.UnloadUnusedAssets();
     }
     public void MainMenuMusic()
     {
@@ -102,6 +105,8 @@ public class MusicController : MonoBehaviour
             yield return null;
         }
         audioSource.Stop();
+        audioSource.clip = null;
+        Resources.UnloadUnusedAssets();
     }
     public static IEnumerator FadeIn(AudioSource audioSource, float FadeTime)
     {
