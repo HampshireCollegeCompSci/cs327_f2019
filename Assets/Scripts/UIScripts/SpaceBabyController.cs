@@ -17,6 +17,9 @@ public class SpaceBabyController : MonoBehaviour
     {
         if (idling)
         {
+            gameObject.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Audio/spacebaby_happy");
+            gameObject.GetComponent<AudioSource>().Play();
+
             gameObject.GetComponent<Animator>().Play("HappyAnim");
             StartCoroutine("BabyAnimTrans");
         }
@@ -28,6 +31,28 @@ public class SpaceBabyController : MonoBehaviour
         idling = false;
         gameObject.GetComponent<Animator>().Play("EatingAnim");
         StartCoroutine("BabyAnimTrans");
+    }
+
+    public void BabyAngryAnim()
+    {
+        idling = false;
+        gameObject.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Audio/spacebaby_sad");
+        gameObject.GetComponent<AudioSource>().Play();
+
+        gameObject.GetComponent<Animator>().Play("AngryAnim");
+        StartCoroutine("BabyAnimTrans");
+    }
+
+    public void BabyLoseSound()
+    {
+        gameObject.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Audio/spacebaby_lose");
+        gameObject.GetComponent<AudioSource>().Play();
+    }
+
+    public void BabyActionCounterSound()
+    {
+        gameObject.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Audio/spacebaby_movecounter");
+        gameObject.GetComponent<AudioSource>().Play();
     }
 
     IEnumerator BabyAnimTrans()
