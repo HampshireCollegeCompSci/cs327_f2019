@@ -22,6 +22,7 @@ public class UtilsScript : MonoBehaviour
     private GameObject wastePile;
 
     private bool inputStopped = false;
+    private bool isMatching = false;
 
     public GameObject baby;
     public int matchPoints = Config.config.matchPoints;
@@ -249,7 +250,9 @@ public class UtilsScript : MonoBehaviour
 
     public void Match(GameObject card1, GameObject card2)
     {
+        // these must be in this order
         SetInputStopped(true);
+        isMatching = true; // a wastepile animation will overwrite the above without this
 
         soundController.CardStackSound();
         
@@ -335,6 +338,8 @@ public class UtilsScript : MonoBehaviour
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
 
+        // these must be in this order
+        isMatching = false;
         SetInputStopped(false);
 
         soundController.CardMatchSound();
@@ -587,6 +592,9 @@ public class UtilsScript : MonoBehaviour
 
     public void SetInputStopped(bool setTo)
     {
-        inputStopped = setTo;
+        if (!isMatching)
+        {
+            inputStopped = setTo;
+        }
     }
 }
