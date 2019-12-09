@@ -66,7 +66,7 @@ public class MenuUIScript : MonoBehaviour
         if (GameObject.Find("Return") != null)
         {
             GameObject button = GameObject.Find("Return");
-            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[3].ToUpper();
+            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[4].ToUpper();
         }
         //update pause menu txt
         if (GameObject.Find("Resume") != null)
