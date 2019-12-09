@@ -149,19 +149,13 @@ public class UtilsScript : MonoBehaviour
     //sends out a raycast to see you selected something
     public void Click()
     {
+        if (wastePile.GetComponent<WastepileScript>().isScrolling())
+        {
+            return;
+        }
+
         //raycast to see what we clicked
         hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Vector2.zero);
-
-
-        //if we clicked a button activates the button
-        /*
-        if (hit.collider.gameObject.CompareTag("Button"))
-        {
-            hit.collider.gameObject.SendMessage("ProcessAction", hit.collider.gameObject);
-        }*/
-
-        //
-
 
         //if we click a deck activates deck and deselected our cards
         if (hit.collider != null && !hit.collider.gameObject.CompareTag("Card"))
@@ -494,7 +488,7 @@ public class UtilsScript : MonoBehaviour
     {
         if (Config.config.actions == Config.config.actionMax)
         {
-            Config.config.deck.GetComponent<DeckScript>().NextCycle();
+            Config.config.deck.GetComponent<DeckScript>().StartNextCycle();
         }
     }
 

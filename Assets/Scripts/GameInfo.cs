@@ -26,7 +26,8 @@ public class GameInfo
     public int wastepileCardsToShow;
     public float nonTopXOffset;
     public float draggedTokenOffset;
-    public int cardsToDeal;
+    public byte cardsToDeal;
+    public byte cardsToReactorspeed;
     public float relativeCardScale;
     public int turnsTillReset;
     public int matchPoints;

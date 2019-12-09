@@ -232,7 +232,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void MakeActionsMax()
     {
-        Config.config.deck.GetComponent<DeckScript>().NextCycle(manuallyTriggered: true);
+        Config.config.deck.GetComponent<DeckScript>().StartNextCycle(manuallyTriggered: true);
     }
 
     //IEnumerator ButtonPressedAnim(GameObject button, string scene, bool additive = false, bool unload = false)
