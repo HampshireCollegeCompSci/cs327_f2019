@@ -30,6 +30,8 @@ public class Config : MonoBehaviour
     //card scale
     public Vector3 cardScale;
 
+    //baby
+    private GameObject baby;
 
     //foundations
     public GameObject[] foundationList;
@@ -122,6 +124,8 @@ public class Config : MonoBehaviour
         gameOver = true;
         gameWin = didWin;
         fadeOutImage.SetActive(true);
+        baby = GameObject.Find("SpaceBaby");
+
         //delay to show summary
         StartCoroutine(EndGame());
 
@@ -144,6 +148,8 @@ public class Config : MonoBehaviour
 
         else
         {
+            baby.GetComponent<SpaceBabyController>().BabyLoseSound();
+
             gameObject.GetComponent<MusicController>().LoseMusic();
             errorImage.SetActive(true);
             while (countdown > 0)
@@ -216,7 +222,7 @@ public class Config : MonoBehaviour
         }
 
         errorImage = GameObject.Find("Error");
-		if(errorImage != null)
+        if (errorImage != null)
         {
             errorImage.SetActive(false);
         }
