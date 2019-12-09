@@ -1,10 +1,10 @@
 {
     "foundationStartingSize": 7,
-	"wastepileAnimationSpeedSlow": 7,
-	"wastepileAnimationSpeedFast": 15,
+    "wastepileAnimationSpeedSlow": 7,
+    "wastepileAnimationSpeedFast": 15,
     "draggedTokenOffset": 0.5,
     "cardsToDeal": 3,
-	"cardsToReactorspeed": 15,
+    "cardsToReactorspeed": 15,
     "relativeCardScale": 0.12,
     "turnsTillReset": 18,
     "matchPoints": 200,
@@ -25,7 +25,7 @@
     "gameStateTxtEnglish": [ "You Won!", "You Lost..." ],
     "menuSceneButtonsTxtEnglish": [ "Play", "Tutorial", "Credits" ],
     "loadingSceneTxtEnglish": "Loading",
-    "levelSceneButtonsTxtEnglish": [ "Easy", "Medium", "Hard", "Return" ],
+    "levelSceneButtonsTxtEnglish": [ "Continue", "Easy", "Medium", "Hard", "Return" ],
     "pauseSceneButtonsTxtEnglish": [ "Resume", "Restart", "Settings", "Main Menu" ],
     "summarySceneButtonsTxtEnglish": [ "Main\n Menu", "Play\n Again" ],
     "scoreActionLabelsTxtEnglish": [ "Score", "Action" ]

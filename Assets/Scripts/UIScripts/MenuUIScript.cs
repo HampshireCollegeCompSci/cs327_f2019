@@ -42,20 +42,25 @@ public class MenuUIScript : MonoBehaviour
         }
 
         //update level txt
+        if (GameObject.Find("Continue") != null)
+        {
+            GameObject button = GameObject.Find("Continue");
+            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[0].ToUpper();
+        }
         if (GameObject.Find("Easy") != null)
         {
             GameObject button = GameObject.Find("Easy");
-            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[0].ToUpper();
+            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[1].ToUpper();
         }
         if (GameObject.Find("Normal") != null)
         {
             GameObject button = GameObject.Find("Normal");
-            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[1].ToUpper();
+            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[2].ToUpper();
         }
         if (GameObject.Find("Hard") != null)
         {
             GameObject button = GameObject.Find("Hard");
-            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[2].ToUpper();
+            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[3].ToUpper();
         }
         // update return txt
         if (GameObject.Find("Return") != null)
