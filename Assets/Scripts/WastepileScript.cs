@@ -22,7 +22,6 @@ public class WastepileScript : MonoBehaviour
 
     private ScrollRect scrollRect;
     private RectTransform contentRectTransform;
-    private bool scrolling;
 
     private void Start()
     {
@@ -42,7 +41,6 @@ public class WastepileScript : MonoBehaviour
 
         scrollRect = gameObject.GetComponent<ScrollRect>();
         contentRectTransform = contentPanel.GetComponent<RectTransform>();
-        scrolling = false;
         //OnEnable();
     }
 
@@ -268,7 +266,7 @@ public class WastepileScript : MonoBehaviour
         // disable scrolling and flag it
         scrollRect.horizontal = false;
         scrollRect.horizontalScrollbar.interactable = false;
-        setScrolling(true);
+        utils.SetInputStopped(true);
 
         // we need unrestricted scroll for later shenanigans
         scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
@@ -283,7 +281,7 @@ public class WastepileScript : MonoBehaviour
         scrollRect.movementType = ScrollRect.MovementType.Clamped;
         scrollRect.horizontal = true;
         scrollRect.horizontalScrollbar.interactable = true;
-        setScrolling(false);
+        utils.SetInputStopped(false);
     }
 
     public void DraggingCard(GameObject card, bool isDragging)
@@ -392,16 +390,4 @@ public class WastepileScript : MonoBehaviour
     {
         return cardList;
     }
-
-    public void setScrolling(bool setTo)
-    {
-        scrolling = setTo;
-    }
-
-    public bool isScrolling()
-    {
-        return scrolling;
-        
-    }
-
 }

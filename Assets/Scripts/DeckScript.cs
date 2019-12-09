@@ -153,7 +153,7 @@ public class DeckScript : MonoBehaviour
     {
         utils.DeselectCards();
 
-        if (wastePileScript.isScrolling())
+        if (utils.IsInputStopped()) // the deck button directly calls ProcessAction
         {
             return;
         }
@@ -207,12 +207,12 @@ public class DeckScript : MonoBehaviour
     // moves all of the top foundation cards into their appropriate reactors
     public void StartNextCycle(bool manuallyTriggered = false)
     {
-        if (wastePileScript.isScrolling())
+        if (utils.IsInputStopped())
         {
             return;
         }
 
-        wastePileScript.setScrolling(true);
+        utils.SetInputStopped(true);
         StartCoroutine(NextCycle());
     }
 
@@ -252,7 +252,7 @@ public class DeckScript : MonoBehaviour
             }
         }
 
-        wastePileScript.setScrolling(false);
+        utils.SetInputStopped(false);
         utils.UpdateActionCounter(0, true);
         utils.CheckGameOver();
     }

@@ -21,6 +21,8 @@ public class UtilsScript : MonoBehaviour
     private bool draggingWastepile = false;
     private GameObject wastePile;
 
+    private bool inputStopped = false;
+
     public GameObject baby;
     public int matchPoints = Config.config.matchPoints;
     public int emptyReactorPoints = Config.config.emptyReactorPoints;
@@ -149,7 +151,7 @@ public class UtilsScript : MonoBehaviour
     //sends out a raycast to see you selected something
     public void Click()
     {
-        if (wastePile.GetComponent<WastepileScript>().isScrolling())
+        if (IsInputStopped())
         {
             return;
         }
@@ -247,6 +249,8 @@ public class UtilsScript : MonoBehaviour
 
     public void Match(GameObject card1, GameObject card2)
     {
+        SetInputStopped(true);
+
         soundController.CardStackSound();
         
         Vector3 p = card1.transform.position;
@@ -331,6 +335,7 @@ public class UtilsScript : MonoBehaviour
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
 
+        SetInputStopped(false);
 
         soundController.CardMatchSound();
         baby.GetComponent<SpaceBabyController>().BabyEatAnim();
@@ -573,5 +578,15 @@ public class UtilsScript : MonoBehaviour
                 DeselectCard(selectedCards[0]);
             }
         }
+    }
+
+    public bool IsInputStopped()
+    {
+        return inputStopped;
+    }
+
+    public void SetInputStopped(bool setTo)
+    {
+        inputStopped = setTo;
     }
 }
