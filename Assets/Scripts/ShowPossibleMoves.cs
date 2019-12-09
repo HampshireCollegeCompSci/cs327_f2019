@@ -97,7 +97,7 @@ public class ShowPossibleMoves : MonoBehaviour
             }
         }
 
-        if (wastepile.GetComponent<WastepileScript>().GetCardList().Count != 0 && UtilsScript.global.IsMatch(wastepile.GetComponent<WastepileScript>().cardList[0], selectedCard))
+        if (wastepile.GetComponent<WastepileScript>().GetCardList().Count != 0 && cardIsTopOfStack && UtilsScript.global.IsMatch(wastepile.GetComponent<WastepileScript>().cardList[0], selectedCard))
         {
             output.Add(wastepile.GetComponent<WastepileScript>().cardList[0]);
         }
@@ -107,11 +107,27 @@ public class ShowPossibleMoves : MonoBehaviour
 
     private GameObject FindReactorMove(GameObject selectedCard)
     {
-        foreach (GameObject reactor in reactorList)
+        cardIsFromFoundation = (selectedCard.GetComponent<CardScript>().container.GetComponent<FoundationScript>() != null);
+        if (cardIsFromFoundation)
         {
-            if (reactor.GetComponent<ReactorScript>().suit == selectedCard.GetComponent<CardScript>().cardSuit)
+            cardIsTopOfStack = (selectedCard == selectedCard.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[0]);
+        }
+        else
+        {
+            cardIsTopOfStack = true;
+        }
+
+        if (cardIsFromFoundation)
+        {
+            if (cardIsTopOfStack)
             {
-                return reactor;
+                foreach (GameObject reactor in reactorList)
+                {
+                    if (reactor.GetComponent<ReactorScript>().suit == selectedCard.GetComponent<CardScript>().cardSuit)
+                    {
+                        return reactor;
+                    }
+                }
             }
         }
         return null;
