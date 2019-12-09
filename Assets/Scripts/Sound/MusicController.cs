@@ -38,7 +38,6 @@ public class MusicController : MonoBehaviour
     {
         if (startNew)
         {
-            Debug.Log("start new");
             AudioClip gm = Resources.Load<AudioClip>("Audio/music_main_theme");
             if (playing1 && soundTrack1.clip == gm)
             {
@@ -50,6 +49,8 @@ public class MusicController : MonoBehaviour
             }
             else
             {
+                Transition(Resources.Load<AudioClip>("Audio/music_main_theme"));
+                return;
                 soundTrack1.Stop();
                 soundTrack2.Stop();
                 soundTrack1.clip = gm;
@@ -66,11 +67,14 @@ public class MusicController : MonoBehaviour
 
     public void Transition(AudioClip newTrack)
     {
-        Debug.Log("what");
         if (playing1)
         {
             if (soundTrack1.clip == newTrack)
             {
+                if (soundTrack1.volume != 1)
+                {
+                    StartCoroutine(FadeIn(soundTrack1, 1f, true));
+                }
                 return;
             }
 
@@ -82,6 +86,10 @@ public class MusicController : MonoBehaviour
         {
             if (soundTrack2.clip == newTrack)
             {
+                if (soundTrack2.volume != 1)
+                {
+                    StartCoroutine(FadeIn(soundTrack2, 1f, true));
+                }
                 return;
             }
 
@@ -103,10 +111,13 @@ public class MusicController : MonoBehaviour
         }
         audioSource.Stop();
     }
-    public static IEnumerator FadeIn(AudioSource audioSource, float FadeTime)
+    public static IEnumerator FadeIn(AudioSource audioSource, float FadeTime, bool keepOnGoing = false)
     {
         audioSource.Play();
-        audioSource.volume = 0f;
+        if (!keepOnGoing)
+        {
+            audioSource.volume = 0f;
+        }
         while (audioSource.volume < 1)
         {
             audioSource.volume += Time.deltaTime / FadeTime;
