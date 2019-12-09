@@ -184,6 +184,12 @@ public class MenuUIScript : MonoBehaviour
 
     public void PauseGame()
     {
+        GameObject utils = GameObject.Find("Utils");
+        if (utils != null && utils.GetComponent<UtilsScript>().IsInputStopped())
+        {
+            return;
+        }
+
         Config.config.GetComponent<SoundController>().PauseMenuButtonSound();
         //TODO save the game scene
         Config.config.gamePaused = true;
