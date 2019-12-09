@@ -41,7 +41,7 @@ public class MusicController : MonoBehaviour
 
     public void AlertMusic()
     {
-        if (playingTrack == 3)
+        if (playingTrack == 3 || playingTrack != 2) // will play over win/lose music without
         {
             return;
         }
