@@ -38,6 +38,8 @@ public class Config : MonoBehaviour
 
     //wastepile
     public GameObject wastePile;
+    public byte wastepileAnimationSpeedSlow;
+    public byte wastepileAnimationSpeedFast;
 
     //reactor
     public int maxReactorVal = 18;
@@ -160,6 +162,8 @@ public class Config : MonoBehaviour
     public void ConfigFromJSON()
     {
         foundationStartSize = gameInfo.foundationStartingSize;
+        wastepileAnimationSpeedSlow = gameInfo.wastepileAnimationSpeedSlow;
+        wastepileAnimationSpeedFast = gameInfo.wastepileAnimationSpeedFast;
         cardsToDeal = gameInfo.cardsToDeal;
         cardsToReactorspeed = gameInfo.cardsToReactorspeed;
         relativeCardScale = gameInfo.relativeCardScale;

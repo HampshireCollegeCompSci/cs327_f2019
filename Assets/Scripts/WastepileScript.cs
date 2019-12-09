@@ -130,8 +130,8 @@ public class WastepileScript : MonoBehaviour
             // scroll to the left
             while (temp.x > 0)
             {
-                yield return new WaitForSeconds(0.01f);
-                temp.x -= 0.2f;
+                yield return null;
+                temp.x -= Time.deltaTime * Config.config.wastepileAnimationSpeedFast;
                 contentRectTransform.anchoredPosition = temp;
             }
         }
@@ -155,10 +155,10 @@ public class WastepileScript : MonoBehaviour
         contentRectTransform.anchoredPosition = temp;
 
         // scroll the tokens back into view
-        while (temp.x > 0.01f)
+        while (temp.x > 0)
         {
-            yield return new WaitForSeconds(.01f);
-            temp.x -= 0.1f;
+            yield return null;
+            temp.x -= Time.deltaTime * Config.config.wastepileAnimationSpeedSlow;
             contentRectTransform.anchoredPosition = temp;
         }
 
@@ -222,9 +222,9 @@ public class WastepileScript : MonoBehaviour
         Vector3 temp = contentRectTransform.anchoredPosition;
         while (temp.x < 1)
         {
-            temp.x += 0.1f;
+            temp.x += Time.deltaTime * Config.config.wastepileAnimationSpeedSlow;
             contentRectTransform.anchoredPosition = temp;
-            yield return new WaitForSeconds(.01f);
+            yield return null;
         }
 
         Destroy(parentCardContainer);
@@ -243,8 +243,8 @@ public class WastepileScript : MonoBehaviour
         Vector3 temp = contentRectTransform.anchoredPosition;
         while (temp.x < cardList.Count + 1)
         {
-            yield return new WaitForSeconds(.01f);
-            temp.x += 0.3f;
+            yield return null;
+            temp.x += Time.deltaTime * Config.config.wastepileAnimationSpeedFast;
             contentRectTransform.anchoredPosition = temp;
         }
 
