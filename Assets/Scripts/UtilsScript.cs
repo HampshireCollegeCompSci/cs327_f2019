@@ -277,44 +277,44 @@ public class UtilsScript : MonoBehaviour
         CardScript cardVals = card1.GetComponent<CardScript>();
         if (cardVals.cardSuit == "clubs" || cardVals.cardSuit == "spades")
         {
-            if (cardVals.cardNum < 10) nameOfCombo = "Sprites/BlackCombinedHolograms/black_a-9_combine";
+            if (cardVals.cardNum < 10) nameOfCombo = "Sprites/Black Combined Holograms/black_a-9_combine";
             else
             {
                 switch (cardVals.cardNum)
                 {
                     case 10:
-                        nameOfCombo = "Sprites/BlackCombinedHolograms/black_10_combine";
+                        nameOfCombo = "Sprites/Black Combined Holograms/black_10_combine";
                         break;
                     case 11:
-                        nameOfCombo = "Sprites/BlackCombinedHolograms/black_jack_combine";
+                        nameOfCombo = "Sprites/Black Combined Holograms/black_jack_combine";
                         break;
                     case 12:
-                        nameOfCombo = "Sprites/BlackCombinedHolograms/black_queen_combine";
+                        nameOfCombo = "Sprites/Black Combined Holograms/black_queen_combine";
                         break;
                     case 13:
-                        nameOfCombo = "Sprites/BlackCombinedHolograms/black_king_combine";
+                        nameOfCombo = "Sprites/Black Combined Holograms/black_king_combine";
                         break;
                 }
             }
         }
         if (cardVals.cardSuit == "hearts" || cardVals.cardSuit ==  "diamonds")
         {
-            if (cardVals.cardNum < 10) nameOfCombo = "Sprites/RedCombinedHolograms/red_a-9_combine";
+            if (cardVals.cardNum < 10) nameOfCombo = "Sprites/Red Combined Holograms/red_a-9_combine";
             else
             {
                 switch (cardVals.cardNum)
                 {
                     case 10:
-                        nameOfCombo = "Sprites/RedCombinedHolograms/red_10_combine";
+                        nameOfCombo = "Sprites/Red Combined Holograms/red_10_combine";
                         break;
                     case 11:
-                        nameOfCombo = "Sprites/RedCombinedHolograms/red_jack_combine";
+                        nameOfCombo = "Sprites/Red Combined Holograms/red_jack_combine";
                         break;
                     case 12:
-                        nameOfCombo = "Sprites/RedCombinedHolograms/red_queen_combine";
+                        nameOfCombo = "Sprites/Red Combined Holograms/red_queen_combine";
                         break;
                     case 13:
-                        nameOfCombo = "Sprites/RedCombinedHolograms/red_king_combine";
+                        nameOfCombo = "Sprites/Red Combined Holograms/red_king_combine";
 
                         break;
                 }
