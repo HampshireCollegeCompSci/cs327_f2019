@@ -114,6 +114,7 @@ public class SoundController : MonoBehaviour
         if(suit == "hearts")
         {
             AudioClip sound = Resources.Load<AudioClip>("Audio/food_mushroom");
+            print(sound);
             soundController.clip = sound;
             soundController.Play();
         }
@@ -121,17 +122,20 @@ public class SoundController : MonoBehaviour
         {
             AudioClip sound = Resources.Load<AudioClip>("Audio/food_bug");
             soundController.clip = sound;
+            print(sound);
             soundController.Play();
         }
         if (suit == "spades")
         {
             AudioClip sound = Resources.Load<AudioClip>("Audio/food_rock");
+            print(sound);
             soundController.clip = sound;
             soundController.Play();
         }
         if (suit == "clubs")
         {
             AudioClip sound = Resources.Load<AudioClip>("Audio/food_fruit");
+            print(sound);
             soundController.clip = sound;
             soundController.Play();
         }
