@@ -1,74 +1,75 @@
 {
     "wastePile": [
-        "spades_10",
-        "diamonds_5",
-        "spades_7"
+        "diamonds_3",
+        "spades_6",
+        "diamonds_10"
     ],
     "deck": [
-        "diamonds_8",
-        "clubs_7",
-        "spades_13",
-        "hearts_12",
-        "diamonds_9",
+        "clubs_6",
         "clubs_2",
-        "hearts_7",
+        "diamonds_13",
+        "spades_11",
+        "spades_4",
+        "diamonds_7",
         "diamonds_4",
-        "clubs_3",
+        "hearts_10",
         "hearts_6",
-        "hearts_5",
-        "spades_9",
-        "spades_2",
-        "clubs_8",
-        "diamonds_1",
         "hearts_8",
-        "hearts_2",
-        "clubs_9",
-        "diamonds_2",
-        "diamonds_12",
-        "hearts_13"
+        "clubs_10",
+        "diamonds_11",
+        "diamonds_5",
+        "spades_9",
+        "clubs_8",
+        "clubs_1",
+        "diamonds_6",
+        "clubs_5",
+        "spades_3",
+        "hearts_3",
+        "diamonds_2"
     ],
     "matches": [],
     "foundations": [
         {
             "stringList": [
-                "clubs_4",
-                "clubs_6",
                 "spades_8",
+                "spades_7",
                 "hearts_11",
-                "spades_11",
+                "spades_13",
+                "spades_5",
+                "hearts_5",
+                "hearts_7"
+            ]
+        },
+        {
+            "stringList": [
+                "clubs_3",
+                "spades_10",
+                "hearts_4",
+                "diamonds_1",
+                "spades_12",
+                "diamonds_12"
+            ]
+        },
+        {
+            "stringList": [
+                "hearts_13",
+                "hearts_2",
+                "diamonds_8",
+                "spades_2",
                 "hearts_1",
-                "hearts_4"
+                "clubs_7"
             ]
         },
         {
             "stringList": [
-                "spades_4",
-                "diamonds_3",
-                "spades_3",
-                "diamonds_7",
-                "diamonds_10",
-                "clubs_13"
-            ]
-        },
-        {
-            "stringList": [
-                "hearts_10",
-                "clubs_11",
-                "diamonds_6",
-                "spades_5"
-            ]
-        },
-        {
-            "stringList": [
-                "diamonds_13",
-                "spades_1",
-                "hearts_3",
+                "clubs_9",
                 "hearts_9",
-                "clubs_5",
-                "spades_6",
+                "diamonds_9",
+                "clubs_4",
+                "spades_1",
                 "clubs_12",
-                "diamonds_11",
-                "clubs_10"
+                "clubs_13",
+                "hearts_12"
             ]
         }
     ],
@@ -77,9 +78,7 @@
             "stringList": []
         },
         {
-            "stringList": [
-                "clubs_1"
-            ]
+            "stringList": []
         },
         {
             "stringList": []
@@ -90,6 +89,6 @@
     ],
     "moveLog": [],
     "score": 0,
-    "actions": 3,
+    "actions": 1,
     "difficulty": "easy"
 }

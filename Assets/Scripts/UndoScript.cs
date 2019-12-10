@@ -27,7 +27,8 @@ public class UndoScript : MonoBehaviour
         GameObject origin = card.GetComponent<CardScript>().container; //get the cards original location
 
         //create the log of the move
-        Move move = new Move() {
+        Move move = new Move()
+        {
             moveType = moveType,
             card = card,
             origin = origin,
@@ -36,7 +37,7 @@ public class UndoScript : MonoBehaviour
             remainingActions = actionsRemaining
         };
         moveLog.Push(move); //push the log to the undo stack
-        StateLoader.saveSystem.writeState();
+        //StateLoader.saveSystem.writeState();
     }
 
     /*
