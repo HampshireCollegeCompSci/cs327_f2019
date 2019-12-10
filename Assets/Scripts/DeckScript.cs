@@ -219,7 +219,7 @@ public class DeckScript : MonoBehaviour
     // moves all of the top foundation cards into their appropriate reactors
     public void StartNextCycle(bool manuallyTriggered = false)
     {
-        if (utils.IsInputStopped())
+        if (manuallyTriggered && utils.IsInputStopped()) // stops 2 NextCycles from happening at once
         {
             return;
         }
