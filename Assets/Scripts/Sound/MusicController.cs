@@ -105,8 +105,7 @@ public class MusicController : MonoBehaviour
             yield return null;
         }
         audioSource.Stop();
-        audioSource.clip = null;
-        Resources.UnloadUnusedAssets();
+        audioSource.clip.UnloadAudioData();
     }
     public static IEnumerator FadeIn(AudioSource audioSource, float FadeTime = 2f)
     {
