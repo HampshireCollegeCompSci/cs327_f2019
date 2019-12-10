@@ -20,7 +20,6 @@ public class SoundController : MonoBehaviour
     public void CardPressSound()
     {
         int randomNo = Random.Range(0, 3);
-        Debug.Log(randomNo);
         if (randomNo == 0)
         {
             soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/token_select"));
@@ -74,12 +73,12 @@ public class SoundController : MonoBehaviour
 
     public void DeckDeal()
     {
-        soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/deck_conveyer_belt_deal"), 0.3f);
+        soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/deck_conveyer_belt_deal"), 0.6f);
     }
 
     public void DeckReshuffle()
     {
-        soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/deck_conveyer_belt_reshuffle"), 0.3f);
+        soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/deck_conveyer_belt_reshuffle"), 0.6f);
     }
 
     public void PauseMenuButtonSound()
