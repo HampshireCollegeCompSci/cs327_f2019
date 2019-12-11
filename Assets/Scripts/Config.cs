@@ -127,16 +127,27 @@ public class Config : MonoBehaviour
     {
         Image[] logos = SplashScreen.GetComponentsInChildren<Image>();
 
-        for (float ft = 1f; ft >= 0; ft -= 0.05f)
+        for (float ft = 1f; ft >= 0; ft -= 0.02f)
         {
             yield return new WaitForSeconds(0.1f);
 
-            SplashScreen.GetComponent<Image>().color = new Color(0, 0, 0, ft);
-
-            for (int i = 1; i < logos.Length; i++)
+            if (ft < 0.5f)
             {
-                logos[i].color = new Color(1, 1, 1, ft);
+                SplashScreen.GetComponent<Image>().color = new Color(0, 0, 0, 2 * ft);
+
+                for (int i = 1; i < logos.Length; i++)
+                {
+                    logos[i].color = new Color(1, 1, 1, ft);
+                }
             }
+            else
+            {
+                for (int i = 1; i < logos.Length; i++)
+                {
+                    logos[i].color = new Color(1, 1, 1, 1 - ft);
+                }
+            }
+
         }
 
         SplashScreen.SetActive(false);
