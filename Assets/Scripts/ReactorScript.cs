@@ -12,6 +12,8 @@ public class ReactorScript : MonoBehaviour
 
     GameObject myPrefab;
     public string suit;
+
+    public GameObject glow;
     private bool glowing = false;
     private bool alert = false;
 
@@ -179,9 +181,10 @@ public class ReactorScript : MonoBehaviour
 
     public bool GlowOn()
     {
+        Debug.Log(glowing);
         if (!glowing)
         {
-            gameObject.transform.Find("Glow").gameObject.SetActive(true);
+            glow.gameObject.SetActive(true);
             glowing = true;
             return true;
         }
@@ -192,7 +195,7 @@ public class ReactorScript : MonoBehaviour
     {
         if (glowing && !alert)
         {
-            gameObject.transform.Find("Glow").gameObject.SetActive(false);
+            glow.gameObject.SetActive(false);
             glowing = false;
             return true;
         }
@@ -203,8 +206,8 @@ public class ReactorScript : MonoBehaviour
     {
         if (!alert)
         {
-            gameObject.transform.Find("Glow").gameObject.SetActive(true);
-            gameObject.transform.Find("Glow").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Reactors/almostfull-reactor1");
+            glow.gameObject.SetActive(true);
+            glow.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Reactors/almostfull-reactor1");
             alert = true;
             return true;
         }
@@ -213,10 +216,10 @@ public class ReactorScript : MonoBehaviour
 
     public bool AlertOff()
     {
-        gameObject.transform.Find("Glow").GetComponent<SpriteRenderer>().GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Reactors/selectglow-reactor1");
+        glow.GetComponent<SpriteRenderer>().GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Reactors/selectglow-reactor1");
         if (alert)
         {
-            gameObject.transform.Find("Glow").gameObject.SetActive(false);
+            glow.gameObject.SetActive(false);
             alert = false;
             return true;
         }
