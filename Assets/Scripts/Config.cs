@@ -150,7 +150,7 @@ public class Config : MonoBehaviour
 
         else
         {
-            baby.GetComponent<SpaceBabyController>().BabyLoseSound();
+            //baby.GetComponent<SpaceBabyController>().BabyLoseSound();
             gameObject.GetComponent<SoundController>().LoseSound();
 
             errorImage.SetActive(true);
