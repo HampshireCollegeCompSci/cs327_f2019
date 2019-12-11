@@ -137,7 +137,7 @@ public class CardScript : MonoBehaviour
         else
             cardHologramName = "a-9" + "_" + cardSuit + "_food";
 
-        hologramFoodPrefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/FoodHolograms/" + cardHologramName);
+        hologramFoodPrefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Hologram/FoodHolograms/" + cardHologramName);
 
         hologram = Instantiate(hologramPrefab, Vector3.one, gameObject.transform.rotation);
         hologramFood = Instantiate(hologramFoodPrefab, Vector3.one, gameObject.transform.rotation);

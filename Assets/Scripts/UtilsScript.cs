@@ -268,48 +268,48 @@ public class UtilsScript : MonoBehaviour
     }
     IEnumerator animatorwait(GameObject card1, GameObject card2, GameObject matchExplosion)
     {
-        string nameOfCombo = "Sprites/FoodHolograms/a-9_clubs_food";
+        string nameOfCombo = "Sprites/Hologram/FoodHolograms/a-9_clubs_food";
         CardScript cardVals = card1.GetComponent<CardScript>();
         if (cardVals.cardSuit == "clubs" || cardVals.cardSuit == "spades")
         {
-            if (cardVals.cardNum < 10) nameOfCombo = "Sprites/Black Combined Holograms/black_a-9_combine";
+            if (cardVals.cardNum < 10) nameOfCombo = "Sprites/Hologram/Black Combined Holograms/black_a-9_combine";
             else
             {
                 switch (cardVals.cardNum)
                 {
                     case 10:
-                        nameOfCombo = "Sprites/Black Combined Holograms/black_10_combine";
+                        nameOfCombo = "Sprites/Hologram/Black Combined Holograms/black_10_combine";
                         break;
                     case 11:
-                        nameOfCombo = "Sprites/Black Combined Holograms/black_jack_combine";
+                        nameOfCombo = "Sprites/Hologram/Black Combined Holograms/black_jack_combine";
                         break;
                     case 12:
-                        nameOfCombo = "Sprites/Black Combined Holograms/black_queen_combine";
+                        nameOfCombo = "Sprites/Hologram/Black Combined Holograms/black_queen_combine";
                         break;
                     case 13:
-                        nameOfCombo = "Sprites/Black Combined Holograms/black_king_combine";
+                        nameOfCombo = "Sprites/Hologram/Black Combined Holograms/black_king_combine";
                         break;
                 }
             }
         }
         if (cardVals.cardSuit == "hearts" || cardVals.cardSuit == "diamonds")
         {
-            if (cardVals.cardNum < 10) nameOfCombo = "Sprites/Red Combined Holograms/red_a-9_combine";
+            if (cardVals.cardNum < 10) nameOfCombo = "Sprites/Hologram/Red Combined Holograms/red_a-9_combine";
             else
             {
                 switch (cardVals.cardNum)
                 {
                     case 10:
-                        nameOfCombo = "Sprites/Red Combined Holograms/red_10_combine";
+                        nameOfCombo = "Sprites/Hologram/Red Combined Holograms/red_10_combine";
                         break;
                     case 11:
-                        nameOfCombo = "Sprites/Red Combined Holograms/red_jack_combine";
+                        nameOfCombo = "Sprites/Hologram/Red Combined Holograms/red_jack_combine";
                         break;
                     case 12:
-                        nameOfCombo = "Sprites/Red Combined Holograms/red_queen_combine";
+                        nameOfCombo = "Sprites/Hologram/Red Combined Holograms/red_queen_combine";
                         break;
                     case 13:
-                        nameOfCombo = "Sprites/Red Combined Holograms/red_king_combine";
+                        nameOfCombo = "Sprites/Hologram/Red Combined Holograms/red_king_combine";
 
                         break;
                 }
