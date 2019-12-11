@@ -73,6 +73,7 @@ public class Config : MonoBehaviour
     GameInfo gameInfo;
     GameObject fadeOutImage;
     GameObject errorImage;
+    public GameObject SplashScreen;
 
     public string difficulty;
 
@@ -112,10 +113,33 @@ public class Config : MonoBehaviour
 
     private void Start()
     {
+        SplashScreen.SetActive(true);
+        StartCoroutine(DisplayLogo());
+
         string path = "GameConfigurations/gameValues";
         gameInfo = CreateFromJSON(path);
         ConfigFromJSON();
-        SetCards();
+        //SetCards();
+
+    }
+
+    IEnumerator DisplayLogo()
+    {
+        Image[] logos = SplashScreen.GetComponentsInChildren<Image>();
+
+        for (float ft = 1f; ft >= 0; ft -= 0.05f)
+        {
+            yield return new WaitForSeconds(0.1f);
+
+            SplashScreen.GetComponent<Image>().color = new Color(0, 0, 0, ft);
+
+            for (int i = 1; i < logos.Length; i++)
+            {
+                logos[i].color = new Color(1, 1, 1, ft);
+            }
+        }
+
+        SplashScreen.SetActive(false);
         gameObject.GetComponent<MusicController>().MainMenuMusic();
     }
 
