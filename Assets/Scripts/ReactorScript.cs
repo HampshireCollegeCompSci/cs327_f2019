@@ -14,7 +14,7 @@ public class ReactorScript : MonoBehaviour
     public string suit;
     private bool glowing = false;
     private bool alert = false;
-    
+
 
 
     void Start()
@@ -28,11 +28,7 @@ public class ReactorScript : MonoBehaviour
     {
         if (CountReactorCard() >= Config.config.maxReactorVal && !Config.config.gameOver)
         {
-            Config.config.GetComponent<SoundController>().ReactorExplodeSound();
-            myPrefab = (GameObject)Resources.Load("Prefabs/Explosion", typeof(GameObject));
-            Instantiate(myPrefab, gameObject.transform.position, gameObject.transform.rotation);
-            Destroy(gameObject);
-
+            Config.config.GetComponent<SoundController>().LoseSound();
             Config.config.GameOver(false);
         }
     }

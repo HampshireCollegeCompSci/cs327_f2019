@@ -9,7 +9,6 @@ public class UtilsScript : MonoBehaviour
     public List<GameObject> selectedCards;
     private List<GameObject> selectedCardsCopy = new List<GameObject>();
     public GameObject matchedPile;
-    public GameObject explosionPrefab;
     public GameObject gameUI;
     public GameObject scoreBox;
     public GameObject moveCounter;
@@ -255,16 +254,11 @@ public class UtilsScript : MonoBehaviour
         isMatching = true; // a wastepile animation will overwrite the above without this
 
         soundController.CardStackSound();
-        
+
         Vector3 p = card1.transform.position;
         Quaternion t = card1.transform.rotation;
         p.z += 2;
 
-        //GameObject myPrefab = (GameObject)Resources.Load("Prefabs/MatchExplosionAnimation", typeof(GameObject));
-        //myPrefab.SetActive(true);
-        GameObject matchExplosion = Instantiate(explosionPrefab, p, t);
-
-        StartCoroutine(animatorwait(card1, card2, matchExplosion));
     }
     IEnumerator animatorwait(GameObject card1, GameObject card2, GameObject matchExplosion)
     {
@@ -292,7 +286,7 @@ public class UtilsScript : MonoBehaviour
                 }
             }
         }
-        if (cardVals.cardSuit == "hearts" || cardVals.cardSuit ==  "diamonds")
+        if (cardVals.cardSuit == "hearts" || cardVals.cardSuit == "diamonds")
         {
             if (cardVals.cardNum < 10) nameOfCombo = "Sprites/Red Combined Holograms/red_a-9_combine";
             else
@@ -323,7 +317,7 @@ public class UtilsScript : MonoBehaviour
         Vector3 p = card1.transform.position;
         p.y += 3;
         Quaternion t = card1.transform.rotation;
-        
+
         GameObject comboToLoad = new GameObject("combo");
         SpriteRenderer Srenderer = comboToLoad.AddComponent<SpriteRenderer>();
         Srenderer.sortingLayerName = "UI";
@@ -350,7 +344,6 @@ public class UtilsScript : MonoBehaviour
         UpdateScore(matchPoints);
 
         yield return new WaitForSeconds(1);
-        Destroy(matchExplosion);
 
         CheckGameOver();
         //CheckNextCycle();
@@ -367,10 +360,10 @@ public class UtilsScript : MonoBehaviour
             comboToLoad.transform.position += new Vector3(.01f, 0, 0);
             yield return null;
 
-        } 
+        }
         Destroy(comboToLoad);
     }
-        //checks if suit match AND value match
+    //checks if suit match AND value match
     public bool IsMatch(GameObject card1, GameObject card2)
     {
 
@@ -472,7 +465,7 @@ public class UtilsScript : MonoBehaviour
         }
         else
         {
-           Config.config.GetComponent<MusicController>().GameMusic();
+            Config.config.GetComponent<MusicController>().GameMusic();
         }
 
         if (Config.config.actionMax - Config.config.actions <= 1)

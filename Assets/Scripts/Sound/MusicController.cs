@@ -6,8 +6,11 @@ public class MusicController : MonoBehaviour
 {
     public AudioSource soundTrack1;
     public AudioSource soundTrack2;
+
+    public AudioClip menuMusic, themeMusic, transitionMusic, loseMusic, winMusic;
     private bool playing1 = false;
     private byte playingTrack = 0;
+
 
     public void LoadGap()
     {
@@ -15,7 +18,6 @@ public class MusicController : MonoBehaviour
         soundTrack1.clip = null;
         soundTrack2.Stop();
         soundTrack2.clip = null;
-        Resources.UnloadUnusedAssets();
     }
     public void MainMenuMusic()
     {
@@ -25,7 +27,7 @@ public class MusicController : MonoBehaviour
         }
 
         playingTrack = 1;
-        Transition(Resources.Load<AudioClip>("Audio/music_menu"));
+        Transition(menuMusic);
     }
 
     public void GameMusic(bool startNew = false)
@@ -36,7 +38,7 @@ public class MusicController : MonoBehaviour
         }
 
         playingTrack = 2;
-        Transition(Resources.Load<AudioClip>("Audio/music_main_theme"));
+        Transition(themeMusic);
     }
 
     public void AlertMusic()
@@ -47,7 +49,7 @@ public class MusicController : MonoBehaviour
         }
 
         playingTrack = 3;
-        Transition(Resources.Load<AudioClip>("Audio/music_transition"));
+        Transition(transitionMusic);
     }
 
     public void LoseMusic()
@@ -58,7 +60,7 @@ public class MusicController : MonoBehaviour
         }
 
         playingTrack = 4;
-        Transition(Resources.Load<AudioClip>("Audio/music_lose"));
+        Transition(loseMusic);
     }
 
     public void WinMusic()
@@ -69,7 +71,7 @@ public class MusicController : MonoBehaviour
         }
 
         playingTrack = 5;
-        Transition(Resources.Load<AudioClip>("Audio/music_win"));
+        Transition(winMusic);
     }
 
     public void Transition(AudioClip newTrack)

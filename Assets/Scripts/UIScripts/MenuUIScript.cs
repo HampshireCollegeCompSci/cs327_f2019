@@ -121,7 +121,7 @@ public class MenuUIScript : MonoBehaviour
     public void UndoButton()
     {
         UndoScript.undoScript.undo();
-        Config.config.GetComponent<SoundController>().ButtonPressSound2();
+        Config.config.GetComponent<SoundController>().UndoPressSound();
 
         Animator undoAnim = GameObject.Find("Undo").GetComponentInChildren<Animator>();
         if (!undoAnim.enabled)

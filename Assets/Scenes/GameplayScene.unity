@@ -488,7 +488,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.48625, y: 0.6064992}
   m_AnchorMax: {x: 0.8187501, y: 0.72650087}
-  m_AnchoredPosition: {x: -25, y: -0.60002136}
+  m_AnchoredPosition: {x: -25, y: -0.6000366}
   m_SizeDelta: {x: 1.8999939, y: 0.30000305}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &182144613
@@ -942,6 +942,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundController: {fileID: 307181956}
+  buttonPressSound: {fileID: 8300000, guid: 34ed478bbbcfe724ba5b88616341ecba, type: 3}
+  undoPressSound: {fileID: 8300000, guid: 5325705503cfe8f43b7d3e63bb133618, type: 3}
+  pauseButtonSound: {fileID: 8300000, guid: ba15e855626b48044895a57434db0fa9, type: 3}
+  tokenRevealSound: {fileID: 8300000, guid: 5ded17a2874328846b25adeb01574612, type: 3}
+  tokenSelectSoundA: {fileID: 8300000, guid: 2dc019e466a5efd45aad499855d76828, type: 3}
+  tokenSelectSoundB: {fileID: 8300000, guid: 40cc1447275b748f6a91bbacfa1c6990, type: 3}
+  tokenSelectSoundC: {fileID: 8300000, guid: d398b8ee4dfd64a36affeef09fb4f74c, type: 3}
+  tokenInReactorSound: {fileID: 8300000, guid: 1b2e6dca67a0f5b41bb5c3edb6d4cdec, type: 3}
+  tokenStackSoundA: {fileID: 8300000, guid: df7bc6be8f67f7144901ec57e773d6aa, type: 3}
+  tokenStackSoundB: {fileID: 8300000, guid: 5b7d6e9a83fe8418fb141ea192dd9912, type: 3}
+  tokenStackSoundC: {fileID: 8300000, guid: 681823516e2f547ebaafbbb23b3c0e57, type: 3}
+  tokenStackSoundD: {fileID: 8300000, guid: b85c0701e7d7b40f588a76a66a5ff325, type: 3}
+  cardMatchSound: {fileID: 8300000, guid: 0750c2658a2634069977597de59ade53, type: 3}
+  deckDealSound: {fileID: 8300000, guid: ed2e65bc4a8cb8c41a05fd9d643eb156, type: 3}
+  deckReshuffleSound: {fileID: 8300000, guid: 6b04e724c719a1949a8020f46201a09c, type: 3}
+  winSound: {fileID: 8300000, guid: d4b0caf3fd9a94554ae64f647a633f0b, type: 3}
+  loseSound: {fileID: 8300000, guid: 88d5d7c4a87be40f79cb6464b783a4b7, type: 3}
+  mushroomSound: {fileID: 8300000, guid: 500d74ce5d37147da9bd54ba50cfde21, type: 3}
+  bugSound: {fileID: 8300000, guid: 75dfa90a26ab04a3397012f42a1e7329, type: 3}
+  fruitSound: {fileID: 8300000, guid: 9df40cdb76cca4e2cab06d66a2f5b56d, type: 3}
+  rockSound: {fileID: 8300000, guid: 881a4ec50bf4345d28980a9bfa8c0895, type: 3}
 --- !u!1001 &324923088
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4673,8 +4694,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectedCards: []
   matchedPile: {fileID: 1214012893}
-  explosionPrefab: {fileID: 4031254262428589365, guid: 3a28ce96f97e3fd4f9107ecc217d5158,
-    type: 3}
   gameUI: {fileID: 2058941297}
   scoreBox: {fileID: 1489602702}
   moveCounter: {fileID: 338821812}
@@ -5053,6 +5072,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 756a9b591c0f943c0b71bb09e9315b51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  happySound: {fileID: 8300000, guid: e68dab0c95cc34c27a9b6fe25a354e7b, type: 3}
+  angrySound: {fileID: 8300000, guid: 7c2f90662e6a74c429575d1e408bdbca, type: 3}
+  loseSound: {fileID: 8300000, guid: 567c08c1d583541238e40b972d63750c, type: 3}
+  counterSound: {fileID: 8300000, guid: bc83c2c36e0e54b57a955fc50954a081, type: 3}
 --- !u!82 &1616627639
 AudioSource:
   m_ObjectHideFlags: 0

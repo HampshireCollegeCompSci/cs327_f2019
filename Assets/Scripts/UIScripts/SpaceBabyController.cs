@@ -5,6 +5,8 @@ using UnityEngine;
 public class SpaceBabyController : MonoBehaviour
 {
     bool idling;
+    public AudioClip happySound, angrySound, loseSound, counterSound;
+
 
     // Start is called before the first frame update
     void Start()
@@ -17,7 +19,7 @@ public class SpaceBabyController : MonoBehaviour
     {
         if (idling)
         {
-            gameObject.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Audio/spacebaby_happy");
+            gameObject.GetComponent<AudioSource>().clip = happySound;
             gameObject.GetComponent<AudioSource>().Play();
 
             gameObject.GetComponent<Animator>().Play("HappyAnim");
@@ -36,7 +38,7 @@ public class SpaceBabyController : MonoBehaviour
     public void BabyAngryAnim()
     {
         idling = false;
-        gameObject.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Audio/spacebaby_sad");
+        gameObject.GetComponent<AudioSource>().clip = angrySound;
         gameObject.GetComponent<AudioSource>().Play();
 
         gameObject.GetComponent<Animator>().Play("AngryAnim");
@@ -45,13 +47,13 @@ public class SpaceBabyController : MonoBehaviour
 
     public void BabyLoseSound()
     {
-        gameObject.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Audio/spacebaby_lose");
+        gameObject.GetComponent<AudioSource>().clip = loseSound;
         gameObject.GetComponent<AudioSource>().Play();
     }
 
     public void BabyActionCounterSound()
     {
-        gameObject.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Audio/spacebaby_movecounter");
+        gameObject.GetComponent<AudioSource>().clip = counterSound;
         gameObject.GetComponent<AudioSource>().Play();
     }
 

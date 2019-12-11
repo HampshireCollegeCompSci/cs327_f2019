@@ -6,15 +6,23 @@ public class SoundController : MonoBehaviour
 {
     public AudioSource soundController;
 
+    public AudioClip buttonPressSound, undoPressSound, pauseButtonSound,
+                    tokenRevealSound, tokenSelectSoundA, tokenSelectSoundB, tokenSelectSoundC,
+                    tokenInReactorSound, tokenStackSoundA, tokenStackSoundB, tokenStackSoundC, tokenStackSoundD,
+                    cardMatchSound, deckDealSound, deckReshuffleSound, winSound, loseSound,
+                    mushroomSound, bugSound, fruitSound, rockSound;
+
+
     public void ButtonPressSound()
     {
         // doesn't like PlayOneShot
-        soundController.clip = Resources.Load<AudioClip>("Audio/button_press");
+        soundController.clip = buttonPressSound;
         soundController.Play();
     }
-    public void ButtonPressSound2()
+
+    public void UndoPressSound()
     {
-        soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/token_reveal"), 0.5f);
+        soundController.PlayOneShot(undoPressSound, 0.5f);
     }
 
     public void CardPressSound()
@@ -22,21 +30,21 @@ public class SoundController : MonoBehaviour
         int randomNo = Random.Range(0, 3);
         if (randomNo == 0)
         {
-            soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/token_select"));
+            soundController.PlayOneShot(tokenSelectSoundA);
         }
         else if (randomNo == 1)
         {
-            soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/token_select_B"));
+            soundController.PlayOneShot(tokenSelectSoundB);
         }
         else
         {
-            soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/token_select_C"));
+            soundController.PlayOneShot(tokenSelectSoundC);
         }
     }
 
     public void CardToReactorSound()
     {
-        soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/token_placed_in_reactor"));
+        soundController.PlayOneShot(tokenInReactorSound);
     }
 
     public void CardStackSound()
@@ -45,76 +53,77 @@ public class SoundController : MonoBehaviour
         int randomNo = Random.Range(0, 4);
         if (randomNo == 0)
         {
-            soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/token_stack"));
+            soundController.PlayOneShot(tokenStackSoundA);
         }
         else if (randomNo == 1)
         {
-            soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/token_stack_B"));
+            soundController.PlayOneShot(tokenStackSoundB);
         }
         else if (randomNo == 2)
         {
-            soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/token_stack_C"));
+            soundController.PlayOneShot(tokenStackSoundC);
         }
         else
         {
-            soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/token_stack_D"));
+            soundController.PlayOneShot(tokenStackSoundD);
         }
     }
 
     public void CardRevealSound()
     {
-        soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/token_reveal"));
+        soundController.PlayOneShot(tokenRevealSound);
     }
 
     public void CardMatchSound()
     {
-        soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/card_match_c"));
+        soundController.PlayOneShot(cardMatchSound);
     }
 
     public void DeckDeal()
     {
-        soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/deck_conveyer_belt_deal"), 0.6f);
+        soundController.PlayOneShot(deckDealSound, 0.6f);
     }
 
     public void DeckReshuffle()
     {
-        soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/deck_conveyer_belt_reshuffle"), 0.6f);
+        soundController.PlayOneShot(deckReshuffleSound, 0.6f);
     }
 
     public void PauseMenuButtonSound()
     {
         soundController.Stop();
-        soundController.clip = Resources.Load<AudioClip>("Audio/pause_menu");
+        soundController.clip = pauseButtonSound;
         soundController.Play();
-    }
-
-    public void ReactorExplodeSound()
-    {
-        soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/reactor_explosion"));
     }
 
     public void WinSound()
     {
-        soundController.clip = Resources.Load<AudioClip>("Audio/sound_win"); ;
+        soundController.clip = winSound;
+        soundController.Play();
+    }
+
+    public void LoseSound()
+    {
+        soundController.clip = loseSound;
         soundController.Play();
     }
     public void FoodMatch(string suit)
     {
-        if(suit == "hearts")
+        if (suit == "hearts")
         {
-            soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/food_mushroom"));
+            soundController.PlayOneShot(mushroomSound);
         }
         if (suit == "diamonds")
         {
-            soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/food_bug"));
+            soundController.PlayOneShot(bugSound);
         }
         if (suit == "spades")
         {
-            soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/food_rock"));
+            soundController.PlayOneShot(rockSound);
         }
         if (suit == "clubs")
         {
-            soundController.PlayOneShot(Resources.Load<AudioClip>("Audio/food_fruit"));
+            soundController.PlayOneShot(fruitSound);
         }
 
 

@@ -137,7 +137,9 @@ public class Config : MonoBehaviour
 
         if (gameWin)
         {
-            gameObject.GetComponent<MusicController>().WinMusic();
+            baby.GetComponent<SpaceBabyController>().BabyHappyAnim();
+            gameObject.GetComponent<SoundController>().WinSound();
+
             while (countdown > 0)
             {
                 yield return new WaitForSeconds(0.01f);
@@ -149,8 +151,8 @@ public class Config : MonoBehaviour
         else
         {
             baby.GetComponent<SpaceBabyController>().BabyLoseSound();
+            gameObject.GetComponent<SoundController>().LoseSound();
 
-            gameObject.GetComponent<MusicController>().LoseMusic();
             errorImage.SetActive(true);
             while (countdown > 0)
             {
@@ -161,6 +163,12 @@ public class Config : MonoBehaviour
         }
 
         SceneManager.LoadScene("SummaryScene");
+
+        if (gameWin)
+            gameObject.GetComponent<MusicController>().WinMusic();
+        else
+            gameObject.GetComponent<MusicController>().LoseMusic();
+
         File.Delete("Assets/Resources/GameStates/testState.json");
         File.Delete("Assets/Resources/GameStates/testState.meta");
     }
