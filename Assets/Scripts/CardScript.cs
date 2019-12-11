@@ -263,7 +263,14 @@ public class CardScript : MonoBehaviour
         {
             if (doLog)
             {
-                UndoScript.undoScript.logMove("draw", gameObject, isAction, Config.config.actions);
+                if (container.CompareTag("Foundation")) // for undoing a match that goes into the wastepile
+                {
+                    UndoScript.undoScript.logMove("move", gameObject, isAction, Config.config.actions, nextCardWasHidden);
+                }
+                else
+                {
+                    UndoScript.undoScript.logMove("draw", gameObject, isAction, Config.config.actions);
+                }
             }
 
             destination.GetComponent<WastepileScript>().AddCard(gameObject, addUpdateHolo);

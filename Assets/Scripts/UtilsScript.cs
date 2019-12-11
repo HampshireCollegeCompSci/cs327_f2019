@@ -336,8 +336,8 @@ public class UtilsScript : MonoBehaviour
 
         StartCoroutine(FadeImage(comboToLoad));
 
-        card1.GetComponent<CardScript>().MoveCard(matchedPile);
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
+        card1.GetComponent<CardScript>().MoveCard(matchedPile);
 
         // these must be in this order
         isMatching = false;
