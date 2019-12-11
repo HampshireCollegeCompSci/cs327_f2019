@@ -103,7 +103,7 @@ public class DeckScript : MonoBehaviour
                     newCardScript.cardSuit = "diamonds";
                 }
 
-                newCardScript.cardFrontSprite = sprites[cardIndex];
+                newCardScript.number.GetComponent<SpriteRenderer>().sprite = sprites[cardIndex];
                 newCardScript.SetVisibility(true);
                 newCardScript.container = target;
                 AddCard(newCard);
@@ -230,17 +230,21 @@ public class DeckScript : MonoBehaviour
 
     IEnumerator NextCycle()
     {
+        GameObject topFoundationCard;
+        CardScript topCardScript;
         for (int f = 0; f < foundations.Count; f++)
         {
             if (foundations[f].GetComponent<FoundationScript>().cardList.Count != 0)
             {
-                GameObject topFoundationCard = foundations[f].GetComponent<FoundationScript>().cardList[0];
+                topFoundationCard = foundations[f].GetComponent<FoundationScript>().cardList[0];
+                topCardScript = topFoundationCard.GetComponent<CardScript>();
                 for (int r = 0; r < reactors.Count; r++)
                 {
                     if (topFoundationCard.GetComponent<CardScript>().cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
                     {
                         topFoundationCard.GetComponent<CardScript>().HideHologram();
                         topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
+                        topCardScript.number.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
                         Vector3 target = reactors[r].transform.position;
 
                         while (topFoundationCard.transform.position != target)
@@ -251,6 +255,7 @@ public class DeckScript : MonoBehaviour
                         }
 
                         topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
+                        topCardScript.number.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
                         topFoundationCard.GetComponent<CardScript>().MoveCard(reactors[r], isCycle: true);
 
                         if (Config.config.gameOver)

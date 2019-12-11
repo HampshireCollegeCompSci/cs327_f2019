@@ -19,6 +19,9 @@ public class CardScript : MonoBehaviour
     public GameObject hologramFoodPrefab, hologramPrefab;
     private GameObject hologramFood, hologram;
 
+    public GameObject glow;
+    public GameObject number;
+
     void Start()
     {
         glowing = false;
@@ -49,12 +52,14 @@ public class CardScript : MonoBehaviour
         if (show)
         {
             //Debug.Log("showing card" + cardNum + cardSuit);
+            number.SetActive(true);
             gameObject.GetComponent<SpriteRenderer>().sprite = cardFrontSprite;
             hidden = false;
         }
         else
         {
             //Debug.Log("hiding card" + cardNum + cardSuit);
+            number.SetActive(false);
             gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
             HideHologram();
             hidden = true;
@@ -94,6 +99,7 @@ public class CardScript : MonoBehaviour
     public void UpdateMaskInteraction(SpriteMaskInteraction update)
     {
         gameObject.GetComponent<SpriteRenderer>().maskInteraction = update;
+        number.GetComponent<SpriteRenderer>().maskInteraction = update;
         if (hologram != null && hologramFood != null)
         {
             hologram.GetComponent<SpriteRenderer>().maskInteraction = update;
@@ -105,6 +111,7 @@ public class CardScript : MonoBehaviour
     {
         gameObject.transform.localScale = new Vector3(0.2f, 0.2f, 1);
         container = null;
+        number.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
         Destroy(gameObject.GetComponent<BoxCollider2D>());
     }
 
@@ -172,11 +179,11 @@ public class CardScript : MonoBehaviour
     {
         if (!glowing)
         {
-            gameObject.transform.Find("Glow").gameObject.SetActive(true);
-            gameObject.transform.Find("Glow").GetComponent<SpriteRenderer>().color = Color.HSVToRGB(Config.config.cardHighlightColor[0], Config.config.cardHighlightColor[1], Config.config.cardHighlightColor[2]);
-            Color colorAlphaPlaceholder = gameObject.transform.Find("Glow").GetComponent<SpriteRenderer>().color;
+            glow.SetActive(true);
+            glow.GetComponent<SpriteRenderer>().color = Color.HSVToRGB(Config.config.cardHighlightColor[0], Config.config.cardHighlightColor[1], Config.config.cardHighlightColor[2]);
+            Color colorAlphaPlaceholder = glow.GetComponent<SpriteRenderer>().color;
             colorAlphaPlaceholder.a = Config.config.cardHighlightColor[3];
-            gameObject.transform.Find("Glow").GetComponent<SpriteRenderer>().color = colorAlphaPlaceholder;
+            glow.GetComponent<SpriteRenderer>().color = colorAlphaPlaceholder;
             glowing = true;
             return true;
         }
@@ -187,7 +194,7 @@ public class CardScript : MonoBehaviour
     {
         if (glowing)
         {
-            gameObject.transform.Find("Glow").gameObject.SetActive(false);
+            glow.gameObject.SetActive(false);
             glowing = false;
             return true;
         }
