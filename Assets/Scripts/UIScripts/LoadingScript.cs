@@ -11,6 +11,9 @@ public class LoadingScript : MonoBehaviour
     {
         if (SceneManager.GetActiveScene().name == "LevelSelectScene")
             SceneManager.UnloadSceneAsync("LevelSelectScene");
+
+        Config.config.GetComponent<MusicController>().LoadGap();
+
         StartCoroutine(UpdateLoadingText());
     }
 

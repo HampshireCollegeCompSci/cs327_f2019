@@ -111,9 +111,8 @@ public class MenuUIScript : MonoBehaviour
         Config.config.gameOver = false;
         Config.config.gameWin = false;
         Config.config.gamePaused = false;
-        Config.config.GetComponent<MusicController>().LoadGap();
-
         Config.config.GetComponent<SoundController>().ButtonPressSound();
+
         SceneManager.LoadScene("LoadingScene");
 
     }
