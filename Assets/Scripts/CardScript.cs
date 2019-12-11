@@ -135,10 +135,10 @@ public class CardScript : MonoBehaviour
         hologram = Instantiate(hologramPrefab, Vector3.one, gameObject.transform.rotation);
         hologramFood = Instantiate(hologramFoodPrefab, Vector3.one, gameObject.transform.rotation);
 
-        Vector3 temp = hologramObject.transform.localScale;
+        Vector3 temp = hologramFood.transform.localScale;
         temp.x += temp.x;
         temp.y += temp.y;
-        hologramObject.transform.localScale = temp;
+        hologramFood.transform.localScale = temp;
 
         hologram.transform.parent = this.gameObject.transform;
         hologramFood.transform.parent = this.gameObject.transform;
