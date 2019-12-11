@@ -9,6 +9,7 @@ public class UtilsScript : MonoBehaviour
     public List<GameObject> selectedCards;
     private List<GameObject> selectedCardsCopy = new List<GameObject>();
     public GameObject matchedPile;
+    public GameObject matchPrefab;
     public GameObject gameUI;
     public GameObject scoreBox;
     public GameObject moveCounter;
@@ -259,6 +260,11 @@ public class UtilsScript : MonoBehaviour
         Quaternion t = card1.transform.rotation;
         p.z += 2;
 
+        //GameObject myPrefab = (GameObject)Resources.Load("Prefabs/MatchExplosionAnimation", typeof(GameObject));
+        //myPrefab.SetActive(true);
+        GameObject matchExplosion = Instantiate(matchPrefab, p, t);
+
+        StartCoroutine(animatorwait(card1, card2, matchExplosion));
     }
     IEnumerator animatorwait(GameObject card1, GameObject card2, GameObject matchExplosion)
     {

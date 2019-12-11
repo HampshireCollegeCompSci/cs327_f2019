@@ -12,7 +12,7 @@ public class SpaceBabyController : MonoBehaviour
     void Start()
     {
         idling = true;
-        gameObject.GetComponent<Animator>().Play("IdleAnim");
+        gameObject.GetComponent<Animator>().Play("IdlingAnim");
     }
 
     public void BabyHappyAnim()
