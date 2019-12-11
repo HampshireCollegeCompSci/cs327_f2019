@@ -16,8 +16,8 @@ public class CardScript : MonoBehaviour
     public Color newColor;
     public bool glowing;
 
-    private GameObject hologramObject;
-    private GameObject hologram;
+    public GameObject hologramFoodPrefab, hologramPrefab;
+    private GameObject hologramFood, hologram;
 
     void Start()
     {
@@ -74,19 +74,19 @@ public class CardScript : MonoBehaviour
             newColor = gameObject.GetComponent<SpriteRenderer>().material.color;
             newColor.a = Config.config.selectedCardOpacity;
             gameObject.GetComponent<SpriteRenderer>().material.color = newColor;
-            if (hologram != null && hologramObject != null)
+            if (hologram != null && hologramFood != null)
             {
                 hologram.GetComponent<SpriteRenderer>().color = newColor;
-                hologramObject.GetComponent<SpriteRenderer>().color = newColor;
+                hologramFood.GetComponent<SpriteRenderer>().color = newColor;
             }
         }
         else
         {
             gameObject.GetComponent<SpriteRenderer>().material.color = originalColor;
-            if (hologram != null && hologramObject != null)
+            if (hologram != null && hologramFood != null)
             {
                 hologram.GetComponent<SpriteRenderer>().color = originalColor;
-                hologramObject.GetComponent<SpriteRenderer>().color = originalColor;
+                hologramFood.GetComponent<SpriteRenderer>().color = originalColor;
             }
         }
     }
@@ -94,10 +94,10 @@ public class CardScript : MonoBehaviour
     public void UpdateMaskInteraction(SpriteMaskInteraction update)
     {
         gameObject.GetComponent<SpriteRenderer>().maskInteraction = update;
-        if (hologram != null && hologramObject != null)
+        if (hologram != null && hologramFood != null)
         {
             hologram.GetComponent<SpriteRenderer>().maskInteraction = update;
-            hologramObject.GetComponent<SpriteRenderer>().maskInteraction = update;
+            hologramFood.GetComponent<SpriteRenderer>().maskInteraction = update;
         }
     }
 
@@ -117,9 +117,6 @@ public class CardScript : MonoBehaviour
         }
         //Debug.Log("showing holo" + cardNum + cardSuit);
 
-        GameObject hologramPrefab = Resources.Load<GameObject>("Prefabs/Holograms/hologram");
-        GameObject hologramFoodPrefab = Resources.Load<GameObject>("Prefabs/Holograms/generalFood");
-
         string cardHologramName;
 
         if (cardNum == 10)
@@ -136,34 +133,13 @@ public class CardScript : MonoBehaviour
         hologramFoodPrefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/FoodHolograms/" + cardHologramName);
 
         hologram = Instantiate(hologramPrefab, Vector3.one, gameObject.transform.rotation);
-        hologramObject = Instantiate(hologramFoodPrefab, Vector3.one, gameObject.transform.rotation);
+        hologramFood = Instantiate(hologramFoodPrefab, Vector3.one, gameObject.transform.rotation);
 
         hologram.transform.parent = this.gameObject.transform;
-        hologramObject.transform.parent = this.gameObject.transform;
+        hologramFood.transform.parent = this.gameObject.transform;
 
         hologram.transform.localPosition = new Vector3(0.35f, 4, -1);
-        hologramObject.transform.localPosition = new Vector3(0, 4.3f, 0);
-
-        //if (cardSuit == "spades")
-        //{
-        //    GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/spades");
-        //    hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
-        //}
-        //else if (cardSuit == "diamonds")
-        //{
-        //    GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/rhombus");
-        //    hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
-        //}
-        //else if (cardSuit == "hearts")
-        //{
-        //    GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/hearts");
-        //    hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
-        //}
-        //else if (cardSuit == "clubs")
-        //{
-        //    GameObject hologramObjectPrefab = Resources.Load<GameObject>("Prefabs/Holograms/clubs");
-        //    hologramObject = Instantiate(hologramObjectPrefab, gameObject.transform.position - new Vector3(0, -1.1f, 0), gameObject.transform.rotation);
-        //}
+        hologramFood.transform.localPosition = new Vector3(0, 4.3f, 0);
 
         UpdateMaskInteraction(gameObject.GetComponent<SpriteRenderer>().maskInteraction);
     }
@@ -178,9 +154,9 @@ public class CardScript : MonoBehaviour
         {
             //Debug.Log("HideHologram" + cardNum + cardSuit);
             Destroy(hologram);
-            Destroy(hologramObject);
+            Destroy(hologramFood);
             hologram = null;
-            hologramObject = null;
+            hologramFood = null;
             return true;
         }
         return false;

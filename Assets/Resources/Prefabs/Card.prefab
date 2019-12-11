@@ -185,6 +185,10 @@ MonoBehaviour:
   originalColor: {r: 0, g: 0, b: 0, a: 0}
   newColor: {r: 0, g: 0, b: 0, a: 0}
   glowing: 0
+  hologramFoodPrefab: {fileID: 5955967006432094987, guid: 9131efdefdcd049b9a2349908c1b7506,
+    type: 3}
+  hologramPrefab: {fileID: 1076034750626564657, guid: 2da9c033405a44f67b6e0b644dbcda11,
+    type: 3}
 --- !u!61 &5589543899514788396
 BoxCollider2D:
   m_ObjectHideFlags: 0
