@@ -480,8 +480,8 @@ GameObject:
   - component: {fileID: 1182164522}
   - component: {fileID: 1182164521}
   - component: {fileID: 1182164520}
-  - component: {fileID: 1182164523}
   - component: {fileID: 1182164525}
+  - component: {fileID: 1182164523}
   - component: {fileID: 1182164524}
   - component: {fileID: 1182164526}
   m_Layer: 0
@@ -503,7 +503,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5014687ffb347412c8048464a770dde1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  soundController: {fileID: 1182164526}
+  soundController: {fileID: 1182164525}
+  buttonPressSound: {fileID: 8300000, guid: 34ed478bbbcfe724ba5b88616341ecba, type: 3}
+  undoPressSound: {fileID: 8300000, guid: 5325705503cfe8f43b7d3e63bb133618, type: 3}
+  pauseButtonSound: {fileID: 8300000, guid: ba15e855626b48044895a57434db0fa9, type: 3}
+  tokenRevealSound: {fileID: 8300000, guid: 5ded17a2874328846b25adeb01574612, type: 3}
+  tokenSelectSoundA: {fileID: 8300000, guid: 2dc019e466a5efd45aad499855d76828, type: 3}
+  tokenSelectSoundB: {fileID: 8300000, guid: 40cc1447275b748f6a91bbacfa1c6990, type: 3}
+  tokenSelectSoundC: {fileID: 8300000, guid: d398b8ee4dfd64a36affeef09fb4f74c, type: 3}
+  tokenInReactorSound: {fileID: 8300000, guid: 1b2e6dca67a0f5b41bb5c3edb6d4cdec, type: 3}
+  tokenStackSoundA: {fileID: 8300000, guid: df7bc6be8f67f7144901ec57e773d6aa, type: 3}
+  tokenStackSoundB: {fileID: 8300000, guid: 5b7d6e9a83fe8418fb141ea192dd9912, type: 3}
+  tokenStackSoundC: {fileID: 8300000, guid: 681823516e2f547ebaafbbb23b3c0e57, type: 3}
+  tokenStackSoundD: {fileID: 8300000, guid: b85c0701e7d7b40f588a76a66a5ff325, type: 3}
+  cardMatchSound: {fileID: 8300000, guid: 0750c2658a2634069977597de59ade53, type: 3}
+  deckDealSound: {fileID: 8300000, guid: ed2e65bc4a8cb8c41a05fd9d643eb156, type: 3}
+  deckReshuffleSound: {fileID: 8300000, guid: 6b04e724c719a1949a8020f46201a09c, type: 3}
+  winSound: {fileID: 8300000, guid: d4b0caf3fd9a94554ae64f647a633f0b, type: 3}
+  loseSound: {fileID: 8300000, guid: 88d5d7c4a87be40f79cb6464b783a4b7, type: 3}
+  mushroomSound: {fileID: 8300000, guid: 500d74ce5d37147da9bd54ba50cfde21, type: 3}
+  bugSound: {fileID: 8300000, guid: 75dfa90a26ab04a3397012f42a1e7329, type: 3}
+  fruitSound: {fileID: 8300000, guid: 9df40cdb76cca4e2cab06d66a2f5b56d, type: 3}
+  rockSound: {fileID: 8300000, guid: 881a4ec50bf4345d28980a9bfa8c0895, type: 3}
 --- !u!114 &1182164521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -595,8 +616,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b09e9f706e4944ff7a22f94080dcfb35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  soundTrack1: {fileID: 1182164525}
-  soundTrack2: {fileID: 1182164524}
+  soundTrack1: {fileID: 1182164524}
+  soundTrack2: {fileID: 1182164526}
+  menuMusic: {fileID: 8300000, guid: 007ad2cfb6bbf42b8b8b0dd5ab102c14, type: 3}
+  themeMusic: {fileID: 8300000, guid: c3adb86c560e247f89bda93a96e9aa1f, type: 3}
+  transitionMusic: {fileID: 8300000, guid: cbbd6d8c640bead4eb7f1c77f051eaac, type: 3}
+  loseMusic: {fileID: 8300000, guid: 7702a9393c6844ea8a05ba1a76a0bb77, type: 3}
+  winMusic: {fileID: 8300000, guid: 926f37829830840e68d2b4f9f683fe85, type: 3}
 --- !u!82 &1182164524
 AudioSource:
   m_ObjectHideFlags: 0
