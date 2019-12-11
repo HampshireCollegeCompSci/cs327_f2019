@@ -107,6 +107,7 @@ public class ShowPossibleMoves : MonoBehaviour
 
     private GameObject FindReactorMove(GameObject selectedCard)
     {
+        Debug.Log("FRM");
         cardIsFromFoundation = (selectedCard.GetComponent<CardScript>().container.GetComponent<FoundationScript>() != null);
         if (cardIsFromFoundation)
         {
@@ -117,19 +118,19 @@ public class ShowPossibleMoves : MonoBehaviour
             cardIsTopOfStack = true;
         }
 
-        if (cardIsFromFoundation)
+        if (cardIsTopOfStack)
         {
-            if (cardIsTopOfStack)
+            foreach (GameObject reactor in reactorList)
             {
-                foreach (GameObject reactor in reactorList)
+                if (reactor.GetComponent<ReactorScript>().suit == selectedCard.GetComponent<CardScript>().cardSuit)
                 {
-                    if (reactor.GetComponent<ReactorScript>().suit == selectedCard.GetComponent<CardScript>().cardSuit)
-                    {
-                        return reactor;
-                    }
+                    return reactor;
                 }
             }
         }
+
+
+        Debug.Log("null");
         return null;
     }
 

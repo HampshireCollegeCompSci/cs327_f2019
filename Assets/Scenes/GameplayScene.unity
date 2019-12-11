@@ -593,6 +593,11 @@ PrefabInstance:
       propertyPath: gameUI
       value: 
       objectReference: {fileID: 2058941297}
+    - target: {fileID: 3465283733490406802, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
+        type: 3}
+      propertyPath: glow
+      value: 
+      objectReference: {fileID: 85532978}
     - target: {fileID: 3465283733490406807, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
       propertyPath: m_Sprite
@@ -1065,6 +1070,11 @@ PrefabInstance:
       propertyPath: gameUI
       value: 
       objectReference: {fileID: 2058941297}
+    - target: {fileID: 3465283733490406802, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
+        type: 3}
+      propertyPath: glow
+      value: 
+      objectReference: {fileID: 1819528281}
     - target: {fileID: 3465283733490406807, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
       propertyPath: m_Sprite
@@ -2433,7 +2443,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.6633453}
   m_AnchorMax: {x: 1, y: 0.6633453}
-  m_AnchoredPosition: {x: -87.45, y: -10.3084}
+  m_AnchoredPosition: {x: -87.45, y: -10.308403}
   m_SizeDelta: {x: 174.9, y: 179.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &727694422
@@ -2886,7 +2896,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.085, y: 0.6633453}
   m_AnchorMax: {x: 0.085, y: 0.6633453}
-  m_AnchoredPosition: {x: 19.45, y: -20}
+  m_AnchoredPosition: {x: 19.449997, y: -20}
   m_SizeDelta: {x: 174.9, y: 179.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &944386652
@@ -3619,6 +3629,11 @@ PrefabInstance:
       propertyPath: gameUI
       value: 
       objectReference: {fileID: 2058941297}
+    - target: {fileID: 3465283733490406802, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
+        type: 3}
+      propertyPath: glow
+      value: 
+      objectReference: {fileID: 553791898}
     - target: {fileID: 3465283733490406807, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
       propertyPath: m_Sprite
@@ -5957,6 +5972,11 @@ PrefabInstance:
       propertyPath: gameUI
       value: 
       objectReference: {fileID: 2058941297}
+    - target: {fileID: 3465283733490406802, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
+        type: 3}
+      propertyPath: glow
+      value: 
+      objectReference: {fileID: 1646693416}
     - target: {fileID: 3465283733490406807, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
         type: 3}
       propertyPath: m_Sprite
