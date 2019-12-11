@@ -101,7 +101,10 @@ public class StateLoader : MonoBehaviour
         gameState.difficulty = Config.config.difficulty;
 
         string json = JsonUtility.ToJson(gameState, true);
-
+        //if (File.Exists("Assets/Resources/GameStates/testState.json"))
+        //{
+        //    File.Create("Assets/Resources/GameStates/testState.json");
+        //}
         File.WriteAllText("Assets/Resources/GameStates/testState.json", json);
     }
 

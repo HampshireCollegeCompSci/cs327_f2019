@@ -1,0 +1,95 @@
+{
+    "wastePile": [
+        "spades_12",
+        "diamonds_10",
+        "spades_1"
+    ],
+    "deck": [
+        "clubs_13",
+        "spades_8",
+        "clubs_7",
+        "clubs_4",
+        "clubs_9",
+        "diamonds_1",
+        "clubs_1",
+        "hearts_1",
+        "clubs_2",
+        "diamonds_13",
+        "diamonds_8",
+        "hearts_12",
+        "hearts_10",
+        "clubs_5",
+        "hearts_5"
+    ],
+    "matches": [],
+    "foundations": [
+        {
+            "stringList": [
+                "diamonds_2",
+                "clubs_6",
+                "spades_3",
+                "clubs_12",
+                "hearts_7",
+                "hearts_4",
+                "hearts_3"
+            ]
+        },
+        {
+            "stringList": [
+                "hearts_2",
+                "clubs_10",
+                "diamonds_4",
+                "hearts_6",
+                "spades_7",
+                "clubs_8"
+            ]
+        },
+        {
+            "stringList": [
+                "hearts_11",
+                "clubs_3",
+                "diamonds_3",
+                "spades_2",
+                "hearts_9",
+                "spades_13",
+                "diamonds_12",
+                "diamonds_11",
+                "spades_10",
+                "diamonds_9",
+                "hearts_8",
+                "diamonds_7",
+                "spades_6",
+                "diamonds_5"
+            ]
+        },
+        {
+            "stringList": [
+                "hearts_13",
+                "spades_4",
+                "spades_11",
+                "diamonds_6",
+                "spades_5"
+            ]
+        }
+    ],
+    "reactors": [
+        {
+            "stringList": [
+                "spades_9"
+            ]
+        },
+        {
+            "stringList": []
+        },
+        {
+            "stringList": []
+        },
+        {
+            "stringList": []
+        }
+    ],
+    "moveLog": [],
+    "score": 0,
+    "actions": 10,
+    "difficulty": "easy"
+}
