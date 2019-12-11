@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
+using System.IO;
 
 public class DeckScript : MonoBehaviour
 {
@@ -53,12 +54,18 @@ public class DeckScript : MonoBehaviour
         utils.UpdateActionCounter(0, true);
 
         cardList = new List<GameObject>();
-        InstantiateCards(this.gameObject);
-        importSeed = false;
-        Shuffle();
-        SetUpFoundations();
-        Deal(false);
-
+        if (File.Exists("Assets/Resources/GameStates/testState.json"))
+        {
+            StateLoader.saveSystem.unpackState(StateLoader.saveSystem.gameState);
+        }
+        else
+        {
+            InstantiateCards(this.gameObject);
+            importSeed = false;
+            Shuffle();
+            SetUpFoundations();
+            Deal(false);
+        }
     }
 
     // sets up card list

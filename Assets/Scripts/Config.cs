@@ -204,8 +204,7 @@ public class Config : MonoBehaviour
         else
             gameObject.GetComponent<MusicController>().LoseMusic();
 
-        File.Delete("Assets/Resources/GameStates/testState.json");
-        File.Delete("Assets/Resources/GameStates/testState.meta");
+        UtilsScript.global.DeleteSave();
     }
 
     public void ConfigFromJSON()

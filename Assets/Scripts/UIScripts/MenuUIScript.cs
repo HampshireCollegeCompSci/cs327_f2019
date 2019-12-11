@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 public class MenuUIScript : MonoBehaviour
 {
@@ -226,18 +227,31 @@ public class MenuUIScript : MonoBehaviour
 
     public void HardDifficulty()
     {
+        UtilsScript.global.DeleteSave();
         Config.config.setDifficulty("hard");
         NewGame();
     }
     public void EasyDifficulty()
     {
+        UtilsScript.global.DeleteSave();
         Config.config.setDifficulty("easy");
         NewGame();
     }
     public void MediumDifficulty()
     {
+        UtilsScript.global.DeleteSave();
         Config.config.setDifficulty("medium");
         NewGame();
+    }
+
+    public void Continue()
+    {
+        if (File.Exists("Assets/Resources/GameStates/testState.json"))
+        {
+            StateLoader.saveSystem.loadState();
+            Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
+            NewGame();
+        }
     }
 
     public void MakeActionsMax()

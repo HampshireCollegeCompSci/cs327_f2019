@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 public class UtilsScript : MonoBehaviour
 {
@@ -594,6 +595,15 @@ public class UtilsScript : MonoBehaviour
         if (!isMatching)
         {
             inputStopped = setTo;
+        }
+    }
+
+    public void DeleteSave()
+    {
+        if (File.Exists("Assets/Resources/GameStates/testState.json"))
+        {
+            File.Delete("Assets/Resources/GameStates/testState.json");
+            File.Delete("Assets/Resources/GameStates/testState.meta");
         }
     }
 }
