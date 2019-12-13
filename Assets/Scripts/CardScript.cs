@@ -110,6 +110,8 @@ public class CardScript : MonoBehaviour
         gameObject.transform.localScale = new Vector3(0.2f, 0.2f, 1);
         container = null;
         number.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
+        hologram.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
+        hologramFood.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
         Destroy(gameObject.GetComponent<BoxCollider2D>());
     }
 
@@ -117,7 +119,15 @@ public class CardScript : MonoBehaviour
     {
         hologram.SetActive(true);
         hologramFood.SetActive(true);
+        hologram.GetComponent<Animator>().speed = Random.Range(0.6f, 1f);
         UpdateMaskInteraction(gameObject.GetComponent<SpriteRenderer>().maskInteraction);
+        StartCoroutine(ResetHologramSpeed());
+    }
+
+    IEnumerator ResetHologramSpeed()
+    {
+        yield return new WaitForSeconds(1);
+        hologram.GetComponent<Animator>().speed = 1;
     }
 
     public bool HideHologram()

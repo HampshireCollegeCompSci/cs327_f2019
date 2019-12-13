@@ -123,7 +123,7 @@ public class DeckScript : MonoBehaviour
                     newCardScript.cardSuit = "hearts";
                     if (num < 10)
                     {
-                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[5];
+                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[10];
                     }
                     else
                     {
@@ -135,7 +135,7 @@ public class DeckScript : MonoBehaviour
                     newCardScript.cardSuit = "diamonds";
                     if (num < 10)
                     {
-                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[5];
+                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[15];
                     }
                     else
                     {
@@ -166,6 +166,7 @@ public class DeckScript : MonoBehaviour
 
             // adding and revealing the top card of the foundation
             cardList[0].GetComponent<CardScript>().SetVisibility(true);
+            cardList[0].SetActive(true);
             cardList[0].gameObject.GetComponent<CardScript>().ShowHologram();
             cardList[0].GetComponent<CardScript>().MoveCard(foundations[i], doLog: false, addUpdateHolo: false);
         }
