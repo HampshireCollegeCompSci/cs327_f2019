@@ -227,20 +227,22 @@ public class MenuUIScript : MonoBehaviour
 
     public void HardDifficulty()
     {
-        UtilsScript.global.DeleteSave();
+        Config.config.DeleteSave();
         Config.config.setDifficulty("hard");
         NewGame();
     }
-    public void EasyDifficulty()
-    {
-        UtilsScript.global.DeleteSave();
-        Config.config.setDifficulty("easy");
-        NewGame();
-    }
+
     public void MediumDifficulty()
     {
-        UtilsScript.global.DeleteSave();
+        Config.config.DeleteSave();
         Config.config.setDifficulty("medium");
+        NewGame();
+    }
+
+    public void EasyDifficulty()
+    {
+        Config.config.DeleteSave();
+        Config.config.setDifficulty("easy");
         NewGame();
     }
 
