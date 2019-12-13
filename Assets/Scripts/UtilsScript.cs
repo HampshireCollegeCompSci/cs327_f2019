@@ -11,6 +11,9 @@ public class UtilsScript : MonoBehaviour
     private List<GameObject> selectedCardsCopy = new List<GameObject>();
     public GameObject matchedPile;
     public GameObject matchPrefab;
+
+    public List<Sprite> combinedHolograms;
+
     public GameObject gameUI;
     public GameObject scoreBox;
     public GameObject moveCounter;
@@ -269,48 +272,54 @@ public class UtilsScript : MonoBehaviour
     }
     IEnumerator animatorwait(GameObject card1, GameObject card2, GameObject matchExplosion)
     {
-        string nameOfCombo = "Sprites/Hologram/FoodHolograms/a-9_clubs_food";
+        Sprite toShow = null;
         CardScript cardVals = card1.GetComponent<CardScript>();
         if (cardVals.cardSuit == "clubs" || cardVals.cardSuit == "spades")
         {
-            if (cardVals.cardNum < 10) nameOfCombo = "Sprites/Hologram/Black Combined Holograms/black_a-9_combine";
+            if (cardVals.cardNum < 10)
+            {
+                toShow = combinedHolograms[0];
+            }
             else
             {
                 switch (cardVals.cardNum)
                 {
                     case 10:
-                        nameOfCombo = "Sprites/Hologram/Black Combined Holograms/black_10_combine";
+                        toShow = combinedHolograms[1];
                         break;
                     case 11:
-                        nameOfCombo = "Sprites/Hologram/Black Combined Holograms/black_jack_combine";
+                        toShow = combinedHolograms[2];
                         break;
                     case 12:
-                        nameOfCombo = "Sprites/Hologram/Black Combined Holograms/black_queen_combine";
+                        toShow = combinedHolograms[3];
                         break;
                     case 13:
-                        nameOfCombo = "Sprites/Hologram/Black Combined Holograms/black_king_combine";
+                        toShow = combinedHolograms[4];
                         break;
                 }
             }
         }
         if (cardVals.cardSuit == "hearts" || cardVals.cardSuit == "diamonds")
         {
-            if (cardVals.cardNum < 10) nameOfCombo = "Sprites/Hologram/Red Combined Holograms/red_a-9_combine";
+            if (cardVals.cardNum < 10)
+            {
+                toShow = combinedHolograms[5];
+            }
             else
             {
                 switch (cardVals.cardNum)
                 {
                     case 10:
-                        nameOfCombo = "Sprites/Hologram/Red Combined Holograms/red_10_combine";
+                        toShow = combinedHolograms[6];
                         break;
                     case 11:
-                        nameOfCombo = "Sprites/Hologram/Red Combined Holograms/red_jack_combine";
+                        toShow = combinedHolograms[7];
                         break;
                     case 12:
-                        nameOfCombo = "Sprites/Hologram/Red Combined Holograms/red_queen_combine";
+                        toShow = combinedHolograms[8];
                         break;
                     case 13:
-                        nameOfCombo = "Sprites/Hologram/Red Combined Holograms/red_king_combine";
+                        toShow = combinedHolograms[9];
 
                         break;
                 }
@@ -329,9 +338,7 @@ public class UtilsScript : MonoBehaviour
         SpriteRenderer Srenderer = comboToLoad.AddComponent<SpriteRenderer>();
         Srenderer.sortingLayerName = "UI";
 
-        Sprite sprite = Resources.Load<Sprite>(nameOfCombo);
-        print(sprite);
-        Srenderer.sprite = sprite;
+        Srenderer.sprite = toShow;
         comboToLoad.transform.localScale = Vector3.one * .15f;
         //Instantiate(comboToLoad, p, t);
 
@@ -340,20 +347,17 @@ public class UtilsScript : MonoBehaviour
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
 
-        // these must be in this order
-        isMatching = false;
-        SetInputStopped(false);
-
+        UpdateScore(matchPoints);
         soundController.CardMatchSound();
         baby.GetComponent<SpaceBabyController>().BabyEatAnim();
 
-        //UpdateActionCounter(1);
-        UpdateScore(matchPoints);
+        // these must be in this order
+        isMatching = false;
+        SetInputStopped(false);
+        CheckGameOver();
 
         yield return new WaitForSeconds(1);
-
-        CheckGameOver();
-        //CheckNextCycle();
+        Destroy(matchExplosion);
     }
 
     IEnumerator FadeImage(GameObject comboToLoad)

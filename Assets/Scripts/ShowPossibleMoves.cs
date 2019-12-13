@@ -107,7 +107,6 @@ public class ShowPossibleMoves : MonoBehaviour
 
     private GameObject FindReactorMove(GameObject selectedCard)
     {
-        Debug.Log("FRM");
         cardIsFromFoundation = (selectedCard.GetComponent<CardScript>().container.GetComponent<FoundationScript>() != null);
         if (cardIsFromFoundation)
         {
@@ -129,8 +128,6 @@ public class ShowPossibleMoves : MonoBehaviour
             }
         }
 
-
-        Debug.Log("null");
         return null;
     }
 

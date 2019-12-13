@@ -181,7 +181,6 @@ public class ReactorScript : MonoBehaviour
 
     public bool GlowOn()
     {
-        Debug.Log(glowing);
         if (!glowing)
         {
             glow.gameObject.SetActive(true);

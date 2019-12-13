@@ -1295,7 +1295,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.25363937, y: 0.2135234}
   m_AnchorMax: {x: 0.75346553, y: 1}
-  m_AnchoredPosition: {x: 0.22699738, y: -0.10300064}
+  m_AnchoredPosition: {x: 0.22698975, y: -0.102996826}
   m_SizeDelta: {x: -1.344986, y: 0.20600128}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &338821814
@@ -1386,7 +1386,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.25363937, y: 0.29864055}
   m_AnchorMax: {x: 0.25363937, y: 0.7196798}
-  m_AnchoredPosition: {x: -29.999992, y: 0.41500092}
+  m_AnchoredPosition: {x: -30, y: 0.41500092}
   m_SizeDelta: {x: 62.3, y: 3.7000008}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &341220269
@@ -2443,7 +2443,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.6633453}
   m_AnchorMax: {x: 1, y: 0.6633453}
-  m_AnchoredPosition: {x: -87.45, y: -10.308403}
+  m_AnchoredPosition: {x: -87.44995, y: -10.308411}
   m_SizeDelta: {x: 174.9, y: 179.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &727694422
@@ -2736,7 +2736,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.209, y: 0.5}
   m_AnchorMax: {x: 0.7764516, y: 0.647}
-  m_AnchoredPosition: {x: 0.96099854, y: 0.3000002}
+  m_AnchoredPosition: {x: 0.96099854, y: 0.29999924}
   m_SizeDelta: {x: -3.3099995, y: 0.6000004}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &910050647
@@ -2896,7 +2896,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.085, y: 0.6633453}
   m_AnchorMax: {x: 0.085, y: 0.6633453}
-  m_AnchoredPosition: {x: 19.449997, y: -20}
+  m_AnchoredPosition: {x: 19.450012, y: -20}
   m_SizeDelta: {x: 174.9, y: 179.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &944386652
@@ -3201,7 +3201,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.22967541, y: 0.45424068}
   m_AnchorMax: {x: 0.72821647, y: 0.6005062}
-  m_AnchoredPosition: {x: 0.21334457, y: 0.1999836}
+  m_AnchoredPosition: {x: 0.21334076, y: 0.1999836}
   m_SizeDelta: {x: -0.42669678, y: 0.15576172}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1183974782
@@ -3806,7 +3806,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.35375002, y: 0.73700005}
   m_AnchorMax: {x: 0.47250003, y: 0.76131934}
-  m_AnchoredPosition: {x: -0.5, y: -1.8299866}
+  m_AnchoredPosition: {x: -0.5, y: -1.829956}
   m_SizeDelta: {x: -2.199997, y: -2.6799927}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1317338128
@@ -3885,7 +3885,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5225, y: 0.73700005}
   m_AnchorMax: {x: 0.63875, y: 0.76131934}
-  m_AnchoredPosition: {x: -2.0999985, y: -0.18798828}
+  m_AnchoredPosition: {x: -2.100006, y: -0.18798828}
   m_SizeDelta: {x: 3.300003, y: 0.37599945}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1380018235
@@ -4545,6 +4545,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 57a3bf49a320f6446a67128ae2974ec4, type: 3}
   - {fileID: 21300000, guid: 92a477718a0f44d48bb62409cf1dfa2e, type: 3}
   - {fileID: 21300000, guid: 0ecf9edb847e3ed4b8b165d25295609b, type: 3}
+  holograms: []
   cardList: []
   buttonAnimation:
   - {fileID: 21300000, guid: 74da7e6bd4e46774e959055ba0abe631, type: 3}
@@ -4863,6 +4864,17 @@ MonoBehaviour:
   matchedPile: {fileID: 1214012893}
   matchPrefab: {fileID: 4031254262428589365, guid: 3a28ce96f97e3fd4f9107ecc217d5158,
     type: 3}
+  combinedHolograms:
+  - {fileID: 21300000, guid: 07b839b8af0484fe6bf941b9b60ae06b, type: 3}
+  - {fileID: 21300000, guid: 652f8a3d7efe341448d75d75e7c40010, type: 3}
+  - {fileID: 21300000, guid: d703d48e258fe427fa4a1151ca8bea4b, type: 3}
+  - {fileID: 21300000, guid: c12afca97797f44b6aba0fc3365c71de, type: 3}
+  - {fileID: 21300000, guid: 216996f232f3b4abbbfd9bb9b053855c, type: 3}
+  - {fileID: 21300000, guid: a141490047c584640bf7b96d0523c858, type: 3}
+  - {fileID: 21300000, guid: bc35fa14f99534a758d90bd3ae37623e, type: 3}
+  - {fileID: 21300000, guid: 70a3fb8f3a6fd45258a48f07f1a3909b, type: 3}
+  - {fileID: 21300000, guid: f66d0275ff21f4bc2bde8674ea377fd8, type: 3}
+  - {fileID: 21300000, guid: 02c7c2260be2349a4bac9378b91ab664, type: 3}
   gameUI: {fileID: 2058941297}
   scoreBox: {fileID: 1489602702}
   moveCounter: {fileID: 338821812}
