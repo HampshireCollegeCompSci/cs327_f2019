@@ -71,26 +71,21 @@ public class CardScript : MonoBehaviour
 
     public void SetSelected(bool selected)
     {
-        //makes card larger and first in sorting order if the card is selected
         if (selected)
         {
             newColor = gameObject.GetComponent<SpriteRenderer>().material.color;
             newColor.a = Config.config.selectedCardOpacity;
             gameObject.GetComponent<SpriteRenderer>().material.color = newColor;
-            if (hologram != null && hologramFood != null)
-            {
-                hologram.GetComponent<SpriteRenderer>().color = newColor;
-                hologramFood.GetComponent<SpriteRenderer>().color = newColor;
-            }
+            number.GetComponent<SpriteRenderer>().material.color = newColor;
+            hologram.GetComponent<SpriteRenderer>().color = newColor;
+            hologramFood.GetComponent<SpriteRenderer>().color = newColor;
         }
         else
         {
             gameObject.GetComponent<SpriteRenderer>().material.color = originalColor;
-            if (hologram != null && hologramFood != null)
-            {
-                hologram.GetComponent<SpriteRenderer>().color = originalColor;
-                hologramFood.GetComponent<SpriteRenderer>().color = originalColor;
-            }
+            number.GetComponent<SpriteRenderer>().material.color = originalColor;
+            hologram.GetComponent<SpriteRenderer>().color = originalColor;
+            hologramFood.GetComponent<SpriteRenderer>().color = originalColor;
         }
     }
 
@@ -140,7 +135,6 @@ public class CardScript : MonoBehaviour
         hologram.SetActive(false);
         hologramFood.SetActive(false);
         return true;
-
     }
 
     public bool GlowOn()
