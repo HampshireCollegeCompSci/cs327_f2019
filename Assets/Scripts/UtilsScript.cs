@@ -346,6 +346,7 @@ public class UtilsScript : MonoBehaviour
 
         card2.GetComponent<CardScript>().MoveCard(matchedPile);
         card1.GetComponent<CardScript>().MoveCard(matchedPile);
+        UpdateActionCounter(0);
 
         UpdateScore(matchPoints);
         soundController.CardMatchSound();
@@ -459,9 +460,20 @@ public class UtilsScript : MonoBehaviour
 
     public void UpdateActionCounter(int actionUpdate, bool setAsValue = false)
     {
+        bool wasInAlertThreshold = Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold;
+
         if (setAsValue)
         {
             Config.config.actions = actionUpdate;
+        }
+        else if (actionUpdate == 0)
+        {
+            if (wasInAlertThreshold)
+            {
+                Alert(false, true);
+            }
+            Debug.Log(0);
+            return;
         }
         else
         {
@@ -470,17 +482,44 @@ public class UtilsScript : MonoBehaviour
 
         moveCounter.GetComponent<ActionCountScript>().UpdateActionText();
 
-        if (Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold)
+        bool isInAlertThreshold = Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold;
+
+        if (wasInAlertThreshold && isInAlertThreshold)
+        {
+            Alert(false, true);
+            return;
+        }
+        else if (wasInAlertThreshold && !isInAlertThreshold)
+        {
+            Alert(false);
+        }
+        else if (!wasInAlertThreshold && isInAlertThreshold)
+        {
+            Alert(true);
+        }
+    }
+
+    private void Alert(bool turnOn, bool checkAgain = false)
+    {
+        Debug.Log("alert");
+        if (checkAgain)
+        {
+            foreach (GameObject reactor in Config.config.reactors)
+            {
+                if (reactor.GetComponent<ReactorScript>().CountReactorCard() + reactor.GetComponent<ReactorScript>().GetIncreaseOnNextCycle() >= Config.config.maxReactorVal)
+                {
+                    reactor.GetComponent<ReactorScript>().AlertOn();
+                }
+                else
+                {
+                    reactor.GetComponent<ReactorScript>().AlertOff();
+                }
+            }
+        }
+        else if (turnOn)
         {
             Config.config.GetComponent<MusicController>().AlertMusic();
-        }
-        else
-        {
-            Config.config.GetComponent<MusicController>().GameMusic();
-        }
 
-        if (Config.config.actionMax - Config.config.actions <= 1)
-        {
             foreach (GameObject reactor in Config.config.reactors)
             {
                 if (reactor.GetComponent<ReactorScript>().CountReactorCard() + reactor.GetComponent<ReactorScript>().GetIncreaseOnNextCycle() >= Config.config.maxReactorVal)
@@ -489,8 +528,10 @@ public class UtilsScript : MonoBehaviour
                 }
             }
         }
-        else if (Config.config.reactor1 != null)
+        else
         {
+            Config.config.GetComponent<MusicController>().GameMusic();
+
             foreach (GameObject reactor in Config.config.reactors)
             {
                 reactor.GetComponent<ReactorScript>().AlertOff();
