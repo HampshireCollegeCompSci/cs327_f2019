@@ -204,7 +204,7 @@ public class Config : MonoBehaviour
         else
             gameObject.GetComponent<MusicController>().LoseMusic();
 
-        UtilsScript.global.DeleteSave();
+        DeleteSave();
     }
 
     public void ConfigFromJSON()
