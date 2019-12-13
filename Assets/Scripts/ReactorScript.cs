@@ -223,4 +223,9 @@ public class ReactorScript : MonoBehaviour
         }
         return false;
     }
+
+    public bool isAlertOn()
+    {
+        return alert;
+    }
 }
