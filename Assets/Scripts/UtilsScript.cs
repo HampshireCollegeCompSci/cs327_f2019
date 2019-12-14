@@ -472,7 +472,6 @@ public class UtilsScript : MonoBehaviour
             {
                 Alert(false, true);
             }
-            Debug.Log(0);
             return;
         }
         else
@@ -501,7 +500,8 @@ public class UtilsScript : MonoBehaviour
 
     private void Alert(bool turnOn, bool checkAgain = false)
     {
-        Debug.Log("alert");
+        bool alertTurnedOn = false;
+
         if (checkAgain)
         {
             foreach (GameObject reactor in Config.config.reactors)
@@ -509,6 +509,7 @@ public class UtilsScript : MonoBehaviour
                 if (reactor.GetComponent<ReactorScript>().CountReactorCard() + reactor.GetComponent<ReactorScript>().GetIncreaseOnNextCycle() >= Config.config.maxReactorVal)
                 {
                     reactor.GetComponent<ReactorScript>().AlertOn();
+                    alertTurnedOn = true;
                 }
                 else
                 {
@@ -525,6 +526,7 @@ public class UtilsScript : MonoBehaviour
                 if (reactor.GetComponent<ReactorScript>().CountReactorCard() + reactor.GetComponent<ReactorScript>().GetIncreaseOnNextCycle() >= Config.config.maxReactorVal)
                 {
                     reactor.GetComponent<ReactorScript>().AlertOn();
+                    alertTurnedOn = true;
                 }
             }
         }
@@ -536,6 +538,19 @@ public class UtilsScript : MonoBehaviour
             {
                 reactor.GetComponent<ReactorScript>().AlertOff();
             }
+        }
+
+        if (alertTurnedOn)
+        {
+            moveCounter.GetComponent<ActionCountScript>().TurnAlertOn();
+        }
+        else if (turnOn || checkAgain)
+        {
+            moveCounter.GetComponent<ActionCountScript>().TurnSirenOn();
+        }
+        else
+        {
+            moveCounter.GetComponent<ActionCountScript>().TurnSirenOff();
         }
     }
 
