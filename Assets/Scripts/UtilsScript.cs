@@ -26,7 +26,10 @@ public class UtilsScript : MonoBehaviour
     private GameObject wastePile;
 
     private bool inputStopped = false;
-    private bool isMatching = false;
+    public bool isMatching = false;
+
+    private int selectedLayer;
+    private int gameplayLayer;
 
     public GameObject baby;
     public int matchPoints = Config.config.matchPoints;
@@ -40,6 +43,8 @@ public class UtilsScript : MonoBehaviour
         gameUI = GameObject.Find("GameUI");
         soundController = GameObject.Find("Sound").GetComponent<SoundController>();
         wastePile = GameObject.Find("Scroll View");
+        selectedLayer = SortingLayer.NameToID("SelectedCards");
+        gameplayLayer = SortingLayer.NameToID("Gameplay");
         baby = GameObject.Find("SpaceBaby");
     }
 
@@ -258,121 +263,118 @@ public class UtilsScript : MonoBehaviour
         SetInputStopped(true);
         isMatching = true; // a wastepile animation will overwrite the above without this
 
-        soundController.CardStackSound();
-
         Vector3 p = card1.transform.position;
         Quaternion t = card1.transform.rotation;
         p.z += 2;
 
-        //GameObject myPrefab = (GameObject)Resources.Load("Prefabs/MatchExplosionAnimation", typeof(GameObject));
-        //myPrefab.SetActive(true);
         GameObject matchExplosion = Instantiate(matchPrefab, p, t);
 
         StartCoroutine(animatorwait(card1, card2, matchExplosion));
     }
     IEnumerator animatorwait(GameObject card1, GameObject card2, GameObject matchExplosion)
     {
-        Sprite toShow = null;
-        CardScript cardVals = card1.GetComponent<CardScript>();
-        if (cardVals.cardSuit == "clubs" || cardVals.cardSuit == "spades")
+        CardScript card1Script = card1.GetComponent<CardScript>();
+        CardScript card2Script = card2.GetComponent<CardScript>();
+        bool inWastepile = false;
+
+        if (card1Script.container.CompareTag("Reactor"))
         {
-            if (cardVals.cardNum < 10)
-            {
-                toShow = combinedHolograms[0];
-            }
-            else
-            {
-                switch (cardVals.cardNum)
-                {
-                    case 10:
-                        toShow = combinedHolograms[1];
-                        break;
-                    case 11:
-                        toShow = combinedHolograms[2];
-                        break;
-                    case 12:
-                        toShow = combinedHolograms[3];
-                        break;
-                    case 13:
-                        toShow = combinedHolograms[4];
-                        break;
-                }
-            }
+            card1Script.ShowHologram();
         }
-        if (cardVals.cardSuit == "hearts" || cardVals.cardSuit == "diamonds")
+
+        if (card2Script.container.CompareTag("Reactor"))
         {
-            if (cardVals.cardNum < 10)
-            {
-                toShow = combinedHolograms[5];
-            }
-            else
-            {
-                switch (cardVals.cardNum)
-                {
-                    case 10:
-                        toShow = combinedHolograms[6];
-                        break;
-                    case 11:
-                        toShow = combinedHolograms[7];
-                        break;
-                    case 12:
-                        toShow = combinedHolograms[8];
-                        break;
-                    case 13:
-                        toShow = combinedHolograms[9];
-
-                        break;
-                }
-            }
+            card2Script.hologramFood.SetActive(true);
         }
-        soundController.FoodMatch(cardVals.cardSuit);
+        else if (card2Script.container.CompareTag("Wastepile") || card1Script.container.CompareTag("Wastepile"))
+        {
+            wastePile.GetComponent<WastepileScript>().scrollRect.horizontal = false;
+            inWastepile = true;
+        }
 
-        card2.GetComponent<CardScript>().MoveCard(card1.GetComponent<CardScript>().container);
-        yield return new WaitForSeconds(.5f);
+        Vector3 origin = card1.transform.position;
+        card2.transform.position = origin;
+        card2Script.hologram.SetActive(false);
+        card2Script.UpdateMaskInteraction(card1.GetComponent<SpriteRenderer>().maskInteraction);
+        card1Script.hologram.GetComponent<SpriteRenderer>().sortingOrder = 1;
 
-        Vector3 p = card1.transform.position;
-        p.y += 3;
-        Quaternion t = card1.transform.rotation;
+        soundController.CardStackSound();
+        yield return new WaitForSeconds(0.4f);
+        soundController.FoodMatch(card1Script.cardSuit);
+        yield return new WaitForSeconds(0.3f);
 
-        GameObject comboToLoad = new GameObject("combo");
-        SpriteRenderer Srenderer = comboToLoad.AddComponent<SpriteRenderer>();
-        Srenderer.sortingLayerName = "UI";
-
-        Srenderer.sprite = toShow;
-        comboToLoad.transform.localScale = Vector3.one * .15f;
-        //Instantiate(comboToLoad, p, t);
-
-        StartCoroutine(FadeImage(comboToLoad));
-
-        card2.GetComponent<CardScript>().MoveCard(matchedPile);
-        card1.GetComponent<CardScript>().MoveCard(matchedPile);
+        card1Script.hologram.GetComponent<SpriteRenderer>().sortingOrder = 0;
+        card2Script.UpdateMaskInteraction(SpriteMaskInteraction.None);
+        card2Script.MoveCard(matchedPile);
+        card1Script.MoveCard(matchedPile);
         UpdateActionCounter(0);
 
         UpdateScore(matchPoints);
-        soundController.CardMatchSound();
         baby.GetComponent<SpaceBabyController>().BabyEatAnim();
+
+        if (inWastepile)
+        {
+            wastePile.GetComponent<WastepileScript>().scrollRect.horizontal = true;
+        }
 
         // these must be in this order
         isMatching = false;
         SetInputStopped(false);
         CheckGameOver();
 
-        yield return new WaitForSeconds(1);
-        Destroy(matchExplosion);
+        Sprite toShow = null;
+        if (card1Script.cardSuit == "clubs" || card1Script.cardSuit == "spades")
+        {
+            if (card1Script.cardNum < 10)
+            {
+                toShow = combinedHolograms[0];
+            }
+            else
+            {
+                toShow = combinedHolograms[card1Script.cardNum - 9];
+            }
+        }
+        else
+        {
+            if (card1Script.cardNum < 10)
+            {
+                toShow = combinedHolograms[5];
+            }
+            else
+            {
+                toShow = combinedHolograms[card1Script.cardNum - 4];
+            }
+        }
+
+        GameObject comboToLoad = new GameObject("combo");
+        SpriteRenderer Srenderer = comboToLoad.AddComponent<SpriteRenderer>();
+        Srenderer.sortingLayerID = selectedLayer;
+
+        Srenderer.sprite = toShow;
+        comboToLoad.transform.localScale = Vector3.one * 0.15f;
+        comboToLoad.transform.position = origin;
+
+        StartCoroutine(FadeImage(comboToLoad, matchExplosion));
+
+        yield return new WaitForSeconds(0.2f);
+        soundController.CardMatchSound();
     }
 
-    IEnumerator FadeImage(GameObject comboToLoad)
+    IEnumerator FadeImage(GameObject comboToLoad, GameObject matchExplosion)
     {
-        SpriteRenderer sprite = comboToLoad.GetComponent<SpriteRenderer>();
-
-        for (float i = 1; i >= 0; i -= Time.deltaTime / 4)
+        Vector3 target = baby.transform.position;
+        SpriteRenderer comboSR = comboToLoad.GetComponent<SpriteRenderer>();
+        float initialDistance = Vector3.Distance(comboToLoad.transform.position, target);
+        byte speed = (byte) (Config.config.cardsToReactorspeed / 3);
+        while (comboToLoad.transform.position != target)
         {
-            // set color with i as alpha \\
-            comboToLoad.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, (i));
-            comboToLoad.transform.position += new Vector3(.01f, 0, 0);
+            comboSR.color = new Color(1, 1, 1, Vector3.Distance(comboToLoad.transform.position, target) / initialDistance);
+            comboToLoad.transform.position = Vector3.MoveTowards(comboToLoad.transform.position, target,
+                Time.deltaTime * speed);
             yield return null;
-
         }
+
+        Destroy(matchExplosion);
         Destroy(comboToLoad);
     }
     //checks if suit match AND value match

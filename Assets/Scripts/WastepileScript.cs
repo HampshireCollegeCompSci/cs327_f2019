@@ -20,7 +20,7 @@ public class WastepileScript : MonoBehaviour
     //private double startX;
     //private double endX;
 
-    private ScrollRect scrollRect;
+    public ScrollRect scrollRect;
     private RectTransform contentRectTransform;
 
     private void Start()
@@ -305,7 +305,7 @@ public class WastepileScript : MonoBehaviour
         }
         else
         {
-            if (card.GetComponent<CardScript>().container == this.gameObject)
+            if (!utils.isMatching && card.GetComponent<CardScript>().container == this.gameObject)
             {
                 card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.VisibleInsideMask);
             }

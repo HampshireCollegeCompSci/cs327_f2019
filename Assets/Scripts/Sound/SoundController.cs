@@ -76,7 +76,7 @@ public class SoundController : MonoBehaviour
 
     public void CardMatchSound()
     {
-        soundController.PlayOneShot(cardMatchSound);
+        soundController.PlayOneShot(cardMatchSound, 0.6f);
     }
 
     public void DeckDeal()
