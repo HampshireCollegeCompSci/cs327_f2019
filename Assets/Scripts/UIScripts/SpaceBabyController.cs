@@ -24,7 +24,7 @@ public class SpaceBabyController : MonoBehaviour
             audioSource.PlayOneShot(happySound, 0.4f);
 
             animator.Play("HappyAnim");
-            StartCoroutine("BabyAnimTrans");
+            StartCoroutine(BabyAnimTrans());
         }
 
     }
@@ -33,16 +33,16 @@ public class SpaceBabyController : MonoBehaviour
     {
         idling = false;
         animator.Play("EatingAnim");
-        StartCoroutine("BabyAnimTrans");
+        StartCoroutine(BabyAnimTrans());
     }
 
     public void BabyAngryAnim()
     {
         idling = false;
-        audioSource.PlayOneShot(angrySound);
+        audioSource.PlayOneShot(angrySound, 0.2f);
 
         animator.Play("AngryAnim");
-        StartCoroutine("BabyAnimTrans");
+        StartCoroutine(BabyAnimTrans());
     }
 
     public void BabyLoseSound()
@@ -57,15 +57,9 @@ public class SpaceBabyController : MonoBehaviour
 
     IEnumerator BabyAnimTrans()
     {
-        for (float ft = 1.5f; ft >= 0; ft -= 0.1f)
-        {
-            yield return new WaitForSeconds(0.1f);
-        }
-
+        yield return new WaitForSeconds(2);
         idling = true;
         animator.Play("IdlingAnim");
-
-
     }
 
 }

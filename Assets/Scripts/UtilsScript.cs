@@ -511,6 +511,7 @@ public class UtilsScript : MonoBehaviour
         else if (turnOn)
         {
             Config.config.GetComponent<MusicController>().AlertMusic();
+            baby.GetComponent<SpaceBabyController>().BabyAngryAnim();
 
             foreach (GameObject reactor in Config.config.reactors)
             {
