@@ -258,6 +258,7 @@ public class UtilsScript : MonoBehaviour
     {
         // these must be in this order
         SetInputStopped(true);
+        wastePile.GetComponent<WastepileScript>().scrollRect.horizontal = false;
         isMatching = true; // a wastepile animation will overwrite the above without this
 
         Vector3 p = card1.transform.position;
@@ -272,7 +273,6 @@ public class UtilsScript : MonoBehaviour
     {
         CardScript card1Script = card1.GetComponent<CardScript>();
         CardScript card2Script = card2.GetComponent<CardScript>();
-        bool inWastepile = false;
 
         if (card1Script.container.CompareTag("Reactor"))
         {
@@ -282,11 +282,6 @@ public class UtilsScript : MonoBehaviour
         if (card2Script.container.CompareTag("Reactor"))
         {
             card2Script.hologramFood.SetActive(true);
-        }
-        else if (card2Script.container.CompareTag("Wastepile") || card1Script.container.CompareTag("Wastepile"))
-        {
-            wastePile.GetComponent<WastepileScript>().scrollRect.horizontal = false;
-            inWastepile = true;
         }
 
         Vector3 origin = card1.transform.position;
@@ -309,10 +304,7 @@ public class UtilsScript : MonoBehaviour
         UpdateScore(matchPoints);
         baby.GetComponent<SpaceBabyController>().BabyEatAnim();
 
-        if (inWastepile)
-        {
-            wastePile.GetComponent<WastepileScript>().scrollRect.horizontal = true;
-        }
+        wastePile.GetComponent<WastepileScript>().scrollRect.horizontal = true;
 
         // these must be in this order
         isMatching = false;

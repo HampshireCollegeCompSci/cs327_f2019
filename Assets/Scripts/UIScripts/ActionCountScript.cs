@@ -41,7 +41,11 @@ public class ActionCountScript : MonoBehaviour
 
     public void TurnSirenOff()
     {
-        StopCoroutine(flasher);
+        if (flasher != null)
+        {
+            StopCoroutine(flasher);
+        }
+
         siren.sprite = sirenOff;
         currentState = 0;
         flasher = null;

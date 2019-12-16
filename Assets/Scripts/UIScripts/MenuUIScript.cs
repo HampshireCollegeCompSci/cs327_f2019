@@ -150,6 +150,7 @@ public class MenuUIScript : MonoBehaviour
         Config.config.gamePaused = false;
 
         Config.config.GetComponent<SoundController>().ButtonPressSound();
+        StopAllCoroutines();
         SceneManager.LoadScene("GameplayScene");
     }
 
