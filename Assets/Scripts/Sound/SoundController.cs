@@ -6,11 +6,13 @@ public class SoundController : MonoBehaviour
 {
     public AudioSource soundController;
 
-    public AudioClip buttonPressSound, undoPressSound, pauseButtonSound,
-                    tokenRevealSound, tokenSelectSoundA, tokenSelectSoundB, tokenSelectSoundC,
-                    tokenInReactorSound, tokenStackSoundA, tokenStackSoundB, tokenStackSoundC, tokenStackSoundD,
-                    cardMatchSound, deckDealSound, deckReshuffleSound, winSound, loseSound,
-                    mushroomSound, bugSound, fruitSound, rockSound;
+    public AudioClip buttonPressSound, undoPressSound, pauseButtonSound;
+    public AudioClip tokenRevealSound, tokenSelectSoundA, tokenSelectSoundB, tokenSelectSoundC;
+    public AudioClip tokenInReactorSound, tokenStackSoundA, tokenStackSoundB, tokenStackSoundC, tokenStackSoundD;
+    public AudioClip tokenMatchSoundA, tokenMatchSoundB, tokenMatchSoundC;
+    public AudioClip deckDealSound, deckReshuffleSound;
+    public AudioClip winSound, loseSound, alertSound;
+    public AudioClip mushroomSound, bugSound, fruitSound, rockSound;
 
 
     public void ButtonPressSound()
@@ -49,7 +51,6 @@ public class SoundController : MonoBehaviour
 
     public void CardStackSound()
     {
-
         int randomNo = Random.Range(0, 4);
         if (randomNo == 0)
         {
@@ -76,7 +77,19 @@ public class SoundController : MonoBehaviour
 
     public void CardMatchSound()
     {
-        soundController.PlayOneShot(cardMatchSound, 0.6f);
+        int randomNo = Random.Range(0, 2);
+        if (randomNo == 0)
+        {
+            soundController.PlayOneShot(tokenMatchSoundA, 0.6f);
+        }
+        else if (randomNo == 1)
+        {
+            soundController.PlayOneShot(tokenMatchSoundB, 0.6f);
+        }
+        else
+        {
+            soundController.PlayOneShot(tokenMatchSoundC, 0.6f);
+        }
     }
 
     public void DeckDeal()
@@ -94,6 +107,11 @@ public class SoundController : MonoBehaviour
         soundController.Stop();
         soundController.clip = pauseButtonSound;
         soundController.Play();
+    }
+
+    public void AlertSound()
+    {
+        soundController.PlayOneShot(alertSound, 0.3f);
     }
 
     public void WinSound()

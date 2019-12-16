@@ -47,11 +47,11 @@ public class ActionCountScript : MonoBehaviour
         flasher = null;
     }
 
-    public void TurnSirenOn()
+    public bool TurnSirenOn()
     {
         if (currentState == 1)
         {
-            return;
+            return false;
         }
         else if (currentState == 2)
         {
@@ -61,13 +61,14 @@ public class ActionCountScript : MonoBehaviour
         currentState = 1;
         siren.sprite = sirenOn;
         flasher = StartCoroutine(Flash());
+        return true;
     }
 
-    public void TurnAlertOn()
+    public bool TurnAlertOn()
     {
         if (currentState == 2)
         {
-            return;
+            return false;
         }
         else if (currentState == 1)
         {
@@ -77,6 +78,7 @@ public class ActionCountScript : MonoBehaviour
         currentState = 2;
         siren.sprite = sirenAlert;
         flasher = StartCoroutine(Flash());
+        return true;
     }
 
     IEnumerator Flash()

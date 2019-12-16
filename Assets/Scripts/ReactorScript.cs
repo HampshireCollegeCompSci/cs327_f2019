@@ -203,7 +203,6 @@ public class ReactorScript : MonoBehaviour
 
     public bool AlertOn()
     {
-        Debug.Log("alert");
         if (!alert)
         {
             gameObject.GetComponent<SpriteRenderer>().sprite = glowAlmostFull;

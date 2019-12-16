@@ -252,10 +252,7 @@ public class UtilsScript : MonoBehaviour
                 DeselectCard(selectedCards[0]);
             }
         }
-
-
     }
-
 
     public void Match(GameObject card1, GameObject card2)
     {
@@ -544,7 +541,10 @@ public class UtilsScript : MonoBehaviour
 
         if (alertTurnedOn)
         {
-            moveCounter.GetComponent<ActionCountScript>().TurnAlertOn();
+            if (moveCounter.GetComponent<ActionCountScript>().TurnAlertOn())
+            {
+                soundController.AlertSound();
+            }
         }
         else if (turnOn || checkAgain)
         {

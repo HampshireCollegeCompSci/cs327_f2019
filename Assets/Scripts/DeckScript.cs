@@ -271,6 +271,8 @@ public class DeckScript : MonoBehaviour
 
     IEnumerator NextCycle()
     {
+        utils.baby.GetComponent<SpaceBabyController>().BabyActionCounterSound();
+
         GameObject topFoundationCard;
         CardScript topCardScript;
         for (int f = 0; f < foundations.Count; f++)
