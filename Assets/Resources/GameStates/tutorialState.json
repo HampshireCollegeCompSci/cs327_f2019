@@ -1,0 +1,96 @@
+{
+    "wastePile": [
+        "diamonds_7",
+        "spades_2"
+    ],
+    "deck": [
+        "hearts_13"
+    ],
+    "matches": [
+        "clubs_12",
+        "clubs_8",
+        "spades_4",
+        "spades_1",
+        "hearts_6",
+        "spades_9",
+        "clubs_3",
+        "hearts_12",
+        "spades_12",
+        "diamonds_6",
+        "spades_8",
+        "clubs_5",
+        "spades_3",
+        "hearts_4",
+        "clubs_1"
+    ],
+    "foundations": [
+        {
+            "stringList": [
+                "diamonds_5",
+                "diamonds_1",
+                "clubs_6",
+                "hearts_8",
+                "clubs_4",
+                "diamonds_3",
+                "clubs_2",
+                "hearts_1"
+            ]
+        },
+        {
+            "stringList": [
+                "hearts_3",
+                "spades_11",
+                "hearts_9",
+                "clubs_13",
+                "spades_7",
+                "diamonds_13",
+                "spades_13",
+                "diamonds_12",
+                "clubs_11",
+                "diamonds_10",
+                "diamonds_9",
+                "diamonds_8",
+                "clubs_7"
+            ]
+        },
+        {
+            "stringList": [
+                "hearts_5",
+                "diamonds_11",
+                "spades_10",
+                "diamonds_4"
+            ]
+        },
+        {
+            "stringList": [
+                "spades_6",
+                "spades_5",
+                "hearts_7",
+                "clubs_9",
+                "hearts_10",
+                "hearts_11",
+                "clubs_10"
+            ]
+        }
+    ],
+    "reactors": [
+        {
+            "stringList": []
+        },
+        {
+            "stringList": []
+        },
+        {
+            "stringList": [
+                "diamonds_2"
+            ]
+        },
+        {
+            "stringList": []
+        }
+    ],
+    "moveLog": [],
+    "score": 0,
+    "actions": 13,
+    "difficulty": "easy"
+}
