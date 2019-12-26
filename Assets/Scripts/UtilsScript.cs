@@ -283,6 +283,20 @@ public class UtilsScript : MonoBehaviour
         {
             card2Script.hologramFood.SetActive(true);
         }
+        else if (card2Script.container.CompareTag("Foundation"))
+        {
+            List<GameObject> containerCards = card2Script.container.GetComponent<FoundationScript>().cardList;
+            if (containerCards.Count > 1)
+            {
+                CardScript containerCardScript = containerCards[1].GetComponent<CardScript>();
+                if (containerCardScript.isHidden())
+                {
+                    containerCardScript.SetVisibility(true);
+                    containerCardScript.ShowHologram();
+                    containerCardScript.hidden = true;
+                }
+            }
+        }
 
         Vector3 origin = card1.transform.position;
         card2.transform.position = origin;
