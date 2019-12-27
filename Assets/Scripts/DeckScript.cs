@@ -74,10 +74,10 @@ public class DeckScript : MonoBehaviour
     {
         GameObject newCard;
         CardScript newCardScript;
-        
-        // order: club ace, 2, 3... 10, jack, queen, king, diamonds... hearts... spades
+
+        // order: club ace, 2, 3... 10, jack, queen, king, spades... hearts... diamonds
         int cardIndex = 0; // 1 - 52
-        for (int suit = 0; suit < 4; suit++) // order: club, diamonds, hearts, spades
+        for (int suit = 0; suit < 4; suit++) // order: club, spades, hearts, diamonds
         {
             for (int num = 1; num < 14; num++) // card num: 1 - 13
             {
