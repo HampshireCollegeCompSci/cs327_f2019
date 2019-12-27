@@ -273,22 +273,35 @@ public class DeckScript : MonoBehaviour
     {
         utils.baby.GetComponent<SpaceBabyController>().BabyActionCounterSound();
 
+        FoundationScript currentFoundation;
         GameObject topFoundationCard;
         CardScript topCardScript;
         for (int f = 0; f < foundations.Count; f++)
         {
-            if (foundations[f].GetComponent<FoundationScript>().cardList.Count != 0)
+            currentFoundation = foundations[f].GetComponent<FoundationScript>();
+            if (currentFoundation.cardList.Count != 0)
             {
-                topFoundationCard = foundations[f].GetComponent<FoundationScript>().cardList[0];
+                topFoundationCard = currentFoundation.cardList[0];
                 topCardScript = topFoundationCard.GetComponent<CardScript>();
                 for (int r = 0; r < reactors.Count; r++)
                 {
-                    if (topFoundationCard.GetComponent<CardScript>().cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
+                    if (topCardScript.cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
                     {
-                        topFoundationCard.GetComponent<CardScript>().HideHologram();
+                        topCardScript.HideHologram();
                         topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
                         topCardScript.number.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
                         Vector3 target = reactors[r].transform.position;
+
+                        if (currentFoundation.cardList.Count > 1)
+                        {
+                            CardScript nextTopFoundationCard = currentFoundation.cardList[1].GetComponent<CardScript>();
+                            if (nextTopFoundationCard.isHidden())
+                            {
+                                nextTopFoundationCard.SetVisibility(true);
+                                nextTopFoundationCard.ShowHologram();
+                                nextTopFoundationCard.hidden = true; // for undo to work right
+                            }
+                        }
 
                         while (topFoundationCard.transform.position != target)
                         {   
@@ -299,7 +312,7 @@ public class DeckScript : MonoBehaviour
 
                         topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
                         topCardScript.number.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
-                        topFoundationCard.GetComponent<CardScript>().MoveCard(reactors[r], isCycle: true);
+                        topCardScript.MoveCard(reactors[r], isCycle: true);
 
                         if (Config.config.gameOver)
                         {
