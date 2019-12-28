@@ -224,7 +224,8 @@ public class MenuUIScript : MonoBehaviour
     {
         if (File.Exists("Assets/Resources/GameStates/tutorialState.json"))
         {
-            StateLoader.saveSystem.loadState();
+            Debug.Log("tutorial <3");
+            StateLoader.saveSystem.tutorialState();
             Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
             NewGame();
         }
