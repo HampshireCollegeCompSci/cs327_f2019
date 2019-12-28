@@ -222,8 +222,12 @@ public class MenuUIScript : MonoBehaviour
 
     public void Tutorial()
     {
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
-        SceneManager.LoadScene("TutorialScene");
+        if (File.Exists("Assets/Resources/GameStates/tutorialState.json"))
+        {
+            StateLoader.saveSystem.loadState();
+            Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
+            NewGame();
+        }
     }
 
     public void HardDifficulty()

@@ -112,6 +112,13 @@ public class StateLoader : MonoBehaviour
         //load the json into a GameState
         gameState = CreateFromJSON(path);
     }
+
+    public void tutorialState(string path = "GameStates/tutorialState")
+    {
+        //load the json into a GameState
+        gameState = CreateFromJSON(path);
+    }
+
     public void unpackState(GameState state)
     {
         //create unsorted full deck.

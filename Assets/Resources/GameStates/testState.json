@@ -5,6 +5,9 @@
         "hearts_2"
     ],
     "deck": [
+        "hearts_13"
+    ],
+    "matches": [
         "clubs_12",
         "clubs_8",
         "spades_4",
@@ -18,10 +21,8 @@
         "spades_8",
         "clubs_5",
         "spades_3",
-        "hearts_4",
-        "hearts_13"
+        "hearts_4"
     ],
-    "matches": [],
     "foundations": [
         {
             "stringList": [
