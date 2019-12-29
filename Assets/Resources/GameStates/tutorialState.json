@@ -75,21 +75,17 @@
     ],
     "reactors": [
         {
-            //SpadesReactor
             "stringList": []
         },
         {
-            //ClubsReactor
             "stringList": []
         },
         {
-            //DiamondsReactor
             "stringList": [
                 "diamonds_2"
             ]
         },
         {
-            //HeartsReactor
             "stringList": []
         }
     ],
