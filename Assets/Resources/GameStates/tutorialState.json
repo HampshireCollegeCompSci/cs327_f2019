@@ -1,75 +1,75 @@
 {
     "wastePile": [
-        "diamonds_7",
-        "spades_2"
+        "diamonds_7_False",
+        "spades_2_False"
     ],
     "deck": [
-        "hearts_13"
+        "hearts_13_False"
     ],
     "matches": [
-        "clubs_12",
-        "clubs_8",
-        "spades_4",
-        "spades_1",
-        "hearts_6",
-        "spades_9",
-        "clubs_3",
-        "hearts_12",
-        "spades_12",
-        "diamonds_6",
-        "spades_8",
-        "clubs_5",
-        "spades_3",
-        "hearts_4",
-        "clubs_1"
+        "clubs_12_False",
+        "clubs_8_False",
+        "spades_4_False",
+        "spades_1_False",
+        "hearts_6_False",
+        "spades_9_False",
+        "clubs_3_False",
+        "hearts_12_False",
+        "spades_12_False",
+        "diamonds_6_False",
+        "spades_8_False",
+        "clubs_5_False",
+        "spades_3_False",
+        "hearts_4_False",
+        "clubs_1_False"
     ],
     "foundations": [
         {
             "stringList": [
-                "diamonds_5",
-                "diamonds_1",
-                "clubs_6",
-                "hearts_8",
-                "clubs_4",
-                "diamonds_3",
-                "clubs_2",
-                "hearts_1"
+                "diamonds_5_True",
+                "diamonds_1_True",
+                "clubs_6_True",
+                "hearts_8_True",
+                "clubs_4_False",
+                "diamonds_3_False",
+                "clubs_2_False",
+                "hearts_1_False"
             ]
         },
         {
             "stringList": [
-                "hearts_3",
-                "spades_11",
-                "hearts_9",
-                "clubs_13",
-                "spades_7",
-                "diamonds_13",
-                "spades_13",
-                "diamonds_12",
-                "clubs_11",
-                "diamonds_10",
-                "diamonds_9",
-                "diamonds_8",
-                "clubs_7"
+                "hearts_3_True",
+                "spades_11_True",
+                "hearts_9_True",
+                "clubs_13_True",
+                "spades_7_True",
+                "diamonds_13_True",
+                "spades_13_False",
+                "diamonds_12_False",
+                "clubs_11_False",
+                "diamonds_10_False",
+                "diamonds_9_False",
+                "diamonds_8_False",
+                "clubs_7_False"
             ]
         },
         {
             "stringList": [
-                "hearts_5",
-                "diamonds_11",
-                "spades_10",
-                "diamonds_4"
+                "hearts_5_True",
+                "diamonds_11_True",
+                "spades_10_True",
+                "diamonds_4_False"
             ]
         },
         {
             "stringList": [
-                "spades_6",
-                "spades_5",
-                "hearts_7",
-                "clubs_9",
-                "hearts_10",
-                "hearts_11",
-                "clubs_10"
+                "spades_6_True",
+                "spades_5_True",
+                "hearts_7_True",
+                "clubs_9_True",
+                "hearts_10_True",
+                "hearts_11_False",
+                "clubs_10_False"
             ]
         }
     ],
@@ -82,7 +82,7 @@
         },
         {
             "stringList": [
-                "diamonds_2"
+                "diamonds_2_False"
             ]
         },
         {
