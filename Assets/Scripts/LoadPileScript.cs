@@ -6,7 +6,7 @@ public class LoadPileScript : MonoBehaviour
 {
     public List<GameObject> cardList;
 
-    private void Awake()
+    private void Start()
     {
         Config.config.loadPile = gameObject;
     }
