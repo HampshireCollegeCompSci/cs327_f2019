@@ -65,6 +65,9 @@ public class Config : MonoBehaviour
     //matches
     public GameObject matches;
 
+    //LoadPile
+    public GameObject loadPile;
+
     //UI
     public bool gamePaused;
 
