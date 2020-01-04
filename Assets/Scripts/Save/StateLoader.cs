@@ -130,7 +130,9 @@ public class StateLoader : MonoBehaviour
         DeckScript.deckScript.InstantiateCards(GameObject.Find("DeckButton"));
         print(state);
         //set up simple variables
-        Config.config.actions = state.actions;
+        print("actions taken: " + state.actions);
+        print("max actions: " + Config.config.actionMax);
+        Config.config.actions = Config.config.actionMax - state.actions;
         Config.config.score = state.score;
         Config.config.difficulty = state.difficulty;
         //set up foundations
@@ -224,7 +226,6 @@ public class StateLoader : MonoBehaviour
             }
         }
         //set up deck
-        List<GameObject> tempList = GameObject.Find("DeckButton").GetComponent<DeckScript>().cardList;
         foreach (string s in state.deck)
         {
             string[] segments = s.Split('_');
@@ -232,18 +233,19 @@ public class StateLoader : MonoBehaviour
             string number = segments[1];
             string hiddenState = segments[2];
 
-
-            foreach (GameObject token in tempList)
+            List<GameObject> deckList = GameObject.Find("DeckButton").GetComponent<DeckScript>().cardList;
+            int deckSize = deckList.Count;
+            print("decksize: " + deckSize);
+            for (int z = 0; z < deckSize; z++)
             {
-                if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
+                if (deckList[z].GetComponent<CardScript>().cardNum.ToString() == number && deckList[z].GetComponent<CardScript>().cardSuit == suite)
                 {
-                    token.GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false, false);
-                    if (hiddenState == "True")
-                    {
-                        token.GetComponent<CardScript>().SetVisibility(false);
-                    }
-                    break;
+                    deckList[z].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false, false);
                 }
+            }
+            foreach (GameObject token in Config.config.loadPile.GetComponent<LoadPileScript>().cardList)
+            {
+                token.GetComponent<CardScript>().MoveCard(Config.config.deck, false, false, false);
             }
         }
         //set up undo log

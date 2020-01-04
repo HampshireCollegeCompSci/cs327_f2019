@@ -195,6 +195,10 @@ public class CardScript : MonoBehaviour
         {
             container.GetComponent<MatchedPileScript>().RemoveCard(gameObject);
         }
+        else if (container.CompareTag("LoadPile"))
+        {
+            container.GetComponent<LoadPileScript>().RemoveCard(gameObject);
+        }
 
         if (destination.CompareTag("Foundation"))
         {
@@ -253,6 +257,15 @@ public class CardScript : MonoBehaviour
             }
 
             destination.GetComponent<MatchedPileScript>().AddCard(gameObject);
+        }
+        else if (destination.CompareTag("LoadPile"))
+        {
+            if (doLog)
+            {
+                UndoScript.undoScript.logMove("match", gameObject, isAction, Config.config.actions, nextCardWasHidden);
+            }
+
+            destination.GetComponent<LoadPileScript>().AddCard(gameObject);
         }
 
         container = destination;
