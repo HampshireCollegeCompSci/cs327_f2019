@@ -146,7 +146,14 @@ public class DeckScript : MonoBehaviour
                 newCardScript.number.GetComponent<SpriteRenderer>().sprite = sprites[cardIndex];
                 newCardScript.SetVisibility(true);
                 newCardScript.container = target;
-                AddCard(newCard);
+                if (target.CompareTag("Deck"))
+                {
+                    AddCard(newCard);
+                }
+                else if (target.CompareTag("LoadPile"))
+                {
+                    target.GetComponent<LoadPileScript>().AddCard(newCard);
+                }
                 
                 cardIndex += 1;
             }

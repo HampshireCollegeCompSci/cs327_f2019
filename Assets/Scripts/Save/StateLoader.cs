@@ -127,7 +127,9 @@ public class StateLoader : MonoBehaviour
     public void unpackState(GameState state)
     {
         //create unsorted full deck.
-        DeckScript.deckScript.InstantiateCards(GameObject.Find("DeckButton"));
+        GameObject LoadPile = Config.config.loadPile;
+        LoadPileScript LoadPileList = LoadPile.GetComponent<LoadPileScript>();
+        DeckScript.deckScript.InstantiateCards(LoadPile);
         print(state);
         //set up simple variables
         print("actions taken: " + state.actions);
@@ -145,7 +147,7 @@ public class StateLoader : MonoBehaviour
                 string suite = segments[0];
                 string number = segments[1];
                 string hiddenState = segments[2];
-                foreach (GameObject token in GameObject.Find("DeckButton").GetComponent<DeckScript>().cardList)
+                foreach (GameObject token in LoadPileList.cardList)
                 {
                     if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
                     {
@@ -170,7 +172,7 @@ public class StateLoader : MonoBehaviour
                 string suite = segments[0];
                 string number = segments[1];
                 string hiddenState = segments[2];
-                foreach (GameObject token in GameObject.Find("DeckButton").GetComponent<DeckScript>().cardList)
+                foreach (GameObject token in LoadPileList.cardList)
                 {
                     if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
                     {
@@ -192,7 +194,7 @@ public class StateLoader : MonoBehaviour
             string suite = segments[0];
             string number = segments[1];
             string hiddenState = segments[2];
-            foreach (GameObject token in GameObject.Find("DeckButton").GetComponent<DeckScript>().cardList)
+            foreach (GameObject token in LoadPileList.cardList)
             {
                 if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
                 {
@@ -212,7 +214,7 @@ public class StateLoader : MonoBehaviour
             string suite = segments[0];
             string number = segments[1];
             string hiddenState = segments[2];
-            foreach (GameObject token in GameObject.Find("DeckButton").GetComponent<DeckScript>().cardList)
+            foreach (GameObject token in LoadPileList.cardList)
             {
                 if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
                 {
@@ -233,19 +235,12 @@ public class StateLoader : MonoBehaviour
             string number = segments[1];
             string hiddenState = segments[2];
 
-            List<GameObject> deckList = GameObject.Find("DeckButton").GetComponent<DeckScript>().cardList;
-            int deckSize = deckList.Count;
-            print("decksize: " + deckSize);
-            for (int z = 0; z < deckSize; z++)
+            foreach (GameObject token in LoadPileList.cardList)
             {
-                if (deckList[z].GetComponent<CardScript>().cardNum.ToString() == number && deckList[z].GetComponent<CardScript>().cardSuit == suite)
+                if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
                 {
-                    deckList[z].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false, false);
+                    token.GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false, false);
                 }
-            }
-            foreach (GameObject token in Config.config.loadPile.GetComponent<LoadPileScript>().cardList)
-            {
-                token.GetComponent<CardScript>().MoveCard(Config.config.deck, false, false, false);
             }
         }
         //set up undo log

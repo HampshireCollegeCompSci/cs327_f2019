@@ -361,6 +361,7 @@ public class UtilsScript : MonoBehaviour
 
         yield return new WaitForSeconds(0.2f);
         soundController.CardMatchSound();
+        StateLoader.saveSystem.writeState();
     }
 
     IEnumerator FadeImage(GameObject comboToLoad, GameObject matchExplosion)
