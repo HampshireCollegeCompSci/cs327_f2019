@@ -62,6 +62,9 @@ public class Config : MonoBehaviour
     public byte cardsToDeal;
     public byte cardsToReactorspeed;
 
+    //tutorial
+    public bool tutorialOn;
+
     //matches
     public GameObject matches;
 

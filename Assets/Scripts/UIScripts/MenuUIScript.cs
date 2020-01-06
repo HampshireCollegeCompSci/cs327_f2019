@@ -227,6 +227,7 @@ public class MenuUIScript : MonoBehaviour
             Debug.Log("tutorial <3");
             StateLoader.saveSystem.tutorialState();
             Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
+            Config.config.tutorialOn = true;
             NewGame();
         }
     }
@@ -235,6 +236,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Config.config.DeleteSave();
         Config.config.setDifficulty("hard");
+        Config.config.tutorialOn = false;
         NewGame();
     }
 
@@ -242,6 +244,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Config.config.DeleteSave();
         Config.config.setDifficulty("medium");
+        Config.config.tutorialOn = false;
         NewGame();
     }
 
@@ -249,6 +252,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Config.config.DeleteSave();
         Config.config.setDifficulty("easy");
+        Config.config.tutorialOn = false;
         NewGame();
     }
 
@@ -258,6 +262,7 @@ public class MenuUIScript : MonoBehaviour
         {
             StateLoader.saveSystem.loadState();
             Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
+            Config.config.tutorialOn = false;
             NewGame();
         }
     }

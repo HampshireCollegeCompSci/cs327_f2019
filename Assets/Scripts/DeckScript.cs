@@ -55,7 +55,7 @@ public class DeckScript : MonoBehaviour
         utils.UpdateActionCounter(0, true);
 
         cardList = new List<GameObject>();
-        if (File.Exists("Assets/Resources/GameStates/testState.json"))
+        if (File.Exists("Assets/Resources/GameStates/testState.json") || Config.config.tutorialOn)
         {
             StateLoader.saveSystem.unpackState(StateLoader.saveSystem.gameState);
         }
