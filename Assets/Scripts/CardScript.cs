@@ -269,6 +269,7 @@ public class CardScript : MonoBehaviour
         }
 
         container = destination;
+        StateLoader.saveSystem.writeState();
     }
 }
 

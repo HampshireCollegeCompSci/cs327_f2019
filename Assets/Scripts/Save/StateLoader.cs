@@ -139,7 +139,7 @@ public class StateLoader : MonoBehaviour
         //set up simple variables
         print("actions taken: " + state.actions);
         print("max actions: " + Config.config.actionMax);
-        Config.config.actions = Config.config.actionMax - state.actions;
+        UtilsScript.global.UpdateActionCounter(state.actions, true);
         Config.config.score = state.score;
         Config.config.difficulty = state.difficulty;
         //set up foundations

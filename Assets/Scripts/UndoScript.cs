@@ -37,7 +37,6 @@ public class UndoScript : MonoBehaviour
             remainingActions = actionsRemaining
         };
         moveLog.Push(move); //push the log to the undo stack
-        StateLoader.saveSystem.writeState();
         return;
     }
 
