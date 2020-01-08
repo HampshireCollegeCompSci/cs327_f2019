@@ -1,96 +1,96 @@
 {
     "wastePile": [
-        "diamonds_8_False",
-        "diamonds_4_False",
-        "hearts_6_False",
-        "spades_12_False",
-        "hearts_4_False"
+        "clubs_6_False",
+        "hearts_2_False",
+        "clubs_11_False"
     ],
     "deck": [
-        "clubs_11_False",
-        "diamonds_9_False",
-        "diamonds_6_False",
-        "diamonds_11_False",
-        "hearts_13_False",
-        "clubs_8_False",
-        "spades_5_False",
-        "diamonds_2_False",
         "diamonds_7_False",
-        "diamonds_3_False",
-        "clubs_1_False",
-        "hearts_7_False",
-        "spades_6_False",
+        "hearts_9_False",
+        "diamonds_8_False",
+        "clubs_12_False",
+        "diamonds_2_False",
+        "clubs_5_False",
+        "diamonds_9_False",
+        "diamonds_10_False",
+        "clubs_13_False",
+        "diamonds_4_False",
+        "hearts_8_False",
+        "spades_7_False",
+        "clubs_2_False",
+        "hearts_5_False",
+        "clubs_7_False",
+        "diamonds_11_False",
+        "spades_11_False",
         "diamonds_13_False",
-        "clubs_6_False"
+        "spades_3_False",
+        "clubs_1_False",
+        "diamonds_12_False"
     ],
     "matches": [
-        "spades_7_False",
-        "clubs_7_False",
-        "spades_9_False",
-        "clubs_9_False"
+        "spades_10_False",
+        "clubs_10_False"
     ],
     "foundations": [
         {
             "stringList": [
-                "clubs_2_True",
-                "clubs_5_True",
                 "hearts_10_True",
-                "hearts_3_True",
-                "hearts_9_False",
-                "spades_8_False"
+                "spades_12_True",
+                "spades_9_True",
+                "diamonds_3_True",
+                "hearts_6_True",
+                "spades_8_True",
+                "hearts_13_False"
             ]
         },
         {
             "stringList": [
-                "clubs_13_True",
-                "hearts_8_True",
-                "clubs_4_True",
-                "spades_4_True",
-                "hearts_1_True",
-                "spades_3_False",
-                "hearts_2_False",
-                "spades_1_False"
+                "spades_2_True",
+                "diamonds_6_True",
+                "spades_5_True",
+                "hearts_11_False"
             ]
         },
         {
             "stringList": [
-                "spades_13_True",
-                "clubs_10_True",
-                "clubs_12_True",
-                "clubs_3_True",
-                "diamonds_12_True",
-                "spades_2_False"
-            ]
-        },
-        {
-            "stringList": [
-                "hearts_11_True",
-                "hearts_12_True",
-                "hearts_5_True",
                 "diamonds_5_True",
-                "spades_10_True",
-                "spades_11_False"
+                "hearts_7_True",
+                "spades_4_True",
+                "hearts_12_True",
+                "hearts_1_True",
+                "clubs_3_False"
+            ]
+        },
+        {
+            "stringList": [
+                "hearts_4_True",
+                "hearts_3_True",
+                "clubs_9_True",
+                "clubs_4_True",
+                "spades_13_True",
+                "clubs_8_True",
+                "spades_6_False"
             ]
         }
     ],
     "reactors": [
         {
-            "stringList": []
-        },
-        {
-            "stringList": []
-        },
-        {
             "stringList": [
-                "diamonds_1_False"
+                "spades_1_False"
             ]
+        },
+        {
+            "stringList": []
+        },
+        {
+            "stringList": []
         },
         {
             "stringList": []
         }
     ],
     "moveLog": [],
-    "score": 400,
-    "actions": 7,
-    "difficulty": "easy"
+    "score": 200,
+    "actions": 20,
+    "difficulty": "medium"
 }

@@ -110,6 +110,7 @@ public class StateLoader : MonoBehaviour
         //    File.Create("Assets/Resources/GameStates/testState.json");
         //}
         File.WriteAllText("Assets/Resources/GameStates/testState.json", json);
+        //UnityEditor.AssetDatabase.Refresh();
     }
 
     public void loadState(string path = "GameStates/testState")

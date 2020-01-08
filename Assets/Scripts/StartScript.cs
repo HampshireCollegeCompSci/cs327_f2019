@@ -31,6 +31,7 @@ public class StartScript : MonoBehaviour
 
         showpossiblemoves = GameObject.Find("ShowPossibleMoves");
         showpossiblemoves.GetComponent<ShowPossibleMoves>().SetCards();
+        StateLoader.saveSystem.writeState();
     }
 
 }

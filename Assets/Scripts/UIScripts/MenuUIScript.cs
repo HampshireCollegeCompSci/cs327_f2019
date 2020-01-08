@@ -228,31 +228,32 @@ public class MenuUIScript : MonoBehaviour
             StateLoader.saveSystem.tutorialState();
             Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
             Config.config.tutorialOn = true;
+            Config.config.DeleteSave();
             NewGame();
         }
     }
 
     public void HardDifficulty()
     {
-        Config.config.DeleteSave();
         Config.config.setDifficulty("hard");
         Config.config.tutorialOn = false;
+        Config.config.DeleteSave();
         NewGame();
     }
 
     public void MediumDifficulty()
     {
-        Config.config.DeleteSave();
         Config.config.setDifficulty("medium");
         Config.config.tutorialOn = false;
+        Config.config.DeleteSave();
         NewGame();
     }
 
     public void EasyDifficulty()
     {
-        Config.config.DeleteSave();
         Config.config.setDifficulty("easy");
         Config.config.tutorialOn = false;
+        Config.config.DeleteSave();
         NewGame();
     }
 
@@ -260,6 +261,7 @@ public class MenuUIScript : MonoBehaviour
     {
         if (File.Exists("Assets/Resources/GameStates/testState.json"))
         {
+            UnityEditor.AssetDatabase.Refresh();
             StateLoader.saveSystem.loadState();
             Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
             Config.config.tutorialOn = false;
