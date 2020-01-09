@@ -261,7 +261,10 @@ public class MenuUIScript : MonoBehaviour
     {
         if (File.Exists("Assets/Resources/GameStates/testState.json"))
         {
-            UnityEditor.AssetDatabase.Refresh();
+            if (Application.isEditor)
+            {
+                UnityEditor.AssetDatabase.Refresh();
+            }
             StateLoader.saveSystem.loadState();
             Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
             Config.config.tutorialOn = false;
