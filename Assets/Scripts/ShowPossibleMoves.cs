@@ -29,6 +29,8 @@ public class ShowPossibleMoves : MonoBehaviour
     private List<GameObject> cardMoves;
     private GameObject reactorMove;
 
+    private bool reactorAlerted;
+
     public void SetCards()
     {
         foundation1 = GameObject.Find("Foundation (0)");
@@ -117,19 +119,21 @@ public class ShowPossibleMoves : MonoBehaviour
             cardIsTopOfStack = true;
         }
 
-        if (cardIsFromFoundation)
+        if (cardIsTopOfStack)
         {
-            if (cardIsTopOfStack)
+            foreach (GameObject reactor in reactorList)
             {
-                foreach (GameObject reactor in reactorList)
+                if (reactor.GetComponent<ReactorScript>().suit == selectedCard.GetComponent<CardScript>().cardSuit)
                 {
-                    if (reactor.GetComponent<ReactorScript>().suit == selectedCard.GetComponent<CardScript>().cardSuit)
+                    if (reactor.GetComponent<ReactorScript>().isAlertOn())
                     {
-                        return reactor;
+                        return null;
                     }
+                    return reactor;
                 }
             }
         }
+
         return null;
     }
 
@@ -147,7 +151,16 @@ public class ShowPossibleMoves : MonoBehaviour
         reactorMove = FindReactorMove(selectedCard);
         if (reactorMove != null)
         {
-            reactorMove.GetComponent<ReactorScript>().GlowOn();
+            if (reactorMove.GetComponent<ReactorScript>().CountReactorCard() +
+                selectedCard.GetComponent<CardScript>().cardVal >= Config.config.maxReactorVal)
+            {
+                reactorMove.GetComponent<ReactorScript>().AlertOn();
+                reactorAlerted = true;
+            }
+            else
+            {
+                reactorMove.GetComponent<ReactorScript>().GlowOn();
+            }
         }
     }
 
@@ -160,39 +173,15 @@ public class ShowPossibleMoves : MonoBehaviour
 
         if (reactorMove != null)
         {
-            reactorMove.GetComponent<ReactorScript>().GlowOff();
-        }
-
-        return;
-
-        foreach (GameObject foundation in foundationList)
-        {
-            foreach (GameObject card in foundation.GetComponent<FoundationScript>().cardList)
+            if (reactorAlerted)
             {
-                if (card.GetComponent<CardScript>().isHidden() || card.GetComponent<CardScript>().GlowOff())
-                {
-                    break;
-                }
+                reactorMove.GetComponent<ReactorScript>().AlertOff();
+                reactorAlerted = false;
             }
-        }
-
-        foreach (GameObject reactor in reactorList)
-        {
-            if (reactor.GetComponent<ReactorScript>().cardList.Count != 0)
+            else
             {
-                reactor.GetComponent<ReactorScript>().cardList[0].GetComponent<CardScript>().GlowOff();
+                reactorMove.GetComponent<ReactorScript>().GlowOff();
             }
-            reactor.GetComponent<ReactorScript>().GlowOff();
-        }
-
-        if (wastepile.GetComponent<WastepileScript>().GetCardList().Count != 0)
-        {
-            wastepile.GetComponent<WastepileScript>().cardList[0].GetComponent<CardScript>().GlowOff();
-        }
-
-        foreach (GameObject card in matchedpile.GetComponent<MatchedPileScript>().cardList)
-        {
-            card.GetComponent<CardScript>().GlowOff();
         }
     }
 }

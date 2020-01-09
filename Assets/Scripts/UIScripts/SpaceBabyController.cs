@@ -5,6 +5,8 @@ using UnityEngine;
 public class SpaceBabyController : MonoBehaviour
 {
     bool idling;
+    public AudioSource audioSource;
+    public Animator animator;
     public AudioClip happySound, angrySound, loseSound, counterSound;
 
 
@@ -12,18 +14,17 @@ public class SpaceBabyController : MonoBehaviour
     void Start()
     {
         idling = true;
-        gameObject.GetComponent<Animator>().Play("IdlingAnim");
+        animator.Play("IdlingAnim");
     }
 
     public void BabyHappyAnim()
     {
         if (idling)
         {
-            gameObject.GetComponent<AudioSource>().clip = happySound;
-            gameObject.GetComponent<AudioSource>().Play();
+            audioSource.PlayOneShot(happySound, 0.4f);
 
-            gameObject.GetComponent<Animator>().Play("HappyAnim");
-            StartCoroutine("BabyAnimTrans");
+            animator.Play("HappyAnim");
+            StartCoroutine(BabyAnimTrans());
         }
 
     }
@@ -31,44 +32,34 @@ public class SpaceBabyController : MonoBehaviour
     public void BabyEatAnim()
     {
         idling = false;
-        gameObject.GetComponent<Animator>().Play("EatingAnim");
-        StartCoroutine("BabyAnimTrans");
+        animator.Play("EatingAnim");
+        StartCoroutine(BabyAnimTrans());
     }
 
     public void BabyAngryAnim()
     {
         idling = false;
-        gameObject.GetComponent<AudioSource>().clip = angrySound;
-        gameObject.GetComponent<AudioSource>().Play();
+        audioSource.PlayOneShot(angrySound, 0.2f);
 
-        gameObject.GetComponent<Animator>().Play("AngryAnim");
-        StartCoroutine("BabyAnimTrans");
+        animator.Play("AngryAnim");
+        StartCoroutine(BabyAnimTrans());
     }
 
     public void BabyLoseSound()
     {
-        gameObject.GetComponent<AudioSource>().clip = loseSound;
-        gameObject.GetComponent<AudioSource>().Play();
+        audioSource.PlayOneShot(loseSound, 0.5f);
     }
 
     public void BabyActionCounterSound()
     {
-        gameObject.GetComponent<AudioSource>().clip = counterSound;
-        gameObject.GetComponent<AudioSource>().Play();
+        audioSource.PlayOneShot(counterSound, 0.5f);
     }
 
     IEnumerator BabyAnimTrans()
     {
-
-        for (float ft = 1.5f; ft >= 0; ft -= 0.1f)
-        {
-            yield return new WaitForSeconds(0.1f);
-        }
-
+        yield return new WaitForSeconds(2);
         idling = true;
-        gameObject.GetComponent<Animator>().Play("IdlingAnim");
-
-
+        animator.Play("IdlingAnim");
     }
 
 }

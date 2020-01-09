@@ -27,8 +27,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3465283733490406803}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: 3.04, z: 0}
-  m_LocalScale: {x: 0.9658537, y: 0.9658537, z: 0.9658537}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -47,8 +47,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardList: []
   utils: {fileID: 0}
+  gameUI: {fileID: 0}
   soundController: {fileID: 0}
   suit: 
+  glowSelected: {fileID: 21300000, guid: ed7404c9ac20125458ce6656e4a88907, type: 3}
+  glowAlmostFull: {fileID: 21300000, guid: 78991406af3c2f6439338042367e27a3, type: 3}
 --- !u!212 &3465283733490406807
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -87,15 +90,15 @@ SpriteRenderer:
   m_SortingLayerID: 590535777
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 26cae7adde222450ab5c96c6268ffd92, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 9, y: 12.6}
+  m_Size: {x: 1.66, y: 3.1247058}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &3465283733490406800
@@ -111,16 +114,16 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.0000025629997, y: 0.0073976517}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.25, y: 3.15}
-    newSize: {x: 9, y: 12.6}
+    oldSize: {x: 1.66, y: 3.1247058}
+    newSize: {x: 1.66, y: 3.1247058}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.5609244, y: 2.351344}
+  m_Size: {x: 1.5, y: 2.6}
   m_EdgeRadius: 0

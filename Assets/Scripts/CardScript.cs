@@ -16,9 +16,7 @@ public class CardScript : MonoBehaviour
     public Color newColor;
     public bool glowing;
 
-    public GameObject hologramFoodPrefab, hologramPrefab;
-    private GameObject hologramFood, hologram;
-
+    public GameObject hologramFood, hologram;
     public GameObject glow;
     public GameObject number;
 
@@ -73,26 +71,21 @@ public class CardScript : MonoBehaviour
 
     public void SetSelected(bool selected)
     {
-        //makes card larger and first in sorting order if the card is selected
         if (selected)
         {
             newColor = gameObject.GetComponent<SpriteRenderer>().material.color;
             newColor.a = Config.config.selectedCardOpacity;
             gameObject.GetComponent<SpriteRenderer>().material.color = newColor;
-            if (hologram != null && hologramFood != null)
-            {
-                hologram.GetComponent<SpriteRenderer>().color = newColor;
-                hologramFood.GetComponent<SpriteRenderer>().color = newColor;
-            }
+            number.GetComponent<SpriteRenderer>().material.color = newColor;
+            hologram.GetComponent<SpriteRenderer>().color = newColor;
+            hologramFood.GetComponent<SpriteRenderer>().color = newColor;
         }
         else
         {
             gameObject.GetComponent<SpriteRenderer>().material.color = originalColor;
-            if (hologram != null && hologramFood != null)
-            {
-                hologram.GetComponent<SpriteRenderer>().color = originalColor;
-                hologramFood.GetComponent<SpriteRenderer>().color = originalColor;
-            }
+            number.GetComponent<SpriteRenderer>().material.color = originalColor;
+            hologram.GetComponent<SpriteRenderer>().color = originalColor;
+            hologramFood.GetComponent<SpriteRenderer>().color = originalColor;
         }
     }
 
@@ -112,48 +105,24 @@ public class CardScript : MonoBehaviour
         gameObject.transform.localScale = new Vector3(0.2f, 0.2f, 1);
         container = null;
         number.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
+        hologram.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
+        hologramFood.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
         Destroy(gameObject.GetComponent<BoxCollider2D>());
     }
 
     public void ShowHologram()
     {
-        if (hologram != null)
-        {
-            //Debug.Log("already holo" + cardNum + cardSuit);
-            return;
-        }
-        //Debug.Log("showing holo" + cardNum + cardSuit);
-
-        string cardHologramName;
-
-        if (cardNum == 10)
-            cardHologramName = "10_" + cardSuit + "_food";
-        else if (cardNum == 11)
-            cardHologramName = "jack_" + cardSuit + "_food";
-        else if (cardNum == 12)
-            cardHologramName = "queen_" + cardSuit + "_food";
-        else if (cardNum == 13)
-            cardHologramName = "king_" + cardSuit + "_food";
-        else
-            cardHologramName = "a-9" + "_" + cardSuit + "_food";
-
-        hologramFoodPrefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Hologram/FoodHolograms/" + cardHologramName);
-
-        hologram = Instantiate(hologramPrefab, Vector3.one, gameObject.transform.rotation);
-        hologramFood = Instantiate(hologramFoodPrefab, Vector3.one, gameObject.transform.rotation);
-
-        Vector3 temp = hologramFood.transform.localScale;
-        temp.x += temp.x;
-        temp.y += temp.y;
-        hologramFood.transform.localScale = temp;
-
-        hologram.transform.parent = this.gameObject.transform;
-        hologramFood.transform.parent = this.gameObject.transform;
-
-        hologram.transform.localPosition = new Vector3(0.35f, 4, -1);
-        hologramFood.transform.localPosition = new Vector3(0, 4.3f, 0);
-
+        hologram.SetActive(true);
+        hologramFood.SetActive(true);
+        hologram.GetComponent<Animator>().speed = Random.Range(0.6f, 1f);
         UpdateMaskInteraction(gameObject.GetComponent<SpriteRenderer>().maskInteraction);
+        StartCoroutine(ResetHologramSpeed());
+    }
+
+    IEnumerator ResetHologramSpeed()
+    {
+        yield return new WaitForSeconds(1);
+        hologram.GetComponent<Animator>().speed = 1;
     }
 
     public bool HideHologram()
@@ -162,17 +131,10 @@ public class CardScript : MonoBehaviour
         {
             return true;
         }
-        if (hologram != null)
-        {
-            //Debug.Log("HideHologram" + cardNum + cardSuit);
-            Destroy(hologram);
-            Destroy(hologramFood);
-            hologram = null;
-            hologramFood = null;
-            return true;
-        }
-        return false;
 
+        hologram.SetActive(false);
+        hologramFood.SetActive(false);
+        return true;
     }
 
     public bool GlowOn()
@@ -233,6 +195,10 @@ public class CardScript : MonoBehaviour
         {
             container.GetComponent<MatchedPileScript>().RemoveCard(gameObject);
         }
+        else if (container.CompareTag("LoadPile"))
+        {
+            container.GetComponent<LoadPileScript>().RemoveCard(gameObject);
+        }
 
         if (destination.CompareTag("Foundation"))
         {
@@ -292,8 +258,18 @@ public class CardScript : MonoBehaviour
 
             destination.GetComponent<MatchedPileScript>().AddCard(gameObject);
         }
+        else if (destination.CompareTag("LoadPile"))
+        {
+            if (doLog)
+            {
+                UndoScript.undoScript.logMove("match", gameObject, isAction, Config.config.actions, nextCardWasHidden);
+            }
+
+            destination.GetComponent<LoadPileScript>().AddCard(gameObject);
+        }
 
         container = destination;
+        StateLoader.saveSystem.writeState();
     }
 }
 

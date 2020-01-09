@@ -1,0 +1,96 @@
+{
+    "wastePile": [
+        "diamonds_7_False",
+        "spades_2_False"
+    ],
+    "deck": [
+        "hearts_13_False"
+    ],
+    "matches": [
+        "clubs_12_False",
+        "clubs_8_False",
+        "spades_4_False",
+        "spades_1_False",
+        "hearts_6_False",
+        "spades_9_False",
+        "clubs_3_False",
+        "hearts_12_False",
+        "spades_12_False",
+        "diamonds_6_False",
+        "spades_8_False",
+        "clubs_5_False",
+        "spades_3_False",
+        "hearts_4_False",
+        "clubs_1_False"
+    ],
+    "foundations": [
+        {
+            "stringList": [
+                "diamonds_5_True",
+                "diamonds_1_True",
+                "clubs_6_True",
+                "hearts_8_True",
+                "clubs_4_False",
+                "diamonds_3_False",
+                "clubs_2_False",
+                "hearts_1_False"
+            ]
+        },
+        {
+            "stringList": [
+                "hearts_3_True",
+                "spades_11_True",
+                "hearts_9_True",
+                "clubs_13_True",
+                "spades_7_True",
+                "diamonds_13_True",
+                "spades_13_False",
+                "diamonds_12_False",
+                "clubs_11_False",
+                "diamonds_10_False",
+                "diamonds_9_False",
+                "diamonds_8_False",
+                "clubs_7_False"
+            ]
+        },
+        {
+            "stringList": [
+                "hearts_5_True",
+                "diamonds_11_True",
+                "spades_10_True",
+                "diamonds_4_False"
+            ]
+        },
+        {
+            "stringList": [
+                "spades_6_True",
+                "spades_5_True",
+                "hearts_7_True",
+                "clubs_9_True",
+                "hearts_10_True",
+                "hearts_11_False",
+                "clubs_10_False"
+            ]
+        }
+    ],
+    "reactors": [
+        {
+            "stringList": []
+        },
+        {
+            "stringList": []
+        },
+        {
+            "stringList": [
+                "diamonds_2_False"
+            ]
+        },
+        {
+            "stringList": []
+        }
+    ],
+    "moveLog": [],
+    "score": 0,
+    "actions": 13,
+    "difficulty": "easy"
+}

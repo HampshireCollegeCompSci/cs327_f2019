@@ -62,8 +62,14 @@ public class Config : MonoBehaviour
     public byte cardsToDeal;
     public byte cardsToReactorspeed;
 
+    //tutorial
+    public bool tutorialOn;
+
     //matches
     public GameObject matches;
+
+    //LoadPile
+    public GameObject loadPile;
 
     //UI
     public bool gamePaused;
@@ -204,8 +210,7 @@ public class Config : MonoBehaviour
         else
             gameObject.GetComponent<MusicController>().LoseMusic();
 
-        File.Delete("Assets/Resources/GameStates/testState.json");
-        File.Delete("Assets/Resources/GameStates/testState.meta");
+        DeleteSave();
     }
 
     public void ConfigFromJSON()
@@ -341,5 +346,12 @@ public class Config : MonoBehaviour
         }
     }
 
-
+    public void DeleteSave()
+    {
+        if (File.Exists("Assets/Resources/GameStates/testState.json"))
+        {
+            File.Delete("Assets/Resources/GameStates/testState.json");
+            File.Delete("Assets/Resources/GameStates/testState.meta");
+        }
+    }
 }

@@ -74,7 +74,7 @@ public class MusicController : MonoBehaviour
         Transition(winMusic);
     }
 
-    public void Transition(AudioClip newTrack)
+    private void Transition(AudioClip newTrack)
     {
         StopAllCoroutines();
         if (playing1)

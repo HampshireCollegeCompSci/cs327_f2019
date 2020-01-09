@@ -21,18 +21,18 @@ public class LoadingScript : MonoBehaviour
     {
         AsyncOperation operation = SceneManager.LoadSceneAsync("GameplayScene", LoadSceneMode.Additive);
 
-        float dotNum = 1f;
-        GameObject txt = GameObject.Find("Loading");
+        //float dotNum = 1f;
+        //GameObject txt = GameObject.Find("Loading");
 
         while (!operation.isDone)
         {
-            if (dotNum % 30 == 0)
-                txt.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish.ToUpper() + "...";
-            else if (dotNum % 20 == 0)
-                txt.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish.ToUpper() + "..";
-            else if (dotNum % 10 == 0)
-                txt.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish.ToUpper() + ".";
-            dotNum++;
+            //if (dotNum % 30 == 0)
+            //    txt.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish.ToUpper() + "...";
+            //else if (dotNum % 20 == 0)
+            //    txt.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish.ToUpper() + "..";
+            //else if (dotNum % 10 == 0)
+            //    txt.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish.ToUpper() + ".";
+            //dotNum++;
             yield return null;
         }
 

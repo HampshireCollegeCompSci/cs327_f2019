@@ -37,7 +37,7 @@ public class UndoScript : MonoBehaviour
             remainingActions = actionsRemaining
         };
         moveLog.Push(move); //push the log to the undo stack
-        //StateLoader.saveSystem.writeState();
+        return;
     }
 
     /*
@@ -135,7 +135,6 @@ public class UndoScript : MonoBehaviour
                 }
 
                 utils.UpdateScore(-Config.config.matchPoints);
-                undo();
                 return;
             }
             else if (moveLog.Peek().moveType == "draw") //move the last three drawn cards back to the deck (assuming the last action was to draw from the deck)
@@ -195,7 +194,7 @@ public class UndoScript : MonoBehaviour
     {
         if (undoScript == null)
         {
-            //DontDestroyOnLoad(gameObject); //makes instance persist across scenes
+            DontDestroyOnLoad(gameObject); //makes instance persist across scenes
             undoScript = this;
         }
         else if (undoScript != this)

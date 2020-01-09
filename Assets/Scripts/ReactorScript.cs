@@ -10,8 +10,10 @@ public class ReactorScript : MonoBehaviour
     private ReactorScoreSetScript rsss;
     public SoundController soundController;
 
-    GameObject myPrefab;
     public string suit;
+
+    public Sprite glowSelected;
+    public Sprite glowAlmostFull;
     private bool glowing = false;
     private bool alert = false;
 
@@ -179,9 +181,9 @@ public class ReactorScript : MonoBehaviour
 
     public bool GlowOn()
     {
-        if (!glowing)
+        if (!glowing && !alert)
         {
-            gameObject.transform.Find("Glow").gameObject.SetActive(true);
+            gameObject.GetComponent<SpriteRenderer>().sprite = glowSelected;
             glowing = true;
             return true;
         }
@@ -192,7 +194,7 @@ public class ReactorScript : MonoBehaviour
     {
         if (glowing && !alert)
         {
-            gameObject.transform.Find("Glow").gameObject.SetActive(false);
+            gameObject.GetComponent<SpriteRenderer>().sprite = null;
             glowing = false;
             return true;
         }
@@ -203,8 +205,7 @@ public class ReactorScript : MonoBehaviour
     {
         if (!alert)
         {
-            gameObject.transform.Find("Glow").gameObject.SetActive(true);
-            gameObject.transform.Find("Glow").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Reactors/almostfull-reactor1");
+            gameObject.GetComponent<SpriteRenderer>().sprite = glowAlmostFull;
             alert = true;
             return true;
         }
@@ -213,13 +214,17 @@ public class ReactorScript : MonoBehaviour
 
     public bool AlertOff()
     {
-        gameObject.transform.Find("Glow").GetComponent<SpriteRenderer>().GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Reactors/selectglow-reactor1");
         if (alert)
         {
-            gameObject.transform.Find("Glow").gameObject.SetActive(false);
+            gameObject.GetComponent<SpriteRenderer>().sprite = null;
             alert = false;
             return true;
         }
         return false;
+    }
+
+    public bool isAlertOn()
+    {
+        return alert;
     }
 }

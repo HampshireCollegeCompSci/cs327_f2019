@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 public class MenuUIScript : MonoBehaviour
 {
@@ -149,6 +150,7 @@ public class MenuUIScript : MonoBehaviour
         Config.config.gamePaused = false;
 
         Config.config.GetComponent<SoundController>().ButtonPressSound();
+        StopAllCoroutines();
         SceneManager.LoadScene("GameplayScene");
     }
 
@@ -220,24 +222,51 @@ public class MenuUIScript : MonoBehaviour
 
     public void Tutorial()
     {
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
-        SceneManager.LoadScene("TutorialScene");
+        if (File.Exists("Assets/Resources/GameStates/tutorialState.json"))
+        {
+            Debug.Log("tutorial <3");
+            StateLoader.saveSystem.tutorialState();
+            Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
+            Config.config.tutorialOn = true;
+            Config.config.DeleteSave();
+            NewGame();
+        }
     }
 
     public void HardDifficulty()
     {
         Config.config.setDifficulty("hard");
+        Config.config.tutorialOn = false;
+        Config.config.DeleteSave();
         NewGame();
     }
-    public void EasyDifficulty()
-    {
-        Config.config.setDifficulty("easy");
-        NewGame();
-    }
+
     public void MediumDifficulty()
     {
         Config.config.setDifficulty("medium");
+        Config.config.tutorialOn = false;
+        Config.config.DeleteSave();
         NewGame();
+    }
+
+    public void EasyDifficulty()
+    {
+        Config.config.setDifficulty("easy");
+        Config.config.tutorialOn = false;
+        Config.config.DeleteSave();
+        NewGame();
+    }
+
+    public void Continue()
+    {
+        if (File.Exists("Assets/Resources/GameStates/testState.json"))
+        {
+            UnityEditor.AssetDatabase.Refresh();
+            StateLoader.saveSystem.loadState();
+            Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
+            Config.config.tutorialOn = false;
+            NewGame();
+        }
     }
 
     public void MakeActionsMax()

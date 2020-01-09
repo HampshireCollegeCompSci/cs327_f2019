@@ -6,7 +6,6 @@ using UnityEngine;
 public class StateLoader : MonoBehaviour
 {
     public static StateLoader saveSystem;
-    Config config = Config.config;
     public GameState gameState;
     private void Awake()
     {
@@ -40,7 +39,8 @@ public class StateLoader : MonoBehaviour
             List<string> tempList = new List<string>();
             foreach (GameObject token in foundation.GetComponent<FoundationScript>().cardList)
             {
-                tempList.Insert(0,token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
+                tempList.Insert(0,token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString() 
+                    + "_" + token.GetComponent<CardScript>().isHidden().ToString());
             }
             gameState.foundations.Add(new StringListWrapper() { stringList = tempList });
         }
@@ -50,7 +50,8 @@ public class StateLoader : MonoBehaviour
             List<string> tempList = new List<string>();
             foreach (GameObject token in reactor.GetComponent<ReactorScript>().cardList)
             {
-                tempList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
+                tempList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString()
+                    + "_" + token.GetComponent<CardScript>().isHidden().ToString());
             }
             gameState.reactors.Add(new StringListWrapper() { stringList = tempList });
         }
@@ -58,21 +59,24 @@ public class StateLoader : MonoBehaviour
         List<string> wastePileList = new List<string>();
         foreach (GameObject token in Config.config.wastePile.GetComponent<WastepileScript>().cardList)
         {
-            wastePileList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
+            wastePileList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString()
+                + "_" + token.GetComponent<CardScript>().isHidden().ToString());
         }
         gameState.wastePile = wastePileList;
         //save deck
         List<string> deckList = new List<string>();
         foreach (GameObject token in Config.config.deck.GetComponent<DeckScript>().cardList)
         {
-            deckList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
+            deckList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString()
+                + "_" + token.GetComponent<CardScript>().isHidden().ToString());
         }
         gameState.deck = deckList;
         //save matches
         List<string> matchList = new List<string>();
         foreach (GameObject token in Config.config.matches.GetComponent<MatchedPileScript>().cardList)
         {
-            matchList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString());
+            matchList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString()
+                + "_" + token.GetComponent<CardScript>().isHidden().ToString());
         }
         gameState.matches = matchList;
         //save undo
@@ -101,8 +105,12 @@ public class StateLoader : MonoBehaviour
         gameState.difficulty = Config.config.difficulty;
 
         string json = JsonUtility.ToJson(gameState, true);
-
+        //if (File.Exists("Assets/Resources/GameStates/testState.json"))
+        //{
+        //    File.Create("Assets/Resources/GameStates/testState.json");
+        //}
         File.WriteAllText("Assets/Resources/GameStates/testState.json", json);
+        //UnityEditor.AssetDatabase.Refresh();
     }
 
     public void loadState(string path = "GameStates/testState")
@@ -110,29 +118,49 @@ public class StateLoader : MonoBehaviour
         //load the json into a GameState
         gameState = CreateFromJSON(path);
     }
+
+    public void tutorialState(string path = "GameStates/tutorialState")
+    {
+        //load the json into a GameState
+        gameState = CreateFromJSON(path);
+    }
+
     public void unpackState(GameState state)
     {
         //create unsorted full deck.
-        DeckScript.deckScript.InstantiateCards(GameObject.Find("DeckButton"));
-
+        GameObject LoadPile = Config.config.loadPile;
+        LoadPileScript LoadPileList = LoadPile.GetComponent<LoadPileScript>();
+        DeckScript.deckScript.InstantiateCards(Config.config.deck);
+        while (Config.config.deck.GetComponent<DeckScript>().cardList.Count > 0)
+        {
+            Config.config.deck.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>().MoveCard(LoadPile, false, false, false);
+        }
+        print(state);
         //set up simple variables
-        config.actions = state.actions;
-        config.score = state.score;
-        config.difficulty = state.difficulty;
+        print("actions taken: " + state.actions);
+        print("max actions: " + Config.config.actionMax);
+        UtilsScript.global.UpdateActionCounter(state.actions, true);
+        Config.config.score = state.score;
+        Config.config.difficulty = state.difficulty;
         //set up foundations
         int i = 0;
         foreach (StringListWrapper lw in state.foundations)
         {
             foreach (string s in lw.stringList)
             {
-                string[] halves = s.Split('_');
-                string suite = halves[0];
-                string number = halves[1];
-                foreach (GameObject token in GameObject.Find("DeckButton").GetComponent<DeckScript>().cardList)
+                string[] segments = s.Split('_');
+                string suite = segments[0];
+                string number = segments[1];
+                string hiddenState = segments[2];
+                foreach (GameObject token in LoadPileList.cardList)
                 {
                     if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
                     {
-                        token.GetComponent<CardScript>().MoveCard(config.foundationList[i]);
+                        token.GetComponent<CardScript>().MoveCard(Config.config.foundationList[i], false, false, false);
+                        if (hiddenState == "True")
+                        {
+                            token.GetComponent<CardScript>().SetVisibility(false);
+                        }
                         break;
                     }
                 }
@@ -145,14 +173,19 @@ public class StateLoader : MonoBehaviour
         {
             foreach (string s in lw.stringList)
             {
-                string[] halves = s.Split('_');
-                string suite = halves[0];
-                string number = halves[1];
-                foreach (GameObject token in GameObject.Find("DeckButton").GetComponent<DeckScript>().cardList)
+                string[] segments = s.Split('_');
+                string suite = segments[0];
+                string number = segments[1];
+                string hiddenState = segments[2];
+                foreach (GameObject token in LoadPileList.cardList)
                 {
                     if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
                     {
-                        token.GetComponent<CardScript>().MoveCard(config.reactors[i]);
+                        token.GetComponent<CardScript>().MoveCard(Config.config.reactors[i], false, false, false);
+                        if (hiddenState == "True")
+                        {
+                            token.GetComponent<CardScript>().SetVisibility(false);
+                        }
                         break;
                     }
                 }
@@ -162,14 +195,19 @@ public class StateLoader : MonoBehaviour
         //set up wastepile
         foreach (string s in state.wastePile)
         {
-            string[] halves = s.Split('_');
-            string suite = halves[0];
-            string number = halves[1];
-            foreach (GameObject token in GameObject.Find("DeckButton").GetComponent<DeckScript>().cardList)
+            string[] segments = s.Split('_');
+            string suite = segments[0];
+            string number = segments[1];
+            string hiddenState = segments[2];
+            foreach (GameObject token in LoadPileList.cardList)
             {
                 if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
                 {
-                    token.GetComponent<CardScript>().MoveCard(config.wastePile);
+                    token.GetComponent<CardScript>().MoveCard(Config.config.wastePile, false, false, false);
+                    if (hiddenState == "True")
+                    {
+                        token.GetComponent<CardScript>().SetVisibility(false);
+                    }
                     break;
                 }
             }
@@ -177,30 +215,36 @@ public class StateLoader : MonoBehaviour
         //set up matches
         foreach (string s in state.matches)
         {
-            string[] halves = s.Split('_');
-            string suite = halves[0];
-            string number = halves[1];
-            foreach (GameObject token in GameObject.Find("DeckButton").GetComponent<DeckScript>().cardList)
+            string[] segments = s.Split('_');
+            string suite = segments[0];
+            string number = segments[1];
+            string hiddenState = segments[2];
+            foreach (GameObject token in LoadPileList.cardList)
             {
                 if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
                 {
-                    token.GetComponent<CardScript>().MoveCard(config.matches);
+                    token.GetComponent<CardScript>().MoveCard(Config.config.matches, false, false, false);
+                    if (hiddenState == "True")
+                    {
+                        token.GetComponent<CardScript>().SetVisibility(false);
+                    }
                     break;
                 }
             }
         }
         //set up deck
-        List<GameObject> tempList = GameObject.Find("DeckButton").GetComponent<DeckScript>().cardList;
         foreach (string s in state.deck)
         {
-            string[] halves = s.Split('_');
-            string suite = halves[0];
-            string number = halves[1];
-            foreach (GameObject token in tempList)
+            string[] segments = s.Split('_');
+            string suite = segments[0];
+            string number = segments[1];
+            string hiddenState = segments[2];
+
+            foreach (GameObject token in LoadPileList.cardList)
             {
                 if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
                 {
-                    token.GetComponent<CardScript>().MoveCard(config.matches);
+                    token.GetComponent<CardScript>().MoveCard(Config.config.deck, false, false, false);
                     break;
                 }
             }
@@ -210,9 +254,10 @@ public class StateLoader : MonoBehaviour
         foreach (AltMove a in state.moveLog)
         {
             Move tempMove = new Move();
-            string[] halves = a.cardName.Split('_');
-            string suite = halves[0];
-            string number = halves[1];
+            string[] segments = a.cardName.Split('_');
+            string suite = segments[0];
+            string number = segments[1];
+            //string hiddenState = segments[2];
             foreach (GameObject card in cards)
             {
                 if (card.GetComponent<CardScript>().cardSuit == suite && card.GetComponent<CardScript>().cardNum.ToString() == number)

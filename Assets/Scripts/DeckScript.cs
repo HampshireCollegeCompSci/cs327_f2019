@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
+using System.IO;
 
 public class DeckScript : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class DeckScript : MonoBehaviour
 
     public GameObject myPrefab;
     public List<Sprite> sprites;
+    public List<Sprite> holograms;
     public List<GameObject> cardList;
 
     private Image buttonImage;
@@ -44,7 +46,7 @@ public class DeckScript : MonoBehaviour
         }
     }
 
-    void Start()
+    public void DeckStart()
     {
         utils = UtilsScript.global;
         wastePileScript = wastePile.GetComponent<WastepileScript>();
@@ -53,12 +55,18 @@ public class DeckScript : MonoBehaviour
         utils.UpdateActionCounter(0, true);
 
         cardList = new List<GameObject>();
-        InstantiateCards(this.gameObject);
-        importSeed = false;
-        Shuffle();
-        SetUpFoundations();
-        Deal(false);
-
+        if (File.Exists("Assets/Resources/GameStates/testState.json") || Config.config.tutorialOn)
+        {
+            StateLoader.saveSystem.unpackState(StateLoader.saveSystem.gameState);
+        }
+        else
+        {
+            InstantiateCards(this.gameObject);
+            importSeed = false;
+            Shuffle();
+            SetUpFoundations();
+            Deal(false);
+        }
     }
 
     // sets up card list
@@ -66,10 +74,10 @@ public class DeckScript : MonoBehaviour
     {
         GameObject newCard;
         CardScript newCardScript;
-        
-        // order: club ace, 2, 3... 10, jack, queen, king, diamonds... hearts... spades
+
+        // order: club ace, 2, 3... 10, jack, queen, king, spades... hearts... diamonds
         int cardIndex = 0; // 1 - 52
-        for (int suit = 0; suit < 4; suit++) // order: club, diamonds, hearts, spades
+        for (int suit = 0; suit < 4; suit++) // order: club, spades, hearts, diamonds
         {
             for (int num = 1; num < 14; num++) // card num: 1 - 13
             {
@@ -89,24 +97,63 @@ public class DeckScript : MonoBehaviour
                 if (suit == 0)
                 {
                     newCardScript.cardSuit = "clubs";
+                    if (num < 10)
+                    {
+                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[0];
+                    }
+                    else
+                    {
+                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[num - 9];
+                    }
                 }
                 else if (suit == 1)
                 {
                     newCardScript.cardSuit = "spades";
+                    if (num < 10)
+                    {
+                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[5];
+                    }
+                    else
+                    {
+                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[num - 4];
+                    }
                 }
                 else if (suit == 2)
                 {
                     newCardScript.cardSuit = "hearts";
+                    if (num < 10)
+                    {
+                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[10];
+                    }
+                    else
+                    {
+                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[num + 1];
+                    }
                 }
                 else if (suit == 3)
                 {
                     newCardScript.cardSuit = "diamonds";
+                    if (num < 10)
+                    {
+                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[15];
+                    }
+                    else
+                    {
+                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[num + 6];
+                    }
                 }
 
                 newCardScript.number.GetComponent<SpriteRenderer>().sprite = sprites[cardIndex];
                 newCardScript.SetVisibility(true);
                 newCardScript.container = target;
-                AddCard(newCard);
+                if (target.CompareTag("Deck"))
+                {
+                    AddCard(newCard);
+                }
+                else if (target.CompareTag("LoadPile"))
+                {
+                    target.GetComponent<LoadPileScript>().AddCard(newCard);
+                }
                 
                 cardIndex += 1;
             }
@@ -126,6 +173,7 @@ public class DeckScript : MonoBehaviour
 
             // adding and revealing the top card of the foundation
             cardList[0].GetComponent<CardScript>().SetVisibility(true);
+            cardList[0].SetActive(true);
             cardList[0].gameObject.GetComponent<CardScript>().ShowHologram();
             cardList[0].GetComponent<CardScript>().MoveCard(foundations[i], doLog: false, addUpdateHolo: false);
         }
@@ -230,22 +278,37 @@ public class DeckScript : MonoBehaviour
 
     IEnumerator NextCycle()
     {
+        utils.baby.GetComponent<SpaceBabyController>().BabyActionCounterSound();
+
+        FoundationScript currentFoundation;
         GameObject topFoundationCard;
         CardScript topCardScript;
         for (int f = 0; f < foundations.Count; f++)
         {
-            if (foundations[f].GetComponent<FoundationScript>().cardList.Count != 0)
+            currentFoundation = foundations[f].GetComponent<FoundationScript>();
+            if (currentFoundation.cardList.Count != 0)
             {
-                topFoundationCard = foundations[f].GetComponent<FoundationScript>().cardList[0];
+                topFoundationCard = currentFoundation.cardList[0];
                 topCardScript = topFoundationCard.GetComponent<CardScript>();
                 for (int r = 0; r < reactors.Count; r++)
                 {
-                    if (topFoundationCard.GetComponent<CardScript>().cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
+                    if (topCardScript.cardSuit == reactors[r].GetComponent<ReactorScript>().suit)
                     {
-                        topFoundationCard.GetComponent<CardScript>().HideHologram();
+                        topCardScript.HideHologram();
                         topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
                         topCardScript.number.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
                         Vector3 target = reactors[r].transform.position;
+
+                        if (currentFoundation.cardList.Count > 1)
+                        {
+                            CardScript nextTopFoundationCard = currentFoundation.cardList[1].GetComponent<CardScript>();
+                            if (nextTopFoundationCard.isHidden())
+                            {
+                                nextTopFoundationCard.SetVisibility(true);
+                                nextTopFoundationCard.ShowHologram();
+                                nextTopFoundationCard.hidden = true; // for undo to work right
+                            }
+                        }
 
                         while (topFoundationCard.transform.position != target)
                         {   
@@ -256,7 +319,7 @@ public class DeckScript : MonoBehaviour
 
                         topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
                         topCardScript.number.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
-                        topFoundationCard.GetComponent<CardScript>().MoveCard(reactors[r], isCycle: true);
+                        topCardScript.MoveCard(reactors[r], isCycle: true);
 
                         if (Config.config.gameOver)
                         {

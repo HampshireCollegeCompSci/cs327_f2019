@@ -19,6 +19,8 @@ public class StartScript : MonoBehaviour
         config.GetComponent<Config>().SetCards();
         config.GetComponent<Config>().gamePaused = false;
 
+        GameObject.Find("DeckButton").GetComponent<DeckScript>().DeckStart();
+
         utils = GameObject.Find("Utils");
         utils.GetComponent<UtilsScript>().SetCards();
         listLen = utils.GetComponent<UtilsScript>().selectedCards.Count;
@@ -29,6 +31,7 @@ public class StartScript : MonoBehaviour
 
         showpossiblemoves = GameObject.Find("ShowPossibleMoves");
         showpossiblemoves.GetComponent<ShowPossibleMoves>().SetCards();
+        StateLoader.saveSystem.writeState();
     }
 
 }
