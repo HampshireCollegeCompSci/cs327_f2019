@@ -127,6 +127,12 @@ public class UndoScript : MonoBehaviour
                 }
                 Config.config.wastePile.GetComponent<WastepileScript>().CheckHologram(false);
                 utils.UpdateActionCounter(lastMove.remainingActions, true);
+
+                if (moveLog.Peek().moveType == "deckreset")
+                {
+                    undo();
+                }
+
                 return;
             }
             else if (moveLog.Peek().moveType == "deckreset") //move the entire deck back into the wastepile
