@@ -196,12 +196,7 @@ public class DeckScript : MonoBehaviour
         cardList.Remove(card);
         card.SetActive(true);
 
-        if (cardList.Count == 0)
-        {
-            deckCounter.fontSize = 45;
-            deckCounter.text = "FLIP";
-        }
-        else if (!checkHolo)
+        if (cardList.Count != 0)
         {
             deckCounter.fontSize = 50;
             deckCounter.text = cardList.Count.ToString();
@@ -231,7 +226,7 @@ public class DeckScript : MonoBehaviour
         }
         else // we need to try repopulating the deck
         {
-            if (wastePileScript.GetCardList().Count == 0) // is it not possible to repopulate the deck?
+            if (wastePileScript.GetCardList().Count <= Config.config.cardsToDeal) // is it not possible to repopulate the deck?
             {
                 return;
             }
