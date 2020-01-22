@@ -163,7 +163,7 @@ public class CardScript : MonoBehaviour
         return false;
     }
 
-    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool removeUpdateHolo = true, bool addUpdateHolo = true)
+    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool removeUpdateHolo = true, bool addUpdateHolo = true)
     {
         bool nextCardWasHidden = false;
         if (container.CompareTag("Foundation"))
@@ -204,7 +204,14 @@ public class CardScript : MonoBehaviour
         {
             if (doLog)
             {
-                UndoScript.undoScript.logMove("move", gameObject, isAction, Config.config.actions, nextCardWasHidden);
+                if (isStack)
+                {
+                    UndoScript.undoScript.logMove("stack", gameObject, isAction, Config.config.actions, nextCardWasHidden);
+                }
+                else
+                {
+                    UndoScript.undoScript.logMove("move", gameObject, isAction, Config.config.actions, nextCardWasHidden);
+                }
             }
 
             destination.GetComponent<FoundationScript>().AddCard(gameObject, addUpdateHolo);

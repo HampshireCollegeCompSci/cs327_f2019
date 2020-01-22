@@ -53,60 +53,39 @@ public class UndoScript : MonoBehaviour
             }
 
             Move lastMove = null;
-            if (!moveLog.Peek().isAction) //if the lastMove wasn't an action that means it was a stack of tokens moved at once
+            if (moveLog.Peek().moveType == "stack")
             {
-                //Debug.Log("undoing stack");
                 // list goes from bottom token to top in original stack
-                List<Move> undoList = new List<Move>();
-                undoList.Add(moveLog.Pop());
+                List<Move> undoList = new List<Move>
+                {
+                    moveLog.Pop() // this is the top token of the stack
+                };
 
                 int actionTracker = undoList[0].remainingActions;
-                while (moveLog.Count != 0 && !moveLog.Peek().isAction && moveLog.Peek().moveType == "move" && moveLog.Peek().remainingActions == actionTracker)
+                while (moveLog.Count != 0 && moveLog.Peek().remainingActions == actionTracker && moveLog.Peek().moveType == "stack")
                 {
                     undoList.Insert(0, moveLog.Pop());
                 }
 
                 GameObject newFoundation = undoList[0].origin;
-                // cards are removed bottom to top and nextCardWasHidden expects that it's on the top (index 0)
+
+                // cards are removed bottom to top when moving stacks and
+                // nextCardWasHidden expects that it's token was on the top (index 0) of the stack
                 // therefore, the top of the stack is the only card that will know if the stack sat on a hidden card
                 if (undoList[undoList.Count - 1].nextCardWasHidden)
                 {
                     newFoundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
                 }
-                for (int i = 0; i < undoList.Count - 1; i++)
+
+                for (int i = 0; i < undoList.Count - 1; i++) // move the tokens back without updating holograms yet
                 {
                     undoList[i].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false, removeUpdateHolo: false, addUpdateHolo: false);
                 }
+                // for the final top token in this stack, update the foundation's hologram (hide the previous one and show the new top one)
                 undoList[undoList.Count - 1].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false);
-                utils.UpdateActionCounter(undoList[0].remainingActions, true);
+                
+                utils.UpdateActionCounter(undoList[0].remainingActions, setAsValue: true);
                 return;
-
-                // other method, foundation script has a matching method for this as well that is commented out
-                //lastMove = moveLog.Pop();
-                //if (lastMove.nextCardWasHidden) //if the card under the stack was hidden, re-hide it
-                //{
-                //    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
-                //}
-
-                //Stack<Move> stackUndo = new Stack<Move>();
-                //stackUndo.Push(lastMove);
-                //while (true)
-                //{
-                //    stackUndo.Push(moveLog.Pop());
-                //    if (stackUndo.Peek().isAction)
-                //    {
-                //        break;
-                //    }
-                //}
-
-                //while (stackUndo.Count() > 1) //move them to the the correct foundation
-                //{
-                //    stackUndo.Pop().card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, removeUpdateHolo: false, addUpdateHolo: false);
-                //}
-                //stackUndo.Pop().card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
-
-                //utils.UpdateActionCounter(lastMove.remainingActions, true);
-                //return;
             }
             else if (moveLog.Peek().moveType == "move") //standard behavior, move a single token back where it was
             {
