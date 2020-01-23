@@ -50,7 +50,6 @@ public class UtilsScript : MonoBehaviour
 
     void Awake()
     {
-        baby = GameObject.FindWithTag("Baby");
         if (global == null)
         {
             //DontDestroyOnLoad(gameObject); //makes instance persist across scenes
