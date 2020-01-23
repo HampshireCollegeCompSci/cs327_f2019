@@ -184,15 +184,24 @@ public class WastepileScript : MonoBehaviour
         card.transform.position = new Vector3(card.transform.parent.position.x, card.transform.parent.position.y, -1 - (cardList.Count * 0.01f));
         card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.VisibleInsideMask);
 
-        if (checkHolo)
+        // is a deck flip is now possible and worthwhile?
+        if (deckScript.cardList.Count == 0)
         {
-            CheckHologram(true);
-
-            if (deckScript.deckCounter.text == "EMPTY")
+            if (cardList.Count > Config.config.cardsToDeal)
             {
                 deckScript.deckCounter.fontSize = 45;
                 deckScript.deckCounter.text = "FLIP";
             }
+            else
+            {
+                deckScript.deckCounter.fontSize = 40;
+                deckScript.deckCounter.text = "EMPTY";
+            }
+        }
+
+        if (checkHolo)
+        {
+            CheckHologram(true);
         }
     }
 
@@ -212,19 +221,14 @@ public class WastepileScript : MonoBehaviour
         }
         else
         {
-            if (cardList.Count == 0 && deckScript.cardList.Count == 0)
-            {
-                deckScript.deckCounter.fontSize = 40;
-                deckScript.deckCounter.text = "EMPTY";
-            }
-
             Destroy(parentCardContainer);
         }
-
-        //if (cardList.Count != 0)
-        //{
-        //    StartCoroutine(ScrollBarRemoving(x));
-        //}
+        
+        if (deckScript.cardList.Count == 0 && cardList.Count <= Config.config.cardsToDeal)
+        {
+            deckScript.deckCounter.fontSize = 40;
+            deckScript.deckCounter.text = "EMPTY";
+        }
     }
 
     IEnumerator ScrollBarRemoving(GameObject parentCardContainer)
