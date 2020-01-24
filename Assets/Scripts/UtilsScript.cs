@@ -32,9 +32,9 @@ public class UtilsScript : MonoBehaviour
     private int gameplayLayer;
 
     public GameObject baby;
-    public int matchPoints = Config.config.matchPoints;
-    public int emptyReactorPoints = Config.config.emptyReactorPoints;
-    public int PerfectGamePoints = Config.config.perfectGamePoints;
+    public int matchPoints;
+    public int emptyReactorPoints;
+    public int PerfectGamePoints;
 
 
     public void SetCards()
@@ -64,6 +64,9 @@ public class UtilsScript : MonoBehaviour
     void Start()
     {
         baby = GameObject.FindWithTag("Baby");
+        matchPoints = Config.config.matchPoints;
+        emptyReactorPoints = Config.config.emptyReactorPoints;
+        PerfectGamePoints = Config.config.perfectGamePoints;
     }
 
     void Update()
