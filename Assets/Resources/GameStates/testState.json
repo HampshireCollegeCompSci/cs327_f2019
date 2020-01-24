@@ -1,75 +1,76 @@
 {
     "wastePile": [
-        "spades_12_False",
-        "hearts_10_False",
-        "clubs_13_False"
+        "hearts_12_False",
+        "clubs_12_False",
+        "clubs_2_False"
     ],
     "deck": [
-        "hearts_7_False",
-        "clubs_1_False",
-        "hearts_3_False",
-        "diamonds_8_False",
-        "clubs_4_False",
+        "diamonds_11_False",
+        "spades_5_False",
         "clubs_8_False",
-        "clubs_5_False",
-        "clubs_9_False",
-        "diamonds_1_False",
-        "spades_11_False",
-        "hearts_5_False",
-        "spades_10_False",
-        "hearts_6_False",
-        "clubs_6_False",
-        "spades_2_False",
-        "diamonds_9_False",
-        "spades_13_False",
-        "hearts_2_False",
+        "diamonds_7_False",
+        "clubs_11_False",
+        "diamonds_13_False",
         "diamonds_10_False",
-        "diamonds_3_False",
-        "clubs_11_False"
-    ],
-    "matches": [
+        "diamonds_9_False",
+        "spades_4_False",
+        "clubs_1_False",
+        "clubs_5_False",
         "spades_7_False",
-        "clubs_7_False"
+        "spades_13_False",
+        "hearts_10_False",
+        "spades_8_False",
+        "spades_1_False",
+        "clubs_6_False",
+        "diamonds_8_False",
+        "clubs_3_False",
+        "clubs_10_False",
+        "spades_12_False"
     ],
+    "matches": [],
     "foundations": [
         {
             "stringList": [
-                "hearts_13_True",
                 "diamonds_2_True",
-                "spades_8_True",
-                "hearts_9_True",
-                "diamonds_7_True",
-                "clubs_12_False"
-            ]
-        },
-        {
-            "stringList": [
-                "spades_1_True",
-                "hearts_11_True",
-                "clubs_10_False",
-                "spades_9_False",
-                "hearts_8_False"
-            ]
-        },
-        {
-            "stringList": [
-                "diamonds_4_True",
-                "spades_4_True",
-                "spades_5_True",
-                "diamonds_11_True",
-                "diamonds_6_True",
-                "hearts_4_False",
-                "spades_3_False"
-            ]
-        },
-        {
-            "stringList": [
-                "diamonds_12_True",
                 "diamonds_5_True",
-                "diamonds_13_True",
-                "hearts_12_True",
-                "clubs_3_True",
-                "spades_6_False"
+                "hearts_2_True",
+                "diamonds_1_True",
+                "hearts_3_True",
+                "diamonds_4_True",
+                "diamonds_6_False"
+            ]
+        },
+        {
+            "stringList": [
+                "hearts_8_True",
+                "spades_11_True",
+                "diamonds_3_True",
+                "clubs_9_True",
+                "hearts_9_True",
+                "hearts_11_True",
+                "spades_9_False"
+            ]
+        },
+        {
+            "stringList": [
+                "clubs_7_True",
+                "spades_6_True",
+                "hearts_7_True",
+                "spades_3_True",
+                "hearts_6_True",
+                "hearts_13_True",
+                "spades_10_False"
+            ]
+        },
+        {
+            "stringList": [
+                "clubs_4_True",
+                "hearts_5_True",
+                "spades_2_True",
+                "diamonds_12_True",
+                "hearts_4_True",
+                "clubs_13_True",
+                "hearts_1_False"
             ]
         }
     ],
@@ -78,21 +79,17 @@
             "stringList": []
         },
         {
-            "stringList": [
-                "clubs_2_False"
-            ]
+            "stringList": []
         },
         {
             "stringList": []
         },
         {
-            "stringList": [
-                "hearts_1_False"
-            ]
+            "stringList": []
         }
     ],
     "moveLog": [],
-    "score": 200,
-    "actions": 4,
-    "difficulty": "easy"
+    "score": 0,
+    "actions": 0,
+    "difficulty": "medium"
 }

@@ -61,6 +61,11 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        baby = GameObject.FindWithTag("Baby");
+    }
+
     void Update()
     {
 
