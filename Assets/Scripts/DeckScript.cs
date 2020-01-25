@@ -55,7 +55,11 @@ public class DeckScript : MonoBehaviour
         utils.UpdateActionCounter(0, true);
 
         cardList = new List<GameObject>();
-        if (File.Exists("Assets/Resources/GameStates/testState.json") || Config.config.tutorialOn)
+        if ((File.Exists("Assets/Resources/GameStates/testState.json") && Application.isEditor) || Config.config.tutorialOn)
+        {
+            StateLoader.saveSystem.unpackState(StateLoader.saveSystem.gameState);
+        }
+        else if (File.Exists("Cosmia_Data/Resources/testState.json"))
         {
             StateLoader.saveSystem.unpackState(StateLoader.saveSystem.gameState);
         }
