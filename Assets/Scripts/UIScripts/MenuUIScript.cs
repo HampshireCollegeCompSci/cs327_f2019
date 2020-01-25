@@ -259,19 +259,32 @@ public class MenuUIScript : MonoBehaviour
 
     public void Continue()
     {
-        if (File.Exists("Assets/Resources/GameStates/testState.json"))
+        if (Application.isEditor)
         {
-            /* //Un-Comment the below while workin gin the editor, but leave commented for builds
-            if (Application.isEditor)
+            if (File.Exists("Assets/Resources/GameStates/testState.json"))
             {
-                UnityEditor.AssetDatabase.Refresh();
+                /* //Un-Comment the below while workin gin the editor, but leave commented for builds
+                if (Application.isEditor)
+                {
+                    UnityEditor.AssetDatabase.Refresh();
+                }
+                */
+                StateLoader.saveSystem.loadState();
+                Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
+                Config.config.tutorialOn = false;
+                NewGame();
             }
-            */
-            StateLoader.saveSystem.loadState();
-            Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
-            Config.config.tutorialOn = false;
-            NewGame();
+        } else
+        {
+            if (File.Exists("Cosmia_Data/Resources/testState.json"))
+            {
+                StateLoader.saveSystem.loadState();
+                Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
+                Config.config.tutorialOn = false;
+                NewGame();
+            }
         }
+        
     }
 
     public void MakeActionsMax()

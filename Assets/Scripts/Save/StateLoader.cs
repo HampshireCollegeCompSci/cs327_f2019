@@ -105,16 +105,28 @@ public class StateLoader : MonoBehaviour
         gameState.difficulty = Config.config.difficulty;
 
         string json = JsonUtility.ToJson(gameState, true);
-        //if (File.Exists("Assets/Resources/GameStates/testState.json"))
-        //{
-        //    File.Create("Assets/Resources/GameStates/testState.json");
-        //}
-        File.WriteAllText("Assets/Resources/GameStates/testState.json", json);
+        if (Application.isEditor)
+        {
+            File.WriteAllText("Assets/Resources/GameStates/testState.json", json);
+        }
+        else
+        {
+            File.WriteAllText("Cosmia_Data/Resources/testState.json", json);
+        }
         //UnityEditor.AssetDatabase.Refresh();
     }
 
-    public void loadState(string path = "GameStates/testState")
+    public void loadState()
     {
+        string path;
+        if (Application.isEditor)
+        {
+            path = "GameStates/testState";
+        }
+        else
+        {
+            path = "Cosmia_Data/Resources/testState.json";
+        }
         //load the json into a GameState
         gameState = CreateFromJSON(path);
     }
@@ -276,7 +288,14 @@ public class StateLoader : MonoBehaviour
        
     public static GameState CreateFromJSON(string path)
     {
-        var jsonTextFile = Resources.Load<TextAsset>(path);
-        return JsonUtility.FromJson<GameState>(jsonTextFile.ToString());
+        if (Application.isEditor)
+        {
+            var jsonTextFile = Resources.Load<TextAsset>(path);
+            return JsonUtility.FromJson<GameState>(jsonTextFile.ToString());
+        } else
+        {
+            var jsonTextFile = File.ReadAllText(path);
+            return JsonUtility.FromJson<GameState>(jsonTextFile);
+        }
     }
 }
