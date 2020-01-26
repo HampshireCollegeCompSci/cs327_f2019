@@ -348,10 +348,10 @@ public class Config : MonoBehaviour
 
     public void DeleteSave()
     {
-        if (File.Exists("Assets/Resources/GameStates/testState.json"))
+        if (File.Exists(Application.persistentDataPath + "/testState.json"))
         {
-            File.Delete("Assets/Resources/GameStates/testState.json");
-            File.Delete("Assets/Resources/GameStates/testState.meta");
+            File.Delete(Application.persistentDataPath + "/testState.json");
+            File.Delete(Application.persistentDataPath + "/testState.meta");
         }
     }
 }

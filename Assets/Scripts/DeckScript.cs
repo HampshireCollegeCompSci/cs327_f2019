@@ -59,7 +59,7 @@ public class DeckScript : MonoBehaviour
         {
             StateLoader.saveSystem.unpackState(StateLoader.saveSystem.gameState);
         }
-        else if (File.Exists("Cosmia_Data/Resources/testState.json"))
+        else if (File.Exists(Application.persistentDataPath + "/testState.json"))
         {
             StateLoader.saveSystem.unpackState(StateLoader.saveSystem.gameState);
         }

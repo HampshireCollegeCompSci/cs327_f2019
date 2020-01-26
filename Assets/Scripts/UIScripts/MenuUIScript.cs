@@ -276,7 +276,7 @@ public class MenuUIScript : MonoBehaviour
             }
         } else
         {
-            if (File.Exists("Cosmia_Data/Resources/testState.json"))
+            if (File.Exists(Application.persistentDataPath + "/testState.json"))
             {
                 StateLoader.saveSystem.loadState();
                 Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
