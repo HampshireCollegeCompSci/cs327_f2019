@@ -111,7 +111,7 @@ public class StateLoader : MonoBehaviour
         }
         else
         {
-            File.WriteAllText("Cosmia_Data/Resources/testState.json", json);
+            File.WriteAllText(Application.persistentDataPath + "/testState.json", json);
         }
         //UnityEditor.AssetDatabase.Refresh();
     }
@@ -125,7 +125,7 @@ public class StateLoader : MonoBehaviour
         }
         else
         {
-            path = "Cosmia_Data/Resources/testState.json";
+            path = Application.persistentDataPath + "/testState.json";
         }
         //load the json into a GameState
         gameState = CreateFromJSON(path);
