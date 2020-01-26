@@ -353,5 +353,10 @@ public class Config : MonoBehaviour
             File.Delete(Application.persistentDataPath + "/testState.json");
             File.Delete(Application.persistentDataPath + "/testState.meta");
         }
+        if (Application.isEditor && File.Exists("Assets/Resources/GameStates/testState.json"))
+        {
+            File.Delete("Assets/Resources/GameStates/testState.json");
+            File.Delete("Assets/Resources/GameStates/testState.json");
+        }
     }
 }
