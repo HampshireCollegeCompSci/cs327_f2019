@@ -20,7 +20,8 @@ public class Config : MonoBehaviour
     public float draggedTokenOffset;
     public float selectedCardOpacity;
     public bool prettyColors;
-    public float[] cardHighlightColor;
+    public Color cardMoveHighlightColor;
+    public Color cardMatchHighlightColor;
 
     //score
     public int matchPoints;
@@ -240,7 +241,14 @@ public class Config : MonoBehaviour
         levelSceneButtonsTxtEnglish = gameInfo.levelSceneButtonsTxtEnglish;
         pauseSceneButtonsTxtEnglish = gameInfo.pauseSceneButtonsTxtEnglish;
         summarySceneButtonsTxtEnglish = gameInfo.summarySceneButtonsTxtEnglish;
-        cardHighlightColor = gameInfo.cardHighlightColor;
+        cardMoveHighlightColor = new Color(gameInfo.cardMoveHighlightColor[0],
+                                           gameInfo.cardMoveHighlightColor[1],
+                                           gameInfo.cardMoveHighlightColor[2],
+                                           gameInfo.cardMoveHighlightColor[3]);
+        cardMatchHighlightColor = new Color(gameInfo.cardMatchHighlightColor[0],
+                                           gameInfo.cardMatchHighlightColor[1],
+                                           gameInfo.cardMatchHighlightColor[2],
+                                           gameInfo.cardMatchHighlightColor[3]);
         turnAlertSmallThreshold = gameInfo.turnAlertSmallThreshold;
         turnAlertThreshold = gameInfo.turnAlertThreshold;
     }

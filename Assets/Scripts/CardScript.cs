@@ -137,15 +137,20 @@ public class CardScript : MonoBehaviour
         return true;
     }
 
-    public bool GlowOn()
+    public bool GlowOn(bool match)
     {
         if (!glowing)
         {
             glow.SetActive(true);
-            glow.GetComponent<SpriteRenderer>().color = Color.HSVToRGB(Config.config.cardHighlightColor[0], Config.config.cardHighlightColor[1], Config.config.cardHighlightColor[2]);
-            Color colorAlphaPlaceholder = glow.GetComponent<SpriteRenderer>().color;
-            colorAlphaPlaceholder.a = Config.config.cardHighlightColor[3];
-            glow.GetComponent<SpriteRenderer>().color = colorAlphaPlaceholder;
+            if (match)
+            {
+                glow.GetComponent<SpriteRenderer>().color = Config.config.cardMatchHighlightColor;
+            }
+            else
+            {
+                glow.GetComponent<SpriteRenderer>().color = Config.config.cardMoveHighlightColor;
+            }
+
             glowing = true;
             return true;
         }
