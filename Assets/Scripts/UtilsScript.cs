@@ -124,6 +124,20 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
+    public void ClickAndDrag(List<GameObject> cards)
+    {
+        cards[0].transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
+                                                                                 Input.mousePosition.y,
+                                                                                 1));
+        int cardCount = cards.Count;
+        for (int i = 1; i < cardCount; i++)
+        {
+            cards[i].transform.position = new Vector3(cards[i - 1].transform.position.x,
+                                                      cards[i - 1].transform.position.y + Config.config.draggedTokenOffset,
+                                                      cards[i - 1].transform.position.z - 0.05f);
+        }
+    }
+
     public void SelectCard(GameObject inputCard)
     {
         if (inputCard.GetComponent<CardScript>().container.CompareTag("Wastepile"))
@@ -612,20 +626,6 @@ public class UtilsScript : MonoBehaviour
             extraScore += emptyReactorPoints;
         }
         UpdateScore(extraScore);
-    }
-
-    public void ClickAndDrag(List<GameObject> cards)
-    {
-        cards[0].transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
-                                                                                 Input.mousePosition.y,
-                                                                                 1));
-        int cardCount = cards.Count;
-        for (int i = 1; i < cardCount; i++)
-        {
-            cards[i].transform.position = new Vector3(cards[i - 1].transform.position.x,
-                                                      cards[i - 1].transform.position.y + Config.config.draggedTokenOffset,
-                                                      cards[i - 1].transform.position.z - 0.05f);
-        }
     }
 
     public void PACards()
