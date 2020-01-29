@@ -20,6 +20,8 @@ public class CardScript : MonoBehaviour
     public GameObject glow;
     public GameObject number;
 
+    private int selectedLayer;
+
     void Start()
     {
         glowing = false;
@@ -104,9 +106,16 @@ public class CardScript : MonoBehaviour
     {
         gameObject.transform.localScale = new Vector3(0.2f, 0.2f, 1);
         container = null;
-        number.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
-        hologram.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
-        hologramFood.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
+        
+        if (selectedLayer == 0)
+        {
+            selectedLayer = SortingLayer.NameToID("SelectedCards");
+        }
+
+        gameObject.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
+        number.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
+        hologram.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
+        hologramFood.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
         Destroy(gameObject.GetComponent<BoxCollider2D>());
     }
 
@@ -132,9 +141,14 @@ public class CardScript : MonoBehaviour
             return true;
         }
 
-        hologram.SetActive(false);
-        hologramFood.SetActive(false);
-        return true;
+        if (hologram.activeSelf)
+        {
+            hologram.SetActive(false);
+            hologramFood.SetActive(false);
+            return true;
+        }
+
+        return false;
     }
 
     public bool GlowOn(bool match)
