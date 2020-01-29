@@ -215,7 +215,7 @@ public class DeckScript : MonoBehaviour
     // user wants to deal cards, other things might need to be done before that
     public void ProcessAction(GameObject input)
     {
-        utils.DeselectCards();
+        utils.PACards();
 
         if (utils.IsInputStopped()) // the deck button directly calls ProcessAction
         {
