@@ -18,6 +18,7 @@ public class DeckScript : MonoBehaviour
     public GameObject myPrefab;
     public List<Sprite> sprites;
     public List<Sprite> holograms;
+    public Sprite[] combinedHolograms;
     public List<GameObject> cardList;
 
     private Image buttonImage;
@@ -108,11 +109,13 @@ public class DeckScript : MonoBehaviour
                     newCardScript.cardSuit = "clubs";
                     if (num < 10)
                     {
-                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[0];
+                        newCardScript.hologramFoodSprite = holograms[0];
+                        newCardScript.hologramComboSprite = combinedHolograms[0];
                     }
                     else
                     {
-                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[num - 9];
+                        newCardScript.hologramFoodSprite = holograms[num - 9];
+                        newCardScript.hologramComboSprite = combinedHolograms[num - 9];
                     }
                 }
                 else if (suit == 1)
@@ -120,11 +123,13 @@ public class DeckScript : MonoBehaviour
                     newCardScript.cardSuit = "spades";
                     if (num < 10)
                     {
-                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[5];
+                        newCardScript.hologramFoodSprite = holograms[5];
+                        newCardScript.hologramComboSprite = combinedHolograms[0];
                     }
                     else
                     {
-                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[num - 4];
+                        newCardScript.hologramFoodSprite = holograms[num - 4];
+                        newCardScript.hologramComboSprite = combinedHolograms[num - 9];
                     }
                 }
                 else if (suit == 2)
@@ -132,11 +137,13 @@ public class DeckScript : MonoBehaviour
                     newCardScript.cardSuit = "hearts";
                     if (num < 10)
                     {
-                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[10];
+                        newCardScript.hologramFoodSprite = holograms[10];
+                        newCardScript.hologramComboSprite = combinedHolograms[5];
                     }
                     else
                     {
-                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[num + 1];
+                        newCardScript.hologramFoodSprite = holograms[num + 1];
+                        newCardScript.hologramComboSprite = combinedHolograms[num - 4];
                     }
                 }
                 else if (suit == 3)
@@ -144,14 +151,17 @@ public class DeckScript : MonoBehaviour
                     newCardScript.cardSuit = "diamonds";
                     if (num < 10)
                     {
-                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[15];
+                        newCardScript.hologramFoodSprite = holograms[15];
+                        newCardScript.hologramComboSprite = combinedHolograms[5];
                     }
                     else
                     {
-                        newCardScript.hologramFood.GetComponent<SpriteRenderer>().sprite = holograms[num + 6];
+                        newCardScript.hologramFoodSprite = holograms[num + 6];
+                        newCardScript.hologramComboSprite = combinedHolograms[num - 4];
                     }
                 }
 
+                newCardScript.ChangeFoodHologram(true);
                 newCardScript.number.GetComponent<SpriteRenderer>().sprite = sprites[cardIndex];
                 newCardScript.SetVisibility(true);
                 newCardScript.container = target;

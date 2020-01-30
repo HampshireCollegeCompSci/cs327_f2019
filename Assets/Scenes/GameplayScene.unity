@@ -4459,6 +4459,17 @@ MonoBehaviour:
   - {fileID: 21300000, guid: ee7f030395ffe4f0e90800f2f39191df, type: 3}
   - {fileID: 21300000, guid: 58f9c12d0ed4541f68dd369580bf80c5, type: 3}
   - {fileID: 21300000, guid: 4582d11d5f1074215a3576375101dbb1, type: 3}
+  combinedHolograms:
+  - {fileID: 21300000, guid: 07b839b8af0484fe6bf941b9b60ae06b, type: 3}
+  - {fileID: 21300000, guid: 652f8a3d7efe341448d75d75e7c40010, type: 3}
+  - {fileID: 21300000, guid: d703d48e258fe427fa4a1151ca8bea4b, type: 3}
+  - {fileID: 21300000, guid: c12afca97797f44b6aba0fc3365c71de, type: 3}
+  - {fileID: 21300000, guid: 216996f232f3b4abbbfd9bb9b053855c, type: 3}
+  - {fileID: 21300000, guid: a141490047c584640bf7b96d0523c858, type: 3}
+  - {fileID: 21300000, guid: bc35fa14f99534a758d90bd3ae37623e, type: 3}
+  - {fileID: 21300000, guid: 70a3fb8f3a6fd45258a48f07f1a3909b, type: 3}
+  - {fileID: 21300000, guid: f66d0275ff21f4bc2bde8674ea377fd8, type: 3}
+  - {fileID: 21300000, guid: 02c7c2260be2349a4bac9378b91ab664, type: 3}
   cardList: []
   buttonAnimation:
   - {fileID: 21300000, guid: 74da7e6bd4e46774e959055ba0abe631, type: 3}
