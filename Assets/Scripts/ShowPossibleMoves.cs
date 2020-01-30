@@ -130,7 +130,7 @@ public class ShowPossibleMoves : MonoBehaviour
         }
     }
 
-    public void ShowMoves(GameObject selectedCard)
+    public byte ShowMoves(GameObject selectedCard)
     {
         FindMoves(selectedCard);
         
@@ -159,6 +159,16 @@ public class ShowPossibleMoves : MonoBehaviour
                 reactorMove.GetComponent<ReactorScript>().GlowOn();
             }
         }
+
+        if (cardMatches.Count != 0)
+        {
+            return 2;
+        }
+        if (cardMoves.Count != 0)
+        {
+            return 1;
+        }
+        return 0;
     }
 
     public void HideMoves()
