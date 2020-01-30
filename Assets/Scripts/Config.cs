@@ -35,9 +35,14 @@ public class Config : MonoBehaviour
     private GameObject baby;
 
     //foundations
-    public GameObject[] foundationList;
     public float foundationStackDensity;
     public int foundationStartSize;
+
+    public GameObject foundation1;
+    public GameObject foundation2;
+    public GameObject foundation3;
+    public GameObject foundation4;
+    public GameObject[] foundations;
 
     //wastepile
     public GameObject wastePile;
@@ -46,11 +51,6 @@ public class Config : MonoBehaviour
 
     //reactor
     public int maxReactorVal = 18;
-
-    public GameObject foundation1;
-    public GameObject foundation2;
-    public GameObject foundation3;
-    public GameObject foundation4;
 
     public GameObject reactor1;
     public GameObject reactor2;
@@ -259,7 +259,7 @@ public class Config : MonoBehaviour
         foundation2 = GameObject.Find("Foundation (1)");
         foundation3 = GameObject.Find("Foundation (2)");
         foundation4 = GameObject.Find("Foundation (3)");
-        foundationList = new GameObject[] { foundation1, foundation2, foundation3, foundation4 };
+        foundations = new GameObject[] { foundation1, foundation2, foundation3, foundation4 };
 
         reactor1 = GameObject.Find("ReactorPile (0)");
         reactor2 = GameObject.Find("ReactorPile (1)");

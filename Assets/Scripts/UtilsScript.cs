@@ -12,8 +12,6 @@ public class UtilsScript : MonoBehaviour
     public GameObject matchedPile;
     public GameObject matchPrefab;
 
-    public List<Sprite> combinedHolograms;
-
     public GameObject gameUI;
     public GameObject scoreBox;
     public GameObject moveCounter;
@@ -403,35 +401,11 @@ public class UtilsScript : MonoBehaviour
         SetInputStopped(false);
         CheckGameOver();
 
-        Sprite toShow = null;
-        if (card1Script.cardSuit == "clubs" || card1Script.cardSuit == "spades")
-        {
-            if (card1Script.cardNum < 10)
-            {
-                toShow = combinedHolograms[0];
-            }
-            else
-            {
-                toShow = combinedHolograms[card1Script.cardNum - 9];
-            }
-        }
-        else
-        {
-            if (card1Script.cardNum < 10)
-            {
-                toShow = combinedHolograms[5];
-            }
-            else
-            {
-                toShow = combinedHolograms[card1Script.cardNum - 4];
-            }
-        }
-
         GameObject comboToLoad = new GameObject("combo");
         SpriteRenderer Srenderer = comboToLoad.AddComponent<SpriteRenderer>();
         Srenderer.sortingLayerID = selectedLayer;
 
-        Srenderer.sprite = toShow;
+        Srenderer.sprite = card1Script.hologramComboSprite;
         comboToLoad.transform.localScale = Vector3.one * 0.15f;
         comboToLoad.transform.position = origin;
 
