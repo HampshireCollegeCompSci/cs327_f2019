@@ -71,15 +71,26 @@ public class UtilsScript : MonoBehaviour
 
     void Update()
     {
+        if (SceneManager.GetActiveScene().buildIndex != 2)
+        {
+            return;
+        }
 
         if (!Config.config.gameOver && !Config.config.gamePaused)
         {
-            if (Input.GetMouseButtonDown(0) && dragOn == false && SceneManager.GetActiveScene().buildIndex == 2)
+            if (Input.GetMouseButtonDown(0) && dragOn == false)
             {
-
                 Click();
                 if (selectedCards.Count > 0)
                 {
+                    for (int i = 0; i < selectedCards.Count; i++)
+                    {
+                        newGameObject = (GameObject)Instantiate(selectedCards[i], Vector3.zero, Quaternion.identity);
+                        newGameObject.GetComponent<CardScript>().MakeVisualOnly();
+                        newGameObject.GetComponent<CardScript>().SetSelected(false);
+                        selectedCardsCopy.Add(newGameObject);
+                    }
+
                     ShowPossibleMoves.showPossibleMoves.ShowMoves(selectedCards[0]);
                     soundController.CardPressSound();
                     dragOn = true;
@@ -91,31 +102,39 @@ public class UtilsScript : MonoBehaviour
                  * if (Config.config.CountFoundationCards() + Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count +
                    Config.config.deck.GetComponent<DeckScript>().cardList.Count == 0)*/
             }
-
-            if (Input.GetMouseButtonUp(0) && selectedCardsCopy.Count > 0 && SceneManager.GetActiveScene().buildIndex == 2)
+            else if (Input.GetMouseButtonUp(0) && selectedCardsCopy.Count > 0)
             {
-
                 Click();
                 ShowPossibleMoves.showPossibleMoves.HideMoves();
 
-                foreach (GameObject card in selectedCardsCopy)
+                for (int i = 0; i < selectedCardsCopy.Count; i++)
                 {
-                    Destroy(card);
+                    Destroy(selectedCardsCopy[i]);
                 }
 
                 selectedCardsCopy.Clear();
                 dragOn = false;
-                int foo = selectedCards.Count;
-                for (int i = 0; i < foo; i++)
-                {
-                    DeselectCard(selectedCards[0]);
-                }
+                UnselectCards();
             }
+        }
 
-            if (dragOn == true && SceneManager.GetActiveScene().buildIndex == 2)
-            {
-                ClickAndDrag(selectedCardsCopy);
-            }
+        if (dragOn == true)
+        {
+            ClickAndDrag(selectedCardsCopy);
+        }
+    }
+
+    public void ClickAndDrag(List<GameObject> cards)
+    {
+        cards[0].transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
+                                                                                 Input.mousePosition.y,
+                                                                                 1));
+        int cardCount = cards.Count;
+        for (int i = 1; i < cardCount; i++)
+        {
+            cards[i].transform.position = new Vector3(cards[i - 1].transform.position.x,
+                                                      cards[i - 1].transform.position.y + Config.config.draggedTokenOffset,
+                                                      cards[i - 1].transform.position.z - 0.05f);
         }
     }
 
@@ -131,16 +150,20 @@ public class UtilsScript : MonoBehaviour
         inputCard.GetComponent<CardScript>().SetSelected(true);
     }
 
-    public void DeselectCard(GameObject inputCard)
+    public void UnselectCards()
     {
-        if (draggingWastepile)
+        if (draggingWastepile && selectedCards.Count == 1)
         {
-            wastePile.GetComponent<WastepileScript>().DraggingCard(inputCard, false);
+            wastePile.GetComponent<WastepileScript>().DraggingCard(selectedCards[0], false);
             draggingWastepile = false;
         }
 
-        inputCard.GetComponent<CardScript>().SetSelected(false);
-        selectedCards.Remove(inputCard);
+        for (int i = 0; i < selectedCards.Count; i++)
+        {
+            selectedCards[i].GetComponent<CardScript>().SetSelected(false);
+        }
+
+        selectedCards.Clear();
     }
 
     public void SelectMultipleCards(int cardsToCount)
@@ -188,10 +211,7 @@ public class UtilsScript : MonoBehaviour
             if (selectedCards.Count != 0)
             {
                 selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
-                for (int i = 0; i < selectedCards.Count; i++)
-                {
-                    DeselectCard(selectedCards[0]);
-                }
+                UnselectCards();
             }
 
             else if (hit.collider != null && hit.collider.gameObject.CompareTag("Baby"))
@@ -206,10 +226,7 @@ public class UtilsScript : MonoBehaviour
         else if (hit.collider != null && hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Deck"))
         {
             hit.collider.gameObject.GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
-            for (int i = 0; i < selectedCards.Count; i++)
-            {
-                DeselectCard(selectedCards[0]);
-            }
+            UnselectCards();
             return;
         }
 
@@ -242,11 +259,7 @@ public class UtilsScript : MonoBehaviour
         //if we click on our first selected card deselect all cards
         else if (hit.collider != null && selectedCards.Count != 0 && selectedCards[0] == hit.collider.gameObject)
         {
-            for (int i = 0; i < selectedCards.Count; i++)
-            {
-                //Debug.Log(i);
-                DeselectCard(selectedCards[0]);
-            }
+            UnselectCards();
         }
 
         //if we click on something else tries to move the selected cards 
@@ -254,10 +267,7 @@ public class UtilsScript : MonoBehaviour
         {
             selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
             //we are no longer changing a list that we are also iterating over
-            for (int i = 0; i < selectedCards.Count; i++)
-            {
-                DeselectCard(selectedCards[0]);
-            }
+            UnselectCards();
         }
     }
 
@@ -618,47 +628,12 @@ public class UtilsScript : MonoBehaviour
         UpdateScore(extraScore);
     }
 
-    public void ClickAndDrag(List<GameObject> cards)
+    public void PACards()
     {
-
-        if (cards.Count.Equals(0))
-        {
-            foreach (GameObject card in selectedCards)
-            {
-                newGameObject = (GameObject)Instantiate(card, Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Quaternion.identity);
-                newGameObject.GetComponent<CardScript>().MakeVisualOnly();
-                cards.Add(newGameObject);
-                newGameObject.GetComponent<CardScript>().SetSelected(false);
-                newGameObject.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
-            }
-        }
-
-        for (int i = 0; i < cards.Count; i++)
-        {
-            if (i == 0)
-            {
-                cards[i].transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
-                Input.mousePosition.y + i * Config.config.draggedTokenOffset, 1));
-            }
-
-            else
-            {
-                cards[i].transform.position =
-                    new Vector3(cards[i - 1].transform.position.x, cards[i - 1].transform.position.y + Config.config.draggedTokenOffset, cards[i - 1].transform.position.z - 0.05f);
-            }
-        }
-    }
-
-    public void DeselectCards()
-    {
-
         if (selectedCards.Count != 0)
         {
             selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
-            for (int i = 0; i < selectedCards.Count; i++)
-            {
-                DeselectCard(selectedCards[0]);
-            }
+            UnselectCards();
         }
     }
 

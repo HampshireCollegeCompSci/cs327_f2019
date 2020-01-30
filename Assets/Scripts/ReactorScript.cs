@@ -139,7 +139,7 @@ public class ReactorScript : MonoBehaviour
                 }
                 else
                 {
-                    utils.DeselectCard(card1);
+                    utils.UnselectCards();
                 }
             }
         }
