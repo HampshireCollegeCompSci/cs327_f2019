@@ -187,6 +187,7 @@ public class ReactorScript : MonoBehaviour
         else if (alertLevel == 1) // action counter is low and nextcycle will overload this reactor
         {
             gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 0.5f, 0, 0.5f);
+            rsss.ChangeTextColor(gameObject, true);
             alert = true;
         }
         else if (alertLevel == 2) // moving the selected token here will overload this reactor
@@ -206,6 +207,7 @@ public class ReactorScript : MonoBehaviour
             isGlowing = false;
             alert = false;
             gameObject.GetComponent<SpriteRenderer>().sprite = null;
+            rsss.ChangeTextColor(gameObject, false);
         }
     }
 

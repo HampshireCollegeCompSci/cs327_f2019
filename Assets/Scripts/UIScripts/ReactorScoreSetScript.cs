@@ -42,4 +42,28 @@ public class ReactorScoreSetScript : MonoBehaviour
             reactorScore3.transform.position = reactor3.transform.position - new Vector3(0, 1.45f, 0);
         }
     }
+
+    public void ChangeTextColor(GameObject reactor, bool on)
+    {
+        if (reactor == reactor0)
+            if (on)
+                reactorScore0.color = Color.red;
+            else
+                reactorScore0.color = Color.white;
+        else if (reactor == reactor1)
+            if (on)
+                reactorScore1.color = Color.red;
+            else
+                reactorScore1.color = Color.white;
+        else if (reactor == reactor2)
+            if (on)
+                reactorScore2.color = Color.red;
+            else
+                reactorScore2.color = Color.white;
+        else
+            if (on)
+                reactorScore3.color = Color.red;
+            else
+                reactorScore3.color = Color.white;
+    }
 }
