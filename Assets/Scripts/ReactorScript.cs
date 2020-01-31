@@ -13,6 +13,7 @@ public class ReactorScript : MonoBehaviour
     public string suit;
 
     public Sprite glow;
+    private bool isGlowing;
     private bool alert = false;
 
     void Start()
@@ -177,6 +178,7 @@ public class ReactorScript : MonoBehaviour
     public void GlowOn(byte alertLevel)
     {
         gameObject.GetComponent<SpriteRenderer>().sprite = glow;
+        isGlowing = true;
 
         if (alertLevel == 0) // just highlight
         {
@@ -201,8 +203,19 @@ public class ReactorScript : MonoBehaviour
         }
         else
         {
+            isGlowing = false;
             alert = false;
             gameObject.GetComponent<SpriteRenderer>().sprite = null;
         }
+    }
+
+    public bool IsGlowing()
+    {
+        return isGlowing;
+    }
+
+    public Color GetGlowColor()
+    {
+        return gameObject.GetComponent<SpriteRenderer>().color;
     }
 }

@@ -34,8 +34,11 @@ public class UtilsScript : MonoBehaviour
     public int emptyReactorPoints;
     public int PerfectGamePoints;
 
-    private CardScript hoveringOverToken;
-    private byte tokensAreGlowing;
+    private GameObject hoveringOver;
+    private bool changedHologramColor;
+    private bool matchTokensAreGlowing;
+    private bool moveTokensAreGlowing;
+    private bool reactorIsGlowing;
 
     public void SetCards()
     {
@@ -133,8 +136,22 @@ public class UtilsScript : MonoBehaviour
             selectedCardsCopy[0].GetComponent<CardScript>().ShowHologram();
         }
 
-        // show any tokens (and reactors) that we can interact with and log it 
-        tokensAreGlowing = ShowPossibleMoves.showPossibleMoves.ShowMoves(selectedCards[0]);
+        // show any tokens (and reactors) that we can interact with
+        ShowPossibleMoves.showPossibleMoves.ShowMoves(selectedCards[0]);
+
+        if (ShowPossibleMoves.showPossibleMoves.cardMatches.Count != 0)
+            matchTokensAreGlowing = true;
+        else
+            matchTokensAreGlowing = false;
+        if (ShowPossibleMoves.showPossibleMoves.cardMoves.Count != 0)
+            moveTokensAreGlowing = true;
+        else
+            moveTokensAreGlowing = false;
+        if (ShowPossibleMoves.showPossibleMoves.reactorMove != null)
+            reactorIsGlowing = true;
+        else
+            reactorIsGlowing = false;
+
         soundController.CardPressSound();
         dragOn = true;
     }
@@ -154,27 +171,32 @@ public class UtilsScript : MonoBehaviour
                                                                   selectedCardsCopy[i - 1].transform.position.z - 0.05f);
         }
 
-        // if there are tokens glowing, check to see if we are hovering over them
-        if (tokensAreGlowing != 0)
+        // if there is stuff glowing, check to see if we are hovering over them
+        if (matchTokensAreGlowing || moveTokensAreGlowing || reactorIsGlowing)
         {
-            hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Vector2.zero);
-            // if we hit something and it's a card and it's glowing (can move to it or match with it)
-            if (hit.collider != null && hit.collider.gameObject.CompareTag("Card") && hit.collider.gameObject.GetComponent<CardScript>().IsGlowing())
+            hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
+                                                                               Input.mousePosition.y,
+                                                                               10)),
+                                    Vector2.zero);
+
+            if (hit.collider != null) // if we hit something
             {
-                CardScript newHoveringOverToken = hit.collider.gameObject.GetComponent<CardScript>();
-                // if we hit a new card
-                if (newHoveringOverToken != hoveringOverToken)
+                if (hit.collider.gameObject == hoveringOver) // are we still hovering over the same object
+                    return;
+                hoveringOver = hit.collider.gameObject;
+
+                // and tokens are glowing and we hit a glowing card (can move to it or match with it)
+                if ((matchTokensAreGlowing || moveTokensAreGlowing) && hoveringOver.CompareTag("Card") &&
+                    hoveringOver.GetComponent<CardScript>().IsGlowing())
                 {
-                    hoveringOverToken = newHoveringOverToken;
+                    CardScript hoveringOverToken = hoveringOver.GetComponent<CardScript>();
                     Color hoveringGlow = hoveringOverToken.GetGlowColor();
+                    selectedCardsCopy[cardCount - 1].GetComponent<CardScript>().ChangeHologramColor(hoveringGlow);
+                    changedHologramColor = true;
 
-                    // if there are matching tokens available
-                    if (tokensAreGlowing == 2)
+                    if (matchTokensAreGlowing) // if there are matching tokens available
                     {
-                        // we now know that we can only have one token in selectedCardsCopy
-
-                        // if we can match with this token
-                        if (hoveringGlow == Config.config.cardMatchHighlightColor)
+                        if (hoveringGlow == Config.config.cardMatchHighlightColor) // if we can match with this token
                         {
                             selectedCardsCopy[0].GetComponent<CardScript>().ChangeFoodHologram(false, updateScale: true);
                         }
@@ -182,24 +204,43 @@ public class UtilsScript : MonoBehaviour
                         {
                             selectedCardsCopy[0].GetComponent<CardScript>().ChangeFoodHologram(true, updateScale: true);
                         }
-                        selectedCardsCopy[0].GetComponent<CardScript>().ChangeHologramColor(hoveringOverToken.GetGlowColor());
                     }
-                    else
+                }
+                // if we are hovering over a glowing reactor
+                else if (reactorIsGlowing && hoveringOver.CompareTag("Reactor") &&
+                    hoveringOver.GetComponent<ReactorScript>().IsGlowing())
+                {
+                    selectedCardsCopy[0].GetComponent<CardScript>().ChangeHologramColor(hoveringOver.GetComponent<ReactorScript>().GetGlowColor());
+                    changedHologramColor = true;
+
+                    if (matchTokensAreGlowing)
                     {
-                        selectedCardsCopy[cardCount - 1].GetComponent<CardScript>().ChangeHologramColor(hoveringOverToken.GetGlowColor());
+                        selectedCardsCopy[0].GetComponent<CardScript>().ChangeFoodHologram(true, updateScale: true);
+                    }
+                }
+                // we are hovering over an object that is of no concern
+                else if (changedHologramColor) // if we where hovering over a glowing token
+                {
+                    selectedCardsCopy[cardCount - 1].GetComponent<CardScript>().ChangeHologramColor(Color.white);
+                    changedHologramColor = false;
+
+                    if (matchTokensAreGlowing) // if there is the possibility that we where hovering over a matching token
+                    {
+                        selectedCardsCopy[0].GetComponent<CardScript>().ChangeFoodHologram(true, updateScale: true);
                     }
                 }
             }
-            // if we where hovering over a glowing token
-            else if (hoveringOverToken != null)
+            else if (changedHologramColor) // if we where hovering over a glowing token
             {
+                hoveringOver = null;
+
                 selectedCardsCopy[cardCount - 1].GetComponent<CardScript>().ChangeHologramColor(Color.white);
-                // if there is the possibility that we where hovering over a matching token
-                if (tokensAreGlowing == 2)
+                changedHologramColor = false;
+                
+                if (matchTokensAreGlowing) // if there is the possibility that we where hovering over a matching token
                 {
                     selectedCardsCopy[0].GetComponent<CardScript>().ChangeFoodHologram(true, updateScale: true);
                 }
-                hoveringOverToken = null;
             }
         }
     }

@@ -6,9 +6,9 @@ public class ShowPossibleMoves : MonoBehaviour
 {
     public static ShowPossibleMoves showPossibleMoves;
 
-    private GameObject reactorMove;
-    private List<GameObject> cardMoves;
-    private List<GameObject> cardMatches;
+    public GameObject reactorMove;
+    public List<GameObject> cardMoves;
+    public List<GameObject> cardMatches;
 
     private void Start()
     {
@@ -46,16 +46,23 @@ public class ShowPossibleMoves : MonoBehaviour
         {
             foreach (GameObject reactor in Config.config.reactors)
             {
-                // if the card can go into the reactor
-                if (reactor.GetComponent<ReactorScript>().suit == selectedCard.GetComponent<CardScript>().cardSuit)
-                {
-                    reactorMove = reactor;
-                }
                 // if the card matches the card in the top of the reactor
-                else if (reactor.GetComponent<ReactorScript>().cardList.Count != 0 && 
+                if (reactor.GetComponent<ReactorScript>().cardList.Count != 0 && 
                     UtilsScript.global.IsMatch(reactor.GetComponent<ReactorScript>().cardList[0], selectedCard))
                 {
                     cardMatches.Add(reactor.GetComponent<ReactorScript>().cardList[0]);
+                }
+            }
+
+            if (!selectedCard.GetComponent<CardScript>().container.CompareTag("Reactor"))
+            {
+                foreach (GameObject reactor in Config.config.reactors)
+                {
+                    if (reactor.GetComponent<ReactorScript>().suit == selectedCard.GetComponent<CardScript>().cardSuit)
+                    {
+                        reactorMove = reactor;
+                        break;
+                    }
                 }
             }
         }
@@ -88,7 +95,7 @@ public class ShowPossibleMoves : MonoBehaviour
         }
     }
 
-    public byte ShowMoves(GameObject selectedCard)
+    public void ShowMoves(GameObject selectedCard)
     {
         FindMoves(selectedCard);
         
@@ -115,16 +122,6 @@ public class ShowPossibleMoves : MonoBehaviour
                 reactorMove.GetComponent<ReactorScript>().GlowOn(0);
             }
         }
-
-        if (cardMatches.Count != 0)
-        {
-            return 2;
-        }
-        if (cardMoves.Count != 0)
-        {
-            return 1;
-        }
-        return 0;
     }
 
     public void HideMoves()
