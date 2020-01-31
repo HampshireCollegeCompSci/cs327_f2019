@@ -6,23 +6,6 @@ public class ShowPossibleMoves : MonoBehaviour
 {
     public static ShowPossibleMoves showPossibleMoves;
 
-    public GameObject foundation1;
-    public GameObject foundation2;
-    public GameObject foundation3;
-    public GameObject foundation4;
-
-    public GameObject reactor1;
-    public GameObject reactor2;
-    public GameObject reactor3;
-    public GameObject reactor4;
-
-    public GameObject wastepile;
-
-    public GameObject matchedpile;
-
-    private GameObject[] foundationList;
-    private GameObject[] reactorList;
-
     private GameObject reactorMove;
     private List<GameObject> cardMoves;
     private List<GameObject> cardMatches;
@@ -31,25 +14,6 @@ public class ShowPossibleMoves : MonoBehaviour
     {
         cardMoves = new List<GameObject>();
         cardMatches = new List<GameObject>();
-    }
-
-    public void SetCards()
-    {
-        foundation1 = GameObject.Find("Foundation (0)");
-        foundation2 = GameObject.Find("Foundation (1)");
-        foundation3 = GameObject.Find("Foundation (2)");
-        foundation4 = GameObject.Find("Foundation (3)");
-        foundationList = new GameObject[] { foundation1, foundation2, foundation3, foundation4 };
-
-        reactor1 = GameObject.Find("ReactorPile (0)");
-        reactor2 = GameObject.Find("ReactorPile (1)");
-        reactor3 = GameObject.Find("ReactorPile (2)");
-        reactor4 = GameObject.Find("ReactorPile (3)");
-        reactorList = new GameObject[] {reactor1, reactor2, reactor3, reactor4 };
-
-        wastepile = GameObject.Find("Scroll View");
-
-        matchedpile = GameObject.Find("MatchedPile");
     }
 
     private void Awake()
@@ -80,7 +44,7 @@ public class ShowPossibleMoves : MonoBehaviour
 
         if (cardCanBeMatched)
         {
-            foreach (GameObject reactor in reactorList)
+            foreach (GameObject reactor in Config.config.reactors)
             {
                 // if the card can go into the reactor
                 if (reactor.GetComponent<ReactorScript>().suit == selectedCard.GetComponent<CardScript>().cardSuit)
@@ -96,7 +60,7 @@ public class ShowPossibleMoves : MonoBehaviour
             }
         }
         
-        foreach (GameObject foundation in foundationList)
+        foreach (GameObject foundation in Config.config.foundations)
         {
             if (foundation.GetComponent<FoundationScript>().cardList.Count != 0)
             {
@@ -117,10 +81,10 @@ public class ShowPossibleMoves : MonoBehaviour
         }
 
         // if the card can match and matches with the wastepile top
-        if (cardCanBeMatched && wastepile.GetComponent<WastepileScript>().GetCardList().Count != 0 &&
-            UtilsScript.global.IsMatch(wastepile.GetComponent<WastepileScript>().cardList[0], selectedCard))
+        if (cardCanBeMatched && Config.config.wastePile.GetComponent<WastepileScript>().GetCardList().Count != 0 &&
+            UtilsScript.global.IsMatch(Config.config.wastePile.GetComponent<WastepileScript>().cardList[0], selectedCard))
         {
-            cardMatches.Add(wastepile.GetComponent<WastepileScript>().cardList[0]);
+            cardMatches.Add(Config.config.wastePile.GetComponent<WastepileScript>().cardList[0]);
         }
     }
 
