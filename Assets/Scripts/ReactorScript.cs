@@ -12,19 +12,14 @@ public class ReactorScript : MonoBehaviour
 
     public string suit;
 
-    public Sprite glowSelected;
-    public Sprite glowAlmostFull;
-    private bool glowing = false;
+    public Sprite glow;
     private bool alert = false;
-
-
 
     void Start()
     {
         utils = UtilsScript.global;
         rsss = gameUI.GetComponent<ReactorScoreSetScript>();
     }
-
 
     private void CheckGameOver()
     {
@@ -179,52 +174,35 @@ public class ReactorScript : MonoBehaviour
         return totalSum;
     }
 
-    public bool GlowOn()
+    public void GlowOn(byte alertLevel)
     {
-        if (!glowing && !alert)
-        {
-            gameObject.GetComponent<SpriteRenderer>().sprite = glowSelected;
-            glowing = true;
-            return true;
-        }
-        return false;
-    }
+        gameObject.GetComponent<SpriteRenderer>().sprite = glow;
 
-    public bool GlowOff()
-    {
-        if (glowing && !alert)
+        if (alertLevel == 0) // just highlight
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = null;
-            glowing = false;
-            return true;
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 0, 0.5f);
         }
-        return false;
-    }
-
-    public bool AlertOn()
-    {
-        if (!alert)
+        else if (alertLevel == 1) // action counter is low and nextcycle will overload this reactor
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = glowAlmostFull;
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 0.5f, 0, 0.5f);
             alert = true;
-            return true;
         }
-        return false;
-    }
-
-    public bool AlertOff()
-    {
-        if (alert)
+        else if (alertLevel == 2) // moving the selected token here will overload this reactor
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = null;
-            alert = false;
-            return true;
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 0.5f);
         }
-        return false;
     }
 
-    public bool isAlertOn()
+    public void GlowOff(bool turnAlertOff = false)
     {
-        return alert;
+        if (alert && !turnAlertOff)
+        {
+            GlowOn(1);
+        }
+        else
+        {
+            alert = false;
+            gameObject.GetComponent<SpriteRenderer>().sprite = null;
+        }
     }
 }

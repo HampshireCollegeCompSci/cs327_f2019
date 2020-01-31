@@ -27,8 +27,6 @@ public class ShowPossibleMoves : MonoBehaviour
     private List<GameObject> cardMoves;
     private List<GameObject> cardMatches;
 
-    private bool reactorAlerted;
-
     private void Start()
     {
         cardMoves = new List<GameObject>();
@@ -87,11 +85,7 @@ public class ShowPossibleMoves : MonoBehaviour
                 // if the card can go into the reactor
                 if (reactor.GetComponent<ReactorScript>().suit == selectedCard.GetComponent<CardScript>().cardSuit)
                 {
-                    // if we already know that we can move here and that we will lose the game if we do
-                    if (!reactor.GetComponent<ReactorScript>().isAlertOn())
-                    {
-                        reactorMove = reactor;
-                    }
+                    reactorMove = reactor;
                 }
                 // if the card matches the card in the top of the reactor
                 else if (reactor.GetComponent<ReactorScript>().cardList.Count != 0 && 
@@ -150,13 +144,11 @@ public class ShowPossibleMoves : MonoBehaviour
             if (reactorMove.GetComponent<ReactorScript>().CountReactorCard() +
                 selectedCard.GetComponent<CardScript>().cardVal >= Config.config.maxReactorVal)
             {
-                reactorMove.GetComponent<ReactorScript>().AlertOn();
-                // so we know that show moves was the one who turned on the alert
-                reactorAlerted = true;
+                reactorMove.GetComponent<ReactorScript>().GlowOn(2);
             }
             else
             {
-                reactorMove.GetComponent<ReactorScript>().GlowOn();
+                reactorMove.GetComponent<ReactorScript>().GlowOn(0);
             }
         }
 
@@ -185,15 +177,7 @@ public class ShowPossibleMoves : MonoBehaviour
 
         if (reactorMove != null)
         {
-            if (reactorAlerted)
-            {
-                reactorMove.GetComponent<ReactorScript>().AlertOff();
-                reactorAlerted = false;
-            }
-            else
-            {
-                reactorMove.GetComponent<ReactorScript>().GlowOff();
-            }
+            reactorMove.GetComponent<ReactorScript>().GlowOff();
         }
 
         reactorMove = null;

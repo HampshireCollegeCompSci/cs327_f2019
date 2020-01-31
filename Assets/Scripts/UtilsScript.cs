@@ -560,21 +560,26 @@ public class UtilsScript : MonoBehaviour
     {
         bool alertTurnedOn = false;
 
+        // if we are checking again to see if anything has changed since the last move
         if (checkAgain)
         {
             foreach (GameObject reactor in Config.config.reactors)
             {
-                if (reactor.GetComponent<ReactorScript>().CountReactorCard() + reactor.GetComponent<ReactorScript>().GetIncreaseOnNextCycle() >= Config.config.maxReactorVal)
+                // if a nextcyle will overload the reactor
+                if (reactor.GetComponent<ReactorScript>().CountReactorCard() +
+                    reactor.GetComponent<ReactorScript>().GetIncreaseOnNextCycle() >= Config.config.maxReactorVal)
                 {
-                    reactor.GetComponent<ReactorScript>().AlertOn();
+                    reactor.GetComponent<ReactorScript>().GlowOn(1);
                     alertTurnedOn = true;
                 }
+                // try turning the glow off just in case if it already on
                 else
                 {
-                    reactor.GetComponent<ReactorScript>().AlertOff();
+                    reactor.GetComponent<ReactorScript>().GlowOff(true);
                 }
             }
         }
+        // if we are checking for the first time
         else if (turnOn)
         {
             Config.config.GetComponent<MusicController>().AlertMusic();
@@ -582,34 +587,41 @@ public class UtilsScript : MonoBehaviour
 
             foreach (GameObject reactor in Config.config.reactors)
             {
-                if (reactor.GetComponent<ReactorScript>().CountReactorCard() + reactor.GetComponent<ReactorScript>().GetIncreaseOnNextCycle() >= Config.config.maxReactorVal)
+                // if a nextcyle will overload the reactor
+                if (reactor.GetComponent<ReactorScript>().CountReactorCard() +
+                    reactor.GetComponent<ReactorScript>().GetIncreaseOnNextCycle() >= Config.config.maxReactorVal)
                 {
-                    reactor.GetComponent<ReactorScript>().AlertOn();
+                    reactor.GetComponent<ReactorScript>().GlowOn(1);
                     alertTurnedOn = true;
                 }
             }
         }
+        // we are done with the alert
         else
         {
             Config.config.GetComponent<MusicController>().GameMusic();
 
             foreach (GameObject reactor in Config.config.reactors)
             {
-                reactor.GetComponent<ReactorScript>().AlertOff();
+                reactor.GetComponent<ReactorScript>().GlowOff(true);
             }
         }
 
+        // if the alert was turned on during this check
         if (alertTurnedOn)
         {
+            // if the alert was not already turned on, turn it on and play the sound
             if (moveCounter.GetComponent<ActionCountScript>().TurnAlertOn())
             {
                 soundController.AlertSound();
             }
         }
+        // if the action counter is low
         else if (turnOn || checkAgain)
         {
             moveCounter.GetComponent<ActionCountScript>().TurnSirenOn();
         }
+        // the action counter is not low so turn stuff off
         else
         {
             moveCounter.GetComponent<ActionCountScript>().TurnSirenOff();

@@ -50,8 +50,7 @@ MonoBehaviour:
   gameUI: {fileID: 0}
   soundController: {fileID: 0}
   suit: 
-  glowSelected: {fileID: 21300000, guid: ed7404c9ac20125458ce6656e4a88907, type: 3}
-  glowAlmostFull: {fileID: 21300000, guid: 78991406af3c2f6439338042367e27a3, type: 3}
+  glow: {fileID: 21300000, guid: ed7404c9ac20125458ce6656e4a88907, type: 3}
 --- !u!212 &3465283733490406807
 SpriteRenderer:
   m_ObjectHideFlags: 0
