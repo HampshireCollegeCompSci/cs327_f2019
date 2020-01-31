@@ -173,7 +173,7 @@ public class CardScript : MonoBehaviour
             return true;
         }
 
-        if (hologram.activeSelf)
+        if (hologram.activeSelf || hologramFood.activeSelf)
         {
             hologram.SetActive(false);
             hologramFood.SetActive(false);

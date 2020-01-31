@@ -118,12 +118,19 @@ public class UtilsScript : MonoBehaviour
     public void StartDragging()
     {
         // make a copy of the selected cards to move around
-        for (int i = 0; i < selectedCards.Count; i++)
+        int cardsCount = selectedCards.Count;
+        for (int i = 0; i < cardsCount; i++)
         {
             newGameObject = (GameObject)Instantiate(selectedCards[i], Vector3.zero, Quaternion.identity);
             newGameObject.GetComponent<CardScript>().MakeVisualOnly();
             newGameObject.GetComponent<CardScript>().SetSelected(false);
             selectedCardsCopy.Add(newGameObject);
+        }
+
+        // enable dragged reactor tokens holograms
+        if (cardsCount == 1 && selectedCards[0].GetComponent<CardScript>().container.CompareTag("Reactor"))
+        {
+            selectedCardsCopy[0].GetComponent<CardScript>().ShowHologram();
         }
 
         // show any tokens (and reactors) that we can interact with and log it 
