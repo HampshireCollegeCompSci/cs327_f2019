@@ -54,8 +54,10 @@ public class ShowPossibleMoves : MonoBehaviour
                 }
             }
 
+            // if the card is not in the reactor
             if (!selectedCard.GetComponent<CardScript>().container.CompareTag("Reactor"))
             {
+                // get the reactor that we can match into
                 foreach (GameObject reactor in Config.config.reactors)
                 {
                     if (reactor.GetComponent<ReactorScript>().suit == selectedCard.GetComponent<CardScript>().cardSuit)
@@ -111,15 +113,33 @@ public class ShowPossibleMoves : MonoBehaviour
 
         if (reactorMove != null)
         {
+            ReactorScript reactorMoveScript = reactorMove.GetComponent<ReactorScript>();
+
             // if moving the card into the reactor will lose us the game
-            if (reactorMove.GetComponent<ReactorScript>().CountReactorCard() +
+            if (reactorMoveScript.CountReactorCard() +
                 selectedCard.GetComponent<CardScript>().cardVal >= Config.config.maxReactorVal)
             {
-                reactorMove.GetComponent<ReactorScript>().GlowOn(2);
+                reactorMoveScript.GlowOn(2);
             }
             else
             {
-                reactorMove.GetComponent<ReactorScript>().GlowOn(0);
+                reactorMoveScript.GlowOn(0);
+            }
+
+            // if the reactor that is glowing has cards in it then we need to
+            // turn off their hitboxes because they are above the reactor's hitbox
+            // this must be done for util's card dragging to properly change the
+            // hologram glow when hovering over the reactor, the hit detection
+            // would register for the cards over the reactor, not the reactor itself
+
+            // if the reactor has cards in it
+            int cardCount = reactorMoveScript.cardList.Count;
+            if (cardCount != 0)
+            {
+                for (int i = 0; i < cardCount; i++)
+                {
+                    reactorMoveScript.cardList[i].GetComponent<BoxCollider2D>().enabled = false;
+                }
             }
         }
     }
@@ -138,7 +158,18 @@ public class ShowPossibleMoves : MonoBehaviour
 
         if (reactorMove != null)
         {
-            reactorMove.GetComponent<ReactorScript>().GlowOff();
+            ReactorScript reactorMoveScript = reactorMove.GetComponent<ReactorScript>();
+            reactorMoveScript.GlowOff();
+
+            // if the reactor has cards in it
+            int cardCount = reactorMoveScript.cardList.Count;
+            if (cardCount != 0)
+            {
+                for (int i = 0; i < cardCount; i++)
+                {
+                    reactorMoveScript.cardList[i].GetComponent<BoxCollider2D>().enabled = true;
+                }
+            }
         }
 
         reactorMove = null;
