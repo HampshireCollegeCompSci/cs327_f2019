@@ -36,6 +36,7 @@ public class UtilsScript : MonoBehaviour
 
     private GameObject hoveringOver;
     private bool changedHologramColor;
+    private bool changedSuitGlowColor;
     private bool matchTokensAreGlowing;
     private bool moveTokensAreGlowing;
     private bool reactorIsGlowing;
@@ -139,6 +140,9 @@ public class UtilsScript : MonoBehaviour
         // show any tokens (and reactors) that we can interact with
         ShowPossibleMoves.showPossibleMoves.ShowMoves(selectedCards[0]);
 
+        changedHologramColor = false;
+        changedSuitGlowColor = false;
+
         if (ShowPossibleMoves.showPossibleMoves.cardMatches.Count != 0)
             matchTokensAreGlowing = true;
         else
@@ -182,7 +186,16 @@ public class UtilsScript : MonoBehaviour
             if (hit.collider != null) // if we hit something
             {
                 if (hit.collider.gameObject == hoveringOver) // are we still hovering over the same object
+                {
                     return;
+                }
+
+                if (changedSuitGlowColor)
+                {
+                    hoveringOver.GetComponent<ReactorScript>().RevertSuitGlow();
+                    changedSuitGlowColor = false;
+                }
+
                 hoveringOver = hit.collider.gameObject;
 
                 // and tokens are glowing and we hit a glowing card (can move to it or match with it)
@@ -213,6 +226,9 @@ public class UtilsScript : MonoBehaviour
                     selectedCardsCopy[0].GetComponent<CardScript>().ChangeHologramColor(hoveringOver.GetComponent<ReactorScript>().GetGlowColor());
                     changedHologramColor = true;
 
+                    hoveringOver.GetComponent<ReactorScript>().ChangeSuitGlow(new Color(0, 1, 0, 0.5f));
+                    changedSuitGlowColor = true;
+
                     if (matchTokensAreGlowing)
                     {
                         selectedCardsCopy[0].GetComponent<CardScript>().ChangeFoodHologram(true, updateScale: true);
@@ -230,8 +246,14 @@ public class UtilsScript : MonoBehaviour
                     }
                 }
             }
-            else if (changedHologramColor) // if we where hovering over a glowing token
+            else if (changedHologramColor) // if we where hovering over a glowing token or reactor
             {
+                if (changedSuitGlowColor)
+                {
+                    hoveringOver.GetComponent<ReactorScript>().RevertSuitGlow();
+                    changedSuitGlowColor = false;
+                }
+
                 hoveringOver = null;
 
                 selectedCardsCopy[cardCount - 1].GetComponent<CardScript>().ChangeHologramColor(Color.white);
