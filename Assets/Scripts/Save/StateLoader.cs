@@ -148,12 +148,7 @@ public class StateLoader : MonoBehaviour
             Config.config.deck.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>().MoveCard(LoadPile, false, false, false);
         }
         print(state);
-        //set up simple variables
-        print("actions taken: " + state.actions);
-        print("max actions: " + Config.config.actionMax);
-        UtilsScript.global.UpdateActionCounter(state.actions, true);
-        Config.config.score = state.score;
-        Config.config.difficulty = state.difficulty;
+        
         //set up foundations
         int i = 0;
         foreach (StringListWrapper lw in state.foundations)
@@ -284,6 +279,13 @@ public class StateLoader : MonoBehaviour
             tempMove.remainingActions = a.remainingActions;
             UndoScript.undoScript.moveLog.Push(tempMove);
         }
+
+        //set up simple variables
+        print("actions taken: " + state.actions);
+        print("max actions: " + Config.config.actionMax);
+        Config.config.difficulty = state.difficulty;
+        Config.config.score = state.score;
+        UtilsScript.global.UpdateActionCounter(state.actions, true);
     }
        
     public static GameState CreateFromJSON(string path)
