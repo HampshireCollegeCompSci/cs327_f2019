@@ -312,7 +312,9 @@ public class DeckScript : MonoBehaviour
                         topCardScript.HideHologram();
                         topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
                         topCardScript.number.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
+
                         Vector3 target = reactor.transform.position;
+                        target.y += -0.6f + reactor.GetComponent<ReactorScript>().cardList.Count * 0.45f;
 
                         if (currentFoundation.cardList.Count > 1)
                         {

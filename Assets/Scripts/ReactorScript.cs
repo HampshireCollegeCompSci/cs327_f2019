@@ -239,7 +239,6 @@ public class ReactorScript : MonoBehaviour
 
     public void RevertSuitGlow()
     {
-        Debug.Log("RSG");
         suitGlowSR.color = oldSuitGlow;
     }
 
