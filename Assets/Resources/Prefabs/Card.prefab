@@ -368,10 +368,10 @@ MonoBehaviour:
   originalColor: {r: 0, g: 0, b: 0, a: 0}
   newColor: {r: 0, g: 0, b: 0, a: 0}
   glowing: 0
-  hologramFoodPrefab: {fileID: 0}
-  hologramPrefab: {fileID: 0}
   hologramFood: {fileID: 1869234980773205396}
   hologram: {fileID: 2950253550288827638}
+  hologramFoodSprite: {fileID: 0}
+  hologramComboSprite: {fileID: 0}
   glow: {fileID: 1699734583824506818}
   number: {fileID: 7555772184302617973}
 --- !u!61 &5589543899514788396
