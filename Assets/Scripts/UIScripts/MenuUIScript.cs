@@ -263,12 +263,11 @@ public class MenuUIScript : MonoBehaviour
         {
             if (File.Exists("Assets/Resources/GameStates/testState.json"))
             {
-                /* //Un-Comment the below while workin gin the editor, but leave commented for builds
-                if (Application.isEditor)
-                {
+                //Preprocessor Directive to make builds work
+                #if (UNITY_EDITOR)
                     UnityEditor.AssetDatabase.Refresh();
-                }
-                */
+
+                
                 StateLoader.saveSystem.loadState();
                 Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
                 Config.config.tutorialOn = false;
