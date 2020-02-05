@@ -133,25 +133,16 @@ public class MenuUIScript : MonoBehaviour
 
     public void PlayAgain()
     {
-        Config.config.GetComponent<MusicController>().GameMusic(startNew: true);
-        Config.config.gameOver = false;
-        Config.config.gameWin = false;
-        Config.config.gamePaused = false;
-
         Config.config.GetComponent<SoundController>().ButtonPressSound();
-        SceneManager.LoadScene("GameplayScene");
+        Config.config.DeleteSave();
+        NewGame();
     }
 
     public void Restart()
     {
-        Config.config.GetComponent<MusicController>().GameMusic(startNew: true);
-        Config.config.gameOver = false;
-        Config.config.gameWin = false;
-        Config.config.gamePaused = false;
-
         Config.config.GetComponent<SoundController>().ButtonPressSound();
-        StopAllCoroutines();
-        SceneManager.LoadScene("GameplayScene");
+        Config.config.DeleteSave();
+        NewGame();
     }
 
     public void MainMenu()
