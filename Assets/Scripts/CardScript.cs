@@ -219,7 +219,7 @@ public class CardScript : MonoBehaviour
         return glowing;
     }
 
-    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool removeUpdateHolo = true, bool addUpdateHolo = true)
+    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool removeUpdateHolo = true, bool addUpdateHolo = true, bool doSave = true)
     {
         bool nextCardWasHidden = false;
         if (container.CompareTag("Foundation"))
@@ -332,7 +332,10 @@ public class CardScript : MonoBehaviour
         }
 
         container = destination;
-        StateLoader.saveSystem.writeState();
+        if (doSave)
+        {
+            StateLoader.saveSystem.writeState();
+        }
     }
 }
 

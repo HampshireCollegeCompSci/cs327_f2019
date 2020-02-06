@@ -186,14 +186,14 @@ public class DeckScript : MonoBehaviour
             for (int n = 0; n < Config.config.foundationStartSize - 1; n++)
             {
                 cardList[0].GetComponent<CardScript>().SetVisibility(false);
-                cardList[0].GetComponent<CardScript>().MoveCard(foundation, doLog: false, addUpdateHolo: false);
+                cardList[0].GetComponent<CardScript>().MoveCard(foundation, doLog: false, addUpdateHolo: false, doSave: false);
             }
 
             // adding and revealing the top card of the foundation
             cardList[0].GetComponent<CardScript>().SetVisibility(true);
             cardList[0].SetActive(true);
             cardList[0].gameObject.GetComponent<CardScript>().ShowHologram();
-            cardList[0].GetComponent<CardScript>().MoveCard(foundation, doLog: false, addUpdateHolo: false);
+            cardList[0].GetComponent<CardScript>().MoveCard(foundation, doLog: false, addUpdateHolo: false, doSave: false);
         }
     }
 
