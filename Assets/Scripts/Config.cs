@@ -10,7 +10,7 @@ public class Config : MonoBehaviour
     public static Config config; //Creates a new instance if one does not yet exist
 
     //Variables go here
-    public Stack<Move> moveLog = new Stack<Move>();
+    public List<Move> moveLog = new List<Move>();
     public bool gameOver;
     public bool gameWin;
     public int score;
@@ -35,9 +35,14 @@ public class Config : MonoBehaviour
     private GameObject baby;
 
     //foundations
-    public GameObject[] foundationList;
     public float foundationStackDensity;
     public int foundationStartSize;
+
+    public GameObject foundation1;
+    public GameObject foundation2;
+    public GameObject foundation3;
+    public GameObject foundation4;
+    public GameObject[] foundations;
 
     //wastepile
     public GameObject wastePile;
@@ -46,11 +51,6 @@ public class Config : MonoBehaviour
 
     //reactor
     public int maxReactorVal = 18;
-
-    public GameObject foundation1;
-    public GameObject foundation2;
-    public GameObject foundation3;
-    public GameObject foundation4;
 
     public GameObject reactor1;
     public GameObject reactor2;
@@ -81,6 +81,7 @@ public class Config : MonoBehaviour
     GameObject fadeOutImage;
     GameObject errorImage;
     public GameObject SplashScreen;
+    private Coroutine splashScreenFade;
 
     public string difficulty;
 
@@ -121,7 +122,7 @@ public class Config : MonoBehaviour
     private void Start()
     {
         SplashScreen.SetActive(true);
-        StartCoroutine(DisplayLogo());
+        splashScreenFade = StartCoroutine(DisplayLogo());
 
         string path = "GameConfigurations/gameValues";
         gameInfo = CreateFromJSON(path);
@@ -132,31 +133,46 @@ public class Config : MonoBehaviour
 
     IEnumerator DisplayLogo()
     {
-        Image[] logos = SplashScreen.GetComponentsInChildren<Image>();
+        Image[] logos = SplashScreen.GetComponentsInChildren<Image>(true);
 
-        for (float ft = 1f; ft >= 0; ft -= 0.02f)
+        float fade = 1;
+        Color splashScreenColor = new Color(0, 0, 0, 1);
+        Color logosColor = new Color(1, 1, 1, 1);
+        /*while (fade < 1)
         {
-            yield return new WaitForSeconds(0.1f);
+            yield return null;
 
-            if (ft < 0.5f)
-            {
-                SplashScreen.GetComponent<Image>().color = new Color(0, 0, 0, 2 * ft);
+            fade += Time.deltaTime *0.5f;
+            splashScreenColor.a = fade;
+            logosColor.a = fade;
 
-                for (int i = 1; i < logos.Length; i++)
-                {
-                    logos[i].color = new Color(1, 1, 1, ft);
-                }
-            }
-            else
-            {
-                for (int i = 1; i < logos.Length; i++)
-                {
-                    logos[i].color = new Color(1, 1, 1, 1 - ft);
-                }
-            }
+            logos[0].color = splashScreenColor;
+            logos[1].color = logosColor;
+            logos[2].color = logosColor;
+        }*/
 
+        yield return new WaitForSeconds(2);
+        gameObject.GetComponent<MusicController>().MainMenuMusic();
+
+        while (fade > 0)
+        {
+            yield return null;
+
+            fade -= Time.deltaTime * 0.5f;
+            splashScreenColor.a = fade;
+            logosColor.a = fade;
+
+            logos[0].color = splashScreenColor;
+            logos[1].color = logosColor;
+            logos[2].color = logosColor;
         }
 
+        SplashScreen.SetActive(false);
+    }
+
+    public void SkipSplashScreen()
+    {
+        StopCoroutine(splashScreenFade);
         SplashScreen.SetActive(false);
         gameObject.GetComponent<MusicController>().MainMenuMusic();
     }
@@ -259,7 +275,7 @@ public class Config : MonoBehaviour
         foundation2 = GameObject.Find("Foundation (1)");
         foundation3 = GameObject.Find("Foundation (2)");
         foundation4 = GameObject.Find("Foundation (3)");
-        foundationList = new GameObject[] { foundation1, foundation2, foundation3, foundation4 };
+        foundations = new GameObject[] { foundation1, foundation2, foundation3, foundation4 };
 
         reactor1 = GameObject.Find("ReactorPile (0)");
         reactor2 = GameObject.Find("ReactorPile (1)");

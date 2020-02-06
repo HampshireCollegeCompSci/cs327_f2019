@@ -34,7 +34,7 @@ public class StateLoader : MonoBehaviour
             difficulty = ""
         };
         //save foundations
-        foreach (GameObject foundation in Config.config.foundationList)
+        foreach (GameObject foundation in Config.config.foundations)
         {
             List<string> tempList = new List<string>();
             foreach (GameObject token in foundation.GetComponent<FoundationScript>().cardList)
@@ -80,9 +80,10 @@ public class StateLoader : MonoBehaviour
         }
         gameState.matches = matchList;
         //save undo
+        print("attempting to save undo log.");
         List<AltMove> altMoveLog = new List<AltMove>();
         Stack<AltMove> tempMoveLog = new Stack<AltMove>();
-        foreach (Move move in Config.config.moveLog)
+        foreach (Move move in UndoScript.undoScript.moveLog)
         {
             tempMoveLog.Push(new AltMove() {
                 cardName = move.card.GetComponent<CardScript>().cardSuit + "_" + move.card.GetComponent<CardScript>().cardNum.ToString(),
@@ -148,12 +149,7 @@ public class StateLoader : MonoBehaviour
             Config.config.deck.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>().MoveCard(LoadPile, false, false, false);
         }
         print(state);
-        //set up simple variables
-        print("actions taken: " + state.actions);
-        print("max actions: " + Config.config.actionMax);
-        UtilsScript.global.UpdateActionCounter(state.actions, true);
-        Config.config.score = state.score;
-        Config.config.difficulty = state.difficulty;
+        
         //set up foundations
         int i = 0;
         foreach (StringListWrapper lw in state.foundations)
@@ -168,7 +164,7 @@ public class StateLoader : MonoBehaviour
                 {
                     if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
                     {
-                        token.GetComponent<CardScript>().MoveCard(Config.config.foundationList[i], false, false, false);
+                        token.GetComponent<CardScript>().MoveCard(Config.config.foundations[i], false, false, false);
                         if (hiddenState == "True")
                         {
                             token.GetComponent<CardScript>().SetVisibility(false);
@@ -284,6 +280,13 @@ public class StateLoader : MonoBehaviour
             tempMove.remainingActions = a.remainingActions;
             UndoScript.undoScript.moveLog.Push(tempMove);
         }
+
+        //set up simple variables
+        print("actions taken: " + state.actions);
+        print("max actions: " + Config.config.actionMax);
+        Config.config.difficulty = state.difficulty;
+        Config.config.score = state.score;
+        UtilsScript.global.UpdateActionCounter(state.actions, true);
     }
        
     public static GameState CreateFromJSON(string path)

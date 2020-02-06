@@ -17,6 +17,7 @@ public class CardScript : MonoBehaviour
     public bool glowing;
 
     public GameObject hologramFood, hologram;
+    public Sprite hologramFoodSprite, hologramComboSprite;
     public GameObject glow;
     public GameObject number;
 
@@ -106,7 +107,7 @@ public class CardScript : MonoBehaviour
     {
         gameObject.transform.localScale = new Vector3(0.2f, 0.2f, 1);
         container = null;
-        
+
         if (selectedLayer == 0)
         {
             selectedLayer = SortingLayer.NameToID("SelectedCards");
@@ -117,6 +118,37 @@ public class CardScript : MonoBehaviour
         hologram.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
         hologramFood.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
         Destroy(gameObject.GetComponent<BoxCollider2D>());
+    }
+
+    public void ChangeFoodHologram(bool changeToDefault, bool updateScale = false)
+    {
+        if (changeToDefault)
+        {
+            hologramFood.GetComponent<SpriteRenderer>().sprite = hologramFoodSprite;
+            if (updateScale)
+            {
+                hologramFood.transform.localScale = new Vector3(1.2f, 1.2f, 1);
+            }
+        }
+        else
+        {
+            hologramFood.GetComponent<SpriteRenderer>().sprite = hologramComboSprite;
+            if (updateScale)
+            {
+                hologramFood.transform.localScale = new Vector3(0.6f, 0.6f, 1);
+            }
+        }
+    }
+
+    public void ChangeHologramColor(Color newColor)
+    {
+        hologram.GetComponent<SpriteRenderer>().color = newColor;
+        hologramFood.GetComponent<SpriteRenderer>().color = newColor;
+    }
+
+    public Color GetGlowColor()
+    {
+        return glow.GetComponent<SpriteRenderer>().color;
     }
 
     public void ShowHologram()
@@ -141,7 +173,7 @@ public class CardScript : MonoBehaviour
             return true;
         }
 
-        if (hologram.activeSelf)
+        if (hologram.activeSelf || hologramFood.activeSelf)
         {
             hologram.SetActive(false);
             hologramFood.SetActive(false);
@@ -180,6 +212,11 @@ public class CardScript : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public bool IsGlowing()
+    {
+        return glowing;
     }
 
     public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool removeUpdateHolo = true, bool addUpdateHolo = true)

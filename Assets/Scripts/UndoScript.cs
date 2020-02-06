@@ -19,11 +19,6 @@ public class UndoScript : MonoBehaviour
      */
     public void logMove(string moveType, GameObject card, bool isAction = true, int actionsRemaining = 1, bool nextCardWasHidden = false)
     {
-        if (utils == null)
-        {
-            utils = UtilsScript.global;
-        }
-
         GameObject origin = card.GetComponent<CardScript>().container; //get the cards original location
 
         //create the log of the move
@@ -114,6 +109,7 @@ public class UndoScript : MonoBehaviour
                 }
 
                 utils.UpdateScore(-Config.config.matchPoints);
+                utils.UpdateActionCounter(0);
                 return;
             }
             else if (moveLog.Peek().moveType == "draw") //move the last three drawn cards back to the deck (assuming the last action was to draw from the deck)

@@ -12,19 +12,20 @@ public class ReactorScript : MonoBehaviour
 
     public string suit;
 
-    public Sprite glowSelected;
-    public Sprite glowAlmostFull;
-    private bool glowing = false;
+    public GameObject suitGlow;
+    public SpriteRenderer suitGlowSR;
+    private Color oldSuitGlow;
+
+    public Sprite glow;
+    private bool isGlowing;
     private bool alert = false;
-
-
 
     void Start()
     {
         utils = UtilsScript.global;
         rsss = gameUI.GetComponent<ReactorScoreSetScript>();
+        suitGlowSR = suitGlow.GetComponent<SpriteRenderer>();
     }
-
 
     private void CheckGameOver()
     {
@@ -151,7 +152,7 @@ public class ReactorScript : MonoBehaviour
     public int GetIncreaseOnNextCycle()
     {
         int output = 0;
-        foreach (GameObject foundation in Config.config.foundationList)
+        foreach (GameObject foundation in Config.config.foundations)
         {
             if (foundation.GetComponent<FoundationScript>().cardList.Count > 0)
             {
@@ -179,52 +180,75 @@ public class ReactorScript : MonoBehaviour
         return totalSum;
     }
 
-    public bool GlowOn()
+    public void GlowOn(byte alertLevel)
     {
-        if (!glowing && !alert)
+        //suitGlow.SetActive(true);
+        isGlowing = true;
+
+        if (alertLevel == 0) // just highlight
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = glowSelected;
-            glowing = true;
-            return true;
+            gameObject.GetComponent<SpriteRenderer>().enabled = true;
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 0, 0.5f);
+            suitGlow.SetActive(true);
+            ChangeSuitGlow(new Color(1, 1, 0, 0.3f));
         }
-        return false;
+        else if (alertLevel == 1) // action counter is low and nextcycle will overload this reactor
+        {
+            //gameObject.GetComponent<SpriteRenderer>().enabled = false;
+            //gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 0.5f, 0, 0.5f);
+            rsss.ChangeTextColor(gameObject, true);
+            //ChangeSuitGlow(new Color(1, 0.5f, 0, 0.3f));
+            //alert = true;
+        }
+        else if (alertLevel == 2) // moving the selected token here will overload this reactor
+        {
+            gameObject.GetComponent<SpriteRenderer>().enabled = true;
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 0.5f);
+            suitGlow.SetActive(true);
+            ChangeSuitGlow(new Color(1, 0, 0, 0.3f));
+        }
     }
 
-    public bool GlowOff()
+    public void GlowOff(bool turnAlertOff = false)
     {
-        if (glowing && !alert)
+        /*if (alert && !turnAlertOff)
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = null;
-            glowing = false;
-            return true;
+            GlowOn(1);
+            suitGlowSR.color = oldSuitGlow;
         }
-        return false;
+        else
+        {*/
+
+        if (turnAlertOff)
+        {
+            rsss.ChangeTextColor(gameObject, false);
+        }
+
+        isGlowing = false;
+        //alert = false;
+        gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        suitGlow.SetActive(false);
+        //}
     }
 
-    public bool AlertOn()
+    public void ChangeSuitGlow(Color newColor)
     {
-        if (!alert)
-        {
-            gameObject.GetComponent<SpriteRenderer>().sprite = glowAlmostFull;
-            alert = true;
-            return true;
-        }
-        return false;
+        oldSuitGlow = suitGlowSR.color;
+        suitGlowSR.color = newColor;
     }
 
-    public bool AlertOff()
+    public void RevertSuitGlow()
     {
-        if (alert)
-        {
-            gameObject.GetComponent<SpriteRenderer>().sprite = null;
-            alert = false;
-            return true;
-        }
-        return false;
+        suitGlowSR.color = oldSuitGlow;
     }
 
-    public bool isAlertOn()
+    public bool IsGlowing()
     {
-        return alert;
+        return isGlowing;
+    }
+
+    public Color GetGlowColor()
+    {
+        return gameObject.GetComponent<SpriteRenderer>().color;
     }
 }
