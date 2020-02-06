@@ -81,6 +81,7 @@ public class Config : MonoBehaviour
     GameObject fadeOutImage;
     GameObject errorImage;
     public GameObject SplashScreen;
+    private Coroutine splashScreenFade;
 
     public string difficulty;
 
@@ -121,7 +122,7 @@ public class Config : MonoBehaviour
     private void Start()
     {
         SplashScreen.SetActive(true);
-        StartCoroutine(DisplayLogo());
+        splashScreenFade = StartCoroutine(DisplayLogo());
 
         string path = "GameConfigurations/gameValues";
         gameInfo = CreateFromJSON(path);
@@ -132,52 +133,46 @@ public class Config : MonoBehaviour
 
     IEnumerator DisplayLogo()
     {
-        Image[] logos = SplashScreen.GetComponentsInChildren<Image>();
+        Image[] logos = SplashScreen.GetComponentsInChildren<Image>(true);
 
-        Debug.Log(logos.Length);
-
-        for (float ft = 1f; ft >= 0; ft -= 0.02f)
-        {
-            yield return new WaitForSeconds(0.1f);
-
-            if (ft < 0.5f)
-            {
-                SplashScreen.GetComponent<Image>().color = new Color(0, 0, 0, 2 * ft);
-
-                for (int i = 1; i < logos.Length; i++)
-                {
-                    logos[i].color = new Color(1, 1, 1, ft);
-                }
-            }
-            else
-            {
-                for (int i = 1; i < logos.Length; i++)
-                {
-                    logos[i].color = new Color(1, 1, 1, 1 - ft);
-                }
-            }
-
-        }
-
-        /*
-        float fade = 0;
-        Color splashScreenColor = new Color(0, 0, 0, 0);
-        Color logosColor = new Color(1, 1, 1, 0);
-        while (fade < 1)
+        float fade = 1;
+        Color splashScreenColor = new Color(0, 0, 0, 1);
+        Color logosColor = new Color(1, 1, 1, 1);
+        /*while (fade < 1)
         {
             yield return null;
 
-            fade += Time.deltaTime * 5;
+            fade += Time.deltaTime *0.5f;
             splashScreenColor.a = fade;
             logosColor.a = fade;
 
-            SplashScreen.GetComponent<Image>().color = splashScreenColor;
-
+            logos[0].color = splashScreenColor;
+            logos[1].color = logosColor;
+            logos[2].color = logosColor;
         }*/
-            
 
+        yield return new WaitForSeconds(2);
+        gameObject.GetComponent<MusicController>().MainMenuMusic();
 
+        while (fade > 0)
+        {
+            yield return null;
 
+            fade -= Time.deltaTime * 0.5f;
+            splashScreenColor.a = fade;
+            logosColor.a = fade;
+
+            logos[0].color = splashScreenColor;
+            logos[1].color = logosColor;
+            logos[2].color = logosColor;
+        }
+
+        SplashScreen.SetActive(false);
+    }
+
+    public void SkipSplashScreen()
+    {
+        StopCoroutine(splashScreenFade);
         SplashScreen.SetActive(false);
         gameObject.GetComponent<MusicController>().MainMenuMusic();
     }
