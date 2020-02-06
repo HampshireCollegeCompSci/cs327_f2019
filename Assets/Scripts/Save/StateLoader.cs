@@ -80,9 +80,10 @@ public class StateLoader : MonoBehaviour
         }
         gameState.matches = matchList;
         //save undo
+        print("attempting to save undo log.");
         List<AltMove> altMoveLog = new List<AltMove>();
         Stack<AltMove> tempMoveLog = new Stack<AltMove>();
-        foreach (Move move in Config.config.moveLog)
+        foreach (Move move in UndoScript.undoScript.moveLog)
         {
             tempMoveLog.Push(new AltMove() {
                 cardName = move.card.GetComponent<CardScript>().cardSuit + "_" + move.card.GetComponent<CardScript>().cardNum.ToString(),

@@ -19,11 +19,6 @@ public class UndoScript : MonoBehaviour
      */
     public void logMove(string moveType, GameObject card, bool isAction = true, int actionsRemaining = 1, bool nextCardWasHidden = false)
     {
-        if (utils == null)
-        {
-            utils = UtilsScript.global;
-        }
-
         GameObject origin = card.GetComponent<CardScript>().container; //get the cards original location
 
         //create the log of the move
