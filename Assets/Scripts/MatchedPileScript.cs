@@ -16,13 +16,13 @@ public class MatchedPileScript : MonoBehaviour
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
         card.transform.localPosition = Vector3.zero;
-        card.SetActive(false);
+        //card.SetActive(false);
         //utils.CheckNextCycle(); since matching doesn't count to the action count atm
     }
 
     public void RemoveCard(GameObject card, bool checkHolo = false)
     {
         cardList.Remove(card);
-        card.SetActive(true);
+        //card.SetActive(true);
     }
 }

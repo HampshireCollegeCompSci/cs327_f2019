@@ -85,7 +85,12 @@ public class StateLoader : MonoBehaviour
         Stack<AltMove> tempMoveLog = new Stack<AltMove>();
         foreach (Move move in UndoScript.undoScript.moveLog)
         {
-            print(move);
+            /*print(move.card.GetComponent<CardScript>().cardSuit + "_" + move.card.GetComponent<CardScript>().cardNum.ToString());
+            print(move.origin.name);
+            print(move.moveType);
+            print(move.nextCardWasHidden);
+            print(move.isAction);
+            print(move.remainingActions);*/
             tempMoveLog.Push(new AltMove() {
                 cardName = move.card.GetComponent<CardScript>().cardSuit + "_" + move.card.GetComponent<CardScript>().cardNum.ToString(),
                 originName = move.origin.name,
