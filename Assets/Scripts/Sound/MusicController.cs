@@ -30,7 +30,7 @@ public class MusicController : MonoBehaviour
         Transition(menuMusic);
     }
 
-    public void GameMusic(bool startNew = false)
+    public void GameMusic()
     {
         if (playingTrack == 2)
         {

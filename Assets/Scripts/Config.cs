@@ -10,7 +10,7 @@ public class Config : MonoBehaviour
     public static Config config; //Creates a new instance if one does not yet exist
 
     //Variables go here
-    public Stack<Move> moveLog = new Stack<Move>();
+    public List<Move> moveLog = new List<Move>();
     public bool gameOver;
     public bool gameWin;
     public int score;
@@ -134,6 +134,8 @@ public class Config : MonoBehaviour
     {
         Image[] logos = SplashScreen.GetComponentsInChildren<Image>();
 
+        Debug.Log(logos.Length);
+
         for (float ft = 1f; ft >= 0; ft -= 0.02f)
         {
             yield return new WaitForSeconds(0.1f);
@@ -156,6 +158,25 @@ public class Config : MonoBehaviour
             }
 
         }
+
+        /*
+        float fade = 0;
+        Color splashScreenColor = new Color(0, 0, 0, 0);
+        Color logosColor = new Color(1, 1, 1, 0);
+        while (fade < 1)
+        {
+            yield return null;
+
+            fade += Time.deltaTime * 5;
+            splashScreenColor.a = fade;
+            logosColor.a = fade;
+
+            SplashScreen.GetComponent<Image>().color = splashScreenColor;
+
+        }*/
+            
+
+
 
         SplashScreen.SetActive(false);
         gameObject.GetComponent<MusicController>().MainMenuMusic();
