@@ -221,6 +221,7 @@ public class CardScript : MonoBehaviour
 
     public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool removeUpdateHolo = true, bool addUpdateHolo = true, bool doSave = true)
     {
+        Handheld.Vibrate();
         bool nextCardWasHidden = false;
         if (container.CompareTag("Foundation"))
         {
