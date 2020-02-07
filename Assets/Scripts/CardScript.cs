@@ -339,7 +339,7 @@ public class CardScript : MonoBehaviour
 
         if (doLog && doSave)
         {
-            Vibration.Vibrate(100);
+            Vibration.Vibrate(10);
         }
     }
 }
