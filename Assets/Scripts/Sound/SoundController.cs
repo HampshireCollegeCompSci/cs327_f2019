@@ -14,16 +14,19 @@ public class SoundController : MonoBehaviour
     public AudioClip winSound, loseSound, alertSound;
     public AudioClip mushroomSound, bugSound, fruitSound, rockSound;
 
+    private long[] pattern = new long[] { 5, 5 };
 
     public void ButtonPressSound()
     {
         // doesn't like PlayOneShot
+        Vibration.Vibrate(10);
         soundController.clip = buttonPressSound;
         soundController.Play();
     }
 
     public void UndoPressSound()
     {
+        Vibration.Vibrate(10);
         soundController.PlayOneShot(undoPressSound, 0.5f);
     }
 
@@ -104,6 +107,7 @@ public class SoundController : MonoBehaviour
 
     public void PauseMenuButtonSound()
     {
+        Vibration.Vibrate(10);
         soundController.Stop();
         soundController.clip = pauseButtonSound;
         soundController.Play();
@@ -111,6 +115,7 @@ public class SoundController : MonoBehaviour
 
     public void AlertSound()
     {
+        Vibration.Vibrate(pattern, 0);
         soundController.PlayOneShot(alertSound, 0.3f);
     }
 
@@ -143,7 +148,5 @@ public class SoundController : MonoBehaviour
         {
             soundController.PlayOneShot(fruitSound);
         }
-
-
     }
 }
