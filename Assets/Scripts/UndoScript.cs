@@ -124,7 +124,7 @@ public class UndoScript : MonoBehaviour
                 Config.config.wastePile.GetComponent<WastepileScript>().CheckHologram(false);
                 utils.UpdateActionCounter(lastMove.remainingActions, true);
 
-                if (moveLog.Peek().moveType == "deckreset")
+                if (moveLog.Count != 0 && moveLog.Peek().moveType == "deckreset")
                 {
                     undo();
                 }

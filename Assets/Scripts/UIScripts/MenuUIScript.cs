@@ -135,14 +135,12 @@ public class MenuUIScript : MonoBehaviour
 
     public void PlayAgain()
     {
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
         Config.config.DeleteSave();
         NewGame();
     }
 
     public void Restart()
     {
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
         Config.config.DeleteSave();
         NewGame();
     }
