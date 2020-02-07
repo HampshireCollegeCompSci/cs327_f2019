@@ -24,6 +24,7 @@ public class SpaceBabyController : MonoBehaviour
             audioSource.PlayOneShot(happySound, 0.4f);
 
             animator.Play("HappyAnim");
+            idling = false;
             StartCoroutine(BabyAnimTrans());
         }
 
