@@ -115,7 +115,7 @@ public class SoundController : MonoBehaviour
 
     public void AlertSound()
     {
-        Vibration.Vibrate(pattern, 0);
+        Vibration.Vibrate(pattern, 1);
         soundController.PlayOneShot(alertSound, 0.3f);
     }
 
