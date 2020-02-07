@@ -19,14 +19,14 @@ public class SoundController : MonoBehaviour
     public void ButtonPressSound()
     {
         // doesn't like PlayOneShot
-        Vibration.Vibrate(10);
+        Vibration.Vibrate(5);
         soundController.clip = buttonPressSound;
         soundController.Play();
     }
 
     public void UndoPressSound()
     {
-        Vibration.Vibrate(10);
+        Vibration.Vibrate(5);
         soundController.PlayOneShot(undoPressSound, 0.5f);
     }
 
@@ -107,7 +107,7 @@ public class SoundController : MonoBehaviour
 
     public void PauseMenuButtonSound()
     {
-        Vibration.Vibrate(10);
+        Vibration.Vibrate(5);
         soundController.Stop();
         soundController.clip = pauseButtonSound;
         soundController.Play();

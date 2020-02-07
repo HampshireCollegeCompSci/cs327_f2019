@@ -144,6 +144,10 @@ public static class Vibration
 
 	public static void Vibrate()
 	{
-		Handheld.Vibrate();
+        #if !UNITY_EDITOR && UNITY_IOS
+            return;
+        #endif
+        
+        Handheld.Vibrate();
 	}
 }
