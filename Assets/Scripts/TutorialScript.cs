@@ -16,7 +16,7 @@ public class TutorialScript : MonoBehaviour
     {
         foreach (string command in commandList)
         {
-            string[] splitCommand = command.Split(_);
+            string[] splitCommand = command.Split('_');
             splitCommandList.Enqueue(splitCommand);
         }
     }
