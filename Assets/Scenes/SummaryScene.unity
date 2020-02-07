@@ -695,8 +695,14 @@ PrefabInstance:
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_FontData.m_LineSpacing
-      value: 1.2
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
+        type: 3}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: a49f28d605d2d4930a0e07b60b5500ad,
+        type: 3}
     - target: {fileID: 7999540889534363307, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -951,8 +957,14 @@ PrefabInstance:
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_FontData.m_LineSpacing
-      value: 1.2
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
+        type: 3}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: a49f28d605d2d4930a0e07b60b5500ad,
+        type: 3}
     - target: {fileID: 7999540889534363307, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_AnchoredPosition.x
