@@ -129,7 +129,15 @@ public class SoundController : MonoBehaviour
     {
         soundController.clip = loseSound;
         soundController.Play();
+        StartCoroutine(ExplosionVibration());
     }
+
+    IEnumerator ExplosionVibration()
+    {
+        yield return new WaitForSeconds(1);
+        Vibration.Vibrate();
+    }
+
     public void FoodMatch(string suit)
     {
         if (suit == "hearts")

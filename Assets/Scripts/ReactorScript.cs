@@ -31,7 +31,6 @@ public class ReactorScript : MonoBehaviour
     {
         if (CountReactorCard() >= Config.config.maxReactorVal && !Config.config.gameOver)
         {
-            Config.config.GetComponent<SoundController>().LoseSound();
             Config.config.GameOver(false);
         }
     }
