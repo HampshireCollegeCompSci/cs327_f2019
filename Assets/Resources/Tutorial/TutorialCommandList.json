@@ -1,0 +1,7 @@
+{
+  "commands": [
+    "LoadSave_ExampleTutorial",
+    "ShowMask_Mask1",
+    "ShowText_This is example tutorial text!_Top"
+  ]
+}
