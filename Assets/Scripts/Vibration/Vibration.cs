@@ -78,13 +78,16 @@ public static class Vibration
 	///</summary>
 	public static void Vibrate(long milliseconds)
 	{
-		#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR
 		vibrator.Call("vibrate", milliseconds);
-		#elif UNITY_IOS && !UNITY_EDITOR
-        Handheld.Vibrate();
+#endif
+		/*
+#elif UNITY_IOS && !UNITY_EDITOR
+		Handheld.Vibrate();
 		#else
 		Handheld.Vibrate();
 		#endif
+		*/
 	}
 
 	///<summary>
@@ -93,13 +96,15 @@ public static class Vibration
 	///</summary>
 	public static void Vibrate(long[] pattern, int repeat)
 	{
-		#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR
 		vibrator.Call("vibrate", pattern, repeat);
-		#elif UNITY_IOS && !UNITY_EDITOR
+#endif
+		/*
+#elif UNITY_IOS && !UNITY_EDITOR
         Handheld.Vibrate();
-		#else
+#else
 		Handheld.Vibrate();
-		#endif
+		#endif*/
 	}
 
 	///<summary>
@@ -115,22 +120,26 @@ public static class Vibration
 	public static bool HasVibrator()
 	{
 #if UNITY_ANDROID && !UNITY_EDITOR
-		AndroidJavaClass contextClass = new AndroidJavaClass("android.content.Context");
-		string Context_VIBRATOR_SERVICE = contextClass.GetStatic<string>("VIBRATOR_SERVICE");
-		AndroidJavaObject systemService = context.Call<AndroidJavaObject>("getSystemService", Context_VIBRATOR_SERVICE);
-		if (systemService.Call<bool>("hasVibrator"))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-#elif UNITY_IOS && !UNITY_EDITOR
-        return _HasVibrator ();
+				AndroidJavaClass contextClass = new AndroidJavaClass("android.content.Context");
+				string Context_VIBRATOR_SERVICE = contextClass.GetStatic<string>("VIBRATOR_SERVICE");
+				AndroidJavaObject systemService = context.Call<AndroidJavaObject>("getSystemService", Context_VIBRATOR_SERVICE);
+				if (systemService.Call<bool>("hasVibrator"))
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
 #else
 		return false;
 #endif
+		/*
+#elif UNITY_IOS && !UNITY_EDITOR
+				return _HasVibrator ();
+#else
+		return false;
+		#endif*/
 	}
 
 	public static void Vibrate()
