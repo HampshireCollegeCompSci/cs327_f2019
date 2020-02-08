@@ -9,12 +9,18 @@ public class LoadingScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        /*Debug.Log(SceneManager.GetActiveScene().name);
         if (SceneManager.GetActiveScene().name == "LevelSelectScene")
+        {
             SceneManager.UnloadSceneAsync("LevelSelectScene");
+            Config.config.GetComponent<MusicController>().LoadGap();
+            Debug.Log("unload");
+        }*/
 
-        Config.config.GetComponent<MusicController>().LoadGap();
+        SceneManager.LoadSceneAsync("GameplayScene", LoadSceneMode.Additive);
+        Config.config.GetComponent<MusicController>().GameMusic(force: true);
 
-        StartCoroutine(UpdateLoadingText());
+        //StartCoroutine(UpdateLoadingText());
     }
 
     private IEnumerator UpdateLoadingText()

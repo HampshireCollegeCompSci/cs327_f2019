@@ -30,8 +30,23 @@ public class MusicController : MonoBehaviour
         Transition(menuMusic);
     }
 
-    public void GameMusic()
+    public void GameMusic(bool force = false)
     {
+        if (force)
+        {
+            if ((soundTrack1.isPlaying && soundTrack1.clip != themeMusic) ||
+                (soundTrack2.isPlaying && soundTrack2.clip != themeMusic))
+            {
+                soundTrack1.Stop();
+                soundTrack2.Stop();
+                soundTrack1.clip = themeMusic;
+                playing1 = true;
+                playingTrack = 2;
+                StartCoroutine(FadeIn(soundTrack1));
+            }
+            return;
+        }
+
         if (playingTrack == 2)
         {
             return;
