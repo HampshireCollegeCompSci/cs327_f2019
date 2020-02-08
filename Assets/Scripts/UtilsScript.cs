@@ -159,8 +159,6 @@ public class UtilsScript : MonoBehaviour
 
         soundController.CardPressSound();
         dragOn = true;
-
-        Vibration.Vibrate(1);
     }
 
     public void ClickAndDrag()

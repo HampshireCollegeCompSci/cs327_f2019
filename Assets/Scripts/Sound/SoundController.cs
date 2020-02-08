@@ -14,24 +14,23 @@ public class SoundController : MonoBehaviour
     public AudioClip winSound, loseSound, alertSound;
     public AudioClip mushroomSound, bugSound, fruitSound, rockSound;
 
-    private long[] pattern = new long[] { 5, 5 };
-
     public void ButtonPressSound()
     {
         // doesn't like PlayOneShot
-        Vibration.Vibrate(5);
+        Vibration.Vibrate(Config.config.buttonVibration);
         soundController.clip = buttonPressSound;
         soundController.Play();
     }
 
     public void UndoPressSound()
     {
-        Vibration.Vibrate(5);
+        Vibration.Vibrate(Config.config.buttonVibration);
         soundController.PlayOneShot(undoPressSound, 0.5f);
     }
 
     public void CardPressSound()
     {
+        Vibration.Vibrate(Config.config.cardVibration);
         int randomNo = Random.Range(0, 3);
         if (randomNo == 0)
         {
@@ -49,11 +48,13 @@ public class SoundController : MonoBehaviour
 
     public void CardToReactorSound()
     {
+        Vibration.Vibrate(Config.config.cardVibration);
         soundController.PlayOneShot(tokenInReactorSound);
     }
 
     public void CardStackSound()
     {
+        Vibration.Vibrate(Config.config.cardVibration);
         int randomNo = Random.Range(0, 4);
         if (randomNo == 0)
         {
@@ -97,17 +98,19 @@ public class SoundController : MonoBehaviour
 
     public void DeckDeal()
     {
+        Vibration.Vibrate(Config.config.cardVibration);
         soundController.PlayOneShot(deckDealSound, 0.6f);
     }
 
     public void DeckReshuffle()
     {
+        Vibration.Vibrate(Config.config.cardVibration);
         soundController.PlayOneShot(deckReshuffleSound, 0.6f);
     }
 
     public void PauseMenuButtonSound()
     {
-        Vibration.Vibrate(5);
+        Vibration.Vibrate(Config.config.buttonVibration);
         soundController.Stop();
         soundController.clip = pauseButtonSound;
         soundController.Play();
@@ -115,7 +118,6 @@ public class SoundController : MonoBehaviour
 
     public void AlertSound()
     {
-        Vibration.Vibrate(pattern, 1);
         soundController.PlayOneShot(alertSound, 0.3f);
     }
 
@@ -134,12 +136,13 @@ public class SoundController : MonoBehaviour
 
     IEnumerator ExplosionVibration()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.8f);
         Vibration.Vibrate();
     }
 
     public void FoodMatch(string suit)
     {
+        Vibration.Vibrate(Config.config.cardVibration);
         if (suit == "hearts")
         {
             soundController.PlayOneShot(mushroomSound);

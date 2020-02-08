@@ -336,11 +336,6 @@ public class CardScript : MonoBehaviour
         {
             StateLoader.saveSystem.writeState();
         }
-
-        if (doLog && doSave)
-        {
-            Vibration.Vibrate(1);
-        }
     }
 }
 
