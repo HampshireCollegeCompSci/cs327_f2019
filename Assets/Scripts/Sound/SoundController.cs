@@ -30,6 +30,7 @@ public class SoundController : MonoBehaviour
 
     public void CardPressSound()
     {
+        Vibration.Vibrate(Config.config.cardVibration);
         int randomNo = Random.Range(0, 3);
         if (randomNo == 0)
         {
@@ -47,11 +48,13 @@ public class SoundController : MonoBehaviour
 
     public void CardToReactorSound()
     {
+        Vibration.Vibrate(Config.config.cardVibration);
         soundController.PlayOneShot(tokenInReactorSound);
     }
 
     public void CardStackSound()
     {
+        Vibration.Vibrate(Config.config.cardVibration);
         int randomNo = Random.Range(0, 4);
         if (randomNo == 0)
         {
@@ -95,11 +98,13 @@ public class SoundController : MonoBehaviour
 
     public void DeckDeal()
     {
+        Vibration.Vibrate(Config.config.cardVibration);
         soundController.PlayOneShot(deckDealSound, 0.6f);
     }
 
     public void DeckReshuffle()
     {
+        Vibration.Vibrate(Config.config.cardVibration);
         soundController.PlayOneShot(deckReshuffleSound, 0.6f);
     }
 
@@ -131,12 +136,13 @@ public class SoundController : MonoBehaviour
 
     IEnumerator ExplosionVibration()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.8f);
         Vibration.Vibrate();
     }
 
     public void FoodMatch(string suit)
     {
+        Vibration.Vibrate(Config.config.cardVibration);
         if (suit == "hearts")
         {
             soundController.PlayOneShot(mushroomSound);
