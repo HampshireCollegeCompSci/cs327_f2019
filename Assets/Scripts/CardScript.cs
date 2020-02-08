@@ -339,7 +339,7 @@ public class CardScript : MonoBehaviour
 
         if (doLog && doSave)
         {
-            Vibration.Vibrate(1);
+            Vibration.Vibrate(Config.config.cardVibration);
         }
     }
 }

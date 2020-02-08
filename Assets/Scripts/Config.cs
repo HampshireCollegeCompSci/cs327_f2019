@@ -106,6 +106,10 @@ public class Config : MonoBehaviour
     public string[] pauseSceneButtonsTxtEnglish;
     public string[] summarySceneButtonsTxtEnglish;
 
+    //vibration
+    public byte buttonVibration = 5;
+    public byte cardVibration = 5;
+
     private void Awake()
     {
         if (config == null)
