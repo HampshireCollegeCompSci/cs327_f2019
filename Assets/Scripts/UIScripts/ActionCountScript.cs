@@ -28,7 +28,7 @@ public class ActionCountScript : MonoBehaviour
 
     public void PressKnob()
     {
-        Vibration.Vibrate(10);
+        Vibration.Vibrate(5);
         GameObject.Find("TimerButton").GetComponent<Image>().sprite = buttonDown;
         StartCoroutine("ButtonAnimTrans");
 

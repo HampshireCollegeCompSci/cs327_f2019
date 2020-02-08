@@ -19,14 +19,14 @@ public class SoundController : MonoBehaviour
     public void ButtonPressSound()
     {
         // doesn't like PlayOneShot
-        Vibration.Vibrate(10);
+        Vibration.Vibrate(5);
         soundController.clip = buttonPressSound;
         soundController.Play();
     }
 
     public void UndoPressSound()
     {
-        Vibration.Vibrate(10);
+        Vibration.Vibrate(5);
         soundController.PlayOneShot(undoPressSound, 0.5f);
     }
 
@@ -107,7 +107,7 @@ public class SoundController : MonoBehaviour
 
     public void PauseMenuButtonSound()
     {
-        Vibration.Vibrate(10);
+        Vibration.Vibrate(5);
         soundController.Stop();
         soundController.clip = pauseButtonSound;
         soundController.Play();
@@ -115,7 +115,7 @@ public class SoundController : MonoBehaviour
 
     public void AlertSound()
     {
-        Vibration.Vibrate(pattern, 0);
+        Vibration.Vibrate(pattern, 1);
         soundController.PlayOneShot(alertSound, 0.3f);
     }
 
@@ -129,7 +129,15 @@ public class SoundController : MonoBehaviour
     {
         soundController.clip = loseSound;
         soundController.Play();
+        StartCoroutine(ExplosionVibration());
     }
+
+    IEnumerator ExplosionVibration()
+    {
+        yield return new WaitForSeconds(1);
+        Vibration.Vibrate();
+    }
+
     public void FoodMatch(string suit)
     {
         if (suit == "hearts")
