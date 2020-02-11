@@ -324,91 +324,62 @@ public class WastepileScript : MonoBehaviour
 
     public void ProcessAction(GameObject input)
     {
-        if (!input.CompareTag("Card"))
+        if (utils.selectedCards.Count != 1)
         {
-            if ((input.CompareTag("Foundation") || input.CompareTag("Reactor")) && utils.selectedCards.Count != 0)
-            {
-                if (input.CompareTag("Reactor") && (utils.selectedCards.Count != 1 || utils.selectedCards[0].GetComponent<CardScript>().cardSuit != input.GetComponent<ReactorScript>().suit))
-                {
-                    return;
-                }
-                if (input.CompareTag("Foundation") && input.GetComponent<FoundationScript>().cardList.Count > 0)
-                {
-                    return;
-                }
-                foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
-                {
-                    card.GetComponent<CardScript>().MoveCard(input);
-                }
+            throw new System.ArgumentException("utils.selectedCards must be of size 1");
+        }
 
+        GameObject selectedCard = utils.selectedCards[0];
+        CardScript selectedCardScript = selectedCard.GetComponent<CardScript>();
+
+        if (input.CompareTag("Card"))
+        {
+            CardScript inputCardScript = input.GetComponent<CardScript>();
+
+            if (utils.IsMatch(input, selectedCard))
+            {
+                utils.Match(input, selectedCard);
+            }
+            else if (inputCardScript.container.CompareTag("Reactor"))
+            {
+                if (!utils.IsSameSuit(input, selectedCard))
+                    return;
+
+                soundController.CardToReactorSound();
+                selectedCardScript.MoveCard(inputCardScript.container);
+                utils.UpdateActionCounter(1);
+            }
+            else if (inputCardScript.container.CompareTag("Foundation"))
+            {
+                if (inputCardScript.container.GetComponent<FoundationScript>().cardList[0] != input ||
+                    inputCardScript.cardNum != selectedCardScript.cardNum + 1)
+                    return;
+
+                soundController.CardStackSound();
+                selectedCardScript.MoveCard(inputCardScript.container);
                 utils.UpdateActionCounter(1);
             }
         }
-
-        else if (utils.IsMatch(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1) //check if selectedCards and the input card match and that selesctedCards is only one card
+        else if (input.CompareTag("Reactor"))
         {
-            GameObject inputContainer = input.GetComponent<CardScript>().container;
-
-            if (inputContainer.CompareTag("Foundation"))
-            {
-                if (inputContainer.GetComponent<FoundationScript>().cardList[0] == input)
-                {
-                    utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-                }
-
+            if (!utils.IsSameSuit(input, selectedCard))
                 return;
-            }
 
-            if (inputContainer.CompareTag("Reactor"))
-            {
-                if (inputContainer.GetComponent<ReactorScript>().cardList[0] == input)
-                {
-                    utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-                }
-
-                return;
-            }
-
-            if (inputContainer.CompareTag("Wastepile"))
-            {
-                if (inputContainer.GetComponent<WastepileScript>().cardList[0] == input)
-                {
-                    utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-                }
-
-                return;
-            }
-
-            else
-            {
-                utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-            }
-        }
-
-        else if (input.GetComponent<CardScript>().container.CompareTag("Foundation") &&
-           utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1 ==
-           input.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardNum) //this is checking the inputs containers top card allowing you to click on 
-        {
-            soundController.CardStackSound();
-            foreach (GameObject card in utils.selectedCards) //goes through and moves all selesctedCards to clicked location
-            {
-                card.GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
-            }
+            soundController.CardToReactorSound();
+            selectedCardScript.MoveCard(input);
             utils.UpdateActionCounter(1);
         }
-
-        else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
+        else if (input.CompareTag("Foundation"))
         {
-            soundController.CardToReactorSound();
-            utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
+            if (input.GetComponent<FoundationScript>().cardList.Count != 0)
+                return;
+
+            soundController.CardStackSound();
+            selectedCardScript.MoveCard(input);
             utils.UpdateActionCounter(1);
         }
 
         utils.CheckNextCycle();
         utils.CheckGameOver();
-    }
-    public List<GameObject> GetCardList()
-    {
-        return cardList;
     }
 }

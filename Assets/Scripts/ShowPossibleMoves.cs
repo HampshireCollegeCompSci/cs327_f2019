@@ -90,7 +90,7 @@ public class ShowPossibleMoves : MonoBehaviour
         }
 
         // if the card can match and matches with the wastepile top
-        if (cardCanBeMatched && Config.config.wastePile.GetComponent<WastepileScript>().GetCardList().Count != 0 &&
+        if (cardCanBeMatched && Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count != 0 &&
             UtilsScript.global.IsMatch(Config.config.wastePile.GetComponent<WastepileScript>().cardList[0], selectedCard))
         {
             cardMatches.Add(Config.config.wastePile.GetComponent<WastepileScript>().cardList[0]);

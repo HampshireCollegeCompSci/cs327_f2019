@@ -8,7 +8,6 @@ public class ReactorScript : MonoBehaviour
     public UtilsScript utils;
     public GameObject gameUI;
     private ReactorScoreSetScript rsss;
-    public SoundController soundController;
 
     public string suit;
 
@@ -42,7 +41,6 @@ public class ReactorScript : MonoBehaviour
         card.transform.SetParent(gameObject.transform);
 
         SetCardPositions();
-        soundController.CardToReactorSound();
         rsss.SetReactorScore();
         CheckGameOver();
     }

@@ -136,7 +136,7 @@ public class SoundController : MonoBehaviour
 
     IEnumerator ExplosionVibration()
     {
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(0.9f);
         Vibration.Vibrate();
     }
 

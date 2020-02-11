@@ -130,6 +130,8 @@ public class FoundationScript : MonoBehaviour
                     {
                         return;
                     }
+
+                    soundController.CardToReactorSound();
                     utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input);
                 }
                 else if (input.CompareTag("Foundation"))
@@ -141,6 +143,7 @@ public class FoundationScript : MonoBehaviour
 
                     if (utils.selectedCards.Count > 1)
                     {
+                        soundController.CardStackSound();
                         for (int i = 0; i < utils.selectedCards.Count - 1; i++) //goes through and moves all selesctedCards to clicked location
                         {
                             utils.selectedCards[i].GetComponent<CardScript>().MoveCard(input, isStack: true, removeUpdateHolo: false, addUpdateHolo: false);
@@ -217,6 +220,7 @@ public class FoundationScript : MonoBehaviour
         }
         else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
         {
+            soundController.CardToReactorSound();
             utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
 
             utils.UpdateActionCounter(1);

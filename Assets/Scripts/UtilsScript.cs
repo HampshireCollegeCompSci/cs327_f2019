@@ -552,33 +552,23 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    public bool IsSameSuit(GameObject card1, GameObject card2)
+    public bool IsSameSuit(GameObject object1, GameObject object2)
     {
-        string card1Suit = card1.GetComponent<CardScript>().cardSuit;
-        string card2Suit = card2.GetComponent<CardScript>().cardSuit;
+        return (GetSuit(object1) == GetSuit(object2));
+    }
 
-        if (card1Suit.Equals("hearts") && card2Suit.Equals("hearts"))
+    public string GetSuit(GameObject suitObject)
+    {
+        if (suitObject.CompareTag("Card"))
         {
-            return true;
+            return suitObject.GetComponent<CardScript>().cardSuit;
         }
-        else if (card1Suit.Equals("diamonds") && card2Suit.Equals("diamonds"))
+        else if (suitObject.CompareTag("Reactor"))
         {
-            return true;
+            return suitObject.GetComponent<ReactorScript>().suit;
         }
-        else if (card1Suit.Equals("spades") && card2Suit.Equals("spades"))
-        {
-            return true;
-        }
-        else if (card1Suit.Equals("clubs") && card2Suit.Equals("clubs"))
-        {
-            return true;
-        }
-        //otherwise not a match 
-        else
-        {
-            //Debug.Log("Suits don't match");
-            return false;
-        }
+
+        throw new System.ArgumentException("suitObject must have a suit variable");
     }
 
     public void UpdateScore(int addScore)

@@ -244,7 +244,7 @@ public class DeckScript : MonoBehaviour
         }
         else // we need to try repopulating the deck
         {
-            if (wastePileScript.GetCardList().Count <= Config.config.cardsToDeal) // is it not possible to repopulate the deck?
+            if (wastePileScript.cardList.Count <= Config.config.cardsToDeal) // is it not possible to repopulate the deck?
             {
                 return;
             }
@@ -336,6 +336,7 @@ public class DeckScript : MonoBehaviour
 
                         topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
                         topCardScript.number.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
+                        soundController.CardToReactorSound();
                         topCardScript.MoveCard(reactor, isCycle: true);
 
                         if (Config.config.gameOver)
