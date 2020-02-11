@@ -142,7 +142,7 @@ public class SoundController : MonoBehaviour
 
     public void FoodMatch(string suit)
     {
-        Vibration.Vibrate(Config.config.cardVibration);
+        //Vibration.Vibrate(Config.config.cardVibration);
         if (suit == "hearts")
         {
             soundController.PlayOneShot(mushroomSound);
