@@ -25,7 +25,7 @@ public class ActionCountScript : MonoBehaviour
 
     public void UpdateActionText()
     {
-        actionText.text = (Config.config.actionMax - Config.config.actions).ToString() + "/" + Config.config.actionMax;
+        actionText.text = (Config.config.actionMax - Config.config.actions).ToString();
     }
 
     public void PressKnob()
