@@ -504,52 +504,56 @@ public class UtilsScript : MonoBehaviour
         Destroy(matchExplosion);
         Destroy(comboToLoad);
     }
-    //checks if suit match AND value match
-    public bool IsMatch(GameObject card1, GameObject card2)
-    {
 
-        //Debug.Log(card1.GetComponent<CardScript>().cardSuit + card1.GetComponent<CardScript>().cardNum);
-        //Debug.Log(card2.GetComponent<CardScript>().cardSuit + card2.GetComponent<CardScript>().cardNum);
-        //just to make it cleaner because this utils.blah blah blah is yucky
-        //basically a string of if/else cases for matching
-        string card1Suit = card1.GetComponent<CardScript>().cardSuit;
-        string card2Suit = card2.GetComponent<CardScript>().cardSuit;
-        int card1Num = card1.GetComponent<CardScript>().cardNum;
-        int card2Num = card2.GetComponent<CardScript>().cardNum;
-        if (card1Num != card2Num)
+    public bool CanMatch(CardScript card1, CardScript card2, bool checkIsTop = true)
+    {
+        //checks if the two cards can match together
+
+        if (checkIsTop)
         {
-            //Debug.Log("Numbers don't match");
-            return false;
-        }
-        else
-        {
-            //hearts diamond combo #1
-            if (card1Suit.Equals("hearts") && card2Suit.Equals("diamonds"))
-            {
-                return true;
-            }
-            //hearts diamond combo #2
-            else if (card1Suit.Equals("diamonds") && card2Suit.Equals("hearts"))
-            {
-                return true;
-            }
-            //spades clubs combo #1
-            else if (card1Suit.Equals("spades") && card2Suit.Equals("clubs"))
-            {
-                return true;
-            }
-            //spades clubs combo #2
-            else if (card1Suit.Equals("clubs") && card2Suit.Equals("spades"))
-            {
-                return true;
-            }
-            //otherwise not a match 
-            else
-            {
-                //Debug.Log("Suits don't match");
+            if (!IsAtContainerTop(card1))
                 return false;
-            }
+            if (!IsAtContainerTop(card2))
+                return false;
         }
+
+        if (card1.cardNum != card2.cardNum)
+            return false;
+
+        //hearts diamond combo #1
+        if (card1.cardSuit.Equals("hearts") && card2.cardSuit.Equals("diamonds"))
+            return true;
+        //hearts diamond combo #2
+        if (card1.cardSuit.Equals("diamonds") && card2.cardSuit.Equals("hearts"))
+            return true;
+        //spades clubs combo #1
+        if (card1.cardSuit.Equals("spades") && card2.cardSuit.Equals("clubs"))
+            return true;
+        //spades clubs combo #2
+        if (card1.cardSuit.Equals("clubs") && card2.cardSuit.Equals("spades"))
+            return true;
+
+        //otherwise not a match 
+        return false;
+    }
+
+    public bool IsAtContainerTop(CardScript card)
+    {
+        // checks if the card is at the top of its container's cardList
+
+        if (card.container.CompareTag("Foundation") &&
+            card.container.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>() != card)
+            return false;
+        if (card.container.CompareTag("Reactor") &&
+            card.container.GetComponent<ReactorScript>().cardList[0].GetComponent<CardScript>() != card)
+            return false;
+        /*if (card.container.CompareTag("Wastepile") &&
+            card.container.GetComponent<WastepileScript>().cardList[0].GetComponent<CardScript>() != card)
+            return false;
+        if (card.container.CompareTag("Deck") &&
+            card.container.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>() != card)
+            return false;*/
+        return true;
     }
 
     public bool IsSameSuit(GameObject object1, GameObject object2)
@@ -560,13 +564,9 @@ public class UtilsScript : MonoBehaviour
     public string GetSuit(GameObject suitObject)
     {
         if (suitObject.CompareTag("Card"))
-        {
             return suitObject.GetComponent<CardScript>().cardSuit;
-        }
-        else if (suitObject.CompareTag("Reactor"))
-        {
+        if (suitObject.CompareTag("Reactor"))
             return suitObject.GetComponent<ReactorScript>().suit;
-        }
 
         throw new System.ArgumentException("suitObject must have a suit variable");
     }

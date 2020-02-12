@@ -31,16 +31,17 @@ public class ShowPossibleMoves : MonoBehaviour
 
     private void FindMoves(GameObject selectedCard)
     {
-        int selectedCardNum = selectedCard.GetComponent<CardScript>().cardNum;
+        CardScript selectedCardScript = selectedCard.GetComponent<CardScript>();
 
-        bool cardIsFromFoundation = (selectedCard.GetComponent<CardScript>().container.GetComponent<FoundationScript>() != null);
-        bool cardIsFromWastepile = (selectedCard.GetComponent<CardScript>().container.GetComponent<WastepileScript>() != null);
+        int selectedCardNum = selectedCardScript.cardNum;
+
+        bool cardIsFromFoundation = selectedCardScript.container.CompareTag("Foundation");
+        bool cardIsFromWastepile = selectedCardScript.container.CompareTag("Wastepile");
+        
         bool cardCanBeMatched = true;
         // if the card is in a foundation and not at the top of it
-        if (cardIsFromFoundation && (selectedCard != selectedCard.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[0]))
-        {
+        if (cardIsFromFoundation && selectedCard != selectedCardScript.container.GetComponent<FoundationScript>().cardList[0])
             cardCanBeMatched = false;
-        }
 
         if (cardCanBeMatched)
         {
@@ -48,52 +49,42 @@ public class ShowPossibleMoves : MonoBehaviour
             {
                 // if the card matches the card in the top of the reactor
                 if (reactor.GetComponent<ReactorScript>().cardList.Count != 0 && 
-                    UtilsScript.global.IsMatch(reactor.GetComponent<ReactorScript>().cardList[0], selectedCard))
-                {
+                    UtilsScript.global.CanMatch(reactor.GetComponent<ReactorScript>().cardList[0].GetComponent<CardScript>(),
+                                                selectedCardScript, checkIsTop: false))
                     cardMatches.Add(reactor.GetComponent<ReactorScript>().cardList[0]);
-                }
             }
 
             // if the card is not in the reactor
             if (!selectedCard.GetComponent<CardScript>().container.CompareTag("Reactor"))
-            {
                 // get the reactor that we can match into
                 foreach (GameObject reactor in Config.config.reactors)
-                {
-                    if (reactor.GetComponent<ReactorScript>().suit == selectedCard.GetComponent<CardScript>().cardSuit)
+                    if (UtilsScript.global.IsSameSuit(selectedCard, reactor))
                     {
                         reactorMove = reactor;
                         break;
                     }
-                }
-            }
         }
         
         foreach (GameObject foundation in Config.config.foundations)
-        {
             if (foundation.GetComponent<FoundationScript>().cardList.Count != 0)
             {
-                GameObject topFoundationCard = foundation.GetComponent<FoundationScript>().cardList[0];
+                CardScript topFoundationCardScript = foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>();
 
                 // if the card can match and matches with the foundation top
-                if (cardCanBeMatched && UtilsScript.global.IsMatch(selectedCard, topFoundationCard))
-                {
+                if (cardCanBeMatched && UtilsScript.global.CanMatch(selectedCardScript, topFoundationCardScript, checkIsTop: false))
                     cardMatches.Add(foundation.GetComponent<FoundationScript>().cardList[0]);
-                }
                 // if the card is not from a reactor can it stack?
                 else if ((cardIsFromFoundation || cardIsFromWastepile) &&
-                    topFoundationCard.GetComponent<CardScript>().cardNum == (selectedCardNum + 1))
-                {
+                    topFoundationCardScript.cardNum == selectedCardNum + 1)
                     cardMoves.Add(foundation.GetComponent<FoundationScript>().cardList[0]);
-                }
             }
-        }
 
         // if the card can match and matches with the wastepile top
-        if (cardCanBeMatched && Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count != 0 &&
-            UtilsScript.global.IsMatch(Config.config.wastePile.GetComponent<WastepileScript>().cardList[0], selectedCard))
+        if (cardCanBeMatched && Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count != 0)
         {
-            cardMatches.Add(Config.config.wastePile.GetComponent<WastepileScript>().cardList[0]);
+            GameObject topWastepileCard = Config.config.wastePile.GetComponent<WastepileScript>().cardList[0];
+            if (UtilsScript.global.CanMatch(topWastepileCard.GetComponent<CardScript>(), selectedCardScript, checkIsTop: false))
+                cardMatches.Add(topWastepileCard);
         }
     }
 

@@ -325,9 +325,7 @@ public class WastepileScript : MonoBehaviour
     public void ProcessAction(GameObject input)
     {
         if (utils.selectedCards.Count != 1)
-        {
             throw new System.ArgumentException("utils.selectedCards must be of size 1");
-        }
 
         GameObject selectedCard = utils.selectedCards[0];
         CardScript selectedCardScript = selectedCard.GetComponent<CardScript>();
@@ -336,10 +334,8 @@ public class WastepileScript : MonoBehaviour
         {
             CardScript inputCardScript = input.GetComponent<CardScript>();
 
-            if (utils.IsMatch(input, selectedCard))
-            {
+            if (utils.CanMatch(inputCardScript, selectedCardScript))
                 utils.Match(input, selectedCard);
-            }
             else if (inputCardScript.container.CompareTag("Reactor"))
             {
                 if (!utils.IsSameSuit(input, selectedCard))
