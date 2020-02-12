@@ -137,7 +137,7 @@ public class SoundController : MonoBehaviour
     IEnumerator ExplosionVibration()
     {
         yield return new WaitForSeconds(0.9f);
-        Vibration.Vibrate();
+        Vibration.Vibrate(500);
     }
 
     public void FoodMatch(string suit)
