@@ -37,6 +37,7 @@ public class MusicController : MonoBehaviour
             if ((soundTrack1.isPlaying && soundTrack1.clip != themeMusic) ||
                 (soundTrack2.isPlaying && soundTrack2.clip != themeMusic))
             {
+                StopAllCoroutines();
                 soundTrack1.Stop();
                 soundTrack2.Stop();
                 soundTrack1.clip = themeMusic;

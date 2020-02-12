@@ -120,104 +120,74 @@ public class FoundationScript : MonoBehaviour
 
     public void ProcessAction(GameObject input)
     {
-        if (!input.CompareTag("Card"))
+        GameObject selectedCard = utils.selectedCards[0];
+        CardScript selectedCardScript = selectedCard.GetComponent<CardScript>();
+
+        if (input.CompareTag("Card"))
         {
-            if ((input.CompareTag("Foundation") || input.CompareTag("Reactor")) && utils.selectedCards.Count != 0)
+            CardScript inputCardScript = input.GetComponent<CardScript>();
+
+            if (utils.selectedCards.Count == 1)
             {
-                if (input.CompareTag("Reactor"))
+                if (utils.CanMatch(inputCardScript, selectedCardScript))
+                    utils.Match(input, selectedCard);
+                else if (inputCardScript.container.CompareTag("Reactor"))
                 {
-                    if (utils.selectedCards.Count > 1 || utils.selectedCards[0].GetComponent<CardScript>().cardSuit != input.GetComponent<ReactorScript>().suit)
-                    {
+                    if (!utils.IsSameSuit(input, selectedCard))
                         return;
-                    }
-                    utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input);
+
+                    soundController.CardToReactorSound();
+                    selectedCardScript.MoveCard(inputCardScript.container);
+                    utils.UpdateActionCounter(1);
                 }
-                else if (input.CompareTag("Foundation"))
+                else if (inputCardScript.container.CompareTag("Foundation"))
                 {
-                    if (input.GetComponent<FoundationScript>().cardList.Count != 0)
-                    {
+                    if (inputCardScript.container.GetComponent<FoundationScript>().cardList[0] != input ||
+                        inputCardScript.cardNum != selectedCardScript.cardNum + 1)
                         return;
-                    }
 
-                    if (utils.selectedCards.Count > 1)
-                    {
-                        for (int i = 0; i < utils.selectedCards.Count - 1; i++) //goes through and moves all selesctedCards to clicked location
-                        {
-                            utils.selectedCards[i].GetComponent<CardScript>().MoveCard(input, isStack: true, removeUpdateHolo: false, addUpdateHolo: false);
-                        }
-                        utils.selectedCards[utils.selectedCards.Count - 1].GetComponent<CardScript>().MoveCard(input, isStack: true);
-                    }
-                    else
-                    {
-                        utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input);
-                    }
+                    soundController.CardStackSound();
+                    selectedCardScript.MoveCard(inputCardScript.container);
                 }
+            }
+            else if (inputCardScript.container.CompareTag("Foundation"))
+            {
+                if (inputCardScript.container.GetComponent<FoundationScript>().cardList[0] != input ||
+                    inputCardScript.cardNum != selectedCardScript.cardNum + 1)
+                    return;
 
+                soundController.CardStackSound();
+                
+                for (int i = 0; i < utils.selectedCards.Count - 1; i++) //goes through and moves all selesctedCards to clicked location
+                    utils.selectedCards[i].GetComponent<CardScript>().MoveCard(inputCardScript.container, isStack: true, removeUpdateHolo: false, addUpdateHolo: false);
+                utils.selectedCards[utils.selectedCards.Count - 1].GetComponent<CardScript>().MoveCard(inputCardScript.container, isStack: true);
+                
                 utils.UpdateActionCounter(1);
             }
         }
-        else if (utils.IsMatch(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1) //check if selectedCards and the input card match and that selesctedCards is only one card
+        else if (input.CompareTag("Reactor"))
         {
-            GameObject inputContainer = input.GetComponent<CardScript>().container;
-
-            if (inputContainer.CompareTag("Foundation"))
-            {
-                if (inputContainer.GetComponent<FoundationScript>().cardList[0] == input)
-                {
-                    utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-                }
-
+            if (utils.selectedCards.Count != 1 || !utils.IsSameSuit(input, selectedCard))
                 return;
-            }
 
-            if (inputContainer.CompareTag("Reactor"))
-            {
-                if (inputContainer.GetComponent<ReactorScript>().cardList[0] == input)
-                {
-                    utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-                }
-
-                return;
-            }
-
-            if (inputContainer.CompareTag("Wastepile"))
-            {
-                if (inputContainer.GetComponent<WastepileScript>().cardList[0] == input)
-                {
-                    utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-                }
-
-                return;
-            }
-
-            else
-            {
-                utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-            }
+            soundController.CardToReactorSound();
+            selectedCardScript.MoveCard(input);
         }
-        else if (input.GetComponent<CardScript>().container.CompareTag("Foundation") &&
-            utils.selectedCards[0].GetComponent<CardScript>().cardNum + 1 == input.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardNum)
+        else if (input.CompareTag("Foundation"))
         {
+            if (input.GetComponent<FoundationScript>().cardList.Count != 0)
+                return;
+
             soundController.CardStackSound();
-            if (utils.selectedCards.Count > 1)
-            {
-                GameObject inputContainer = input.GetComponent<CardScript>().container;
-                for (int i = 0; i < utils.selectedCards.Count - 1; i++) //goes through and moves all selesctedCards to clicked location
-                {
-                    utils.selectedCards[i].GetComponent<CardScript>().MoveCard(inputContainer, isStack: true, removeUpdateHolo: false, addUpdateHolo: false);
-                }
-                utils.selectedCards[utils.selectedCards.Count - 1].GetComponent<CardScript>().MoveCard(inputContainer, isStack: true);
-            }
+
+            if (utils.selectedCards.Count == 1)
+                selectedCardScript.MoveCard(input);
             else
             {
-                utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
+                for (int i = 0; i < utils.selectedCards.Count - 1; i++) //goes through and moves all selesctedCards to clicked location
+                    utils.selectedCards[i].GetComponent<CardScript>().MoveCard(input, isStack: true, removeUpdateHolo: false, addUpdateHolo: false);
+                utils.selectedCards[utils.selectedCards.Count - 1].GetComponent<CardScript>().MoveCard(input, isStack: true);
             }
-
-            utils.UpdateActionCounter(1);
-        }
-        else if (input.GetComponent<CardScript>().container.CompareTag("Reactor") && utils.IsSameSuit(input, utils.selectedCards[0]) && utils.selectedCards.Count == 1)
-        {
-            utils.selectedCards[0].GetComponent<CardScript>().MoveCard(input.GetComponent<CardScript>().container);
 
             utils.UpdateActionCounter(1);
         }

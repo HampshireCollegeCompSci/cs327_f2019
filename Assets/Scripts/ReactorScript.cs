@@ -8,7 +8,6 @@ public class ReactorScript : MonoBehaviour
     public UtilsScript utils;
     public GameObject gameUI;
     private ReactorScoreSetScript rsss;
-    public SoundController soundController;
 
     public string suit;
 
@@ -42,7 +41,6 @@ public class ReactorScript : MonoBehaviour
         card.transform.SetParent(gameObject.transform);
 
         SetCardPositions();
-        soundController.CardToReactorSound();
         rsss.SetReactorScore();
         CheckGameOver();
     }
@@ -80,69 +78,18 @@ public class ReactorScript : MonoBehaviour
 
     public void ProcessAction(GameObject input)
     {
-        GameObject card1 = utils.selectedCards[0];
+        if (!input.CompareTag("Card"))
+            return;
 
-        if (input.CompareTag("Card"))
-        {
-            //list needs to only be 1, something wrong if not -> skip to return
-            if (utils.selectedCards.Count == 1)
-            {
-                if (utils.IsMatch(input, card1) && utils.selectedCards.Count == 1)
-                {
-                    GameObject inputContainer = input.GetComponent<CardScript>().container;
+        if (utils.selectedCards.Count != 1)
+            throw new System.ArgumentException("utils.selectedCards must be of size 1");
 
-                    if (inputContainer.CompareTag("Foundation"))
-                    {
-                        if (inputContainer.GetComponent<FoundationScript>().cardList[0] == input)
-                        {
-                            utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-                        }
+        GameObject selectedCard = utils.selectedCards[0];
+        CardScript selectedCardScript = selectedCard.GetComponent<CardScript>();
+        CardScript inputCardScript = input.GetComponent<CardScript>();
 
-                        return;
-                    }
-
-                    if (inputContainer.CompareTag("Reactor"))
-                    {
-                        if (inputContainer.GetComponent<ReactorScript>().cardList[0] == input)
-                        {
-                            utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-                        }
-
-                        return;
-                    }
-
-                    if (inputContainer.CompareTag("Wastepile"))
-                    {
-                        if (inputContainer.GetComponent<WastepileScript>().cardList[0] == input)
-                        {
-                            utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-                        }
-
-                        return;
-                    }
-
-                    if (inputContainer.CompareTag("Wastepile"))
-                    {
-                        if (inputContainer.GetComponent<WastepileScript>().cardList[0] == input)
-                        {
-                            utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-                        }
-
-                        return;
-                    }
-                    else
-                    {
-                        utils.Match(input, utils.selectedCards[0]); //removes the two matched cards
-                    }
-
-                    return;
-                }
-                else
-                {
-                    utils.UnselectCards();
-                }
-            }
-        }
+        if (utils.CanMatch(inputCardScript, selectedCardScript))
+            utils.Match(input, selectedCard);
 
         utils.CheckNextCycle();
         utils.CheckGameOver();

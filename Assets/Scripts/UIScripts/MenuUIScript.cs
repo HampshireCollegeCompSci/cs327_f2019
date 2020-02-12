@@ -7,15 +7,12 @@ using System.IO;
 
 public class MenuUIScript : MonoBehaviour
 {
-    private IEnumerator coroutine;
-
     private void Start()
     {
         //stop animation from start
         Animator[] animators = gameObject.GetComponentsInChildren<Animator>();
         foreach (Animator anim in animators)
             anim.enabled = false;
-
 
         if (GameObject.Find("Spacebaby Loading") != null)
             GameObject.Find("Spacebaby Loading").GetComponent<Animator>().enabled = true;
@@ -99,8 +96,6 @@ public class MenuUIScript : MonoBehaviour
 
     }
 
-
-
     public void Play()
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
@@ -159,7 +154,6 @@ public class MenuUIScript : MonoBehaviour
 
         Config.config.GetComponent<MusicController>().MainMenuMusic();
     }
-
 
     //possibly be renamed to settings
     public void Settings()

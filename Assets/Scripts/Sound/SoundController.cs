@@ -136,13 +136,13 @@ public class SoundController : MonoBehaviour
 
     IEnumerator ExplosionVibration()
     {
-        yield return new WaitForSeconds(0.8f);
-        Vibration.Vibrate();
+        yield return new WaitForSeconds(0.9f);
+        Vibration.Vibrate(500);
     }
 
     public void FoodMatch(string suit)
     {
-        Vibration.Vibrate(Config.config.cardVibration);
+        //Vibration.Vibrate(Config.config.cardVibration);
         if (suit == "hearts")
         {
             soundController.PlayOneShot(mushroomSound);

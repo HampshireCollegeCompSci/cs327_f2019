@@ -53,6 +53,7 @@ public class CardScript : MonoBehaviour
         if (show)
         {
             //Debug.Log("showing card" + cardNum + cardSuit);
+            gameObject.GetComponent<BoxCollider2D>().enabled = true;
             number.SetActive(true);
             gameObject.GetComponent<SpriteRenderer>().sprite = cardFrontSprite;
             hidden = false;
@@ -60,6 +61,7 @@ public class CardScript : MonoBehaviour
         else
         {
             //Debug.Log("hiding card" + cardNum + cardSuit);
+            gameObject.GetComponent<BoxCollider2D>().enabled = false;
             number.SetActive(false);
             gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
             HideHologram();
