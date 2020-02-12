@@ -156,6 +156,7 @@ public class FoundationScript : MonoBehaviour
 
                     soundController.CardStackSound();
                     selectedCardScript.MoveCard(inputCardScript.container);
+                    utils.UpdateActionCounter(1);
                 }
             }
             else if (inputCardScript.container.CompareTag("Foundation"))
@@ -180,6 +181,7 @@ public class FoundationScript : MonoBehaviour
 
             soundController.CardToReactorSound();
             selectedCardScript.MoveCard(input);
+            utils.UpdateActionCounter(1);
         }
         else if (input.CompareTag("Foundation"))
         {
