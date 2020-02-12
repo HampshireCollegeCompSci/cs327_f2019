@@ -36,7 +36,7 @@ public class FoundationScript : MonoBehaviour
     {
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
-        
+
         if (checkHolo)
         {
             CheckHologram(true);
@@ -100,18 +100,26 @@ public class FoundationScript : MonoBehaviour
             }
             else if (hiddenCards > 0)
             {
-                if (cardList.Count > 12)
+                if (cardList.Count > 11)
                 {
-                    yOffset += 0.42f;
+                    yOffset += 0.37f;
                 }
                 else
                 {
-                    yOffset += 0.45f;
+                    yOffset += 0.42f;
                 }
             }
             else
             {
-                yOffset += 0.45f;
+                if (cardList.Count > 11)
+                {
+                    yOffset += 0.38f;
+                }
+
+                else
+                {
+                    yOffset += 0.43f;
+                }
             }
 
             positionCounter++;
@@ -157,11 +165,11 @@ public class FoundationScript : MonoBehaviour
                     return;
 
                 soundController.CardStackSound();
-                
+
                 for (int i = 0; i < utils.selectedCards.Count - 1; i++) //goes through and moves all selesctedCards to clicked location
                     utils.selectedCards[i].GetComponent<CardScript>().MoveCard(inputCardScript.container, isStack: true, removeUpdateHolo: false, addUpdateHolo: false);
                 utils.selectedCards[utils.selectedCards.Count - 1].GetComponent<CardScript>().MoveCard(inputCardScript.container, isStack: true);
-                
+
                 utils.UpdateActionCounter(1);
             }
         }
