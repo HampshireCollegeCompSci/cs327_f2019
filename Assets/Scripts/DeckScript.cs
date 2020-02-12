@@ -181,19 +181,22 @@ public class DeckScript : MonoBehaviour
     // moves cards into foundations
     public void SetUpFoundations()
     {
+        CardScript currentCardScript;
         foreach (GameObject foundation in Config.config.foundations)
         {
             for (int n = 0; n < Config.config.foundationStartSize - 1; n++)
             {
-                cardList[0].GetComponent<CardScript>().SetVisibility(false);
-                cardList[0].GetComponent<CardScript>().MoveCard(foundation, doLog: false, addUpdateHolo: false, doSave: false);
+                currentCardScript = cardList[0].GetComponent<CardScript>();
+                currentCardScript.MoveCard(foundation, doLog: false, addUpdateHolo: false, doSave: false);
+                currentCardScript.SetVisibility(false);
             }
 
             // adding and revealing the top card of the foundation
-            cardList[0].GetComponent<CardScript>().SetVisibility(true);
+            currentCardScript = cardList[0].GetComponent<CardScript>();
+            currentCardScript.SetVisibility(true);
             cardList[0].SetActive(true);
-            cardList[0].gameObject.GetComponent<CardScript>().ShowHologram();
-            cardList[0].GetComponent<CardScript>().MoveCard(foundation, doLog: false, addUpdateHolo: false, doSave: false);
+            currentCardScript.ShowHologram();
+            currentCardScript.MoveCard(foundation, doLog: false, addUpdateHolo: false, doSave: false);
         }
     }
 
@@ -203,7 +206,9 @@ public class DeckScript : MonoBehaviour
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
         card.transform.localPosition = Vector3.zero;
-        card.SetActive(false);
+        //card.SetActive(false);
+        card.GetComponent<SpriteRenderer>().enabled = false;
+        card.GetComponent<BoxCollider2D>().enabled = false;
 
         deckCounter.fontSize = 50;
         deckCounter.text = cardList.Count.ToString();
@@ -212,7 +217,9 @@ public class DeckScript : MonoBehaviour
     public void RemoveCard(GameObject card, bool checkHolo = false)
     {
         cardList.Remove(card);
-        card.SetActive(true);
+        //card.SetActive(true);
+        card.GetComponent<SpriteRenderer>().enabled = true;
+        card.GetComponent<BoxCollider2D>().enabled = true;
 
         if (cardList.Count != 0)
         {

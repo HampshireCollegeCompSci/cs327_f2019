@@ -92,7 +92,8 @@ public class WastepileScript : MonoBehaviour
     {
         if (cardList.Count != 0)
         {
-            cardList[0].gameObject.GetComponent<CardScript>().ShowHologram();
+            cardList[0].GetComponent<CardScript>().ShowHologram();
+            cardList[0].GetComponent<BoxCollider2D>().enabled = true;
 
             if (tryHidingBeneath)
             {
@@ -100,6 +101,7 @@ public class WastepileScript : MonoBehaviour
                 {
                     if (cardList[i].GetComponent<CardScript>().HideHologram())
                     {
+                        cardList[i].GetComponent<BoxCollider2D>().enabled = false;
                         return;
                     }
                 }
@@ -119,6 +121,7 @@ public class WastepileScript : MonoBehaviour
         if (cardList.Count != 0) // hide the current top tokens hologram now
         {
             cardList[0].GetComponent<CardScript>().HideHologram();
+            cardList[0].GetComponent<BoxCollider2D>().enabled = false;
         }
 
         Vector3 temp = contentRectTransform.anchoredPosition;
@@ -140,6 +143,7 @@ public class WastepileScript : MonoBehaviour
         for (int i = 0; i < cards.Count; i++)
         {
             cards[i].GetComponent<CardScript>().MoveCard(gameObject, doLog: doLog, addUpdateHolo: false);
+            cards[i].GetComponent<BoxCollider2D>().enabled = false;
         }
 
         if (doLog)
