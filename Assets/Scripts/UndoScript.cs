@@ -69,7 +69,7 @@ public class UndoScript : MonoBehaviour
                 for (int i = 0; i < undoList.Count; i++) // move the tokens back
                     undoList[i].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false);
                 
-                utils.UpdateActionCounter(undoList[0].remainingActions, setAsValue: true);
+                utils.UpdateActions(undoList[0].remainingActions, setAsValue: true);
                 return;
             }
             else if (moveLog.Peek().moveType == "move") //standard behavior, move a single token back where it was
@@ -80,7 +80,7 @@ public class UndoScript : MonoBehaviour
 
                 lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
                 if (lastMove.isAction)
-                    utils.UpdateActionCounter(lastMove.remainingActions, true);
+                    utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
 
                 return;
             }
@@ -96,7 +96,7 @@ public class UndoScript : MonoBehaviour
                 }
 
                 utils.UpdateScore(-Config.config.matchPoints);
-                utils.UpdateActionCounter(0);
+                utils.UpdateActions(-1);
                 return;
             }
             else if (moveLog.Peek().moveType == "draw") //move the last three drawn cards back to the deck (assuming the last action was to draw from the deck)
@@ -109,7 +109,7 @@ public class UndoScript : MonoBehaviour
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
                 }
 
-                utils.UpdateActionCounter(lastMove.remainingActions, true);
+                utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
 
                 if (moveLog.Count != 0 && moveLog.Peek().moveType == "deckreset")
                     undo();
@@ -126,7 +126,7 @@ public class UndoScript : MonoBehaviour
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
                 }
 
-                utils.UpdateActionCounter(lastMove.remainingActions, true);
+                utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
                 return;
             }
             else if (moveLog.Peek().moveType == "cycle") //undo a cycle turning over, resets all tokens moved up, along with the move counter
@@ -143,11 +143,10 @@ public class UndoScript : MonoBehaviour
                 if (lastMove.remainingActions == Config.config.actionMax)
                     undo();
                 else
-                    utils.UpdateActionCounter(lastMove.remainingActions, true);
+                    utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
 
                 return;
             }
-            StateLoader.saveSystem.writeState();
         }
     }
 

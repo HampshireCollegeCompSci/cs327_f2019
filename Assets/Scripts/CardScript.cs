@@ -26,6 +26,7 @@ public class CardScript : MonoBehaviour
     void Start()
     {
         glowing = false;
+        hologramFood.GetComponent<SpriteRenderer>().sprite = hologramFoodSprite;
 
         if (Config.config.prettyColors)
         {
@@ -122,30 +123,26 @@ public class CardScript : MonoBehaviour
         Destroy(gameObject.GetComponent<BoxCollider2D>());
     }
 
-    public void ChangeFoodHologram(bool changeToDefault, bool updateScale = false)
+    public void ChangeHologram(Color newColor)
     {
-        if (changeToDefault)
-        {
-            hologramFood.GetComponent<SpriteRenderer>().sprite = hologramFoodSprite;
-            if (updateScale)
-            {
-                hologramFood.transform.localScale = new Vector3(1.2f, 1.2f, 1);
-            }
-        }
-        else
-        {
-            hologramFood.GetComponent<SpriteRenderer>().sprite = hologramComboSprite;
-            if (updateScale)
-            {
-                hologramFood.transform.localScale = new Vector3(0.6f, 0.6f, 1);
-            }
-        }
-    }
+        SpriteRenderer hologramFoodSP = hologramFood.GetComponent<SpriteRenderer>();
 
-    public void ChangeHologramColor(Color newColor)
-    {
+        if (hologramFoodSP.color == newColor)
+            return;
+
         hologram.GetComponent<SpriteRenderer>().color = newColor;
-        hologramFood.GetComponent<SpriteRenderer>().color = newColor;
+        hologramFoodSP.color = newColor;
+
+        if (newColor == Config.config.cardMatchHighlightColor)
+        {
+            hologramFoodSP.sprite = hologramComboSprite;
+            hologramFood.transform.localScale = new Vector3(0.6f, 0.6f, 1);
+        }
+        else if (hologramFoodSP.sprite != hologramFoodSprite)
+        {
+            hologramFoodSP.sprite = hologramFoodSprite;
+            hologramFood.transform.localScale = new Vector3(1.2f, 1.2f, 1);
+        }
     }
 
     public Color GetGlowColor()
@@ -329,10 +326,6 @@ public class CardScript : MonoBehaviour
         }
 
         container = destination;
-        if (doSave)
-        {
-            StateLoader.saveSystem.writeState();
-        }
     }
 }
 

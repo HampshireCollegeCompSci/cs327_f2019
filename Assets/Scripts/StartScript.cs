@@ -30,7 +30,6 @@ public class StartScript : MonoBehaviour
         }
 
         showpossiblemoves = GameObject.Find("ShowPossibleMoves");
-        StateLoader.saveSystem.writeState();
     }
 
 }

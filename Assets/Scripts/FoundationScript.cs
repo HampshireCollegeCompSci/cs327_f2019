@@ -102,7 +102,10 @@ public class FoundationScript : MonoBehaviour
             if (utils.selectedCards.Count == 1)
             {
                 if (utils.CanMatch(inputCardScript, selectedCardScript))
+                {
                     utils.Match(input, selectedCard);
+                    return;
+                }
                 else if (inputCardScript.container.CompareTag("Reactor"))
                 {
                     if (!utils.IsSameSuit(input, selectedCard))
@@ -110,7 +113,8 @@ public class FoundationScript : MonoBehaviour
 
                     soundController.CardToReactorSound();
                     selectedCardScript.MoveCard(inputCardScript.container);
-                    utils.UpdateActionCounter(1);
+                    utils.UpdateActions(1, checkGameOver: true);
+                    return;
                 }
                 else if (inputCardScript.container.CompareTag("Foundation"))
                 {
@@ -120,8 +124,9 @@ public class FoundationScript : MonoBehaviour
 
                     soundController.CardStackSound();
                     selectedCardScript.MoveCard(inputCardScript.container);
-                    utils.UpdateActionCounter(1);
                 }
+                else
+                    return;
             }
             else if (inputCardScript.container.CompareTag("Foundation"))
             {
@@ -133,9 +138,9 @@ public class FoundationScript : MonoBehaviour
 
                 for (int i = 0; i < utils.selectedCards.Count; i++) //goes through and moves all selesctedCards to clicked location
                     utils.selectedCards[i].GetComponent<CardScript>().MoveCard(inputCardScript.container, isStack: true);
-
-                utils.UpdateActionCounter(1);
             }
+            else
+                return;
         }
         else if (input.CompareTag("Reactor"))
         {
@@ -144,7 +149,8 @@ public class FoundationScript : MonoBehaviour
 
             soundController.CardToReactorSound();
             selectedCardScript.MoveCard(input);
-            utils.UpdateActionCounter(1);
+            utils.UpdateActions(1, checkGameOver: true);
+            return;
         }
         else if (input.CompareTag("Foundation"))
         {
@@ -156,17 +162,12 @@ public class FoundationScript : MonoBehaviour
             if (utils.selectedCards.Count == 1)
                 selectedCardScript.MoveCard(input);
             else
-            {
                 for (int i = 0; i < utils.selectedCards.Count; i++) //goes through and moves all selesctedCards to clicked location
                     utils.selectedCards[i].GetComponent<CardScript>().MoveCard(input, isStack: true);
-            }
-
-            utils.UpdateActionCounter(1);
         }
         else
             return;
 
-        utils.CheckNextCycle();
-        utils.CheckGameOver();
+        utils.UpdateActions(1);
     }
 }

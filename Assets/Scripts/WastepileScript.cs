@@ -57,8 +57,6 @@ public class WastepileScript : MonoBehaviour
         for (int i = 0; i < cards.Count; i++)
             cards[i].GetComponent<CardScript>().MoveCard(gameObject, doLog);
 
-        utils.UpdateActionCounter(1);
-
         // move the scroll rect's content so that the new cards are hidden to the left side of the belt
         temp.x = cards.Count;
         contentRectTransform.anchoredPosition = temp;
@@ -74,8 +72,9 @@ public class WastepileScript : MonoBehaviour
         deckScript.StartButtonUp();
 
         ResetScrollBar(temp);
-        utils.CheckNextCycle();
-        utils.CheckGameOver();
+
+        if (doLog)
+            utils.UpdateActions(1);
     }
 
     public void AddCard(GameObject card)
@@ -234,7 +233,10 @@ public class WastepileScript : MonoBehaviour
             CardScript inputCardScript = input.GetComponent<CardScript>();
 
             if (utils.CanMatch(inputCardScript, selectedCardScript))
+            {
                 utils.Match(input, selectedCard);
+                return;
+            }
             else if (inputCardScript.container.CompareTag("Reactor"))
             {
                 if (!utils.IsSameSuit(input, selectedCard))
@@ -242,7 +244,6 @@ public class WastepileScript : MonoBehaviour
 
                 soundController.CardToReactorSound();
                 selectedCardScript.MoveCard(inputCardScript.container);
-                utils.UpdateActionCounter(1);
             }
             else if (inputCardScript.container.CompareTag("Foundation"))
             {
@@ -252,8 +253,9 @@ public class WastepileScript : MonoBehaviour
 
                 soundController.CardStackSound();
                 selectedCardScript.MoveCard(inputCardScript.container);
-                utils.UpdateActionCounter(1);
             }
+            else
+                return;
         }
         else if (input.CompareTag("Reactor"))
         {
@@ -262,7 +264,6 @@ public class WastepileScript : MonoBehaviour
 
             soundController.CardToReactorSound();
             selectedCardScript.MoveCard(input);
-            utils.UpdateActionCounter(1);
         }
         else if (input.CompareTag("Foundation"))
         {
@@ -271,7 +272,6 @@ public class WastepileScript : MonoBehaviour
 
             soundController.CardStackSound();
             selectedCardScript.MoveCard(input);
-            utils.UpdateActionCounter(1);
         }
         else
         {
@@ -279,7 +279,6 @@ public class WastepileScript : MonoBehaviour
             return;
         }
 
-        utils.CheckNextCycle();
-        utils.CheckGameOver();
+        utils.UpdateActions(1);
     }
 }

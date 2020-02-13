@@ -45,19 +45,17 @@ public class DeckScript : MonoBehaviour
         wastePileScript = wastePile.GetComponent<WastepileScript>();
         buttonImage = gameObject.GetComponent<Image>();
 
-        utils.UpdateActionCounter(0, true);
-
         cardList = new List<GameObject>();
         if ((File.Exists("Assets/Resources/GameStates/testState.json") && Application.isEditor) || Config.config.tutorialOn)
         {
             StateLoader.saveSystem.unpackState(StateLoader.saveSystem.gameState);
-            utils.UpdateScore(0);
+            //utils.UpdateScore(0);
             print("Loading save mode 1");
         }
         else if (File.Exists(Application.persistentDataPath + "/testState.json") && !Application.isEditor)
         {
             StateLoader.saveSystem.unpackState(StateLoader.saveSystem.gameState);
-            utils.UpdateScore(0);
+            //utils.UpdateScore(0);
             print("Loading save mode 2");
         }
         else
@@ -67,6 +65,7 @@ public class DeckScript : MonoBehaviour
             Shuffle();
             SetUpFoundations();
             Deal(false);
+            utils.UpdateActions(0, true);
         }
     }
 
@@ -84,14 +83,11 @@ public class DeckScript : MonoBehaviour
             {
                 newCard = Instantiate(myPrefab);
                 newCardScript = newCard.GetComponent<CardScript>();
+
                 if (num > 10) // all face cards have a value of 10
-                {
                     newCardScript.cardVal = 10;
-                }
                 else
-                {
                     newCardScript.cardVal = num;
-                }
 
                 newCardScript.cardNum = num;
 
@@ -152,18 +148,14 @@ public class DeckScript : MonoBehaviour
                     }
                 }
 
-                newCardScript.ChangeFoodHologram(true);
                 newCardScript.number.GetComponent<SpriteRenderer>().sprite = sprites[cardIndex];
                 newCardScript.SetVisibility(true);
                 newCardScript.container = target;
+                
                 if (target.CompareTag("Deck"))
-                {
                     AddCard(newCard);
-                }
                 else if (target.CompareTag("LoadPile"))
-                {
                     target.GetComponent<LoadPileScript>().AddCard(newCard);
-                }
                 
                 cardIndex += 1;
             }
@@ -316,9 +308,7 @@ public class DeckScript : MonoBehaviour
                         topCardScript.MoveCard(reactor, isCycle: true);
 
                         if (Config.config.gameOver)
-                        {
                             yield break;
-                        }
 
                         break;
                     }
@@ -327,8 +317,7 @@ public class DeckScript : MonoBehaviour
         }
 
         utils.SetInputStopped(false);
-        utils.UpdateActionCounter(0, true);
-        utils.CheckGameOver();
+        utils.UpdateActions(0, setAsValue: true);
     }
 
     public void DeckReset()

@@ -93,47 +93,42 @@ public class ShowPossibleMoves : MonoBehaviour
         FindMoves(selectedCard);
         
         foreach (GameObject card in cardMoves)
-        {
             card.GetComponent<CardScript>().GlowOn(false);
-        }
 
         foreach (GameObject card in cardMatches)
-        {
             card.GetComponent<CardScript>().GlowOn(true);
-        }
 
         if (reactorMove != null)
         {
             ReactorScript reactorMoveScript = reactorMove.GetComponent<ReactorScript>();
 
+            if (reactorMoveScript.cardList.Count != 0)
+                reactorMoveScript.cardList[0].GetComponent<BoxCollider2D>().enabled = false;
+
             // if moving the card into the reactor will lose us the game
             if (reactorMoveScript.CountReactorCard() +
                 selectedCard.GetComponent<CardScript>().cardVal >= Config.config.maxReactorVal)
-            {
                 reactorMoveScript.GlowOn(2);
-            }
             else
-            {
-                reactorMoveScript.GlowOn(0);
-            }
+                reactorMoveScript.GlowOn(1);
         }
     }
 
     public void HideMoves()
     {
         foreach (GameObject card in cardMoves)
-        {
             card.GetComponent<CardScript>().GlowOff();
-        }
 
         foreach (GameObject card in cardMatches)
-        {
             card.GetComponent<CardScript>().GlowOff();
-        }
 
         if (reactorMove != null)
         {
             ReactorScript reactorMoveScript = reactorMove.GetComponent<ReactorScript>();
+
+            if (reactorMoveScript.cardList.Count != 0)
+                reactorMoveScript.cardList[0].GetComponent<BoxCollider2D>().enabled = true;
+
             reactorMoveScript.GlowOff();
         }
 

@@ -17,7 +17,7 @@ public class ReactorScript : MonoBehaviour
 
     public Sprite glow;
     private bool isGlowing;
-    private bool alert = false;
+    private bool alertOn;
 
     void Start()
     {
@@ -89,14 +89,9 @@ public class ReactorScript : MonoBehaviour
             throw new System.ArgumentException("utils.selectedCards must be of size 1");
 
         GameObject selectedCard = utils.selectedCards[0];
-        CardScript selectedCardScript = selectedCard.GetComponent<CardScript>();
-        CardScript inputCardScript = input.GetComponent<CardScript>();
 
-        if (utils.CanMatch(inputCardScript, selectedCardScript))
+        if (utils.CanMatch(input.GetComponent<CardScript>(), selectedCard.GetComponent<CardScript>()))
             utils.Match(input, selectedCard);
-
-        utils.CheckNextCycle();
-        utils.CheckGameOver();
     }
 
     public int GetIncreaseOnNextCycle()
@@ -128,53 +123,47 @@ public class ReactorScript : MonoBehaviour
 
     public void GlowOn(byte alertLevel)
     {
-        //suitGlow.SetActive(true);
+        if (isGlowing)
+            return;
         isGlowing = true;
 
-        if (alertLevel == 0) // just highlight
+        suitGlow.SetActive(true);
+        gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        if (alertLevel == 1) // just highlight
         {
-            gameObject.GetComponent<SpriteRenderer>().enabled = true;
             gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 0, 0.5f);
-            suitGlow.SetActive(true);
             ChangeSuitGlow(new Color(1, 1, 0, 0.3f));
-        }
-        else if (alertLevel == 1) // action counter is low and nextcycle will overload this reactor
-        {
-            //gameObject.GetComponent<SpriteRenderer>().enabled = false;
-            //gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 0.5f, 0, 0.5f);
-            rsss.ChangeTextColor(gameObject, true);
-            //ChangeSuitGlow(new Color(1, 0.5f, 0, 0.3f));
-            //alert = true;
         }
         else if (alertLevel == 2) // moving the selected token here will overload this reactor
         {
-            gameObject.GetComponent<SpriteRenderer>().enabled = true;
             gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 0.5f);
-            suitGlow.SetActive(true);
             ChangeSuitGlow(new Color(1, 0, 0, 0.3f));
         }
     }
 
-    public void GlowOff(bool turnAlertOff = false)
+    public void GlowOff()
     {
-        /*if (alert && !turnAlertOff)
-        {
-            GlowOn(1);
-            suitGlowSR.color = oldSuitGlow;
-        }
-        else
-        {*/
-
-        if (turnAlertOff)
-        {
-            rsss.ChangeTextColor(gameObject, false);
-        }
-
+        if (!isGlowing)
+            return;
         isGlowing = false;
-        //alert = false;
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
         suitGlow.SetActive(false);
-        //}
+    }
+
+    public void AlertOn()
+    {
+        if (alertOn)
+            return;
+        alertOn = true;
+        rsss.ChangeTextColor(gameObject, true);
+    }
+
+    public void AlertOff()
+    {
+        if (!alertOn)
+            return;
+        alertOn = false;
+        rsss.ChangeTextColor(gameObject, false);
     }
 
     public void ChangeSuitGlow(Color newColor)
