@@ -9,7 +9,7 @@ public class DeckScript : MonoBehaviour
 {
     public static DeckScript deckScript;
 
-    public UtilsScript utils;
+    private UtilsScript utils;
     public GameObject wastePile;
     private WastepileScript wastePileScript;
 
@@ -25,13 +25,6 @@ public class DeckScript : MonoBehaviour
     public Text deckCounter;
 
     public SoundController soundController;
-
-    // public bool shuffleOnDeckReset = false;
-    public bool dealOnDeckReset = true;
-
-    public bool importSeed;
-    public int shuffleSeed;
-
 
     private void Awake()
     {
@@ -71,7 +64,6 @@ public class DeckScript : MonoBehaviour
         {
             print("New Game");
             InstantiateCards(this.gameObject);
-            importSeed = false;
             Shuffle();
             SetUpFoundations();
             Deal(false);
@@ -187,75 +179,54 @@ public class DeckScript : MonoBehaviour
             for (int n = 0; n < Config.config.foundationStartSize - 1; n++)
             {
                 currentCardScript = cardList[0].GetComponent<CardScript>();
-                currentCardScript.MoveCard(foundation, doLog: false, addUpdateHolo: false, doSave: false);
+                currentCardScript.MoveCard(foundation, doLog: false, doSave: false);
                 currentCardScript.SetVisibility(false);
             }
 
             // adding and revealing the top card of the foundation
             currentCardScript = cardList[0].GetComponent<CardScript>();
             currentCardScript.SetVisibility(true);
-            cardList[0].SetActive(true);
             currentCardScript.ShowHologram();
-            currentCardScript.MoveCard(foundation, doLog: false, addUpdateHolo: false, doSave: false);
+            currentCardScript.MoveCard(foundation, doLog: false, doSave: false);
         }
     }
 
-    public void AddCard(GameObject card, bool checkHolo = true)
+    public void AddCard(GameObject card)
     {
-        card.GetComponent<CardScript>().HideHologram();
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
         card.transform.localPosition = Vector3.zero;
-        //card.SetActive(false);
+        card.GetComponent<CardScript>().HideHologram();
         card.GetComponent<SpriteRenderer>().enabled = false;
         card.GetComponent<BoxCollider2D>().enabled = false;
-
-        deckCounter.fontSize = 50;
-        deckCounter.text = cardList.Count.ToString();
+        UpdateDeckCounter();
     }
 
-    public void RemoveCard(GameObject card, bool checkHolo = false)
+    public void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
-        //card.SetActive(true);
         card.GetComponent<SpriteRenderer>().enabled = true;
         card.GetComponent<BoxCollider2D>().enabled = true;
-
-        if (cardList.Count != 0)
-        {
-            deckCounter.fontSize = 50;
-            deckCounter.text = cardList.Count.ToString();
-        }
+        UpdateDeckCounter();
     }
 
-    // user wants to deal cards, other things might need to be done before that
-    public void ProcessAction(GameObject input)
+    public void ProcessAction()
     {
-        utils.PACards();
+        // user wants to deal cards, other things might need to be done before that
 
         if (utils.IsInputStopped()) // the deck button directly calls ProcessAction
-        {
             return;
-        }
 
         if (cardList.Count != 0) // can the deck can be drawn from
         {
             soundController.DeckDeal();
             Deal();
 
-            //Animator dealAnim = gameObject.GetComponent<Animator>();
-            //dealAnim.enabled = true;
-            //dealAnim.Play("ConveyorButtonAnim");
-
             StartCoroutine(ButtonDown());
         }
-        else // we need to try repopulating the deck
+        // if it is possible to repopulate the deck
+        else if (wastePileScript.cardList.Count >= Config.config.cardsToDeal) 
         {
-            if (wastePileScript.cardList.Count <= Config.config.cardsToDeal) // is it not possible to repopulate the deck?
-            {
-                return;
-            }
-
             DeckReset();
             StartCoroutine(ButtonDown());
         }
@@ -287,13 +258,11 @@ public class DeckScript : MonoBehaviour
     // moves all of the top foundation cards into their appropriate reactors
     public void StartNextCycle(bool manuallyTriggered = false)
     {
-        if (manuallyTriggered && utils.IsInputStopped()) // stops 2 NextCycles from happening at once
+        if (!(manuallyTriggered && utils.IsInputStopped())) // stops 2 NextCycles from happening at once
         {
-            return;
+            utils.SetInputStopped(true);
+            StartCoroutine(NextCycle());
         }
-
-        utils.SetInputStopped(true);
-        StartCoroutine(NextCycle());
     }
 
     IEnumerator NextCycle()
@@ -362,18 +331,19 @@ public class DeckScript : MonoBehaviour
         utils.CheckGameOver();
     }
 
-
-
-    // moves all wastePile cards into the deck
     public void DeckReset()
     {
+        // moves all wastePile cards into the deck
+
         wastePileScript.DeckReset();
         soundController.DeckReshuffle();
     }
 
-    // deals cards
     public void Deal(bool doLog = true)
     {
+        if (wastePileScript.isScrolling)
+            return;
+
         List<GameObject> toMoveList = new List<GameObject>();
         for (int i = 0; i < Config.config.cardsToDeal; i++) // try to deal set number of cards
         {
@@ -391,33 +361,39 @@ public class DeckScript : MonoBehaviour
         }
     }
 
-    public void ImportShuffleSeed(int seed)
-    {
-        shuffleSeed = seed;
-        importSeed = true;
-    }
-
     //Shuffles cardList using Knuth shuffle aka Fisher-Yates shuffle
     public void Shuffle()
     {
-        if (!importSeed)
-        {
-            System.Random rand1 = new System.Random();
-            shuffleSeed = rand1.Next();
-        }
-        else
-        {
-            importSeed = false;
-        }
-
-        System.Random rand2 = new System.Random(shuffleSeed);
+        System.Random rand = new System.Random();
 
         for (int i = 0; i < cardList.Count; i++)
         {
-            int j = rand2.Next(i, cardList.Count);
+            int j = rand.Next(i, cardList.Count);
             GameObject temp = cardList[i];
             cardList[i] = cardList[j];
             cardList[j] = temp;
+        }
+    }
+
+    public void UpdateDeckCounter()
+    {
+        if (cardList.Count != 0)
+        {
+            deckCounter.fontSize = 50;
+            deckCounter.text = cardList.Count.ToString();
+        }
+        else
+        {
+            if (wastePileScript.cardList.Count > Config.config.cardsToDeal)
+            {
+                deckScript.deckCounter.fontSize = 45;
+                deckScript.deckCounter.text = "FLIP";
+            }
+            else
+            {
+                deckScript.deckCounter.fontSize = 40;
+                deckScript.deckCounter.text = "EMPTY";
+            }
         }
     }
 }

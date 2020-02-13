@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class ReactorScript : MonoBehaviour
 {
-    public List<GameObject> cardList;
-    public UtilsScript utils;
+    private UtilsScript utils;
     public GameObject gameUI;
     private ReactorScoreSetScript rsss;
 
+    public List<GameObject> cardList;
     public string suit;
 
     public GameObject suitGlow;
-    public SpriteRenderer suitGlowSR;
+    private SpriteRenderer suitGlowSR;
     private Color oldSuitGlow;
 
     public Sprite glow;
@@ -29,25 +29,29 @@ public class ReactorScript : MonoBehaviour
     private void CheckGameOver()
     {
         if (CountReactorCard() >= Config.config.maxReactorVal && !Config.config.gameOver)
-        {
             Config.config.GameOver(false);
-        }
     }
 
-    public void AddCard(GameObject card, bool checkHolo = true)
+    public void AddCard(GameObject card)
     {
-        card.GetComponent<CardScript>().HideHologram();
+        if (cardList.Count != 0)
+            cardList[0].GetComponent<BoxCollider2D>().enabled = false;
+
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
+        card.GetComponent<CardScript>().HideHologram();
 
         SetCardPositions();
         rsss.SetReactorScore();
         CheckGameOver();
     }
 
-    public void RemoveCard(GameObject card, bool checkHolo = false)
+    public void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
+        if (cardList.Count != 0)
+            cardList[0].GetComponent<BoxCollider2D>().enabled = true;
+
         SetCardPositions();
         rsss.SetReactorScore();
     }
@@ -100,14 +104,15 @@ public class ReactorScript : MonoBehaviour
         int output = 0;
         foreach (GameObject foundation in Config.config.foundations)
         {
-            if (foundation.GetComponent<FoundationScript>().cardList.Count > 0)
+            FoundationScript currentFoundationScript = foundation.GetComponent<FoundationScript>();
+            if (currentFoundationScript.cardList.Count != 0)
             {
-                if (foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardSuit == suit)
-                {
-                    output += foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardVal;
-                }
+                CardScript topCardScript = currentFoundationScript.cardList[0].GetComponent<CardScript>();
+                if (topCardScript.cardSuit == suit)
+                    output += topCardScript.cardVal;
             }
         }
+
         return output;
     }
 
@@ -116,12 +121,7 @@ public class ReactorScript : MonoBehaviour
         int totalSum = 0;
         int cardListVal = cardList.Count;
         for (int i = 0; i < cardListVal; i++)
-        {
-            if (cardList[i].gameObject.GetComponent<CardScript>().cardSuit == suit)
-            {
-                totalSum += cardList[i].gameObject.GetComponent<CardScript>().cardVal;
-            }
-        }
+            totalSum += cardList[i].gameObject.GetComponent<CardScript>().cardVal;
 
         return totalSum;
     }

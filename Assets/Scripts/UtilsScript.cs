@@ -17,7 +17,6 @@ public class UtilsScript : MonoBehaviour
     public GameObject moveCounter;
     public SoundController soundController;
     public int indexCounter;
-    public RaycastHit2D hit;
     private bool dragOn;
     private GameObject newGameObject;
     private bool draggingWastepile = false;
@@ -77,51 +76,149 @@ public class UtilsScript : MonoBehaviour
     void Update()
     {
         if (SceneManager.GetActiveScene().buildIndex != 2)
-        {
             return;
-        }
 
         if (!Config.config.gameOver && !Config.config.gamePaused)
         {
-            if (Input.GetMouseButtonDown(0) && dragOn == false)
+            if (dragOn)
             {
-                Click();
-
-                if (selectedCards.Count > 0)
+                if (Input.GetMouseButtonUp(0))
                 {
-                    StartDragging();
+                    TryToPlaceCards(GetClick());
+                    ShowPossibleMoves.showPossibleMoves.HideMoves();
+                    UnselectCards();
                 }
-
-                //checks if the game has been won
-
-                /*this code is if we want to check cards in the deck and the wastepile as well as the foundations to see if you can win the game
-                 * if (Config.config.CountFoundationCards() + Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count +
-                   Config.config.deck.GetComponent<DeckScript>().cardList.Count == 0)*/
+                else
+                    DragSelectedTokens(GetClick());
             }
-            else if (Input.GetMouseButtonUp(0) && selectedCardsCopy.Count > 0)
+            else if (Input.GetMouseButtonDown(0))
             {
-                Click();
-                ShowPossibleMoves.showPossibleMoves.HideMoves();
+                if (IsInputStopped())
+                    return;
 
-                for (int i = 0; i < selectedCardsCopy.Count; i++)
-                {
-                    Destroy(selectedCardsCopy[i]);
-                }
+                TryToSelectCards(GetClick());
 
-                selectedCardsCopy.Clear();
-                dragOn = false;
-                UnselectCards();
+                if (dragOn)
+                    DragSelectedTokens(GetClick());
             }
-        }
-
-        if (dragOn == true)
-        {
-            ClickAndDrag();
         }
     }
 
-    public void StartDragging()
+    public RaycastHit2D GetClick()
     {
+        return Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
+                                                                           Input.mousePosition.y,
+                                                                           10)),
+                                                               Vector2.zero);
+    }
+
+    private void TryToSelectCards(RaycastHit2D hit)
+    {
+        if (hit.collider == null)
+            return;
+
+        GameObject hitGameObject = hit.collider.gameObject;
+        if (!hitGameObject.CompareTag("Card"))
+        {
+            if (hitGameObject.CompareTag("Baby"))
+                baby.GetComponent<SpaceBabyController>().BabyHappyAnim();
+            return;
+        }
+
+        CardScript hitCardScript = hitGameObject.GetComponent<CardScript>();
+
+        //if we click a card in the wastepile select it
+        if (hitCardScript.container.CompareTag("Wastepile"))
+            // all non-top wastepile tokens have their hitboxes disabled
+            //if (hitCardScript.container.GetComponent<WastepileScript>().cardList[0] == hitGameObject)
+            SelectCard(hitGameObject);
+
+        //if we click a card in a reactor
+        else if (hitCardScript.container.CompareTag("Reactor") &&
+                 hitCardScript.container.GetComponent<ReactorScript>().cardList[0] == hitGameObject)
+            SelectCard(hitGameObject);
+
+        //if we click a card in a foundation
+        else if (hitCardScript.container.CompareTag("Foundation"))
+            //if (!hitCardScript.isHidden()) // hidden cards have their hitboxes disabled
+            SelectMultipleCards(hitGameObject);
+    }
+
+    private void SelectCard(GameObject inputCard)
+    {
+        CardScript inputCardScript = inputCard.GetComponent<CardScript>();
+        if (inputCardScript == null)
+            throw new System.ArgumentException("inputCard must be a gameObject that contains a CardScript");
+
+        if (inputCardScript.container.CompareTag("Wastepile"))
+        {
+            inputCardScript.container.GetComponent<WastepileScript>().DraggingCard(inputCard, true);
+            draggingWastepile = true;
+        }
+
+        selectedCards.Add(inputCard);
+        inputCardScript.SetSelected(true);
+
+        StartDragging();
+    }
+
+    private void SelectMultipleCards(GameObject inputCard)
+    {
+        CardScript inputCardScript = inputCard.GetComponent<CardScript>();
+        if (inputCardScript == null || !inputCardScript.container.CompareTag("Foundation"))
+            throw new System.ArgumentException("inputCard must be a gameObject that contains a CardScript that is from a foundation");
+
+        FoundationScript inputCardFoundation = inputCardScript.container.GetComponent<FoundationScript>();
+
+        for (int i = inputCardFoundation.cardList.IndexOf(inputCard); i >= 0; i--)
+        {
+            selectedCards.Add(inputCardFoundation.cardList[i]);
+            inputCardFoundation.cardList[i].GetComponent<CardScript>().SetSelected(true);
+        }
+
+        StartDragging();
+    }
+
+    private void TryToPlaceCards(RaycastHit2D hit)
+    {
+        if (hit.collider == null)
+            return;
+
+        GameObject selectedContainer = selectedCards[0].GetComponent<CardScript>().container;
+
+        if (selectedContainer.CompareTag("Wastepile"))
+            selectedContainer.GetComponent<WastepileScript>().ProcessAction(hit.collider.gameObject);
+        else if (selectedContainer.CompareTag("Foundation"))
+            selectedContainer.GetComponent<FoundationScript>().ProcessAction(hit.collider.gameObject);
+        else if (selectedContainer.CompareTag("Reactor"))
+            selectedContainer.GetComponent<ReactorScript>().ProcessAction(hit.collider.gameObject);
+        else
+            Debug.Log("TryToPlaceCards detected a selected card that had a weird container");
+    }
+
+    private void UnselectCards()
+    {
+        if (draggingWastepile)
+        {
+            wastePile.GetComponent<WastepileScript>().DraggingCard(selectedCards[0], false);
+            draggingWastepile = false;
+        }
+
+        for (int i = 0; i < selectedCards.Count; i++)
+            selectedCards[i].GetComponent<CardScript>().SetSelected(false);
+        selectedCards.Clear();
+
+        for (int i = 0; i < selectedCardsCopy.Count; i++)
+            Destroy(selectedCardsCopy[i]);
+        selectedCardsCopy.Clear();
+
+        dragOn = false;
+    }
+
+    private void StartDragging()
+    {
+        dragOn = true;
+
         // make a copy of the selected cards to move around
         int cardsCount = selectedCards.Count;
         for (int i = 0; i < cardsCount; i++)
@@ -134,9 +231,7 @@ public class UtilsScript : MonoBehaviour
 
         // enable dragged reactor tokens holograms
         if (cardsCount == 1 && selectedCards[0].GetComponent<CardScript>().container.CompareTag("Reactor"))
-        {
             selectedCardsCopy[0].GetComponent<CardScript>().ShowHologram();
-        }
 
         // show any tokens (and reactors) that we can interact with
         ShowPossibleMoves.showPossibleMoves.ShowMoves(selectedCards[0]);
@@ -158,10 +253,9 @@ public class UtilsScript : MonoBehaviour
             reactorIsGlowing = false;
 
         soundController.CardPressSound();
-        dragOn = true;
     }
 
-    public void ClickAndDrag()
+    private void DragSelectedTokens(RaycastHit2D hit)
     {
         // move the bottom token to our input position
         selectedCardsCopy[0].transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
@@ -179,11 +273,6 @@ public class UtilsScript : MonoBehaviour
         // if there is stuff glowing, check to see if we are hovering over them
         if (matchTokensAreGlowing || moveTokensAreGlowing || reactorIsGlowing)
         {
-            hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
-                                                                               Input.mousePosition.y,
-                                                                               10)),
-                                    Vector2.zero);
-
             if (hit.collider != null) // if we hit something
             {
                 if (hit.collider.gameObject == hoveringOver) // are we still hovering over the same object
@@ -268,139 +357,6 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    public void SelectCard(GameObject inputCard)
-    {
-        if (inputCard.GetComponent<CardScript>().container.CompareTag("Wastepile"))
-        {
-            inputCard.GetComponent<CardScript>().container.GetComponent<WastepileScript>().DraggingCard(inputCard, true);
-            draggingWastepile = true;
-        }
-
-        selectedCards.Add(inputCard);
-        inputCard.GetComponent<CardScript>().SetSelected(true);
-    }
-
-    public void UnselectCards()
-    {
-        if (draggingWastepile && selectedCards.Count == 1)
-        {
-            wastePile.GetComponent<WastepileScript>().DraggingCard(selectedCards[0], false);
-            draggingWastepile = false;
-        }
-
-        for (int i = 0; i < selectedCards.Count; i++)
-        {
-            selectedCards[i].GetComponent<CardScript>().SetSelected(false);
-        }
-
-        selectedCards.Clear();
-    }
-
-    public void SelectMultipleCards(int cardsToCount)
-    {
-        for (indexCounter = cardsToCount; indexCounter + 1 > 0; indexCounter--)
-        {
-            SelectCard(hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[indexCounter]);
-        }
-    }
-
-    public int countCardsToSelect(GameObject selectedCard) //takes the input of a selected card and counts how many cards are above it in a foundation
-    {
-        for (indexCounter = hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList.Count - 1; indexCounter > 0; indexCounter--)
-        {
-            if (selectedCard == hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[indexCounter])
-            {
-                //Debug.Log("indexCounter " + (indexCounter + 1));
-                return indexCounter;
-            }
-        }
-
-        return 0;
-    }
-
-    //sends out a raycast to see you selected something
-    public void Click()
-    {
-        if (IsInputStopped())
-        {
-            return;
-        }
-
-        //raycast to see what we clicked
-        hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Vector2.zero);
-
-        //if we click a deck activates deck and deselected our cards
-        if (hit.collider != null && !hit.collider.gameObject.CompareTag("Card"))
-        {
-            if (hit.collider.gameObject.CompareTag("Deck"))
-            {
-                return;
-                //hit.collider.gameObject.GetComponent<DeckScript>().ProcessAction(hit.collider.gameObject);
-            }
-
-            if (selectedCards.Count != 0)
-            {
-                selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
-                UnselectCards();
-            }
-
-            else if (hit.collider != null && hit.collider.gameObject.CompareTag("Baby"))
-            {
-                baby.GetComponent<SpaceBabyController>().BabyHappyAnim();
-            }
-
-            return;
-        }
-
-        // if we click a card in the deck call deck clicked and deselect all cards
-        else if (hit.collider != null && hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Deck"))
-        {
-            hit.collider.gameObject.GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
-            UnselectCards();
-            return;
-        }
-
-        //if we click a card in the wastepile and we don't have any card selected select the card in the wastepile
-        else if (hit.collider != null && hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Wastepile") && selectedCards.Count == 0)
-        {
-            if (hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<WastepileScript>().cardList[0] == hit.collider.gameObject)
-            {
-                SelectCard(hit.collider.gameObject);
-            }
-        }
-
-        //if we click a card in a reactor and we don't have any card selected select the card in the reactor
-        else if (hit.collider != null && hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Reactor") && selectedCards.Count == 0)
-        {
-            if (hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<ReactorScript>().cardList[0] == hit.collider.gameObject)
-            {
-                SelectCard(hit.collider.gameObject);
-            }
-        }
-
-        //if we click a card in a foundation and we don't have any card selected and the card we're trying to select is not hidden select the card in the foundation
-        else if (hit.collider != null && selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().isHidden() &&
-            hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Foundation"))
-        {
-            SelectMultipleCards(countCardsToSelect(hit.collider.gameObject));
-        }
-
-
-        //if we click on our first selected card deselect all cards
-        else if (hit.collider != null && selectedCards.Count != 0 && selectedCards[0] == hit.collider.gameObject)
-        {
-            UnselectCards();
-        }
-
-        //if we click on something else tries to move the selected cards 
-        else if (hit.collider != null && selectedCards.Count != 0 && !hit.collider.GetComponent<CardScript>().isHidden())
-        {
-            selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
-            //we are no longer changing a list that we are also iterating over
-            UnselectCards();
-        }
-    }
-
     public void Match(GameObject card1, GameObject card2)
     {
         // these must be in this order
@@ -436,10 +392,10 @@ public class UtilsScript : MonoBehaviour
             if (containerCards.Count > 1)
             {
                 CardScript containerCardScript = containerCards[1].GetComponent<CardScript>();
+                containerCardScript.ShowHologram();
                 if (containerCardScript.isHidden())
                 {
                     containerCardScript.SetVisibility(true);
-                    containerCardScript.ShowHologram();
                     containerCardScript.hidden = true;
                 }
             }
@@ -736,15 +692,6 @@ public class UtilsScript : MonoBehaviour
         UpdateScore(extraScore);
     }
 
-    public void PACards()
-    {
-        if (selectedCards.Count != 0)
-        {
-            selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
-            UnselectCards();
-        }
-    }
-
     public bool IsInputStopped()
     {
         return inputStopped;
@@ -753,8 +700,6 @@ public class UtilsScript : MonoBehaviour
     public void SetInputStopped(bool setTo)
     {
         if (!isMatching)
-        {
             inputStopped = setTo;
-        }
     }
 }
