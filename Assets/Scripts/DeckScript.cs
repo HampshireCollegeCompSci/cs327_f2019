@@ -171,9 +171,11 @@ public class DeckScript : MonoBehaviour
 
     public void ProcessAction()
     {
+        // is called by the deck button
         // user wants to deal cards, other things might need to be done before that
 
-        if (utils.IsInputStopped()) // the deck button directly calls ProcessAction
+        // don't allow dealing when other stuff is happening
+        if (utils.IsInputStopped() || wastePileScript.isScrolling)
             return;
 
         if (cardList.Count != 0) // can the deck can be drawn from
@@ -184,11 +186,34 @@ public class DeckScript : MonoBehaviour
             StartCoroutine(ButtonDown());
         }
         // if it is possible to repopulate the deck
-        else if (wastePileScript.cardList.Count >= Config.config.cardsToDeal) 
+        else if (wastePileScript.cardList.Count > Config.config.cardsToDeal) 
         {
             DeckReset();
             StartCoroutine(ButtonDown());
         }
+    }
+
+    public void Deal(bool doLog = true)
+    {
+        List<GameObject> toMoveList = new List<GameObject>();
+        for (int i = 0; i < Config.config.cardsToDeal; i++) // try to deal set number of cards
+        {
+            if (cardList.Count <= i) // are there no more cards in the deck?
+                break;
+
+            toMoveList.Add(cardList[i]);
+        }
+
+        if (toMoveList.Count != 0)
+            wastePileScript.AddCards(toMoveList, doLog);
+    }
+
+    public void DeckReset()
+    {
+        // moves all wastePile cards into the deck
+
+        wastePileScript.DeckReset();
+        soundController.DeckReshuffle();
     }
 
     IEnumerator ButtonDown()
@@ -285,36 +310,6 @@ public class DeckScript : MonoBehaviour
 
         utils.SetInputStopped(false);
         utils.UpdateActions(0, setAsValue: true);
-    }
-
-    public void DeckReset()
-    {
-        // moves all wastePile cards into the deck
-
-        wastePileScript.DeckReset();
-        soundController.DeckReshuffle();
-    }
-
-    public void Deal(bool doLog = true)
-    {
-        if (wastePileScript.isScrolling)
-            return;
-
-        List<GameObject> toMoveList = new List<GameObject>();
-        for (int i = 0; i < Config.config.cardsToDeal; i++) // try to deal set number of cards
-        {
-            if (cardList.Count <= i) // are there no more cards in the deck?
-            {
-                break;
-            }
-
-            toMoveList.Add(cardList[i]);
-        }
-
-        if (toMoveList.Count != 0)
-        {
-            wastePileScript.AddCards(toMoveList, doLog);
-        }
     }
 
     //Shuffles cardList using Knuth shuffle aka Fisher-Yates shuffle
