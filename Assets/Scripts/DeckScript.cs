@@ -19,6 +19,7 @@ public class DeckScript : MonoBehaviour
     public Sprite[] combinedHolograms;
 
     public List<GameObject> cardList;
+    private String[] suits;
 
     private Image buttonImage;
     public Sprite[] buttonAnimation;
@@ -72,81 +73,47 @@ public class DeckScript : MonoBehaviour
     // sets up card list
     public void InstantiateCards(GameObject target)
     {
+        suits = new String[4] { "clubs", "spades", "hearts", "diamonds" };
+
         GameObject newCard;
         CardScript newCardScript;
 
         // order: club ace, 2, 3... 10, jack, queen, king, spades... hearts... diamonds
         int cardIndex = 0; // 1 - 52
+        int hFSIndex;
+        int num;
         for (int suit = 0; suit < 4; suit++) // order: club, spades, hearts, diamonds
         {
-            for (int num = 1; num < 14; num++) // card num: 1 - 13
+            hFSIndex = suit * 5;
+            for (num = 1; num < 14; num++) // card num: 1 - 13
             {
                 newCard = Instantiate(myPrefab);
                 newCardScript = newCard.GetComponent<CardScript>();
 
-                if (num > 10) // all face cards have a value of 10
-                    newCardScript.cardVal = 10;
-                else
+                if (num < 10)
+                {
                     newCardScript.cardVal = num;
+                    newCardScript.hologramFoodSprite = holograms[hFSIndex];
+
+                    if (suit < 2)
+                        newCardScript.hologramComboSprite = combinedHolograms[0];
+                    else
+                        newCardScript.hologramComboSprite = combinedHolograms[5];
+                }
+                else
+                {
+                    // all face cards have a value of 10
+                    newCardScript.cardVal = 10;
+                    newCardScript.hologramFoodSprite = holograms[num - (9 - hFSIndex)];
+                    
+                    if (suit < 2)
+                        newCardScript.hologramComboSprite = combinedHolograms[num - 9];
+                    else
+                        newCardScript.hologramComboSprite = combinedHolograms[num - 4];
+                }
 
                 newCardScript.cardNum = num;
-
-                if (suit == 0)
-                {
-                    newCardScript.cardSuit = "clubs";
-                    if (num < 10)
-                    {
-                        newCardScript.hologramFoodSprite = holograms[0];
-                        newCardScript.hologramComboSprite = combinedHolograms[0];
-                    }
-                    else
-                    {
-                        newCardScript.hologramFoodSprite = holograms[num - 9];
-                        newCardScript.hologramComboSprite = combinedHolograms[num - 9];
-                    }
-                }
-                else if (suit == 1)
-                {
-                    newCardScript.cardSuit = "spades";
-                    if (num < 10)
-                    {
-                        newCardScript.hologramFoodSprite = holograms[5];
-                        newCardScript.hologramComboSprite = combinedHolograms[0];
-                    }
-                    else
-                    {
-                        newCardScript.hologramFoodSprite = holograms[num - 4];
-                        newCardScript.hologramComboSprite = combinedHolograms[num - 9];
-                    }
-                }
-                else if (suit == 2)
-                {
-                    newCardScript.cardSuit = "hearts";
-                    if (num < 10)
-                    {
-                        newCardScript.hologramFoodSprite = holograms[10];
-                        newCardScript.hologramComboSprite = combinedHolograms[5];
-                    }
-                    else
-                    {
-                        newCardScript.hologramFoodSprite = holograms[num + 1];
-                        newCardScript.hologramComboSprite = combinedHolograms[num - 4];
-                    }
-                }
-                else if (suit == 3)
-                {
-                    newCardScript.cardSuit = "diamonds";
-                    if (num < 10)
-                    {
-                        newCardScript.hologramFoodSprite = holograms[15];
-                        newCardScript.hologramComboSprite = combinedHolograms[5];
-                    }
-                    else
-                    {
-                        newCardScript.hologramFoodSprite = holograms[num + 6];
-                        newCardScript.hologramComboSprite = combinedHolograms[num - 4];
-                    }
-                }
+                newCardScript.cardSuit = suits[suit];
 
                 newCardScript.number.GetComponent<SpriteRenderer>().sprite = sprites[cardIndex];
                 newCardScript.SetVisibility(true);
