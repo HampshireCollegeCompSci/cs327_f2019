@@ -6,6 +6,7 @@ public class TutorialScript : MonoBehaviour
 {
     private List<string> commandList;
     private Queue<string[]> splitCommandList;
+    private bool executeFlag = true;
     void Start()
     {
         commandList = CreateFromJSON();
@@ -16,8 +17,20 @@ public class TutorialScript : MonoBehaviour
     {
         foreach (string command in commandList)
         {
-            string[] splitCommand = command.Split('_');
+            string[] splitCommand = command.Split('.');
             splitCommandList.Enqueue(splitCommand);
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.touchCount > 0 && !executeFlag)
+        {
+            executeFlag = true;
+        }
+        if (executeFlag)
+        {
+            CommandInterpreter();
         }
     }
 
@@ -45,7 +58,10 @@ public class TutorialScript : MonoBehaviour
     //Tutorial Commands
     public void WaitForTouch()
     {
-
+        if (executeFlag)
+        {
+            executeFlag = false;
+        }
     }
 
     public void LoadSave(string fileName)

@@ -1,7 +1,7 @@
 {
   "commands": [
-    "LoadSave_ExampleTutorial",
-    "ShowMask_Mask1",
-    "ShowText_This is example tutorial text!_Top"
+    "LoadSave.ExampleTutorial",
+    "ShowMask.Mask1",
+    "ShowText.This is example tutorial text!.Top"
   ]
 }
