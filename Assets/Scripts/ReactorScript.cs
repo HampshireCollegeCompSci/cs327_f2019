@@ -4,20 +4,20 @@ using UnityEngine;
 
 public class ReactorScript : MonoBehaviour
 {
-    public List<GameObject> cardList;
-    public UtilsScript utils;
+    private UtilsScript utils;
     public GameObject gameUI;
     private ReactorScoreSetScript rsss;
 
+    public List<GameObject> cardList;
     public string suit;
 
     public GameObject suitGlow;
-    public SpriteRenderer suitGlowSR;
+    private SpriteRenderer suitGlowSR;
     private Color oldSuitGlow;
 
     public Sprite glow;
     private bool isGlowing;
-    private bool alert = false;
+    private bool alertOn;
 
     void Start()
     {
@@ -29,25 +29,29 @@ public class ReactorScript : MonoBehaviour
     private void CheckGameOver()
     {
         if (CountReactorCard() >= Config.config.maxReactorVal && !Config.config.gameOver)
-        {
             Config.config.GameOver(false);
-        }
     }
 
-    public void AddCard(GameObject card, bool checkHolo = true)
+    public void AddCard(GameObject card)
     {
-        card.GetComponent<CardScript>().HideHologram();
+        if (cardList.Count != 0)
+            cardList[0].GetComponent<BoxCollider2D>().enabled = false;
+
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
+        card.GetComponent<CardScript>().HideHologram();
 
         SetCardPositions();
         rsss.SetReactorScore();
         CheckGameOver();
     }
 
-    public void RemoveCard(GameObject card, bool checkHolo = false)
+    public void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
+        if (cardList.Count != 0)
+            cardList[0].GetComponent<BoxCollider2D>().enabled = true;
+
         SetCardPositions();
         rsss.SetReactorScore();
     }
@@ -85,14 +89,9 @@ public class ReactorScript : MonoBehaviour
             throw new System.ArgumentException("utils.selectedCards must be of size 1");
 
         GameObject selectedCard = utils.selectedCards[0];
-        CardScript selectedCardScript = selectedCard.GetComponent<CardScript>();
-        CardScript inputCardScript = input.GetComponent<CardScript>();
 
-        if (utils.CanMatch(inputCardScript, selectedCardScript))
+        if (utils.CanMatch(input.GetComponent<CardScript>(), selectedCard.GetComponent<CardScript>()))
             utils.Match(input, selectedCard);
-
-        utils.CheckNextCycle();
-        utils.CheckGameOver();
     }
 
     public int GetIncreaseOnNextCycle()
@@ -100,14 +99,15 @@ public class ReactorScript : MonoBehaviour
         int output = 0;
         foreach (GameObject foundation in Config.config.foundations)
         {
-            if (foundation.GetComponent<FoundationScript>().cardList.Count > 0)
+            FoundationScript currentFoundationScript = foundation.GetComponent<FoundationScript>();
+            if (currentFoundationScript.cardList.Count != 0)
             {
-                if (foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardSuit == suit)
-                {
-                    output += foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().cardVal;
-                }
+                CardScript topCardScript = currentFoundationScript.cardList[0].GetComponent<CardScript>();
+                if (topCardScript.cardSuit == suit)
+                    output += topCardScript.cardVal;
             }
         }
+
         return output;
     }
 
@@ -116,65 +116,54 @@ public class ReactorScript : MonoBehaviour
         int totalSum = 0;
         int cardListVal = cardList.Count;
         for (int i = 0; i < cardListVal; i++)
-        {
-            if (cardList[i].gameObject.GetComponent<CardScript>().cardSuit == suit)
-            {
-                totalSum += cardList[i].gameObject.GetComponent<CardScript>().cardVal;
-            }
-        }
+            totalSum += cardList[i].gameObject.GetComponent<CardScript>().cardVal;
 
         return totalSum;
     }
 
     public void GlowOn(byte alertLevel)
     {
-        //suitGlow.SetActive(true);
+        if (isGlowing)
+            return;
         isGlowing = true;
 
-        if (alertLevel == 0) // just highlight
+        suitGlow.SetActive(true);
+        gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        if (alertLevel == 1) // just highlight
         {
-            gameObject.GetComponent<SpriteRenderer>().enabled = true;
             gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 0, 0.5f);
-            suitGlow.SetActive(true);
             ChangeSuitGlow(new Color(1, 1, 0, 0.3f));
-        }
-        else if (alertLevel == 1) // action counter is low and nextcycle will overload this reactor
-        {
-            //gameObject.GetComponent<SpriteRenderer>().enabled = false;
-            //gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 0.5f, 0, 0.5f);
-            rsss.ChangeTextColor(gameObject, true);
-            //ChangeSuitGlow(new Color(1, 0.5f, 0, 0.3f));
-            //alert = true;
         }
         else if (alertLevel == 2) // moving the selected token here will overload this reactor
         {
-            gameObject.GetComponent<SpriteRenderer>().enabled = true;
             gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 0.5f);
-            suitGlow.SetActive(true);
             ChangeSuitGlow(new Color(1, 0, 0, 0.3f));
         }
     }
 
-    public void GlowOff(bool turnAlertOff = false)
+    public void GlowOff()
     {
-        /*if (alert && !turnAlertOff)
-        {
-            GlowOn(1);
-            suitGlowSR.color = oldSuitGlow;
-        }
-        else
-        {*/
-
-        if (turnAlertOff)
-        {
-            rsss.ChangeTextColor(gameObject, false);
-        }
-
+        if (!isGlowing)
+            return;
         isGlowing = false;
-        //alert = false;
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
         suitGlow.SetActive(false);
-        //}
+    }
+
+    public void AlertOn()
+    {
+        if (alertOn)
+            return;
+        alertOn = true;
+        rsss.ChangeTextColor(gameObject, true);
+    }
+
+    public void AlertOff()
+    {
+        if (!alertOn)
+            return;
+        alertOn = false;
+        rsss.ChangeTextColor(gameObject, false);
     }
 
     public void ChangeSuitGlow(Color newColor)
