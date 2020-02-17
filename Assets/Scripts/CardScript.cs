@@ -112,23 +112,23 @@ public class CardScript : MonoBehaviour
         container = null;
 
         if (selectedLayer == 0)
-        {
             selectedLayer = SortingLayer.NameToID("SelectedCards");
-        }
 
         gameObject.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
         number.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
         hologram.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
         hologramFood.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
-        Destroy(gameObject.GetComponent<BoxCollider2D>());
+        gameObject.GetComponent<BoxCollider2D>().enabled = false;
+
+        SetSelected(false);
     }
 
-    public void ChangeHologram(Color newColor)
+    public bool ChangeHologram(Color newColor)
     {
         SpriteRenderer hologramFoodSP = hologramFood.GetComponent<SpriteRenderer>();
 
         if (hologramFoodSP.color == newColor)
-            return;
+            return false;
 
         hologram.GetComponent<SpriteRenderer>().color = newColor;
         hologramFoodSP.color = newColor;
@@ -137,12 +137,16 @@ public class CardScript : MonoBehaviour
         {
             hologramFoodSP.sprite = hologramComboSprite;
             hologramFood.transform.localScale = new Vector3(0.6f, 0.6f, 1);
+            return true;
         }
-        else if (hologramFoodSP.sprite != hologramFoodSprite)
+        if (hologramFoodSP.sprite != hologramFoodSprite)
         {
             hologramFoodSP.sprite = hologramFoodSprite;
             hologramFood.transform.localScale = new Vector3(1.2f, 1.2f, 1);
+            return false;
         }
+
+        return false;
     }
 
     public Color GetGlowColor()
