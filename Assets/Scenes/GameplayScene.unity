@@ -3054,6 +3054,7 @@ MonoBehaviour:
   cardContainer: {fileID: 4445628893480912193, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
     type: 3}
   scrollRect: {fileID: 0}
+  isScrolling: 0
 --- !u!222 &1092020363
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4280,6 +4281,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameScore: {fileID: 533940917}
+  pointsPrefab: {fileID: 5801631464807042985, guid: 614ce32a7efa12342824cb70c9aacc46,
+    type: 3}
 --- !u!1 &1489801180
 GameObject:
   m_ObjectHideFlags: 0
@@ -4597,7 +4600,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 361cd928c8ea328479f9d2c2ad7a9870, type: 3}
   deckCounter: {fileID: 1865176403}
   soundController: {fileID: 307181958}
-  dealOnDeckReset: 1
 --- !u!224 &1524850549
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4878,6 +4880,8 @@ MonoBehaviour:
   selectedCards: []
   matchedPile: {fileID: 1214012893}
   matchPrefab: {fileID: 4031254262428589365, guid: 3a28ce96f97e3fd4f9107ecc217d5158,
+    type: 3}
+  pointsPrefab: {fileID: 5801631464807042985, guid: 614ce32a7efa12342824cb70c9aacc46,
     type: 3}
   gameUI: {fileID: 2058941297}
   scoreBox: {fileID: 1489602702}

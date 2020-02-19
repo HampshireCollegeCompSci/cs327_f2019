@@ -359,11 +359,6 @@ public class UtilsScript : MonoBehaviour
 
     public void Match(GameObject card1, GameObject card2)
     {
-        // these must be in this order
-        /*SetInputStopped(true);
-        wastePile.GetComponent<WastepileScript>().scrollRect.horizontal = false;
-        isMatching = true; // a wastepile animation will overwrite the above without this*/
-
         CardScript card1Script = card1.GetComponent<CardScript>();
         CardScript card2Script = card2.GetComponent<CardScript>();
 
@@ -405,11 +400,6 @@ public class UtilsScript : MonoBehaviour
         //soundController.CardMatchSound();
         Destroy(matchExplosion);
         Destroy(comboHologram);
-
-        /*wastePile.GetComponent<WastepileScript>().scrollRect.horizontal = true;
-        // these must be in this order
-        isMatching = false;
-        SetInputStopped(false);*/
     }
 
     public bool CanMatch(CardScript card1, CardScript card2, bool checkIsTop = true)
@@ -471,7 +461,7 @@ public class UtilsScript : MonoBehaviour
     public void UpdateScore(int addScore)
     {
         Config.config.score += addScore;
-        scoreBox.GetComponent<ScoreScript>().UpdateScore();
+        scoreBox.GetComponent<ScoreScript>().UpdateScore(addScore);
     }
 
     public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false)
