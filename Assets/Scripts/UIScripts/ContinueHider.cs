@@ -5,11 +5,16 @@ using System.IO;
 
 public class ContinueHider : MonoBehaviour
 {
+    public GameObject continueButton;
     private void Awake()
     {
-        if(!File.Exists(Application.persistentDataPath + "/testState.json"))
+        if (!Application.isEditor && !File.Exists(Application.persistentDataPath + "/testState.json"))
         {
-            gameObject.SetActive(false);
+            continueButton.SetActive(false);
+        }
+        if (Application.isEditor && !File.Exists("Assets/Resources/GameStates/testState.json"))
+        {
+            continueButton.SetActive(false);
         }
     }
 }

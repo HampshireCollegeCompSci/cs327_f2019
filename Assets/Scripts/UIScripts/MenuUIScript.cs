@@ -94,6 +94,10 @@ public class MenuUIScript : MonoBehaviour
 
     public void Play()
     {
+        //Preprocessor Directive to make builds work
+        #if (UNITY_EDITOR)
+            UnityEditor.AssetDatabase.Refresh();
+        #endif
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         SceneManager.LoadScene("LevelSelectScene");
     }
