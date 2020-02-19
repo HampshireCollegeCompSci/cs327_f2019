@@ -9,10 +9,6 @@ public class MenuUIScript : MonoBehaviour
 {
     private void Start()
     {
-        //stop animation from start
-        Animator[] animators = gameObject.GetComponentsInChildren<Animator>();
-        foreach (Animator anim in animators)
-            anim.enabled = false;
 
         if (GameObject.Find("Spacebaby Loading") != null)
             GameObject.Find("Spacebaby Loading").GetComponent<Animator>().enabled = true;
