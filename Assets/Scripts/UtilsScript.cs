@@ -301,7 +301,7 @@ public class UtilsScript : MonoBehaviour
                     if (!hoveringOver.transform.parent.CompareTag("Reactor"))
                     {
                         // hide the hover over tokens food hologram
-                        hoveringOver.GetComponent<CardScript>().hologramFood.SetActive(false);
+                        hoveringOver.GetComponent<CardScript>().HideHologram();
                         hidFoodHologram = true;
                     }
                 }
@@ -352,7 +352,7 @@ public class UtilsScript : MonoBehaviour
         // if we where hovering over a matching glowing token
         if (hidFoodHologram)
         {
-            hoveringOver.GetComponent<CardScript>().hologramFood.SetActive(true);
+            hoveringOver.GetComponent<CardScript>().ShowHologram();
             hidFoodHologram = false;
         }
     }
@@ -383,7 +383,7 @@ public class UtilsScript : MonoBehaviour
 
     IEnumerator animatorwait(GameObject comboHologram, GameObject matchExplosion)
     {
-        //yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.3f);
         Vector3 target = baby.transform.position;
         SpriteRenderer comboSR = comboHologram.GetComponent<SpriteRenderer>();
         Color fadeColor = new Color(1, 1, 1, 1);
