@@ -371,8 +371,6 @@ public class UtilsScript : MonoBehaviour
         Vector3 p = selectedCardsCopy[0].transform.position;
         p.z += 2;
         GameObject matchExplosion = Instantiate(matchPrefab, p, Quaternion.identity);
-        //GameObject matchPointsEffect = Instantiate(matchPointsPrefab, p, Quaternion.identity, gameUI.transform);
-        //matchPointsEffect.GetComponent<Text>().text = Config.config.matchPoints.ToString();
 
         card2Script.MoveCard(matchedPile);
         card1Script.MoveCard(matchedPile);
@@ -383,7 +381,7 @@ public class UtilsScript : MonoBehaviour
         baby.GetComponent<SpaceBabyController>().BabyEatAnim();
 
         StartCoroutine(FoodComboMove(comboHologram, matchExplosion));
-        //StartCoroutine(PointFade(matchPointsEffect));
+        StartCoroutine(PointFade(p));
     }
 
     IEnumerator FoodComboMove(GameObject comboHologram, GameObject matchExplosion)
@@ -407,14 +405,29 @@ public class UtilsScript : MonoBehaviour
         Destroy(comboHologram);
     }
 
-    IEnumerator PointFade(GameObject matchPointsEffect)
+    IEnumerator PointFade(Vector3 position)
     {
-        while (true)
+        yield return new WaitForSeconds(0.2f);
+        GameObject matchPointsEffect = Instantiate(matchPointsPrefab, position, Quaternion.identity, gameUI.transform);
+        matchPointsEffect.GetComponent<Text>().text = "+" + Config.config.matchPoints.ToString();
+
+        Text pointText = matchPointsEffect.GetComponent<Text>();
+        while (pointText.fontSize < 75)
         {
-            yield return new WaitForSeconds(0.1f);
-            
+            yield return new WaitForSeconds(0.02f);
+            pointText.fontSize += 1;
         }
 
+        Color fadeColor = pointText.color;
+        while (fadeColor.a > 0)
+        {
+            yield return new WaitForSeconds(0.02f);
+            pointText.fontSize += 1;
+            fadeColor.a -= 0.05f;
+            pointText.color = fadeColor;
+        }
+
+        
         Destroy(matchPointsEffect);
     }
 
