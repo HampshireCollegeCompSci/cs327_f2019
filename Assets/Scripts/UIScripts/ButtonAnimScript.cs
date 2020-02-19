@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class ButtonAnimScript : MonoBehaviour
 {
+    public GameObject pressAnimation;
 
     public void ButtonPressed()
     {
-        gameObject.GetComponentInChildren<Animator>().enabled = true;
+        pressAnimation.SetActive(true);
     }
 
     public void ButtonReleased()
     {
-        gameObject.GetComponentInChildren<Animator>().enabled = false;
+        pressAnimation.SetActive(false);
     }
 }

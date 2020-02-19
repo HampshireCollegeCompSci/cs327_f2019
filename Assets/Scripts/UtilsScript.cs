@@ -8,7 +8,7 @@ public class UtilsScript : MonoBehaviour
 {
     public static UtilsScript global; //Creates a new instance if one does not yet exist
     public List<GameObject> selectedCards;
-    private List<GameObject> selectedCardsCopy = new List<GameObject>();
+    private List<GameObject> selectedCardsCopy;
     public GameObject matchedPile;
     public GameObject matchPrefab;
 
@@ -17,9 +17,7 @@ public class UtilsScript : MonoBehaviour
     public GameObject moveCounter;
     public SoundController soundController;
     public int indexCounter;
-    public RaycastHit2D hit;
     private bool dragOn;
-    private GameObject newGameObject;
     private bool draggingWastepile = false;
     private GameObject wastePile;
 
@@ -37,6 +35,7 @@ public class UtilsScript : MonoBehaviour
     private GameObject hoveringOver;
     private bool changedHologramColor;
     private bool changedSuitGlowColor;
+    private bool hidFoodHologram;
     private bool matchTokensAreGlowing;
     private bool moveTokensAreGlowing;
     private bool reactorIsGlowing;
@@ -67,6 +66,7 @@ public class UtilsScript : MonoBehaviour
 
     void Start()
     {
+        selectedCardsCopy = new List<GameObject>();
         baby = GameObject.FindWithTag("Baby");
         matchPoints = Config.config.matchPoints;
         emptyReactorPoints = Config.config.emptyReactorPoints;
@@ -77,477 +77,364 @@ public class UtilsScript : MonoBehaviour
     void Update()
     {
         if (SceneManager.GetActiveScene().buildIndex != 2)
-        {
             return;
-        }
 
         if (!Config.config.gameOver && !Config.config.gamePaused)
         {
-            if (Input.GetMouseButtonDown(0) && dragOn == false)
+            if (dragOn)
             {
-                Click();
-
-                if (selectedCards.Count > 0)
+                if (Input.GetMouseButtonUp(0))
                 {
-                    StartDragging();
+                    TryToPlaceCards(GetClick());
+                    ShowPossibleMoves.showPossibleMoves.HideMoves();
+                    UnselectCards();
                 }
-
-                //checks if the game has been won
-
-                /*this code is if we want to check cards in the deck and the wastepile as well as the foundations to see if you can win the game
-                 * if (Config.config.CountFoundationCards() + Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count +
-                   Config.config.deck.GetComponent<DeckScript>().cardList.Count == 0)*/
+                else
+                    DragSelectedTokens(GetClick());
             }
-            else if (Input.GetMouseButtonUp(0) && selectedCardsCopy.Count > 0)
+            else if (Input.GetMouseButtonDown(0))
             {
-                Click();
-                ShowPossibleMoves.showPossibleMoves.HideMoves();
-
-                for (int i = 0; i < selectedCardsCopy.Count; i++)
-                {
-                    Destroy(selectedCardsCopy[i]);
-                }
-
-                selectedCardsCopy.Clear();
-                dragOn = false;
-                UnselectCards();
-            }
-        }
-
-        if (dragOn == true)
-        {
-            ClickAndDrag();
-        }
-    }
-
-    public void StartDragging()
-    {
-        // make a copy of the selected cards to move around
-        int cardsCount = selectedCards.Count;
-        for (int i = 0; i < cardsCount; i++)
-        {
-            newGameObject = (GameObject)Instantiate(selectedCards[i], Vector3.zero, Quaternion.identity);
-            newGameObject.GetComponent<CardScript>().MakeVisualOnly();
-            newGameObject.GetComponent<CardScript>().SetSelected(false);
-            selectedCardsCopy.Add(newGameObject);
-        }
-
-        // enable dragged reactor tokens holograms
-        if (cardsCount == 1 && selectedCards[0].GetComponent<CardScript>().container.CompareTag("Reactor"))
-        {
-            selectedCardsCopy[0].GetComponent<CardScript>().ShowHologram();
-        }
-
-        // show any tokens (and reactors) that we can interact with
-        ShowPossibleMoves.showPossibleMoves.ShowMoves(selectedCards[0]);
-
-        changedHologramColor = false;
-        changedSuitGlowColor = false;
-
-        if (ShowPossibleMoves.showPossibleMoves.cardMatches.Count != 0)
-            matchTokensAreGlowing = true;
-        else
-            matchTokensAreGlowing = false;
-        if (ShowPossibleMoves.showPossibleMoves.cardMoves.Count != 0)
-            moveTokensAreGlowing = true;
-        else
-            moveTokensAreGlowing = false;
-        if (ShowPossibleMoves.showPossibleMoves.reactorMove != null)
-            reactorIsGlowing = true;
-        else
-            reactorIsGlowing = false;
-
-        soundController.CardPressSound();
-        dragOn = true;
-    }
-
-    public void ClickAndDrag()
-    {
-        // move the bottom token to our input position
-        selectedCardsCopy[0].transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
-                                                                                 Input.mousePosition.y,
-                                                                                 1));
-        // have the rest of the tokens appear above it
-        int cardCount = selectedCardsCopy.Count;
-        for (int i = 1; i < cardCount; i++)
-        {
-            selectedCardsCopy[i].transform.position = new Vector3(selectedCardsCopy[i - 1].transform.position.x,
-                                                                  selectedCardsCopy[i - 1].transform.position.y + Config.config.draggedTokenOffset,
-                                                                  selectedCardsCopy[i - 1].transform.position.z - 0.05f);
-        }
-
-        // if there is stuff glowing, check to see if we are hovering over them
-        if (matchTokensAreGlowing || moveTokensAreGlowing || reactorIsGlowing)
-        {
-            hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
-                                                                               Input.mousePosition.y,
-                                                                               10)),
-                                    Vector2.zero);
-
-            if (hit.collider != null) // if we hit something
-            {
-                if (hit.collider.gameObject == hoveringOver) // are we still hovering over the same object
-                {
+                if (IsInputStopped())
                     return;
-                }
 
-                if (changedSuitGlowColor)
-                {
-                    hoveringOver.GetComponent<ReactorScript>().RevertSuitGlow();
-                    changedSuitGlowColor = false;
-                }
+                TryToSelectCards(GetClick());
 
-                hoveringOver = hit.collider.gameObject;
-
-                // and tokens are glowing and we hit a glowing card (can move to it or match with it)
-                if ((matchTokensAreGlowing || moveTokensAreGlowing) && hoveringOver.CompareTag("Card") &&
-                    hoveringOver.GetComponent<CardScript>().IsGlowing())
-                {
-                    CardScript hoveringOverToken = hoveringOver.GetComponent<CardScript>();
-                    Color hoveringGlow = hoveringOverToken.GetGlowColor();
-                    selectedCardsCopy[cardCount - 1].GetComponent<CardScript>().ChangeHologramColor(hoveringGlow);
-                    changedHologramColor = true;
-
-                    if (matchTokensAreGlowing) // if there are matching tokens available
-                    {
-                        if (hoveringGlow == Config.config.cardMatchHighlightColor) // if we can match with this token
-                        {
-                            selectedCardsCopy[0].GetComponent<CardScript>().ChangeFoodHologram(false, updateScale: true);
-                        }
-                        else
-                        {
-                            selectedCardsCopy[0].GetComponent<CardScript>().ChangeFoodHologram(true, updateScale: true);
-                        }
-                    }
-                }
-                // if we are hovering over a glowing reactor
-                else if (reactorIsGlowing && hoveringOver.CompareTag("Reactor") &&
-                    hoveringOver.GetComponent<ReactorScript>().IsGlowing())
-                {
-                    selectedCardsCopy[0].GetComponent<CardScript>().ChangeHologramColor(hoveringOver.GetComponent<ReactorScript>().GetGlowColor());
-                    changedHologramColor = true;
-
-                    hoveringOver.GetComponent<ReactorScript>().ChangeSuitGlow(new Color(0, 1, 0, 0.5f));
-                    changedSuitGlowColor = true;
-
-                    if (matchTokensAreGlowing)
-                    {
-                        selectedCardsCopy[0].GetComponent<CardScript>().ChangeFoodHologram(true, updateScale: true);
-                    }
-                }
-                // we are hovering over an object that is of no concern
-                else if (changedHologramColor) // if we where hovering over a glowing token
-                {
-                    selectedCardsCopy[cardCount - 1].GetComponent<CardScript>().ChangeHologramColor(Color.white);
-                    changedHologramColor = false;
-
-                    if (matchTokensAreGlowing) // if there is the possibility that we where hovering over a matching token
-                    {
-                        selectedCardsCopy[0].GetComponent<CardScript>().ChangeFoodHologram(true, updateScale: true);
-                    }
-                }
-            }
-            else if (changedHologramColor) // if we where hovering over a glowing token or reactor
-            {
-                if (changedSuitGlowColor)
-                {
-                    hoveringOver.GetComponent<ReactorScript>().RevertSuitGlow();
-                    changedSuitGlowColor = false;
-                }
-
-                hoveringOver = null;
-
-                selectedCardsCopy[cardCount - 1].GetComponent<CardScript>().ChangeHologramColor(Color.white);
-                changedHologramColor = false;
-                
-                if (matchTokensAreGlowing) // if there is the possibility that we where hovering over a matching token
-                {
-                    selectedCardsCopy[0].GetComponent<CardScript>().ChangeFoodHologram(true, updateScale: true);
-                }
+                if (dragOn)
+                    DragSelectedTokens(GetClick());
             }
         }
     }
 
-    public void SelectCard(GameObject inputCard)
+    public RaycastHit2D GetClick()
     {
-        if (inputCard.GetComponent<CardScript>().container.CompareTag("Wastepile"))
+        return Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
+                                                                           Input.mousePosition.y,
+                                                                           10)),
+                                                               Vector2.zero);
+    }
+
+    private void TryToSelectCards(RaycastHit2D hit)
+    {
+        if (hit.collider == null)
+            return;
+
+        GameObject hitGameObject = hit.collider.gameObject;
+        if (!hitGameObject.CompareTag("Card"))
         {
-            inputCard.GetComponent<CardScript>().container.GetComponent<WastepileScript>().DraggingCard(inputCard, true);
+            if (hitGameObject.CompareTag("Baby"))
+                baby.GetComponent<SpaceBabyController>().BabyHappyAnim();
+            return;
+        }
+
+        CardScript hitCardScript = hitGameObject.GetComponent<CardScript>();
+
+        //if we click a card in the wastepile select it
+        if (hitCardScript.container.CompareTag("Wastepile"))
+            // all non-top wastepile tokens have their hitboxes disabled
+            //if (hitCardScript.container.GetComponent<WastepileScript>().cardList[0] == hitGameObject)
+            SelectCard(hitGameObject);
+
+        //if we click a card in a reactor
+        else if (hitCardScript.container.CompareTag("Reactor") &&
+                 hitCardScript.container.GetComponent<ReactorScript>().cardList[0] == hitGameObject)
+            SelectCard(hitGameObject);
+
+        //if we click a card in a foundation
+        else if (hitCardScript.container.CompareTag("Foundation"))
+            //if (!hitCardScript.isHidden()) // hidden cards have their hitboxes disabled
+            SelectMultipleCards(hitGameObject);
+    }
+
+    private void SelectCard(GameObject inputCard)
+    {
+        CardScript inputCardScript = inputCard.GetComponent<CardScript>();
+        if (inputCardScript == null)
+            throw new System.ArgumentException("inputCard must be a gameObject that contains a CardScript");
+
+        if (inputCardScript.container.CompareTag("Wastepile"))
+        {
+            inputCardScript.container.GetComponent<WastepileScript>().DraggingCard(inputCard, true);
             draggingWastepile = true;
         }
 
         selectedCards.Add(inputCard);
-        inputCard.GetComponent<CardScript>().SetSelected(true);
+        inputCardScript.SetSelected(true);
+
+        StartDragging();
     }
 
-    public void UnselectCards()
+    private void SelectMultipleCards(GameObject inputCard)
     {
-        if (draggingWastepile && selectedCards.Count == 1)
+        CardScript inputCardScript = inputCard.GetComponent<CardScript>();
+        if (inputCardScript == null || !inputCardScript.container.CompareTag("Foundation"))
+            throw new System.ArgumentException("inputCard must be a gameObject that contains a CardScript that is from a foundation");
+
+        FoundationScript inputCardFoundation = inputCardScript.container.GetComponent<FoundationScript>();
+
+        for (int i = inputCardFoundation.cardList.IndexOf(inputCard); i >= 0; i--)
+        {
+            selectedCards.Add(inputCardFoundation.cardList[i]);
+            inputCardFoundation.cardList[i].GetComponent<CardScript>().SetSelected(true);
+        }
+
+        StartDragging();
+    }
+
+    private void TryToPlaceCards(RaycastHit2D hit)
+    {
+        if (hit.collider == null)
+            return;
+
+        GameObject selectedContainer = selectedCards[0].GetComponent<CardScript>().container;
+
+        if (selectedContainer.CompareTag("Wastepile"))
+            selectedContainer.GetComponent<WastepileScript>().ProcessAction(hit.collider.gameObject);
+        else if (selectedContainer.CompareTag("Foundation"))
+            selectedContainer.GetComponent<FoundationScript>().ProcessAction(hit.collider.gameObject);
+        else if (selectedContainer.CompareTag("Reactor"))
+            selectedContainer.GetComponent<ReactorScript>().ProcessAction(hit.collider.gameObject);
+        else
+            Debug.Log("TryToPlaceCards detected a selected card that had a weird container");
+    }
+
+    private void UnselectCards()
+    {
+        if (draggingWastepile)
         {
             wastePile.GetComponent<WastepileScript>().DraggingCard(selectedCards[0], false);
             draggingWastepile = false;
         }
 
         for (int i = 0; i < selectedCards.Count; i++)
-        {
             selectedCards[i].GetComponent<CardScript>().SetSelected(false);
-        }
-
         selectedCards.Clear();
+
+        for (int i = 0; i < selectedCardsCopy.Count; i++)
+            Destroy(selectedCardsCopy[i]);
+        selectedCardsCopy.Clear();
+
+        dragOn = false;
     }
 
-    public void SelectMultipleCards(int cardsToCount)
+    private void StartDragging()
     {
-        for (indexCounter = cardsToCount; indexCounter + 1 > 0; indexCounter--)
+        dragOn = true;
+
+        // make a copy of the selected cards to move around
+        GameObject newGameObject;
+        int cardsCount = selectedCards.Count;
+        for (int i = 0; i < cardsCount; i++)
         {
-            SelectCard(hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[indexCounter]);
+            newGameObject = Instantiate(selectedCards[i], selectedCards[i].transform.position, Quaternion.identity);
+            newGameObject.GetComponent<CardScript>().MakeVisualOnly();
+            selectedCardsCopy.Add(newGameObject);
         }
+
+        // enable dragged reactor tokens holograms
+        if (cardsCount == 1 && selectedCards[0].GetComponent<CardScript>().container.CompareTag("Reactor"))
+            selectedCardsCopy[0].GetComponent<CardScript>().ShowHologram();
+
+        // show any tokens (and reactors) that we can interact with
+        ShowPossibleMoves.showPossibleMoves.ShowMoves(selectedCards[0]);
+
+        changedHologramColor = false;
+        changedSuitGlowColor = false;
+        hidFoodHologram = false;
+
+        if (ShowPossibleMoves.showPossibleMoves.cardMatches.Count != 0)
+            matchTokensAreGlowing = true;
+        else
+            matchTokensAreGlowing = false;
+
+        if (ShowPossibleMoves.showPossibleMoves.cardMoves.Count != 0)
+            moveTokensAreGlowing = true;
+        else
+            moveTokensAreGlowing = false;
+
+        if (ShowPossibleMoves.showPossibleMoves.reactorMove != null)
+            reactorIsGlowing = true;
+        else
+            reactorIsGlowing = false;
+
+        soundController.CardPressSound();
     }
 
-    public int countCardsToSelect(GameObject selectedCard) //takes the input of a selected card and counts how many cards are above it in a foundation
+    private void DragSelectedTokens(RaycastHit2D hit)
     {
-        for (indexCounter = hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList.Count - 1; indexCounter > 0; indexCounter--)
+        // move the bottom token to our input position
+        selectedCardsCopy[0].transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
+                                                                                 Input.mousePosition.y,
+                                                                                 1));
+        // have the rest of the tokens appear above it
+        for (int i = 1; i < selectedCardsCopy.Count; i++)
         {
-            if (selectedCard == hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<FoundationScript>().cardList[indexCounter])
-            {
-                //Debug.Log("indexCounter " + (indexCounter + 1));
-                return indexCounter;
-            }
+            selectedCardsCopy[i].transform.position = new Vector3(selectedCardsCopy[i - 1].transform.position.x,
+                                                                  selectedCardsCopy[i - 1].transform.position.y + Config.config.draggedTokenOffset,
+                                                                  selectedCardsCopy[i - 1].transform.position.z - 0.05f);
         }
 
-        return 0;
+        DragGlow(hit);
     }
 
-    //sends out a raycast to see you selected something
-    public void Click()
+    private void DragGlow(RaycastHit2D hit)
     {
-        if (IsInputStopped())
-        {
+        // if there is no stuff glowing, stop
+        if (!(matchTokensAreGlowing || moveTokensAreGlowing || reactorIsGlowing))
             return;
-        }
 
-        //raycast to see what we clicked
-        hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)), Vector2.zero);
-
-        //if we click a deck activates deck and deselected our cards
-        if (hit.collider != null && !hit.collider.gameObject.CompareTag("Card"))
+        if (hit.collider != null)
         {
-            if (hit.collider.gameObject.CompareTag("Deck"))
-            {
+            if (hit.collider.gameObject == hoveringOver) // are we still hovering over the same object
                 return;
-                //hit.collider.gameObject.GetComponent<DeckScript>().ProcessAction(hit.collider.gameObject);
-            }
 
-            if (selectedCards.Count != 0)
+            DragGlowRevert();
+            hoveringOver = hit.collider.gameObject;
+
+            // if we are hovering over a glowing token
+            if ((matchTokensAreGlowing || moveTokensAreGlowing) && hoveringOver.CompareTag("Card") &&
+                hoveringOver.GetComponent<CardScript>().IsGlowing())
             {
-                selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
-                UnselectCards();
-            }
+                // change the dragged token hologram color to what it's hovering over and check if it was a match
+                if (selectedCardsCopy[selectedCardsCopy.Count - 1].GetComponent<CardScript>().ChangeHologram(hoveringOver.GetComponent<CardScript>().GetGlowColor()))
+                {
+                    // if the hovering over token is not in the reactor
+                    if (!hoveringOver.transform.parent.CompareTag("Reactor"))
+                    {
+                        // hide the hover over tokens food hologram
+                        hoveringOver.GetComponent<CardScript>().hologramFood.SetActive(false);
+                        hidFoodHologram = true;
+                    }
+                }
 
-            else if (hit.collider != null && hit.collider.gameObject.CompareTag("Baby"))
+                changedHologramColor = true;
+            }
+            // else if we are hovering over a glowing reactor
+            else if (reactorIsGlowing && hoveringOver.CompareTag("Reactor") &&
+                hoveringOver.GetComponent<ReactorScript>().IsGlowing())
             {
-                baby.GetComponent<SpaceBabyController>().BabyHappyAnim();
+                selectedCardsCopy[0].GetComponent<CardScript>().ChangeHologram(hoveringOver.GetComponent<ReactorScript>().GetGlowColor());
+                changedHologramColor = true;
+
+                hoveringOver.GetComponent<ReactorScript>().ChangeSuitGlow(new Color(0, 1, 0, 0.5f));
+                changedSuitGlowColor = true;
             }
-
-            return;
-        }
-
-        // if we click a card in the deck call deck clicked and deselect all cards
-        else if (hit.collider != null && hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Deck"))
-        {
-            hit.collider.gameObject.GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
-            UnselectCards();
-            return;
-        }
-
-        //if we click a card in the wastepile and we don't have any card selected select the card in the wastepile
-        else if (hit.collider != null && hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Wastepile") && selectedCards.Count == 0)
-        {
-            if (hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<WastepileScript>().cardList[0] == hit.collider.gameObject)
+            // else if we are hovering over a glowing foundation
+            /*else if (hoveringOver.CompareTag("Foundation"))
             {
-                SelectCard(hit.collider.gameObject);
-            }
+
+            }*/
+        }
+        else
+        {
+            DragGlowRevert();
+            hoveringOver = null;
+        }
+        
+    }
+
+    private void DragGlowRevert()
+    {
+        // if we where hovering over a glowing reactor
+        if (changedSuitGlowColor)
+        {
+            hoveringOver.GetComponent<ReactorScript>().RevertSuitGlow();
+            changedSuitGlowColor = false;
         }
 
-        //if we click a card in a reactor and we don't have any card selected select the card in the reactor
-        else if (hit.collider != null && hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Reactor") && selectedCards.Count == 0)
+        // if we where hovering over a glowing token
+        if (changedHologramColor)
         {
-            if (hit.collider.gameObject.GetComponent<CardScript>().container.GetComponent<ReactorScript>().cardList[0] == hit.collider.gameObject)
-            {
-                SelectCard(hit.collider.gameObject);
-            }
+            selectedCardsCopy[selectedCardsCopy.Count - 1].GetComponent<CardScript>().ChangeHologram(Color.white);
+            changedHologramColor = false;
+            Debug.Log("revert hologram");
         }
 
-        //if we click a card in a foundation and we don't have any card selected and the card we're trying to select is not hidden select the card in the foundation
-        else if (hit.collider != null && selectedCards.Count == 0 && !hit.collider.gameObject.GetComponent<CardScript>().isHidden() &&
-            hit.collider.gameObject.GetComponent<CardScript>().container.CompareTag("Foundation"))
+        // if we where hovering over a matching glowing token
+        if (hidFoodHologram)
         {
-            SelectMultipleCards(countCardsToSelect(hit.collider.gameObject));
-        }
-
-
-        //if we click on our first selected card deselect all cards
-        else if (hit.collider != null && selectedCards.Count != 0 && selectedCards[0] == hit.collider.gameObject)
-        {
-            UnselectCards();
-        }
-
-        //if we click on something else tries to move the selected cards 
-        else if (hit.collider != null && selectedCards.Count != 0 && !hit.collider.GetComponent<CardScript>().isHidden())
-        {
-            selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
-            //we are no longer changing a list that we are also iterating over
-            UnselectCards();
+            hoveringOver.GetComponent<CardScript>().hologramFood.SetActive(true);
+            hidFoodHologram = false;
         }
     }
 
     public void Match(GameObject card1, GameObject card2)
     {
-        // these must be in this order
-        SetInputStopped(true);
-        wastePile.GetComponent<WastepileScript>().scrollRect.horizontal = false;
-        isMatching = true; // a wastepile animation will overwrite the above without this
-
-        Vector3 p = card1.transform.position;
-        Quaternion t = card1.transform.rotation;
-        p.z += 2;
-
-        GameObject matchExplosion = Instantiate(matchPrefab, p, t);
-
-        StartCoroutine(animatorwait(card1, card2, matchExplosion));
-    }
-    IEnumerator animatorwait(GameObject card1, GameObject card2, GameObject matchExplosion)
-    {
         CardScript card1Script = card1.GetComponent<CardScript>();
         CardScript card2Script = card2.GetComponent<CardScript>();
 
-        if (card1Script.container.CompareTag("Reactor"))
-        {
-            card1Script.ShowHologram();
-        }
+        GameObject comboHologram = selectedCardsCopy[0].GetComponent<CardScript>().hologramFood;
+        comboHologram.transform.parent = null;
+        comboHologram.GetComponent<SpriteRenderer>().color = Color.white;
 
-        if (card2Script.container.CompareTag("Reactor"))
-        {
-            card2Script.hologramFood.SetActive(true);
-        }
-        else if (card2Script.container.CompareTag("Foundation"))
-        {
-            List<GameObject> containerCards = card2Script.container.GetComponent<FoundationScript>().cardList;
-            if (containerCards.Count > 1)
-            {
-                CardScript containerCardScript = containerCards[1].GetComponent<CardScript>();
-                if (containerCardScript.isHidden())
-                {
-                    containerCardScript.SetVisibility(true);
-                    containerCardScript.ShowHologram();
-                    containerCardScript.hidden = true;
-                }
-            }
-        }
+        Vector3 p = selectedCardsCopy[0].transform.position;
+        p.z += 2;
+        GameObject matchExplosion = Instantiate(matchPrefab, p, Quaternion.identity);
 
-        Vector3 origin = card1.transform.position;
-        card2.transform.position = origin;
-        card2Script.hologram.SetActive(false);
-        card2Script.UpdateMaskInteraction(card1.GetComponent<SpriteRenderer>().maskInteraction);
-        card1Script.hologram.GetComponent<SpriteRenderer>().sortingOrder = 1;
-
-        soundController.CardStackSound();
-        yield return new WaitForSeconds(0.4f);
-        soundController.FoodMatch(card1Script.cardSuit);
-        yield return new WaitForSeconds(0.3f);
-
-        card1Script.hologram.GetComponent<SpriteRenderer>().sortingOrder = 0;
-        card2Script.UpdateMaskInteraction(SpriteMaskInteraction.None);
         card2Script.MoveCard(matchedPile);
         card1Script.MoveCard(matchedPile);
-        UpdateActionCounter(0);
-
         UpdateScore(matchPoints);
+        UpdateActions(0);
+
+        soundController.FoodMatch(card1Script.cardSuit);
         baby.GetComponent<SpaceBabyController>().BabyEatAnim();
 
-        wastePile.GetComponent<WastepileScript>().scrollRect.horizontal = true;
-
-        // these must be in this order
-        isMatching = false;
-        SetInputStopped(false);
-        CheckGameOver();
-
-        GameObject comboToLoad = new GameObject("combo");
-        SpriteRenderer Srenderer = comboToLoad.AddComponent<SpriteRenderer>();
-        Srenderer.sortingLayerID = selectedLayer;
-
-        Srenderer.sprite = card1Script.hologramComboSprite;
-        comboToLoad.transform.localScale = Vector3.one * 0.15f;
-        comboToLoad.transform.position = origin;
-
-        StartCoroutine(FadeImage(comboToLoad, matchExplosion));
-
-        yield return new WaitForSeconds(0.2f);
-        soundController.CardMatchSound();
-        //StateLoader.saveSystem.writeState();
+        StartCoroutine(animatorwait(comboHologram, matchExplosion));
     }
 
-    IEnumerator FadeImage(GameObject comboToLoad, GameObject matchExplosion)
+    IEnumerator animatorwait(GameObject comboHologram, GameObject matchExplosion)
     {
+        //yield return new WaitForSeconds(0.3f);
         Vector3 target = baby.transform.position;
-        SpriteRenderer comboSR = comboToLoad.GetComponent<SpriteRenderer>();
-        float initialDistance = Vector3.Distance(comboToLoad.transform.position, target);
-        byte speed = (byte) (Config.config.cardsToReactorspeed / 3);
-        while (comboToLoad.transform.position != target)
+        SpriteRenderer comboSR = comboHologram.GetComponent<SpriteRenderer>();
+        Color fadeColor = new Color(1, 1, 1, 1);
+        float initialDistance = Vector3.Distance(comboHologram.transform.position, target);
+        int speed = Config.config.cardsToReactorspeed / 2;
+        while (comboHologram.transform.position != target)
         {
-            comboSR.color = new Color(1, 1, 1, Vector3.Distance(comboToLoad.transform.position, target) / initialDistance);
-            comboToLoad.transform.position = Vector3.MoveTowards(comboToLoad.transform.position, target,
-                Time.deltaTime * speed);
+            fadeColor.a = Vector3.Distance(comboHologram.transform.position, target) / initialDistance;
+            comboSR.color = fadeColor;
+            comboHologram.transform.position = Vector3.MoveTowards(comboHologram.transform.position, target, Time.deltaTime * speed);
             yield return null;
         }
 
+        //soundController.CardMatchSound();
         Destroy(matchExplosion);
-        Destroy(comboToLoad);
+        Destroy(comboHologram);
     }
 
     public bool CanMatch(CardScript card1, CardScript card2, bool checkIsTop = true)
     {
         //checks if the two cards can match together
-
-        if (checkIsTop)
-        {
-            if (!IsAtContainerTop(card1))
-                return false;
-            if (!IsAtContainerTop(card2))
-                return false;
-        }
+        
+        // checks if the cards are at the top of their containers
+        if (checkIsTop && (!IsAtContainerTop(card1) || !IsAtContainerTop(card2)))
+            return false;
 
         if (card1.cardNum != card2.cardNum)
             return false;
 
-        //hearts diamond combo #1
-        if (card1.cardSuit.Equals("hearts") && card2.cardSuit.Equals("diamonds"))
-            return true;
-        //hearts diamond combo #2
-        if (card1.cardSuit.Equals("diamonds") && card2.cardSuit.Equals("hearts"))
-            return true;
-        //spades clubs combo #1
-        if (card1.cardSuit.Equals("spades") && card2.cardSuit.Equals("clubs"))
-            return true;
-        //spades clubs combo #2
-        if (card1.cardSuit.Equals("clubs") && card2.cardSuit.Equals("spades"))
+        if ((card1.cardSuit.Equals("hearts") && card2.cardSuit.Equals("diamonds")) ||
+            (card1.cardSuit.Equals("diamonds") && card2.cardSuit.Equals("hearts")) ||
+            (card1.cardSuit.Equals("spades") && card2.cardSuit.Equals("clubs")) ||
+            (card1.cardSuit.Equals("clubs") && card2.cardSuit.Equals("spades")))
             return true;
 
         //otherwise not a match 
         return false;
     }
 
-    public bool IsAtContainerTop(CardScript card)
+    private bool IsAtContainerTop(CardScript card)
     {
         // checks if the card is at the top of its container's cardList
+        // hitboxes are disabled for all cards not on the top for the reactor, wastepile, and deck
 
         if (card.container.CompareTag("Foundation") &&
             card.container.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>() != card)
             return false;
-        if (card.container.CompareTag("Reactor") &&
+        /*if (card.container.CompareTag("Reactor") &&
             card.container.GetComponent<ReactorScript>().cardList[0].GetComponent<CardScript>() != card)
             return false;
-        /*if (card.container.CompareTag("Wastepile") &&
+        if (card.container.CompareTag("Wastepile") &&
             card.container.GetComponent<WastepileScript>().cardList[0].GetComponent<CardScript>() != card)
             return false;
         if (card.container.CompareTag("Deck") &&
@@ -574,47 +461,62 @@ public class UtilsScript : MonoBehaviour
     public void UpdateScore(int addScore)
     {
         Config.config.score += addScore;
-        scoreBox.GetComponent<ScoreScript>().UpdateScore();
+        scoreBox.GetComponent<ScoreScript>().UpdateScore(addScore);
     }
 
-    public void UpdateActionCounter(int actionUpdate, bool setAsValue = false)
+    public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false)
     {
         bool wasInAlertThreshold = Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold;
 
         if (setAsValue)
         {
+            if (CheckGameOver()) // nextcycle causing GO
+                return;
+
             Config.config.actions = actionUpdate;
         }
-        else if (actionUpdate == 0)
+        else if (actionUpdate == 0) // a match was made
+        {
+            // check if reactor alerts should be turned off
+            if (wasInAlertThreshold)
+                Alert(false, true);
+
+            if (!CheckGameOver())
+                StateLoader.saveSystem.writeState();
+            return;
+        }
+        else if (actionUpdate == -1) // a match undo
         {
             if (wasInAlertThreshold)
-            {
                 Alert(false, true);
-            }
+
+            StateLoader.saveSystem.writeState();
             return;
         }
         else
-        {
             Config.config.actions += actionUpdate;
-        }
 
         moveCounter.GetComponent<ActionCountScript>().UpdateActionText();
 
+        if (checkGameOver && CheckGameOver())
+            return;
+
+        StateLoader.saveSystem.writeState();
+
         bool isInAlertThreshold = Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold;
 
-        if (wasInAlertThreshold && isInAlertThreshold)
+        if (!wasInAlertThreshold && !isInAlertThreshold)
         {
+            // do nothing
+        }
+        else if (wasInAlertThreshold && isInAlertThreshold)
             Alert(false, true);
-            return;
-        }
         else if (wasInAlertThreshold && !isInAlertThreshold)
-        {
             Alert(false);
-        }
         else if (!wasInAlertThreshold && isInAlertThreshold)
-        {
             Alert(true);
-        }
+
+        CheckNextCycle();
     }
 
     private void Alert(bool turnOn, bool checkAgain = false)
@@ -622,7 +524,7 @@ public class UtilsScript : MonoBehaviour
         bool alertTurnedOn = false;
 
         // if we are checking again to see if anything has changed since the last move
-        if (checkAgain)
+        if (turnOn || checkAgain)
         {
             foreach (GameObject reactor in Config.config.reactors)
             {
@@ -630,31 +532,12 @@ public class UtilsScript : MonoBehaviour
                 if (reactor.GetComponent<ReactorScript>().CountReactorCard() +
                     reactor.GetComponent<ReactorScript>().GetIncreaseOnNextCycle() >= Config.config.maxReactorVal)
                 {
-                    reactor.GetComponent<ReactorScript>().GlowOn(1);
+                    reactor.GetComponent<ReactorScript>().AlertOn();
                     alertTurnedOn = true;
                 }
                 // try turning the glow off just in case if it already on
-                else
-                {
-                    reactor.GetComponent<ReactorScript>().GlowOff(true);
-                }
-            }
-        }
-        // if we are checking for the first time
-        else if (turnOn)
-        {
-            Config.config.GetComponent<MusicController>().AlertMusic();
-            baby.GetComponent<SpaceBabyController>().BabyAngryAnim();
-
-            foreach (GameObject reactor in Config.config.reactors)
-            {
-                // if a nextcyle will overload the reactor
-                if (reactor.GetComponent<ReactorScript>().CountReactorCard() +
-                    reactor.GetComponent<ReactorScript>().GetIncreaseOnNextCycle() >= Config.config.maxReactorVal)
-                {
-                    reactor.GetComponent<ReactorScript>().GlowOn(1);
-                    alertTurnedOn = true;
-                }
+                else if (checkAgain)
+                    reactor.GetComponent<ReactorScript>().AlertOff();
             }
         }
         // we are done with the alert
@@ -663,86 +546,70 @@ public class UtilsScript : MonoBehaviour
             Config.config.GetComponent<MusicController>().GameMusic();
 
             foreach (GameObject reactor in Config.config.reactors)
-            {
-                reactor.GetComponent<ReactorScript>().GlowOff(true);
-            }
+                reactor.GetComponent<ReactorScript>().AlertOff();
         }
 
         // if the alert was turned on during this check
         if (alertTurnedOn)
         {
             // if the alert was not already turned on, turn it on and play the sound
-            if (moveCounter.GetComponent<ActionCountScript>().TurnAlertOn())
-            {
+            if (moveCounter.GetComponent<ActionCountScript>().TurnSirenOn(2))
                 soundController.AlertSound();
-            }
         }
         // if the action counter is low
         else if (turnOn || checkAgain)
         {
-            moveCounter.GetComponent<ActionCountScript>().TurnSirenOn();
+            moveCounter.GetComponent<ActionCountScript>().TurnSirenOn(1);
         }
         // the action counter is not low so turn stuff off
         else
         {
             moveCounter.GetComponent<ActionCountScript>().TurnSirenOff();
         }
-    }
 
-    public void CheckNextCycle()
-    {
-        if (Config.config.actions == Config.config.actionMax)
+        if (turnOn)
         {
-            Config.config.deck.GetComponent<DeckScript>().StartNextCycle();
+            Config.config.GetComponent<MusicController>().AlertMusic();
+            baby.GetComponent<SpaceBabyController>().BabyAngryAnim();
         }
     }
 
-    public void CheckGameOver()
+    private bool CheckGameOver()
     {
         if (!Config.config.gameOver && Config.config.CountFoundationCards() == 0)
         {
             SetEndGameScore();
             Config.config.GameOver(true);
+            return true;
         }
+        return false;
     }
 
-    public void SetEndGameScore()
+    private void CheckNextCycle()
+    {
+        if (Config.config.actions == Config.config.actionMax)
+            Config.config.deck.GetComponent<DeckScript>().StartNextCycle();
+    }
+
+    private void SetEndGameScore()
     {
         int extraScore = 0;
         if (matchedPile.GetComponent<MatchedPileScript>().cardList.Count == 52)
-        {
             extraScore += PerfectGamePoints;
-        }
 
         if (Config.config.reactor1.GetComponent<ReactorScript>().cardList.Count == 0)
-        {
             extraScore += emptyReactorPoints;
-        }
 
         if (Config.config.reactor2.GetComponent<ReactorScript>().cardList.Count == 0)
-        {
             extraScore += emptyReactorPoints;
-        }
 
         if (Config.config.reactor3.GetComponent<ReactorScript>().cardList.Count == 0)
-        {
             extraScore += emptyReactorPoints;
-        }
 
         if (Config.config.reactor4.GetComponent<ReactorScript>().cardList.Count == 0)
-        {
             extraScore += emptyReactorPoints;
-        }
-        UpdateScore(extraScore);
-    }
 
-    public void PACards()
-    {
-        if (selectedCards.Count != 0)
-        {
-            selectedCards[0].GetComponent<CardScript>().container.SendMessage("ProcessAction", hit.collider.gameObject);
-            UnselectCards();
-        }
+        UpdateScore(extraScore);
     }
 
     public bool IsInputStopped()
@@ -753,8 +620,6 @@ public class UtilsScript : MonoBehaviour
     public void SetInputStopped(bool setTo)
     {
         if (!isMatching)
-        {
             inputStopped = setTo;
-        }
     }
 }

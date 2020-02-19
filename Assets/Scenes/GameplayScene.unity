@@ -767,7 +767,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.31738955}
   m_AnchorMax: {x: 0.5, y: 0.31738955}
-  m_AnchoredPosition: {x: 0.0000014305, y: 1.2000008}
+  m_AnchoredPosition: {x: 0, y: 12}
   m_SizeDelta: {x: 97.23, y: 35.51}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &275524745
@@ -792,11 +792,11 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 8229317429a3d4abdb1d85c7ea8d4a2c, type: 3}
-    m_FontSize: 30
+    m_FontSize: 55
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
-    m_MaxSize: 53
+    m_MaxSize: 60
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -1894,7 +1894,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.27800003}
   m_AnchorMax: {x: 0.5, y: 0.27800003}
-  m_AnchoredPosition: {x: 0, y: -2}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 31.43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &533940917
@@ -1919,7 +1919,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 8229317429a3d4abdb1d85c7ea8d4a2c, type: 3}
-    m_FontSize: 30
+    m_FontSize: 35
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -2696,7 +2696,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &910050646
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2729,7 +2729,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.7264151, g: 0.051397286, b: 0.051397286, a: 1}
+  m_Color: {r: 0.105882354, g: 0.58431375, b: 0.8627451, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -3047,15 +3047,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aace81811416b496487ac4b00885372a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  utils: {fileID: 1574574478}
   soundController: {fileID: 307181958}
   deck: {fileID: 1524850547}
   contentPanel: {fileID: 225234669}
+  cardList: []
   cardContainer: {fileID: 4445628893480912193, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
     type: 3}
-  cardList: []
-  cardContainers: []
   scrollRect: {fileID: 0}
+  isScrolling: 0
 --- !u!222 &1092020363
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4282,6 +4281,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameScore: {fileID: 533940917}
+  pointsPrefab: {fileID: 5801631464807042985, guid: 614ce32a7efa12342824cb70c9aacc46,
+    type: 3}
 --- !u!1 &1489801180
 GameObject:
   m_ObjectHideFlags: 0
@@ -4480,7 +4481,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1524850549}
   - component: {fileID: 1524850548}
-  - component: {fileID: 1524850551}
   - component: {fileID: 1524850552}
   - component: {fileID: 1524850554}
   - component: {fileID: 1524850550}
@@ -4504,7 +4504,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 588991f7981904dbeb5fea6cffa8c7ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  utils: {fileID: 1574574478}
   wastePile: {fileID: 1092020358}
   myPrefab: {fileID: 5176008346855944174, guid: 7232864c537dd463a882601b8089390d,
     type: 3}
@@ -4601,9 +4600,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 361cd928c8ea328479f9d2c2ad7a9870, type: 3}
   deckCounter: {fileID: 1865176403}
   soundController: {fileID: 307181958}
-  dealOnDeckReset: 1
-  importSeed: 0
-  shuffleSeed: 0
 --- !u!224 &1524850549
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4653,32 +4649,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!61 &1524850551
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1524850547}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.6657143, y: 1.4085715}
-    newSize: {x: 2.25, y: 3.15}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.9, y: 0.7}
-  m_EdgeRadius: 0
 --- !u!222 &1524850552
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4751,10 +4721,10 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1524850548}
         m_MethodName: ProcessAction
-        m_Mode: 2
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 1524850547}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4910,6 +4880,8 @@ MonoBehaviour:
   selectedCards: []
   matchedPile: {fileID: 1214012893}
   matchPrefab: {fileID: 4031254262428589365, guid: 3a28ce96f97e3fd4f9107ecc217d5158,
+    type: 3}
+  pointsPrefab: {fileID: 5801631464807042985, guid: 614ce32a7efa12342824cb70c9aacc46,
     type: 3}
   gameUI: {fileID: 2058941297}
   scoreBox: {fileID: 1489602702}

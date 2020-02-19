@@ -26,6 +26,7 @@ public class CardScript : MonoBehaviour
     void Start()
     {
         glowing = false;
+        hologramFood.GetComponent<SpriteRenderer>().sprite = hologramFoodSprite;
 
         if (Config.config.prettyColors)
         {
@@ -111,41 +112,41 @@ public class CardScript : MonoBehaviour
         container = null;
 
         if (selectedLayer == 0)
-        {
             selectedLayer = SortingLayer.NameToID("SelectedCards");
-        }
 
         gameObject.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
         number.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
         hologram.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
         hologramFood.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
-        Destroy(gameObject.GetComponent<BoxCollider2D>());
+        gameObject.GetComponent<BoxCollider2D>().enabled = false;
+
+        SetSelected(false);
     }
 
-    public void ChangeFoodHologram(bool changeToDefault, bool updateScale = false)
+    public bool ChangeHologram(Color newColor)
     {
-        if (changeToDefault)
-        {
-            hologramFood.GetComponent<SpriteRenderer>().sprite = hologramFoodSprite;
-            if (updateScale)
-            {
-                hologramFood.transform.localScale = new Vector3(1.2f, 1.2f, 1);
-            }
-        }
-        else
-        {
-            hologramFood.GetComponent<SpriteRenderer>().sprite = hologramComboSprite;
-            if (updateScale)
-            {
-                hologramFood.transform.localScale = new Vector3(0.6f, 0.6f, 1);
-            }
-        }
-    }
+        SpriteRenderer hologramFoodSP = hologramFood.GetComponent<SpriteRenderer>();
 
-    public void ChangeHologramColor(Color newColor)
-    {
+        if (hologramFoodSP.color == newColor)
+            return false;
+
         hologram.GetComponent<SpriteRenderer>().color = newColor;
-        hologramFood.GetComponent<SpriteRenderer>().color = newColor;
+        hologramFoodSP.color = newColor;
+
+        if (newColor == Config.config.cardMatchHighlightColor)
+        {
+            hologramFoodSP.sprite = hologramComboSprite;
+            hologramFood.transform.localScale = new Vector3(0.6f, 0.6f, 1);
+            return true;
+        }
+        if (hologramFoodSP.sprite != hologramFoodSprite)
+        {
+            hologramFoodSP.sprite = hologramFoodSprite;
+            hologramFood.transform.localScale = new Vector3(1.2f, 1.2f, 1);
+            return false;
+        }
+
+        return false;
     }
 
     public Color GetGlowColor()
@@ -168,21 +169,13 @@ public class CardScript : MonoBehaviour
         hologram.GetComponent<Animator>().speed = 1;
     }
 
-    public bool HideHologram()
+    public void HideHologram()
     {
-        if (isHidden())
-        {
-            return true;
-        }
-
-        if (hologram.activeSelf || hologramFood.activeSelf)
+        if (!isHidden() && (hologram.activeSelf || hologramFood.activeSelf))
         {
             hologram.SetActive(false);
             hologramFood.SetActive(false);
-            return true;
         }
-
-        return false;
     }
 
     public bool GlowOn(bool match)
@@ -221,7 +214,7 @@ public class CardScript : MonoBehaviour
         return glowing;
     }
 
-    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool removeUpdateHolo = true, bool addUpdateHolo = true, bool doSave = true)
+    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool doSave = true)
     {
         bool nextCardWasHidden = false;
         if (container.CompareTag("Foundation"))
@@ -235,7 +228,7 @@ public class CardScript : MonoBehaviour
                     nextCardWasHidden = true;
                 }
             }
-            container.GetComponent<FoundationScript>().RemoveCard(gameObject, removeUpdateHolo);
+            container.GetComponent<FoundationScript>().RemoveCard(gameObject);
         }
         else if (container.CompareTag("Reactor"))
         {
@@ -243,7 +236,10 @@ public class CardScript : MonoBehaviour
         }
         else if (container.CompareTag("Wastepile"))
         {
-            container.GetComponent<WastepileScript>().RemoveCard(gameObject, removeUpdateHolo);
+            if (!doLog || destination.CompareTag("Deck"))
+                container.GetComponent<WastepileScript>().RemoveCard(gameObject, undoingOrDeck: true);
+            else
+                container.GetComponent<WastepileScript>().RemoveCard(gameObject);
         }
         else if (container.CompareTag("Deck"))
         {
@@ -272,7 +268,7 @@ public class CardScript : MonoBehaviour
                 }
             }
 
-            destination.GetComponent<FoundationScript>().AddCard(gameObject, addUpdateHolo);
+            destination.GetComponent<FoundationScript>().AddCard(gameObject);
         }
         else if (destination.CompareTag("Reactor"))
         {
@@ -304,7 +300,7 @@ public class CardScript : MonoBehaviour
                 }
             }
 
-            destination.GetComponent<WastepileScript>().AddCard(gameObject, addUpdateHolo);
+            destination.GetComponent<WastepileScript>().AddCard(gameObject);
         }
         else if (destination.CompareTag("Deck"))
         {
@@ -334,10 +330,6 @@ public class CardScript : MonoBehaviour
         }
 
         container = destination;
-        if (doSave)
-        {
-            StateLoader.saveSystem.writeState();
-        }
     }
 }
 

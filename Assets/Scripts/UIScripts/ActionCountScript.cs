@@ -16,7 +16,6 @@ public class ActionCountScript : MonoBehaviour
 
     private void Start()
     {
-        UpdateActionText();
         buttonImage = timerButton.GetComponent<Image>();
         sirenImage = timerSiren.GetComponent<Image>();
         currentState = 0;
@@ -25,7 +24,7 @@ public class ActionCountScript : MonoBehaviour
 
     public void UpdateActionText()
     {
-        actionText.text = (Config.config.actionMax - Config.config.actions).ToString() + "/" + Config.config.actionMax;
+        actionText.text = (Config.config.actionMax - Config.config.actions).ToString();
     }
 
     public void PressKnob()
@@ -44,45 +43,27 @@ public class ActionCountScript : MonoBehaviour
     public void TurnSirenOff()
     {
         if (flasher != null)
-        {
             StopCoroutine(flasher);
-        }
 
         sirenImage.sprite = sirenOff;
         currentState = 0;
         flasher = null;
     }
 
-    public bool TurnSirenOn()
+    public bool TurnSirenOn(byte alertLevel)
     {
-        if (currentState == 1)
-        {
+        if (currentState == alertLevel)
             return false;
-        }
-        else if (currentState == 2)
-        {
+
+        if (flasher != null)
             StopCoroutine(flasher);
-        }
 
-        currentState = 1;
-        sirenImage.sprite = sirenOn;
-        flasher = StartCoroutine(Flash());
-        return true;
-    }
-
-    public bool TurnAlertOn()
-    {
-        if (currentState == 2)
-        {
-            return false;
-        }
-        else if (currentState == 1)
-        {
-            StopCoroutine(flasher);
-        }
-
-        currentState = 2;
-        sirenImage.sprite = sirenAlert;
+        currentState = alertLevel;
+        
+        if (alertLevel == 1)
+            sirenImage.sprite = sirenOn;
+        else
+            sirenImage.sprite = sirenAlert;
         flasher = StartCoroutine(Flash());
         return true;
     }

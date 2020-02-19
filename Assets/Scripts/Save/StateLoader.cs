@@ -292,7 +292,7 @@ public class StateLoader : MonoBehaviour
         print("max actions: " + Config.config.actionMax);
         Config.config.difficulty = state.difficulty;
         Config.config.score = state.score;
-        UtilsScript.global.UpdateActionCounter(state.actions, true);
+        UtilsScript.global.UpdateActions(state.actions, true);
     }
        
     public static GameState CreateFromJSON(string path)
