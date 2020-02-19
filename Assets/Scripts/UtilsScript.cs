@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.IO;
 
@@ -11,6 +12,7 @@ public class UtilsScript : MonoBehaviour
     private List<GameObject> selectedCardsCopy;
     public GameObject matchedPile;
     public GameObject matchPrefab;
+    public GameObject matchPointsPrefab;
 
     public GameObject gameUI;
     public GameObject scoreBox;
@@ -369,6 +371,8 @@ public class UtilsScript : MonoBehaviour
         Vector3 p = selectedCardsCopy[0].transform.position;
         p.z += 2;
         GameObject matchExplosion = Instantiate(matchPrefab, p, Quaternion.identity);
+        //GameObject matchPointsEffect = Instantiate(matchPointsPrefab, p, Quaternion.identity, gameUI.transform);
+        //matchPointsEffect.GetComponent<Text>().text = Config.config.matchPoints.ToString();
 
         card2Script.MoveCard(matchedPile);
         card1Script.MoveCard(matchedPile);
@@ -378,10 +382,11 @@ public class UtilsScript : MonoBehaviour
         soundController.FoodMatch(card1Script.cardSuit);
         baby.GetComponent<SpaceBabyController>().BabyEatAnim();
 
-        StartCoroutine(animatorwait(comboHologram, matchExplosion));
+        StartCoroutine(FoodComboMove(comboHologram, matchExplosion));
+        //StartCoroutine(PointFade(matchPointsEffect));
     }
 
-    IEnumerator animatorwait(GameObject comboHologram, GameObject matchExplosion)
+    IEnumerator FoodComboMove(GameObject comboHologram, GameObject matchExplosion)
     {
         yield return new WaitForSeconds(0.3f);
         Vector3 target = baby.transform.position;
@@ -400,6 +405,17 @@ public class UtilsScript : MonoBehaviour
         //soundController.CardMatchSound();
         Destroy(matchExplosion);
         Destroy(comboHologram);
+    }
+
+    IEnumerator PointFade(GameObject matchPointsEffect)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.1f);
+            
+        }
+
+        Destroy(matchPointsEffect);
     }
 
     public bool CanMatch(CardScript card1, CardScript card2, bool checkIsTop = true)
@@ -461,7 +477,7 @@ public class UtilsScript : MonoBehaviour
     public void UpdateScore(int addScore)
     {
         Config.config.score += addScore;
-        scoreBox.GetComponent<ScoreScript>().UpdateScore(addScore);
+        scoreBox.GetComponent<ScoreScript>().UpdateScore();
     }
 
     public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false)
