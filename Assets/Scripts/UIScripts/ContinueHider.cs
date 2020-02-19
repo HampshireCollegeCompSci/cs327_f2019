@@ -7,9 +7,9 @@ public class ContinueHider : MonoBehaviour
 {
     private void Awake()
     {
-        if(!File.Exists(Application.persistentDataPath + "/testState.json"))
+        /*if(!File.Exists(Application.persistentDataPath + "/testState.json"))
         {
             gameObject.SetActive(false);
-        }
+        }*/
     }
 }
