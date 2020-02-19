@@ -102,11 +102,14 @@ public class MenuUIScript : MonoBehaviour
         SceneManager.LoadScene("LevelSelectScene");
     }
 
-    public void NewGame()
+    public void NewGame(bool isContinue = false)
     {
         UndoScript.undoScript.moveLog.Clear();
-        Config.config.score = 0;
-        Config.config.actions = 0;
+        if (!isContinue)
+        {
+            Config.config.score = 0;
+            Config.config.actions = 0;
+        }
         Config.config.gameOver = false;
         Config.config.gameWin = false;
         Config.config.gamePaused = false;
@@ -257,7 +260,7 @@ public class MenuUIScript : MonoBehaviour
                 StateLoader.saveSystem.loadState();
                 Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
                 Config.config.tutorialOn = false;
-                NewGame();
+                NewGame(true);
             }
         } else
         {
@@ -266,7 +269,7 @@ public class MenuUIScript : MonoBehaviour
                 StateLoader.saveSystem.loadState();
                 Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
                 Config.config.tutorialOn = false;
-                NewGame();
+                NewGame(true);
             }
         }
         
