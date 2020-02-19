@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class TutorialScript : MonoBehaviour
 {
-    private List<string> commandList;
-    private Queue<string[]> splitCommandList;
+    private List<ArgumentListWrapper> commandList;
+    private Queue<List<string>> commandQueue;
     private bool executeFlag = true;
     void Start()
     {
@@ -13,12 +13,11 @@ public class TutorialScript : MonoBehaviour
         CommandReader(commandList);
     }
 
-    void CommandReader(List<string> commandList)
+    void CommandReader(List<ArgumentListWrapper> commandList)
     {
-        foreach (string command in commandList)
+        foreach (ArgumentListWrapper command in commandList)
         {
-            string[] splitCommand = command.Split('.');
-            splitCommandList.Enqueue(splitCommand);
+            commandQueue.Enqueue(command.argumentList);
         }
     }
 
@@ -36,7 +35,7 @@ public class TutorialScript : MonoBehaviour
 
     void CommandInterpreter()
     {
-        string[] command = splitCommandList.Dequeue();
+        List<string> command = commandQueue.Dequeue();
         if (command[0] == "LoadSave")
         {
             LoadSave(command[1]);
@@ -78,7 +77,7 @@ public class TutorialScript : MonoBehaviour
 
     }
 
-    private static List<string> CreateFromJSON()
+    private static List<ArgumentListWrapper> CreateFromJSON()
     {
         var jsonTextFile = Resources.Load<TextAsset>("Tutorial/TutorialCommandList");
         TutorialCommands commandFile = JsonUtility.FromJson<TutorialCommands>(jsonTextFile.ToString());
