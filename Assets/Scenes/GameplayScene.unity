@@ -4250,7 +4250,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: fb863a6ec5abbb24aa83061716f7d980, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1cb9d6e9717f3784bb101fee74699470, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4880,8 +4880,6 @@ MonoBehaviour:
   selectedCards: []
   matchedPile: {fileID: 1214012893}
   matchPrefab: {fileID: 4031254262428589365, guid: 3a28ce96f97e3fd4f9107ecc217d5158,
-    type: 3}
-  pointsPrefab: {fileID: 5801631464807042985, guid: 614ce32a7efa12342824cb70c9aacc46,
     type: 3}
   gameUI: {fileID: 2058941297}
   scoreBox: {fileID: 1489602702}
