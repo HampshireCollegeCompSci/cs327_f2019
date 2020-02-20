@@ -65,8 +65,9 @@ public class ShowPossibleMoves : MonoBehaviour
                         break;
                     }
         }
-        
+
         foreach (GameObject foundation in Config.config.foundations)
+        {
             if (foundation.GetComponent<FoundationScript>().cardList.Count != 0)
             {
                 CardScript topFoundationCardScript = foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>();
@@ -79,6 +80,9 @@ public class ShowPossibleMoves : MonoBehaviour
                     topFoundationCardScript.cardNum == selectedCardNum + 1)
                     cardMoves.Add(foundation.GetComponent<FoundationScript>().cardList[0]);
             }
+            else
+                foundationMoves.Add(foundation);
+        }
 
         // if the card can match and matches with the wastepile top
         if (cardCanBeMatched && Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count != 0)
@@ -98,11 +102,14 @@ public class ShowPossibleMoves : MonoBehaviour
 
         FindMoves(selectedCard);
         
-        foreach (GameObject card in cardMoves)
-            card.GetComponent<CardScript>().GlowOn(false);
+        for (int i = 0; i < cardMoves.Count; i++)
+            cardMoves[i].GetComponent<CardScript>().GlowOn(false);
 
-        foreach (GameObject card in cardMatches)
-            card.GetComponent<CardScript>().GlowOn(true);
+        for (int i = 0; i < cardMatches.Count; i++)
+            cardMatches[i].GetComponent<CardScript>().GlowOn(true);
+
+        for (int i = 0; i < foundationMoves.Count; i++)
+            foundationMoves[i].GetComponent<FoundationScript>().GlowOn();
 
         if (reactorMove != null)
         {
@@ -122,11 +129,14 @@ public class ShowPossibleMoves : MonoBehaviour
 
     public void HideMoves()
     {
-        foreach (GameObject card in cardMoves)
-            card.GetComponent<CardScript>().GlowOff();
+        for (int i = 0; i < cardMoves.Count; i++)
+            cardMoves[i].GetComponent<CardScript>().GlowOff();
 
-        foreach (GameObject card in cardMatches)
-            card.GetComponent<CardScript>().GlowOff();
+        for (int i = 0; i < cardMatches.Count; i++)
+            cardMatches[i].GetComponent<CardScript>().GlowOff();
+
+        for (int i = 0; i < foundationMoves.Count; i++)
+            foundationMoves[i].GetComponent<FoundationScript>().GlowOff();
 
         if (reactorMove != null)
         {

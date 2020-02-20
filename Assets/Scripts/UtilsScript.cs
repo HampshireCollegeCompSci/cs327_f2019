@@ -42,6 +42,7 @@ public class UtilsScript : MonoBehaviour
     private bool matchTokensAreGlowing;
     private bool moveTokensAreGlowing;
     private bool reactorIsGlowing;
+    private bool foundationIsGlowing;
 
     public void SetCards()
     {
@@ -259,6 +260,11 @@ public class UtilsScript : MonoBehaviour
         else
             reactorIsGlowing = false;
 
+        if (ShowPossibleMoves.showPossibleMoves.foundationMoves.Count != 0)
+            foundationIsGlowing = true;
+        else
+            foundationIsGlowing = false;
+
         soundController.CardPressSound();
     }
 
@@ -282,7 +288,7 @@ public class UtilsScript : MonoBehaviour
     private void DragGlow(RaycastHit2D hit)
     {
         // if there is no stuff glowing, stop
-        if (!(matchTokensAreGlowing || moveTokensAreGlowing || reactorIsGlowing))
+        if (!(matchTokensAreGlowing || moveTokensAreGlowing || reactorIsGlowing || foundationIsGlowing))
             return;
 
         if (hit.collider != null)
@@ -321,11 +327,13 @@ public class UtilsScript : MonoBehaviour
                 hoveringOver.GetComponent<ReactorScript>().ChangeSuitGlow(new Color(0, 1, 0, 0.5f));
                 changedSuitGlowColor = true;
             }
-            // else if we are hovering over a glowing foundation
-            /*else if (hoveringOver.CompareTag("Foundation"))
+            else if (foundationIsGlowing && hoveringOver.CompareTag("Foundation") &&
+                hoveringOver.GetComponent<FoundationScript>().IsGlowing())
             {
-
-            }*/
+                Debug.Log("hover");
+                selectedCardsCopy[selectedCardsCopy.Count - 1].GetComponent<CardScript>().ChangeHologram(hoveringOver.GetComponent<FoundationScript>().GetGlowColor());
+                changedHologramColor = true;
+            }
         }
         else
         {

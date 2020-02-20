@@ -7,10 +7,13 @@ public class FoundationScript : MonoBehaviour
     private UtilsScript utils;
     public List<GameObject> cardList;
     public SoundController soundController;
+    private SpriteRenderer sp;
+    private bool isGlowing;
 
     void Start()
     {
         utils = UtilsScript.global;
+        sp = gameObject.GetComponent<SpriteRenderer>();
     }
 
     public void AddCard(GameObject card)
@@ -88,6 +91,32 @@ public class FoundationScript : MonoBehaviour
 
             positionCounter++;
         }
+    }
+
+    public void GlowOn()
+    {
+        if (isGlowing)
+            return;
+        isGlowing = true;
+        sp.color = Color.yellow;
+    }
+
+    public void GlowOff()
+    {
+        if (!isGlowing)
+            return;
+        isGlowing = false;
+        sp.color = Color.white;
+    }
+
+    public bool IsGlowing()
+    {
+        return isGlowing;
+    }
+
+    public Color GetGlowColor()
+    {
+        return sp.color;
     }
 
     public void ProcessAction(GameObject input)
