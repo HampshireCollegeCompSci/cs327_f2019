@@ -652,4 +652,9 @@ public class UtilsScript : MonoBehaviour
         if (!isMatching)
             inputStopped = setTo;
     }
+
+    public bool IsDragging()
+    {
+        return dragOn;
+    }
 }

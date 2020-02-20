@@ -120,6 +120,9 @@ public class MenuUIScript : MonoBehaviour
 
     public void UndoButton()
     {
+        if (UtilsScript.global.IsDragging())
+            return;
+
         UndoScript.undoScript.undo();
         Config.config.GetComponent<SoundController>().UndoPressSound();
 

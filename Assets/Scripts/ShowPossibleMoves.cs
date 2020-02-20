@@ -7,6 +7,7 @@ public class ShowPossibleMoves : MonoBehaviour
     public static ShowPossibleMoves showPossibleMoves;
 
     public GameObject reactorMove;
+    public List<GameObject> foundationMoves;
     public List<GameObject> cardMoves;
     public List<GameObject> cardMatches;
 
@@ -90,6 +91,11 @@ public class ShowPossibleMoves : MonoBehaviour
 
     public void ShowMoves(GameObject selectedCard)
     {
+        reactorMove = null;
+        foundationMoves.Clear();
+        cardMoves.Clear();
+        cardMatches.Clear();
+
         FindMoves(selectedCard);
         
         foreach (GameObject card in cardMoves)
@@ -131,9 +137,5 @@ public class ShowPossibleMoves : MonoBehaviour
 
             reactorMoveScript.GlowOff();
         }
-
-        reactorMove = null;
-        cardMoves.Clear();
-        cardMatches.Clear();
     }
 }
