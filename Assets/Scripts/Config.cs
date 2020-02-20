@@ -79,7 +79,6 @@ public class Config : MonoBehaviour
     private string JSON;
     GameInfo gameInfo;
     GameObject fadeOutImage;
-    GameObject errorImage;
     public GameObject SplashScreen;
     private Coroutine splashScreenFade;
 
@@ -221,7 +220,7 @@ public class Config : MonoBehaviour
             //baby.GetComponent<SpaceBabyController>().BabyLoseSound();
             gameObject.GetComponent<SoundController>().LoseSound();
 
-            errorImage.SetActive(true);
+            UtilsScript.global.errorImage.SetActive(true);
             while (countdown > 0)
             {
                 yield return new WaitForSeconds(0.01f);
@@ -326,12 +325,6 @@ public class Config : MonoBehaviour
         if (fadeOutImage != null)
         {
             fadeOutImage.SetActive(false);
-        }
-
-        errorImage = GameObject.Find("Error");
-        if (errorImage != null)
-        {
-            errorImage.SetActive(false);
         }
 
         score = 0;

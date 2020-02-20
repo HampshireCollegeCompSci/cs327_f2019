@@ -14,6 +14,7 @@ public class UtilsScript : MonoBehaviour
     public GameObject matchPrefab;
     public GameObject matchPointsPrefab;
 
+    public GameObject errorImage;
     public GameObject gameUI;
     public GameObject scoreBox;
     public GameObject moveCounter;
