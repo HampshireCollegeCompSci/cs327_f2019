@@ -112,6 +112,10 @@ public class Config : MonoBehaviour
     public byte vibrationMatch;
     public int vibrationExplosion;
 
+    //long term tracking
+    public int moves;
+
+
     private void Awake()
     {
         if (config == null)
@@ -229,10 +233,30 @@ public class Config : MonoBehaviour
         SceneManager.LoadScene("SummaryScene");
 
         if (gameWin)
+        {
             gameObject.GetComponent<MusicController>().WinMusic();
-        else
-            gameObject.GetComponent<MusicController>().LoseMusic();
+            if (PlayerPrefs.HasKey(difficulty + "HighScore") && score > PlayerPrefs.GetInt(difficulty + "HighScore"))
+            {
+                PlayerPrefs.SetInt(difficulty + "HighScore", score);
+            }
+            else if (!PlayerPrefs.HasKey(difficulty + "HighScore"))
+            {
+                PlayerPrefs.SetInt(difficulty + "HighScore", score);
+            }
 
+            if (PlayerPrefs.HasKey(difficulty + "Moves") && moves < PlayerPrefs.GetInt(difficulty + "Moves"))
+            {
+                PlayerPrefs.SetInt(difficulty + "Moves", moves);
+            }
+            else if (!PlayerPrefs.HasKey(difficulty + "Moves"))
+            {
+                PlayerPrefs.SetInt(difficulty + "Moves", moves);
+            }
+        }
+        else
+        {
+            gameObject.GetComponent<MusicController>().LoseMusic();
+        }
         DeleteSave();
     }
 

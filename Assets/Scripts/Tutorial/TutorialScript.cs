@@ -27,7 +27,7 @@ public class TutorialScript : MonoBehaviour
         {
             executeFlag = true;
         }
-        if (executeFlag)
+        else
         {
             CommandInterpreter();
         }

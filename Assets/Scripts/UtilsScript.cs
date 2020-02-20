@@ -499,7 +499,7 @@ public class UtilsScript : MonoBehaviour
 
         if (setAsValue)
         {
-            if (CheckGameOver()) // nextcycle causing GO
+            if (CheckGameOver()) // nextcycle causing Game Over
                 return;
 
             Config.config.actions = actionUpdate;
