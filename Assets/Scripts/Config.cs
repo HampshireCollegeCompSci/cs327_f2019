@@ -107,8 +107,10 @@ public class Config : MonoBehaviour
     public string[] summarySceneButtonsTxtEnglish;
 
     //vibration
-    public byte buttonVibration = 5;
-    public byte cardVibration = 5;
+    public byte vibrationButton;
+    public byte vibrationCard;
+    public byte vibrationMatch;
+    public int vibrationExplosion;
 
     private void Awake()
     {
@@ -271,7 +273,12 @@ public class Config : MonoBehaviour
                                            gameInfo.cardMatchHighlightColor[3]);
         turnAlertSmallThreshold = gameInfo.turnAlertSmallThreshold;
         turnAlertThreshold = gameInfo.turnAlertThreshold;
-    }
+
+        vibrationButton = gameInfo.vibrationButton;
+        vibrationCard = gameInfo.vibrationCard;
+        vibrationMatch = gameInfo.vibrationMatch;
+        vibrationExplosion = gameInfo.vibrationExplosion;
+}
 
     public void SetCards()
     {
