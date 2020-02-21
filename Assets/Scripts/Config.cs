@@ -79,7 +79,6 @@ public class Config : MonoBehaviour
     private string JSON;
     GameInfo gameInfo;
     GameObject fadeOutImage;
-    GameObject errorImage;
     public GameObject SplashScreen;
     private Coroutine splashScreenFade;
 
@@ -107,8 +106,14 @@ public class Config : MonoBehaviour
     public string[] summarySceneButtonsTxtEnglish;
 
     //vibration
-    public byte buttonVibration = 5;
-    public byte cardVibration = 5;
+    public byte vibrationButton;
+    public byte vibrationCard;
+    public byte vibrationMatch;
+    public int vibrationExplosion;
+
+    //long term tracking
+    public int moves;
+
 
     private void Awake()
     {
@@ -215,7 +220,7 @@ public class Config : MonoBehaviour
             //baby.GetComponent<SpaceBabyController>().BabyLoseSound();
             gameObject.GetComponent<SoundController>().LoseSound();
 
-            errorImage.SetActive(true);
+            UtilsScript.global.errorImage.SetActive(true);
             while (countdown > 0)
             {
                 yield return new WaitForSeconds(0.01f);
@@ -227,10 +232,30 @@ public class Config : MonoBehaviour
         SceneManager.LoadScene("SummaryScene");
 
         if (gameWin)
+        {
             gameObject.GetComponent<MusicController>().WinMusic();
-        else
-            gameObject.GetComponent<MusicController>().LoseMusic();
+            if (PlayerPrefs.HasKey(difficulty + "HighScore") && score > PlayerPrefs.GetInt(difficulty + "HighScore"))
+            {
+                PlayerPrefs.SetInt(difficulty + "HighScore", score);
+            }
+            else if (!PlayerPrefs.HasKey(difficulty + "HighScore"))
+            {
+                PlayerPrefs.SetInt(difficulty + "HighScore", score);
+            }
 
+            if (PlayerPrefs.HasKey(difficulty + "Moves") && moves < PlayerPrefs.GetInt(difficulty + "Moves"))
+            {
+                PlayerPrefs.SetInt(difficulty + "Moves", moves);
+            }
+            else if (!PlayerPrefs.HasKey(difficulty + "Moves"))
+            {
+                PlayerPrefs.SetInt(difficulty + "Moves", moves);
+            }
+        }
+        else
+        {
+            gameObject.GetComponent<MusicController>().LoseMusic();
+        }
         DeleteSave();
     }
 
@@ -271,7 +296,12 @@ public class Config : MonoBehaviour
                                            gameInfo.cardMatchHighlightColor[3]);
         turnAlertSmallThreshold = gameInfo.turnAlertSmallThreshold;
         turnAlertThreshold = gameInfo.turnAlertThreshold;
-    }
+
+        vibrationButton = gameInfo.vibrationButton;
+        vibrationCard = gameInfo.vibrationCard;
+        vibrationMatch = gameInfo.vibrationMatch;
+        vibrationExplosion = gameInfo.vibrationExplosion;
+}
 
     public void SetCards()
     {
@@ -295,12 +325,6 @@ public class Config : MonoBehaviour
         if (fadeOutImage != null)
         {
             fadeOutImage.SetActive(false);
-        }
-
-        errorImage = GameObject.Find("Error");
-        if (errorImage != null)
-        {
-            errorImage.SetActive(false);
         }
 
         score = 0;

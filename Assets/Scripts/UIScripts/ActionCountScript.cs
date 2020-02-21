@@ -29,7 +29,7 @@ public class ActionCountScript : MonoBehaviour
 
     public void PressKnob()
     {
-        Vibration.Vibrate(Config.config.buttonVibration);
+        Vibration.Vibrate(Config.config.vibrationButton);
         buttonImage.sprite = buttonDown;
         StartCoroutine(ButtonAnimTrans());
     }

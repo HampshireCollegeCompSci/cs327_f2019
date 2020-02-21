@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.IO;
 
@@ -11,7 +12,9 @@ public class UtilsScript : MonoBehaviour
     private List<GameObject> selectedCardsCopy;
     public GameObject matchedPile;
     public GameObject matchPrefab;
+    public GameObject matchPointsPrefab;
 
+    public GameObject errorImage;
     public GameObject gameUI;
     public GameObject scoreBox;
     public GameObject moveCounter;
@@ -39,6 +42,7 @@ public class UtilsScript : MonoBehaviour
     private bool matchTokensAreGlowing;
     private bool moveTokensAreGlowing;
     private bool reactorIsGlowing;
+    private bool foundationIsGlowing;
 
     public void SetCards()
     {
@@ -256,6 +260,11 @@ public class UtilsScript : MonoBehaviour
         else
             reactorIsGlowing = false;
 
+        if (ShowPossibleMoves.showPossibleMoves.foundationMoves.Count != 0)
+            foundationIsGlowing = true;
+        else
+            foundationIsGlowing = false;
+
         soundController.CardPressSound();
     }
 
@@ -279,7 +288,7 @@ public class UtilsScript : MonoBehaviour
     private void DragGlow(RaycastHit2D hit)
     {
         // if there is no stuff glowing, stop
-        if (!(matchTokensAreGlowing || moveTokensAreGlowing || reactorIsGlowing))
+        if (!(matchTokensAreGlowing || moveTokensAreGlowing || reactorIsGlowing || foundationIsGlowing))
             return;
 
         if (hit.collider != null)
@@ -301,7 +310,7 @@ public class UtilsScript : MonoBehaviour
                     if (!hoveringOver.transform.parent.CompareTag("Reactor"))
                     {
                         // hide the hover over tokens food hologram
-                        hoveringOver.GetComponent<CardScript>().hologramFood.SetActive(false);
+                        hoveringOver.GetComponent<CardScript>().HideHologram();
                         hidFoodHologram = true;
                     }
                 }
@@ -318,11 +327,13 @@ public class UtilsScript : MonoBehaviour
                 hoveringOver.GetComponent<ReactorScript>().ChangeSuitGlow(new Color(0, 1, 0, 0.5f));
                 changedSuitGlowColor = true;
             }
-            // else if we are hovering over a glowing foundation
-            /*else if (hoveringOver.CompareTag("Foundation"))
+            else if (foundationIsGlowing && hoveringOver.CompareTag("Foundation") &&
+                hoveringOver.GetComponent<FoundationScript>().IsGlowing())
             {
-
-            }*/
+                Debug.Log("hover");
+                selectedCardsCopy[selectedCardsCopy.Count - 1].GetComponent<CardScript>().ChangeHologram(hoveringOver.GetComponent<FoundationScript>().GetGlowColor());
+                changedHologramColor = true;
+            }
         }
         else
         {
@@ -352,7 +363,7 @@ public class UtilsScript : MonoBehaviour
         // if we where hovering over a matching glowing token
         if (hidFoodHologram)
         {
-            hoveringOver.GetComponent<CardScript>().hologramFood.SetActive(true);
+            hoveringOver.GetComponent<CardScript>().ShowHologram();
             hidFoodHologram = false;
         }
     }
@@ -378,12 +389,13 @@ public class UtilsScript : MonoBehaviour
         soundController.FoodMatch(card1Script.cardSuit);
         baby.GetComponent<SpaceBabyController>().BabyEatAnim();
 
-        StartCoroutine(animatorwait(comboHologram, matchExplosion));
+        StartCoroutine(FoodComboMove(comboHologram, matchExplosion));
+        StartCoroutine(PointFade(p));
     }
 
-    IEnumerator animatorwait(GameObject comboHologram, GameObject matchExplosion)
+    IEnumerator FoodComboMove(GameObject comboHologram, GameObject matchExplosion)
     {
-        //yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.3f);
         Vector3 target = baby.transform.position;
         SpriteRenderer comboSR = comboHologram.GetComponent<SpriteRenderer>();
         Color fadeColor = new Color(1, 1, 1, 1);
@@ -400,6 +412,32 @@ public class UtilsScript : MonoBehaviour
         //soundController.CardMatchSound();
         Destroy(matchExplosion);
         Destroy(comboHologram);
+    }
+
+    IEnumerator PointFade(Vector3 position)
+    {
+        yield return new WaitForSeconds(0.2f);
+        GameObject matchPointsEffect = Instantiate(matchPointsPrefab, position, Quaternion.identity, gameUI.transform);
+        matchPointsEffect.GetComponent<Text>().text = "+" + Config.config.matchPoints.ToString();
+
+        Text pointText = matchPointsEffect.GetComponent<Text>();
+        while (pointText.fontSize < 75)
+        {
+            yield return new WaitForSeconds(0.02f);
+            pointText.fontSize += 1;
+        }
+
+        Color fadeColor = pointText.color;
+        while (fadeColor.a > 0)
+        {
+            yield return new WaitForSeconds(0.02f);
+            pointText.fontSize += 1;
+            fadeColor.a -= 0.05f;
+            pointText.color = fadeColor;
+        }
+
+        
+        Destroy(matchPointsEffect);
     }
 
     public bool CanMatch(CardScript card1, CardScript card2, bool checkIsTop = true)
@@ -461,7 +499,7 @@ public class UtilsScript : MonoBehaviour
     public void UpdateScore(int addScore)
     {
         Config.config.score += addScore;
-        scoreBox.GetComponent<ScoreScript>().UpdateScore(addScore);
+        scoreBox.GetComponent<ScoreScript>().UpdateScore();
     }
 
     public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false)
@@ -470,7 +508,7 @@ public class UtilsScript : MonoBehaviour
 
         if (setAsValue)
         {
-            if (CheckGameOver()) // nextcycle causing GO
+            if (CheckGameOver()) // nextcycle causing Game Over
                 return;
 
             Config.config.actions = actionUpdate;
@@ -621,5 +659,10 @@ public class UtilsScript : MonoBehaviour
     {
         if (!isMatching)
             inputStopped = setTo;
+    }
+
+    public bool IsDragging()
+    {
+        return dragOn;
     }
 }

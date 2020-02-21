@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class TutorialCommands : MonoBehaviour
 {
-    public List<string> commands;
+    public List<ArgumentListWrapper> commands;
 }

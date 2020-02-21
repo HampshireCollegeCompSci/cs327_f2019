@@ -94,15 +94,22 @@ public class MenuUIScript : MonoBehaviour
 
     public void Play()
     {
+        //Preprocessor Directive to make builds work
+        #if (UNITY_EDITOR)
+            UnityEditor.AssetDatabase.Refresh();
+        #endif
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         SceneManager.LoadScene("LevelSelectScene");
     }
 
-    public void NewGame()
+    public void NewGame(bool isContinue = false)
     {
         UndoScript.undoScript.moveLog.Clear();
-        Config.config.score = 0;
-        Config.config.actions = 0;
+        if (!isContinue)
+        {
+            Config.config.score = 0;
+            Config.config.actions = 0;
+        }
         Config.config.gameOver = false;
         Config.config.gameWin = false;
         Config.config.gamePaused = false;
@@ -113,6 +120,9 @@ public class MenuUIScript : MonoBehaviour
 
     public void UndoButton()
     {
+        if (UtilsScript.global.IsDragging())
+            return;
+
         UndoScript.undoScript.undo();
         Config.config.GetComponent<SoundController>().UndoPressSound();
 
@@ -166,11 +176,8 @@ public class MenuUIScript : MonoBehaviour
 
     public void PauseGame()
     {
-        GameObject utils = GameObject.Find("Utils");
-        if (utils != null && utils.GetComponent<UtilsScript>().IsInputStopped())
-        {
+        if (UtilsScript.global.IsDragging() || UtilsScript.global.IsInputStopped())
             return;
-        }
 
         Config.config.GetComponent<SoundController>().PauseMenuButtonSound();
         //TODO save the game scene
@@ -191,14 +198,9 @@ public class MenuUIScript : MonoBehaviour
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         if (Config.config.gamePaused)
-        {
             SceneManager.UnloadSceneAsync("SoundScene");
-        }
-
         else
-        {
             SceneManager.LoadScene("MainMenuScene");
-        }
     }
 
     public void Tutorial()
@@ -253,7 +255,7 @@ public class MenuUIScript : MonoBehaviour
                 StateLoader.saveSystem.loadState();
                 Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
                 Config.config.tutorialOn = false;
-                NewGame();
+                NewGame(true);
             }
         } else
         {
@@ -262,7 +264,7 @@ public class MenuUIScript : MonoBehaviour
                 StateLoader.saveSystem.loadState();
                 Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
                 Config.config.tutorialOn = false;
-                NewGame();
+                NewGame(true);
             }
         }
         

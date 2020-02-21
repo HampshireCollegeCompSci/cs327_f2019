@@ -1,7 +1,23 @@
 {
   "commands": [
-    "LoadSave_ExampleTutorial.json",
-    "ShowMask_Mask1.png",
-    "ShowText_This is example tutorial text!_Top"
+    {
+      "argumentList": [
+        "LoadSave",
+        "example.json"
+      ]
+    },
+    {
+      "argumentList": [
+        "ShowMask",
+        "testFile"
+      ]
+    },
+    {
+      "argumentList": [
+        "ShowText",
+        "Test Text, Please Ignore",
+        "Top"
+      ]
+    }
   ]
 }
