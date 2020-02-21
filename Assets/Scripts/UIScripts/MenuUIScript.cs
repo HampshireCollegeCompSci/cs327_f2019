@@ -176,11 +176,8 @@ public class MenuUIScript : MonoBehaviour
 
     public void PauseGame()
     {
-        GameObject utils = GameObject.Find("Utils");
-        if (utils != null && utils.GetComponent<UtilsScript>().IsInputStopped())
-        {
+        if (UtilsScript.global.IsDragging() || UtilsScript.global.IsInputStopped())
             return;
-        }
 
         Config.config.GetComponent<SoundController>().PauseMenuButtonSound();
         //TODO save the game scene
@@ -201,14 +198,9 @@ public class MenuUIScript : MonoBehaviour
     {
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         if (Config.config.gamePaused)
-        {
             SceneManager.UnloadSceneAsync("SoundScene");
-        }
-
         else
-        {
             SceneManager.LoadScene("MainMenuScene");
-        }
     }
 
     public void Tutorial()
