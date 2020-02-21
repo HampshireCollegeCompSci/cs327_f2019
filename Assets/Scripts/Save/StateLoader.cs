@@ -79,6 +79,7 @@ public class StateLoader : MonoBehaviour
                 + "_" + token.GetComponent<CardScript>().isHidden().ToString());
         }
         gameState.matches = matchList;
+
         //save undo
         print("attempting to save undo log.");
         List<AltMove> altMoveLog = new List<AltMove>();
@@ -97,7 +98,8 @@ public class StateLoader : MonoBehaviour
                 moveType = move.moveType,
                 nextCardWasHidden = move.nextCardWasHidden,
                 isAction = move.isAction,
-                remainingActions = move.remainingActions
+                remainingActions = move.remainingActions,
+                moveNum = move.moveNum
             });
         }
         int altMoveLogSize = tempMoveLog.Count;
@@ -152,7 +154,7 @@ public class StateLoader : MonoBehaviour
         DeckScript.deckScript.InstantiateCards(Config.config.deck);
         while (Config.config.deck.GetComponent<DeckScript>().cardList.Count > 0)
         {
-            Config.config.deck.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>().MoveCard(LoadPile, false, false, false, doSave:false);
+            Config.config.deck.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>().MoveCard(LoadPile, false, false, false);
         }
         print(state);
         
@@ -170,7 +172,7 @@ public class StateLoader : MonoBehaviour
                 {
                     if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
                     {
-                        token.GetComponent<CardScript>().MoveCard(Config.config.foundations[i], false, false, false, doSave: false);
+                        token.GetComponent<CardScript>().MoveCard(Config.config.foundations[i], false, false, false);
                         if (hiddenState == "True")
                         {
                             token.GetComponent<CardScript>().SetVisibility(false);
@@ -195,7 +197,7 @@ public class StateLoader : MonoBehaviour
                 {
                     if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
                     {
-                        token.GetComponent<CardScript>().MoveCard(Config.config.reactors[i], false, false, false, doSave: false);
+                        token.GetComponent<CardScript>().MoveCard(Config.config.reactors[i], false, false, false);
                         if (hiddenState == "True")
                         {
                             token.GetComponent<CardScript>().SetVisibility(false);
@@ -217,7 +219,7 @@ public class StateLoader : MonoBehaviour
             {
                 if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
                 {
-                    token.GetComponent<CardScript>().MoveCard(Config.config.wastePile, false, false, false, doSave: false);
+                    token.GetComponent<CardScript>().MoveCard(Config.config.wastePile, false, false, false);
                     if (hiddenState == "True")
                     {
                         token.GetComponent<CardScript>().SetVisibility(false);
@@ -237,7 +239,7 @@ public class StateLoader : MonoBehaviour
             {
                 if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
                 {
-                    token.GetComponent<CardScript>().MoveCard(Config.config.matches, false, false, false, doSave: false);
+                    token.GetComponent<CardScript>().MoveCard(Config.config.matches, false, false, false);
                     if (hiddenState == "True")
                     {
                         token.GetComponent<CardScript>().SetVisibility(false);
@@ -258,16 +260,17 @@ public class StateLoader : MonoBehaviour
             {
                 if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
                 {
-                    token.GetComponent<CardScript>().MoveCard(Config.config.deck, false, false, false, doSave: false);
+                    token.GetComponent<CardScript>().MoveCard(Config.config.deck, false, false, false);
                     break;
                 }
             }
         }
         //set up undo log
         GameObject[] cards = GameObject.FindGameObjectsWithTag("Card");
+        Move tempMove = null;
         foreach (AltMove a in state.moveLog)
         {
-            Move tempMove = new Move();
+            tempMove = new Move();
             string[] segments = a.cardName.Split('_');
             string suite = segments[0];
             string number = segments[1];
@@ -284,6 +287,7 @@ public class StateLoader : MonoBehaviour
             tempMove.moveType = a.moveType;
             tempMove.nextCardWasHidden = a.nextCardWasHidden;
             tempMove.remainingActions = a.remainingActions;
+            tempMove.moveNum = a.moveNum;
             UndoScript.undoScript.moveLog.Push(tempMove);
         }
 
@@ -292,7 +296,9 @@ public class StateLoader : MonoBehaviour
         print("max actions: " + Config.config.actionMax);
         Config.config.difficulty = state.difficulty;
         Config.config.score = state.score;
-        UtilsScript.global.UpdateActions(state.actions, true);
+        if (tempMove != null)
+            Config.config.moveCounter = tempMove.moveNum + 1;
+        UtilsScript.global.UpdateActions(state.actions, startingGame: true);
     }
        
     public static GameState CreateFromJSON(string path)

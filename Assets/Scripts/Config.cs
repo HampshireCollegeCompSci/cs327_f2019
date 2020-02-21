@@ -114,6 +114,8 @@ public class Config : MonoBehaviour
     //long term tracking
     public int moves;
 
+    public int moveCounter;
+
 
     private void Awake()
     {

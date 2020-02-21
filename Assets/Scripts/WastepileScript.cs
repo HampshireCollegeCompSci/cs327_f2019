@@ -271,7 +271,6 @@ public class WastepileScript : MonoBehaviour
         }
         else
         {
-            Debug.Log("PA: wastepile reached the end");
             return;
         }
 

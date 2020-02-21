@@ -504,13 +504,30 @@ public class UtilsScript : MonoBehaviour
         scoreBox.GetComponent<ScoreScript>().UpdateScore();
     }
 
-    public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false)
+    public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false, bool startingGame = false)
     {
+        // so that a nextcycle trigger doesn't save the state before and after, we only need the after
+        bool doSaveState = true;
+
+        // detecting if a nextcycle will be triggered
+        if (startingGame || (!setAsValue && ((Config.config.actions + actionUpdate) >= Config.config.actionMax)))
+            doSaveState = false;
+        else
+            Config.config.moveCounter += 1;
+
+        Debug.Log(Config.config.moveCounter);
+
         bool wasInAlertThreshold = Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold;
 
-        if (setAsValue)
+        // loading a saved game triggers this
+        if (startingGame)
         {
-            if (CheckGameOver()) // nextcycle causing Game Over
+            Config.config.actions = actionUpdate;
+        }
+        // a nextcycle after it's done triggers this
+        else if (setAsValue)
+        {
+            if (CheckGameOver()) // if nextcycle caused a Game Over
                 return;
 
             Config.config.actions = actionUpdate;
@@ -521,7 +538,7 @@ public class UtilsScript : MonoBehaviour
             if (wasInAlertThreshold)
                 Alert(false, true);
 
-            if (!CheckGameOver())
+            if (!CheckGameOver()) // if a match didn't win the game
                 StateLoader.saveSystem.writeState();
             return;
         }
@@ -538,13 +555,16 @@ public class UtilsScript : MonoBehaviour
 
         moveCounter.GetComponent<ActionCountScript>().UpdateActionText();
 
+        // foundation moves trigger this as they are the only ones that can cause a gameover via winning
+        // reactors trigger their own gameovers
         if (checkGameOver && CheckGameOver())
             return;
 
-        StateLoader.saveSystem.writeState();
+        if (doSaveState)
+            StateLoader.saveSystem.writeState();
 
+        // time to determine if the alert should be turned on
         bool isInAlertThreshold = Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold;
-
         if (!wasInAlertThreshold && !isInAlertThreshold)
         {
             // do nothing
@@ -627,7 +647,7 @@ public class UtilsScript : MonoBehaviour
 
     private void CheckNextCycle()
     {
-        if (Config.config.actions == Config.config.actionMax)
+        if (Config.config.actions >= Config.config.actionMax)
             Config.config.deck.GetComponent<DeckScript>().StartNextCycle();
     }
 

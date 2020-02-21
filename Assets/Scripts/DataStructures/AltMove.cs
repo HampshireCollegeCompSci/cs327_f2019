@@ -11,4 +11,5 @@ public class AltMove
     public bool nextCardWasHidden;
     public bool isAction;
     public int remainingActions;
+    public int moveNum;
 }

@@ -66,7 +66,7 @@ public class DeckScript : MonoBehaviour
             Shuffle();
             SetUpFoundations();
             Deal(false);
-            utils.UpdateActions(0, true);
+            utils.UpdateActions(0, startingGame: true);
         }
     }
 
@@ -138,7 +138,7 @@ public class DeckScript : MonoBehaviour
             for (int n = 0; n < Config.config.foundationStartSize - 1; n++)
             {
                 currentCardScript = cardList[0].GetComponent<CardScript>();
-                currentCardScript.MoveCard(foundation, doLog: false, doSave: false);
+                currentCardScript.MoveCard(foundation, doLog: false);
                 currentCardScript.SetVisibility(false);
             }
 
@@ -146,7 +146,7 @@ public class DeckScript : MonoBehaviour
             currentCardScript = cardList[0].GetComponent<CardScript>();
             currentCardScript.SetVisibility(true);
             currentCardScript.ShowHologram();
-            currentCardScript.MoveCard(foundation, doLog: false, doSave: false);
+            currentCardScript.MoveCard(foundation, doLog: false);
         }
     }
 
