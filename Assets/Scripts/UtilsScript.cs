@@ -218,11 +218,13 @@ public class UtilsScript : MonoBehaviour
         selectedCardsCopy.Clear();
 
         dragOn = false;
+        SetInputStopped(false);
     }
 
     private void StartDragging()
     {
         dragOn = true;
+        SetInputStopped(true);
 
         // make a copy of the selected cards to move around
         GameObject newGameObject;

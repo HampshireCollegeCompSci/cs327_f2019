@@ -51,17 +51,17 @@ public class DeckScript : MonoBehaviour
         {
             StateLoader.saveSystem.unpackState(StateLoader.saveSystem.gameState);
             utils.UpdateScore(0);
-            print("Loading save mode 1");
+            //print("Loading save mode 1");
         }
         else if (File.Exists(Application.persistentDataPath + "/testState.json") && !Application.isEditor)
         {
             StateLoader.saveSystem.unpackState(StateLoader.saveSystem.gameState);
             utils.UpdateScore(0);
-            print("Loading save mode 2");
+            //print("Loading save mode 2");
         }
         else
         {
-            print("New Game");
+            //print("New Game");
             InstantiateCards(this.gameObject);
             Shuffle();
             SetUpFoundations();
@@ -175,7 +175,7 @@ public class DeckScript : MonoBehaviour
         // user wants to deal cards, other things might need to be done before that
 
         // don't allow dealing when other stuff is happening
-        if (utils.IsInputStopped() || wastePileScript.isScrolling)
+        if (utils.IsInputStopped())
             return;
 
         if (cardList.Count != 0) // can the deck can be drawn from
@@ -212,7 +212,7 @@ public class DeckScript : MonoBehaviour
     {
         // moves all wastePile cards into the deck
 
-        wastePileScript.DeckReset();
+        wastePileScript.StartDeckReset();
         soundController.DeckReshuffle();
     }
 

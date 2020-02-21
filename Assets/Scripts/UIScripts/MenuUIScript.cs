@@ -120,7 +120,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void UndoButton()
     {
-        if (UtilsScript.global.IsDragging())
+        if (UtilsScript.global.IsInputStopped())
             return;
 
         UndoScript.undoScript.undo();
@@ -176,7 +176,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void PauseGame()
     {
-        if (UtilsScript.global.IsDragging() || UtilsScript.global.IsInputStopped())
+        if (UtilsScript.global.IsInputStopped())
             return;
 
         Config.config.GetComponent<SoundController>().PauseMenuButtonSound();
@@ -272,6 +272,9 @@ public class MenuUIScript : MonoBehaviour
 
     public void MakeActionsMax()
     {
+        if (UtilsScript.global.IsInputStopped())
+            return;
+
         Config.config.deck.GetComponent<DeckScript>().StartNextCycle(manuallyTriggered: true);
     }
 
