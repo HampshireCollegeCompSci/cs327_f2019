@@ -6,9 +6,9 @@ public class WinLoseScript : MonoBehaviour
 {
     void Start()
     {
-        if (!Config.config.gameWin)
+        if (Config.config.gameWin)
         {
-            gameObject.SetActive(false);
+            gameObject.SetActive(true);
         }
     }
 }

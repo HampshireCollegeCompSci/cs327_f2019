@@ -514,6 +514,7 @@ public class UtilsScript : MonoBehaviour
             doSaveState = false;
         else
             Config.config.moveCounter += 1;
+            Config.config.moves++;
 
         Debug.Log(Config.config.moveCounter);
 

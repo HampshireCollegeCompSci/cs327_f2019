@@ -59,6 +59,7 @@ public class UndoScript : MonoBehaviour
 
         if (moveLog.Count != 0) //only run if there's something in the stack
         {
+            Config.config.moves++;
             Move lastMove = null;
             if (moveLog.Peek().moveType == "stack")
             {
