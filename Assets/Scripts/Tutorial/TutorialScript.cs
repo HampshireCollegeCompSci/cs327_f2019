@@ -65,7 +65,7 @@ public class TutorialScript : MonoBehaviour
 
     public void LoadSave(string fileName)
     {
-
+        //move all tokens back to load pile, then call LoadState and UnpackState
     }
     public void ShowMask(string fileName)
     {
