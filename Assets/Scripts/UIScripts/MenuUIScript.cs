@@ -109,7 +109,7 @@ public class MenuUIScript : MonoBehaviour
         {
             Config.config.score = 0;
             Config.config.actions = 0;
-            Config.config.moveCounter = 0;
+            Config.config.MoveCounter = 0;
         }
         Config.config.gameOver = false;
         Config.config.gameWin = false;

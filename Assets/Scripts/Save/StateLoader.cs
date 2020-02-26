@@ -297,7 +297,7 @@ public class StateLoader : MonoBehaviour
         Config.config.difficulty = state.difficulty;
         Config.config.score = state.score;
         if (tempMove != null)
-            Config.config.moveCounter = tempMove.moveNum + 1;
+            Config.config.MoveCounter = tempMove.moveNum + 1;
         UtilsScript.global.UpdateActions(state.actions, startingGame: true);
     }
        

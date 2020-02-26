@@ -300,7 +300,10 @@ public class DeckScript : MonoBehaviour
                         topCardScript.MoveCard(reactor, isCycle: true);
 
                         if (Config.config.gameOver)
+                        {
+                            Config.config.MoveCounter += 1;
                             yield break;
+                        }
 
                         break;
                     }

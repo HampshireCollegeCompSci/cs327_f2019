@@ -42,10 +42,9 @@ public class UndoScript : MonoBehaviour
             nextCardWasHidden = nextCardWasHidden,
             isAction = isAction,
             remainingActions = actionsRemaining,
-            moveNum = Config.config.moveCounter,
+            moveNum = Config.config.MoveCounter,
         };
         moveLog.Push(move); //push the log to the undo stack
-        Debug.Log(Config.config.moveCounter);
         return;
     }
 
@@ -59,8 +58,8 @@ public class UndoScript : MonoBehaviour
 
         if (moveLog.Count != 0) //only run if there's something in the stack
         {
-            Config.config.moves++;
-            Move lastMove = null;
+            //Config.config.moves++;
+            Move lastMove;
             if (moveLog.Peek().moveType == "stack")
             {
                 // list goes from bottom token to top in original stack
