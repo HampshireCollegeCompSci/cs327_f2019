@@ -9,6 +9,18 @@ public class UndoScript : MonoBehaviour
     public Stack<Move> moveLog;
     public UtilsScript utils;
 
+    private void Awake()
+    {
+        if (undoScript == null)
+        {
+            DontDestroyOnLoad(gameObject); //makes instance persist across scenes
+            undoScript = this;
+        }
+        else if (undoScript != this)
+            //deletes copies of global which do not need to exist, so right version is used to get info from
+            Destroy(gameObject);
+    }
+
     private void Start()
     {
         //moveLog = Config.config.moveLog;
@@ -29,9 +41,11 @@ public class UndoScript : MonoBehaviour
             origin = origin,
             nextCardWasHidden = nextCardWasHidden,
             isAction = isAction,
-            remainingActions = actionsRemaining
+            remainingActions = actionsRemaining,
+            moveNum = Config.config.moveCounter,
         };
         moveLog.Push(move); //push the log to the undo stack
+        Debug.Log(Config.config.moveCounter);
         return;
     }
 
@@ -40,11 +54,12 @@ public class UndoScript : MonoBehaviour
      */
     public void undo()
     {
-        if (moveLog.Count > 0) //only run if there's something in the stack
-        {
-            if (utils.IsInputStopped())
-                return;
+        if (utils.IsInputStopped())
+            return;
 
+        if (moveLog.Count != 0) //only run if there's something in the stack
+        {
+            Config.config.moves++;
             Move lastMove = null;
             if (moveLog.Peek().moveType == "stack")
             {
@@ -54,8 +69,8 @@ public class UndoScript : MonoBehaviour
                     moveLog.Pop() // this is the top token of the stack
                 };
 
-                int actionTracker = undoList[0].remainingActions;
-                while (moveLog.Count != 0 && moveLog.Peek().remainingActions == actionTracker && moveLog.Peek().moveType == "stack")
+                int moveNumber = undoList[0].moveNum;
+                while (moveLog.Count != 0 && moveLog.Peek().moveNum == moveNumber)
                     undoList.Insert(0, moveLog.Pop());
 
                 GameObject newFoundation = undoList[0].origin;
@@ -101,9 +116,12 @@ public class UndoScript : MonoBehaviour
             }
             else if (moveLog.Peek().moveType == "draw") //move the last three drawn cards back to the deck (assuming the last action was to draw from the deck)
             {
+                
                 lastMove = moveLog.Pop();
                 lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
-                while (moveLog.Count != 0 && moveLog.Peek().moveType == "draw" && moveLog.Peek().remainingActions == lastMove.remainingActions)
+
+                // undos the draw and possibly the deck reset as well
+                while (moveLog.Count != 0 && moveLog.Peek().moveNum == lastMove.moveNum)
                 {
                     lastMove = moveLog.Pop();
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
@@ -111,11 +129,11 @@ public class UndoScript : MonoBehaviour
 
                 utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
 
-                if (moveLog.Count != 0 && moveLog.Peek().moveType == "deckreset")
-                    undo();
+                /*if (moveLog.Count != 0 && moveLog.Peek().moveType == "deckreset")
+                    undo();*/
 
                 return;
-            }
+            }/*
             else if (moveLog.Peek().moveType == "deckreset") //move the entire deck back into the wastepile
             {
                 lastMove = moveLog.Pop();
@@ -128,10 +146,16 @@ public class UndoScript : MonoBehaviour
 
                 utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
                 return;
-            }
+            }*/
             else if (moveLog.Peek().moveType == "cycle") //undo a cycle turning over, resets all tokens moved up, along with the move counter
             {
-                while (moveLog.Count != 0 && moveLog.Peek().moveType == "cycle")
+                lastMove = moveLog.Pop();
+                if (lastMove.nextCardWasHidden)
+                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
+
+                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+
+                while (moveLog.Count != 0 && moveLog.Peek().moveNum == lastMove.moveNum)
                 {
                     lastMove = moveLog.Pop();
                     if (lastMove.nextCardWasHidden)
@@ -140,25 +164,10 @@ public class UndoScript : MonoBehaviour
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
                 }
 
-                if (lastMove.remainingActions == Config.config.actionMax)
-                    undo();
-                else
-                    utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
+                utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
 
                 return;
             }
         }
-    }
-
-    private void Awake()
-    {
-        if (undoScript == null)
-        {
-            DontDestroyOnLoad(gameObject); //makes instance persist across scenes
-            undoScript = this;
-        }
-        else if (undoScript != this)
-            //deletes copies of global which do not need to exist, so right version is used to get info from
-            Destroy(gameObject);
     }
 }

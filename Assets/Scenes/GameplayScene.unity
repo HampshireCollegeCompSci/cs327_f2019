@@ -233,7 +233,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.016113281}
+  m_AnchoredPosition: {x: 0.000083923, y: 28}
   m_SizeDelta: {x: 0, y: -0.5999756}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &23629409
@@ -1795,7 +1795,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.27800003}
   m_AnchorMax: {x: 0.5, y: 0.27800003}
-  m_AnchoredPosition: {x: 0, y: 7.69}
+  m_AnchoredPosition: {x: 0, y: 7.6900005}
   m_SizeDelta: {x: 160, y: 39.62}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &533940917
@@ -2933,7 +2933,6 @@ MonoBehaviour:
   cardContainer: {fileID: 4445628893480912193, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
     type: 3}
   scrollRect: {fileID: 0}
-  isScrolling: 0
 --- !u!222 &1092020363
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4016,8 +4015,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.24125001, y: 0.6297634}
   m_AnchorMax: {x: 0.42125002, y: 0.72650087}
-  m_AnchoredPosition: {x: 0.5499878, y: -0.60009766}
-  m_SizeDelta: {x: 1.0999985, y: 0.29999924}
+  m_AnchoredPosition: {x: -0.0000092983, y: -0.0000121}
+  m_SizeDelta: {x: 0, y: 12.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1489602704
 MonoBehaviour:

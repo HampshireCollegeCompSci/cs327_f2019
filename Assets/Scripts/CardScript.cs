@@ -214,19 +214,16 @@ public class CardScript : MonoBehaviour
         return glowing;
     }
 
-    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool doSave = true)
+    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false)
     {
         bool nextCardWasHidden = false;
         if (container.CompareTag("Foundation"))
         {
             if (doLog)
             {
-                List<GameObject> containerCardList = container.GetComponent<FoundationScript>().cardList;
-                if (containerCardList.Count > 1 && containerCardList[1].GetComponent<CardScript>().isHidden())
-                {
-                    //Debug.Log("ncwh");
+                FoundationScript foundationScript = container.GetComponent<FoundationScript>();
+                if (foundationScript.cardList.Count > 1 && foundationScript.cardList[1].GetComponent<CardScript>().isHidden())
                     nextCardWasHidden = true;
-                }
             }
             container.GetComponent<FoundationScript>().RemoveCard(gameObject);
         }
@@ -259,13 +256,9 @@ public class CardScript : MonoBehaviour
             if (doLog)
             {
                 if (isStack)
-                {
                     UndoScript.undoScript.logMove("stack", gameObject, isAction, Config.config.actions, nextCardWasHidden);
-                }
                 else
-                {
                     UndoScript.undoScript.logMove("move", gameObject, isAction, Config.config.actions, nextCardWasHidden);
-                }
             }
 
             destination.GetComponent<FoundationScript>().AddCard(gameObject);
@@ -275,13 +268,9 @@ public class CardScript : MonoBehaviour
             if (doLog)
             {
                 if (isCycle)
-                {
                     UndoScript.undoScript.logMove("cycle", gameObject, true, Config.config.actions, nextCardWasHidden);
-                }
                 else
-                {
                     UndoScript.undoScript.logMove("move", gameObject, isAction, Config.config.actions, nextCardWasHidden);
-                }
             }
 
             destination.GetComponent<ReactorScript>().AddCard(gameObject);
@@ -291,13 +280,9 @@ public class CardScript : MonoBehaviour
             if (doLog)
             {
                 if (container.CompareTag("Foundation")) // for undoing a match that goes into the wastepile
-                {
                     UndoScript.undoScript.logMove("move", gameObject, isAction, Config.config.actions, nextCardWasHidden);
-                }
                 else
-                {
                     UndoScript.undoScript.logMove("draw", gameObject, isAction, Config.config.actions);
-                }
             }
 
             destination.GetComponent<WastepileScript>().AddCard(gameObject);
@@ -305,26 +290,21 @@ public class CardScript : MonoBehaviour
         else if (destination.CompareTag("Deck"))
         {
             if (doLog)
-            {
                 UndoScript.undoScript.logMove("deckreset", gameObject, isAction, Config.config.actions);
-            }
+
             destination.GetComponent<DeckScript>().AddCard(gameObject);
         }
         else if (destination.CompareTag("MatchedPile"))
         {
             if (doLog)
-            {
                 UndoScript.undoScript.logMove("match", gameObject, isAction, Config.config.actions, nextCardWasHidden);
-            }
 
             destination.GetComponent<MatchedPileScript>().AddCard(gameObject);
         }
         else if (destination.CompareTag("LoadPile"))
         {
             if (doLog)
-            {
                 UndoScript.undoScript.logMove("match", gameObject, isAction, Config.config.actions, nextCardWasHidden);
-            }
 
             destination.GetComponent<LoadPileScript>().AddCard(gameObject);
         }

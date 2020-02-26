@@ -7,6 +7,12 @@ public class ScoreScript : MonoBehaviour
 {
     public Text gameScore;
 
+    public void Start()
+    {
+        // for the pause and end game scores to load
+        UpdateScore();
+    }
+
     public void UpdateScore()
     {
         gameScore.text = Config.config.score.ToString();

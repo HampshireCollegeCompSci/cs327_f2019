@@ -18,7 +18,7 @@ public class WastepileScript : MonoBehaviour
 
     public ScrollRect scrollRect;
     private RectTransform contentRectTransform;
-    public bool isScrolling;
+    private bool scrollingDisabled;
 
     private void Start()
     {
@@ -38,7 +38,8 @@ public class WastepileScript : MonoBehaviour
 
     IEnumerator ScrollBarAdding(List<GameObject> cards, bool doLog)
     {
-        DisableScrolling();
+        if (!scrollingDisabled)
+            DisableScrolling();
 
         if (cardList.Count != 0) // hide the current top tokens hologram now
             cardList[0].GetComponent<CardScript>().HideHologram();
@@ -71,7 +72,7 @@ public class WastepileScript : MonoBehaviour
 
         deckScript.StartButtonUp();
 
-        ResetScrollBar(temp);
+        ResetScrollBar();
 
         if (doLog)
             utils.UpdateActions(1);
@@ -142,15 +143,15 @@ public class WastepileScript : MonoBehaviour
         }
 
         Destroy(parentCardContainer);
-        ResetScrollBar(temp);
+        ResetScrollBar();
     }
 
-    public void DeckReset()
+    public void StartDeckReset()
     {
-        StartCoroutine(ResetDeck());
+        StartCoroutine(DeckReset());
     }
 
-    IEnumerator ResetDeck()
+    IEnumerator DeckReset()
     {
         DisableScrolling();
 
@@ -169,13 +170,12 @@ public class WastepileScript : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        isScrolling = false;
         deckScript.Deal();
     }
 
     private void DisableScrolling()
     {
-        isScrolling = true;
+        scrollingDisabled = true;
         utils.SetInputStopped(true);
 
         // disable scrolling
@@ -186,21 +186,17 @@ public class WastepileScript : MonoBehaviour
         scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
     }
 
-    public void ResetScrollBar(Vector3 temp)
+    public void ResetScrollBar()
     {
-        temp.x = 0;
-        contentRectTransform.anchoredPosition = temp;
+        contentRectTransform.anchoredPosition = Vector3.zero;
 
         scrollRect.movementType = ScrollRect.MovementType.Clamped;
 
-        if (!utils.isMatching)
-        {
-            scrollRect.horizontal = true;
-        }
-
+        scrollRect.horizontal = true;
         scrollRect.horizontalScrollbar.interactable = true;
+
         utils.SetInputStopped(false);
-        isScrolling = false;
+        scrollingDisabled = false;
     }
 
     public void DraggingCard(GameObject card, bool isDragging)
@@ -275,7 +271,6 @@ public class WastepileScript : MonoBehaviour
         }
         else
         {
-            Debug.Log("PA: wastepile reached the end");
             return;
         }
 

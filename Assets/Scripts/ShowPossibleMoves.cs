@@ -80,7 +80,7 @@ public class ShowPossibleMoves : MonoBehaviour
                     topFoundationCardScript.cardNum == selectedCardNum + 1)
                     cardMoves.Add(foundation.GetComponent<FoundationScript>().cardList[0]);
             }
-            else
+            else if (cardIsFromFoundation || cardIsFromWastepile)
                 foundationMoves.Add(foundation);
         }
 
