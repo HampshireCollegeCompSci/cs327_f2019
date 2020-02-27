@@ -49,13 +49,13 @@ public class DeckScript : MonoBehaviour
         cardList = new List<GameObject>();
         if ((File.Exists("Assets/Resources/GameStates/testState.json") && Application.isEditor) || Config.config.tutorialOn)
         {
-            StateLoader.saveSystem.unpackState(StateLoader.saveSystem.gameState);
+            StateLoader.saveSystem.unpackState(StateLoader.saveSystem.gameState, false);
             utils.UpdateScore(0);
             //print("Loading save mode 1");
         }
         else if (File.Exists(Application.persistentDataPath + "/testState.json") && !Application.isEditor)
         {
-            StateLoader.saveSystem.unpackState(StateLoader.saveSystem.gameState);
+            StateLoader.saveSystem.unpackState(StateLoader.saveSystem.gameState, false);
             utils.UpdateScore(0);
             //print("Loading save mode 2");
         }
