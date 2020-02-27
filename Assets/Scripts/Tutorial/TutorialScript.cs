@@ -66,6 +66,35 @@ public class TutorialScript : MonoBehaviour
     public void LoadSave(string fileName)
     {
         //move all tokens back to load pile, then call LoadState and UnpackState
+        foreach (GameObject foundation in Config.config.foundations)
+        {
+            foreach (GameObject card in foundation.GetComponent<FoundationScript>().cardList)
+            {
+                card.GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
+            }
+        }
+
+        foreach (GameObject reactor in Config.config.reactors)
+        {
+            foreach (GameObject card in reactor.GetComponent<FoundationScript>().cardList)
+            {
+                card.GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
+            }
+        }
+
+        foreach (GameObject card in Config.config.deck.GetComponent<DeckScript>().cardList)
+        {
+            card.GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
+        }
+
+        foreach (GameObject card in Config.config.wastePile.GetComponent<WastepileScript>().cardList)
+        {
+            card.GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
+        }
+
+        StateLoader.saveSystem.loadTutorialState("Assets/Resources/GameStates/" + fileName);
+        StateLoader.saveSystem.unpackState(state: StateLoader.saveSystem.gameState, isTutorial: true);
+
     }
     public void ShowMask(string fileName)
     {

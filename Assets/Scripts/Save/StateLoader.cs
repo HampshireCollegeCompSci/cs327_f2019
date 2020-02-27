@@ -140,24 +140,25 @@ public class StateLoader : MonoBehaviour
         gameState = CreateFromJSON(path);
     }
 
-    public void tutorialState(string path = "GameStates/tutorialState")
+    public void loadTutorialState(string path)
     {
         //load the json into a GameState
         gameState = CreateFromJSON(path);
     }
 
-    public void unpackState(GameState state)
+    public void unpackState(GameState state, bool isTutorial)
     {
         //create unsorted full deck.
         GameObject LoadPile = Config.config.loadPile;
         LoadPileScript LoadPileList = LoadPile.GetComponent<LoadPileScript>();
-        DeckScript.deckScript.InstantiateCards(Config.config.deck);
-        while (Config.config.deck.GetComponent<DeckScript>().cardList.Count > 0)
+        if (!isTutorial)
         {
-            Config.config.deck.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>().MoveCard(LoadPile, false, false, false);
+            DeckScript.deckScript.InstantiateCards(Config.config.deck);
+            while (Config.config.deck.GetComponent<DeckScript>().cardList.Count > 0)
+            {
+                Config.config.deck.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>().MoveCard(LoadPile, false, false, false);
+            }
         }
-        print(state);
-        
         //set up foundations
         int i = 0;
         foreach (StringListWrapper lw in state.foundations)

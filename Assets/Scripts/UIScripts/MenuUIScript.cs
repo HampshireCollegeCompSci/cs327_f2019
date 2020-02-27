@@ -204,6 +204,8 @@ public class MenuUIScript : MonoBehaviour
             SceneManager.LoadScene("MainMenuScene");
     }
 
+    /*
+     * Need to completely redo this with new tutorial design
     public void Tutorial()
     {
         if (File.Exists("Assets/Resources/GameStates/tutorialState.json"))
@@ -216,7 +218,7 @@ public class MenuUIScript : MonoBehaviour
             NewGame();
         }
     }
-
+    */
     public void HardDifficulty()
     {
         Config.config.setDifficulty("hard");
