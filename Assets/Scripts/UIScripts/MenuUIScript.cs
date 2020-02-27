@@ -203,22 +203,15 @@ public class MenuUIScript : MonoBehaviour
         else
             SceneManager.LoadScene("MainMenuScene");
     }
-
-    /*
-     * Need to completely redo this with new tutorial design
     public void Tutorial()
     {
-        if (File.Exists("Assets/Resources/GameStates/tutorialState.json"))
-        {
-            Debug.Log("tutorial <3");
-            StateLoader.saveSystem.tutorialState();
-            Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
-            Config.config.tutorialOn = true;
-            Config.config.DeleteSave();
-            NewGame();
-        }
+        Debug.Log("tutorial <3");
+        StateLoader.saveSystem.loadTutorialState("Assets/Resources/GameStates/tutorialState.json");
+        Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
+        Config.config.tutorialOn = true;
+        Config.config.DeleteSave();
+        NewGame();
     }
-    */
     public void HardDifficulty()
     {
         Config.config.setDifficulty("hard");
