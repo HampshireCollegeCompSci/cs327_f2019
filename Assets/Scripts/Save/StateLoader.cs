@@ -307,6 +307,7 @@ public class StateLoader : MonoBehaviour
         if (Application.isEditor)
         {
             var jsonTextFile = Resources.Load<TextAsset>(path);
+            print(jsonTextFile);
             return JsonUtility.FromJson<GameState>(jsonTextFile.ToString());
         } else
         {

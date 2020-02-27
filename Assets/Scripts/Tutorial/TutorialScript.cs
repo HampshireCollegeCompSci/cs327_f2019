@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TutorialScript : MonoBehaviour
 {
     private List<ArgumentListWrapper> commandList;
     private Queue<List<string>> commandQueue;
     private bool executeFlag = true;
+
+    public GameObject tutorialText;
     void Start()
     {
         commandList = CreateFromJSON();
@@ -23,6 +26,11 @@ public class TutorialScript : MonoBehaviour
 
     private void Update()
     {
+
+        if (!Config.config.tutorialOn)
+        {
+            tutorialText.SetActive(false);
+        }
         if (Input.touchCount > 0 && !executeFlag)
         {
             executeFlag = true;
@@ -35,22 +43,25 @@ public class TutorialScript : MonoBehaviour
 
     void CommandInterpreter()
     {
-        List<string> command = commandQueue.Dequeue();
-        if (command[0] == "LoadSave")
+        if (commandQueue.Count > 0)
         {
-            LoadSave(command[1]);
-        }
-        else if (command[0] == "ShowMask")
-        {
-            ShowMask(command[1]);
-        }
-        else if (command[0] == "ShowText")
-        {
-            ShowText(command[1], command[2]);
-        }
-        else if (command[0] == "WaitForTouch")
-        {
-            WaitForTouch();
+            List<string> command = commandQueue.Dequeue();
+            if (command[0] == "LoadSave")
+            {
+                LoadSave(command[1]);
+            }
+            else if (command[0] == "ShowMask")
+            {
+                ShowMask(command[1]);
+            }
+            else if (command[0] == "ShowText")
+            {
+                ShowText(command[1], command[2]);
+            }
+            else if (command[0] == "WaitForTouch")
+            {
+                WaitForTouch();
+            }
         }
     }
 

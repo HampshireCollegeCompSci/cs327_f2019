@@ -206,7 +206,7 @@ public class MenuUIScript : MonoBehaviour
     public void Tutorial()
     {
         Debug.Log("tutorial <3");
-        StateLoader.saveSystem.loadTutorialState("Assets/Resources/GameStates/tutorialState.json");
+        StateLoader.saveSystem.loadTutorialState("/GameStates/tutorialState");
         Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
         Config.config.tutorialOn = true;
         Config.config.DeleteSave();
@@ -253,7 +253,8 @@ public class MenuUIScript : MonoBehaviour
                 Config.config.tutorialOn = false;
                 NewGame(true);
             }
-        } else
+        } 
+        else
         {
             if (File.Exists(Application.persistentDataPath + "/testState.json"))
             {
