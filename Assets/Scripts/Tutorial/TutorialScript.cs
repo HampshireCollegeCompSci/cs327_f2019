@@ -10,6 +10,15 @@ public class TutorialScript : MonoBehaviour
     private bool executeFlag = true;
 
     public GameObject tutorialText;
+
+    private void Awake()
+    {
+        if (!Config.config.tutorialOn)
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
     void Start()
     {
         commandList = CreateFromJSON();

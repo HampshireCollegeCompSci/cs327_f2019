@@ -4656,7 +4656,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1579446416
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5079,6 +5079,9 @@ MonoBehaviour:
   angrySound: {fileID: 8300000, guid: 7c2f90662e6a74c429575d1e408bdbca, type: 3}
   loseSound: {fileID: 8300000, guid: 567c08c1d583541238e40b972d63750c, type: 3}
   counterSound: {fileID: 8300000, guid: bc83c2c36e0e54b57a955fc50954a081, type: 3}
+  eatSound: {fileID: 0}
+  foodObjects: []
+  foodPrefab: {fileID: 0}
 --- !u!82 &1616627639
 AudioSource:
   m_ObjectHideFlags: 0
