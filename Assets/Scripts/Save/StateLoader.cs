@@ -140,24 +140,25 @@ public class StateLoader : MonoBehaviour
         gameState = CreateFromJSON(path);
     }
 
-    public void tutorialState(string path = "GameStates/tutorialState")
+    public void loadTutorialState(string path)
     {
         //load the json into a GameState
-        gameState = CreateFromJSON(path);
+        gameState = CreateFromJSON(path, true);
     }
 
-    public void unpackState(GameState state)
+    public void unpackState(GameState state, bool isTutorial)
     {
         //create unsorted full deck.
         GameObject LoadPile = Config.config.loadPile;
         LoadPileScript LoadPileList = LoadPile.GetComponent<LoadPileScript>();
-        DeckScript.deckScript.InstantiateCards(Config.config.deck);
-        while (Config.config.deck.GetComponent<DeckScript>().cardList.Count > 0)
+        if (!isTutorial)
         {
-            Config.config.deck.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>().MoveCard(LoadPile, false, false, false);
+            DeckScript.deckScript.InstantiateCards(Config.config.deck);
+            while (Config.config.deck.GetComponent<DeckScript>().cardList.Count > 0)
+            {
+                Config.config.deck.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>().MoveCard(LoadPile, false, false, false);
+            }
         }
-        print(state);
-        
         //set up foundations
         int i = 0;
         foreach (StringListWrapper lw in state.foundations)
@@ -297,15 +298,22 @@ public class StateLoader : MonoBehaviour
         Config.config.difficulty = state.difficulty;
         Config.config.score = state.score;
         if (tempMove != null)
-            Config.config.moveCounter = tempMove.moveNum + 1;
+            Config.config.MoveCounter = tempMove.moveNum + 1;
         UtilsScript.global.UpdateActions(state.actions, startingGame: true);
     }
        
-    public static GameState CreateFromJSON(string path)
+    public static GameState CreateFromJSON(string path, bool tutorial = false)
     {
-        if (Application.isEditor)
+        if (tutorial)
         {
             var jsonTextFile = Resources.Load<TextAsset>(path);
+            print(jsonTextFile);
+            return JsonUtility.FromJson<GameState>(jsonTextFile.ToString());
+        }
+        else if (Application.isEditor)
+        {
+            var jsonTextFile = Resources.Load<TextAsset>(path);
+            print(jsonTextFile);
             return JsonUtility.FromJson<GameState>(jsonTextFile.ToString());
         } else
         {

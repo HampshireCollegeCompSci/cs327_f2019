@@ -112,8 +112,17 @@ public class Config : MonoBehaviour
     public int vibrationExplosion;
 
     //long term tracking
-    public int moves;
-    public int moveCounter;
+    //public int moves;
+    private int moveCounter;
+
+    public int MoveCounter   // property
+    {
+        get { return moveCounter; }
+        set {
+            moveCounter = value;
+            Debug.Log(moveCounter);
+        }
+    }
 
 
     private void Awake()
@@ -244,13 +253,13 @@ public class Config : MonoBehaviour
                 PlayerPrefs.SetInt(difficulty + "HighScore", score);
             }
 
-            if (PlayerPrefs.HasKey(difficulty + "Moves") && moves < PlayerPrefs.GetInt(difficulty + "Moves"))
+            if (PlayerPrefs.HasKey(difficulty + "Moves") && MoveCounter < PlayerPrefs.GetInt(difficulty + "Moves"))
             {
-                PlayerPrefs.SetInt(difficulty + "Moves", moves);
+                PlayerPrefs.SetInt(difficulty + "Moves", MoveCounter);
             }
             else if (!PlayerPrefs.HasKey(difficulty + "Moves"))
             {
-                PlayerPrefs.SetInt(difficulty + "Moves", moves);
+                PlayerPrefs.SetInt(difficulty + "Moves", MoveCounter);
             }
         }
         else

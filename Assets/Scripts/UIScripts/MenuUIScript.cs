@@ -109,7 +109,7 @@ public class MenuUIScript : MonoBehaviour
         {
             Config.config.score = 0;
             Config.config.actions = 0;
-            Config.config.moveCounter = 0;
+            Config.config.MoveCounter = 0;
         }
         Config.config.gameOver = false;
         Config.config.gameWin = false;
@@ -203,20 +203,15 @@ public class MenuUIScript : MonoBehaviour
         else
             SceneManager.LoadScene("MainMenuScene");
     }
-
     public void Tutorial()
     {
-        if (File.Exists("Assets/Resources/GameStates/tutorialState.json"))
-        {
-            Debug.Log("tutorial <3");
-            StateLoader.saveSystem.tutorialState();
-            Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
-            Config.config.tutorialOn = true;
-            Config.config.DeleteSave();
-            NewGame();
-        }
+        Debug.Log("tutorial <3");
+        StateLoader.saveSystem.loadTutorialState("GameStates/tutorialState");
+        Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
+        Config.config.tutorialOn = true;
+        Config.config.DeleteSave();
+        NewGame();
     }
-
     public void HardDifficulty()
     {
         Config.config.setDifficulty("hard");
@@ -258,7 +253,8 @@ public class MenuUIScript : MonoBehaviour
                 Config.config.tutorialOn = false;
                 NewGame(true);
             }
-        } else
+        } 
+        else
         {
             if (File.Exists(Application.persistentDataPath + "/testState.json"))
             {

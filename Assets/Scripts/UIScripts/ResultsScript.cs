@@ -13,6 +13,6 @@ public class ResultsScript : MonoBehaviour
     {
         highScore.GetComponent<Text>().text = "High Score: " + PlayerPrefs.GetInt(Config.config.difficulty + "HighScore");
         leastMoves.GetComponent<Text>().text = "Least Moves: " + PlayerPrefs.GetInt(Config.config.difficulty + "Moves");
-        moves.GetComponent<Text>().text = "Moves: " + Config.config.moves;
+        moves.GetComponent<Text>().text = "Moves: " + Config.config.MoveCounter;
     }
 }

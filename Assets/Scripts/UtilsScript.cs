@@ -83,7 +83,7 @@ public class UtilsScript : MonoBehaviour
         if (SceneManager.GetActiveScene().buildIndex != 2)
             return;
 
-        if (!Config.config.gameOver && !Config.config.gamePaused)
+        if (!Config.config.gameOver && !Config.config.gamePaused && !Config.config.tutorialOn)
         {
             if (dragOn)
             {
@@ -513,10 +513,7 @@ public class UtilsScript : MonoBehaviour
         if (startingGame || (!setAsValue && ((Config.config.actions + actionUpdate) >= Config.config.actionMax)))
             doSaveState = false;
         else
-            Config.config.moveCounter += 1;
-            Config.config.moves++;
-
-        Debug.Log(Config.config.moveCounter);
+            Config.config.MoveCounter++;
 
         bool wasInAlertThreshold = Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold;
 

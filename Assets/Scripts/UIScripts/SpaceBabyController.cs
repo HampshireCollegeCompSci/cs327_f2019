@@ -7,8 +7,10 @@ public class SpaceBabyController : MonoBehaviour
     bool idling;
     public AudioSource audioSource;
     public Animator animator;
-    public AudioClip happySound, angrySound, loseSound, counterSound;
+    public AudioClip happySound, angrySound, loseSound, counterSound, eatSound;
 
+    public Sprite[] foodObjects;
+    public GameObject foodPrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -63,4 +65,60 @@ public class SpaceBabyController : MonoBehaviour
         animator.Play("IdlingAnim");
     }
 
+    public void BabyWin(int matchNumber)
+    {
+        animator.Play("WinStart");
+        StartCoroutine(BabyWinAnimation());
+        StartCoroutine(EatAnimation());
+    }
+
+    IEnumerator BabyWinAnimation()
+    {
+        yield return new WaitForSeconds(1);
+        animator.Play("WinEat");
+    }
+
+    IEnumerator EatAnimation()
+    {
+        List<GameObject> foods = new List<GameObject>();
+        Vector3 outOfBounds = new Vector3(3.8f, 0, 0);
+
+        for (int i = 0; i < foodObjects.Length; i++)
+        {
+            GameObject foody = Instantiate(foodPrefab, outOfBounds, Quaternion.identity);
+            foody.GetComponent<SpriteRenderer>().sprite = foodObjects[i];
+            foods.Add(foody);
+            outOfBounds.x += 2.2f;
+        }
+
+        float minusX;
+        Vector3 position;;
+        while (true)
+        {
+            minusX = Time.deltaTime * 2.9f;
+            for (int i = 0; i < foods.Count; i++)
+            {
+                position = foods[i].transform.position;
+                position.x -= minusX;
+                foods[i].transform.position = position;
+            }
+
+            if (foods[0].transform.position.x <= 0.1)
+            {
+                Destroy(foods[0]);
+                foods.RemoveAt(0);
+                audioSource.PlayOneShot(eatSound, 0.4f);
+                if (foods.Count == 0)
+                {
+                    yield return new WaitForSeconds(0.4f);
+                    BabyHappyAnim();
+                    yield break;
+                }
+
+                position = foods[0].transform.position;
+            }
+
+            yield return null;
+        }
+    }
 }
