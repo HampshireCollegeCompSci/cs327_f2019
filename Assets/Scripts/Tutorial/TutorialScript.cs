@@ -10,12 +10,17 @@ public class TutorialScript : MonoBehaviour
     private bool executeFlag = true;
 
     public GameObject tutorialText;
+    public GameObject tutorialMask;
 
     private void Awake()
     {
         if (!Config.config.tutorialOn)
         {
             gameObject.SetActive(false);
+        }
+        else
+        {
+            tutorialText.SetActive(true);
         }
     }
 
@@ -118,12 +123,25 @@ public class TutorialScript : MonoBehaviour
     }
     public void ShowMask(string fileName)
     {
-
+        tutorialMask.GetComponent<SpriteRenderer>().sprite = Resources.Load(fileName) as Sprite;
+        tutorialMask.transform.localScale.Set(1, 1, 1);
     }
 
     public void ShowText(string text, string region)
     {
-
+        tutorialText.GetComponent<Text>().text = text;
+        if (region == "middle")
+        {
+            tutorialText.transform.position.Set(0, 0, 0);
+        }
+        else if (region == "top")
+        {
+            tutorialText.transform.position.Set(0, 593, 0);
+        }
+        else if (region == "bottom")
+        {
+            tutorialText.transform.position.Set(0, -570, 0);
+        }
     }
 
     private static List<ArgumentListWrapper> CreateFromJSON()
