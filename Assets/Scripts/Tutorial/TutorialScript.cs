@@ -120,6 +120,11 @@ public class TutorialScript : MonoBehaviour
             card.GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
         }
 
+        foreach (GameObject card in Config.config.matches.GetComponent<MatchedPileScript>().cardList)
+        {
+            card.GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
+        }
+
         StateLoader.saveSystem.loadTutorialState("GameStates/" + fileName);
         StateLoader.saveSystem.unpackState(state: StateLoader.saveSystem.gameState, isTutorial: true);
 
