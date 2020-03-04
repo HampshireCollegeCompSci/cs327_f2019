@@ -83,7 +83,7 @@ public class UtilsScript : MonoBehaviour
         if (SceneManager.GetActiveScene().buildIndex != 2)
             return;
 
-        if (!Config.config.gameOver && !Config.config.gamePaused)
+        if (!Config.config.gameOver && !Config.config.gamePaused && !Config.config.tutorialOn)
         {
             if (dragOn)
             {

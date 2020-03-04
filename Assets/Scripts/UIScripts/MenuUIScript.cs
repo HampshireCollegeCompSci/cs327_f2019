@@ -206,7 +206,7 @@ public class MenuUIScript : MonoBehaviour
     public void Tutorial()
     {
         Debug.Log("tutorial <3");
-        StateLoader.saveSystem.loadTutorialState("/GameStates/tutorialState");
+        StateLoader.saveSystem.loadTutorialState("GameStates/tutorialState");
         Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
         Config.config.tutorialOn = true;
         Config.config.DeleteSave();

@@ -2,21 +2,21 @@
   "commands": [
     {
       "argumentList": [
-        "LoadSave",
-        "example.json"
+        "ShowText",
+        "Test Text, Please Ignore",
+        "top"
       ]
     },
     {
       "argumentList": [
-        "ShowMask",
-        "testFile"
+        "WaitForTouch"
       ]
     },
     {
       "argumentList": [
         "ShowText",
-        "Test Text, Please Ignore",
-        "Top"
+        "Changed Test Text",
+        "middle"
       ]
     }
   ]

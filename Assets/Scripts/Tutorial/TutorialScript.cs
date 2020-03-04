@@ -27,6 +27,10 @@ public class TutorialScript : MonoBehaviour
     void Start()
     {
         commandList = CreateFromJSON();
+        foreach (ArgumentListWrapper command in commandList)
+        {
+            print(command.argumentList);
+        }
         CommandReader(commandList);
     }
 
@@ -117,7 +121,7 @@ public class TutorialScript : MonoBehaviour
             card.GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
         }
 
-        StateLoader.saveSystem.loadTutorialState("Assets/Resources/GameStates/" + fileName);
+        StateLoader.saveSystem.loadTutorialState("GameStates/" + fileName);
         StateLoader.saveSystem.unpackState(state: StateLoader.saveSystem.gameState, isTutorial: true);
 
     }
