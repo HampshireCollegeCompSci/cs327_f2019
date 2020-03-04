@@ -81,7 +81,7 @@ public class SpaceBabyController : MonoBehaviour
     IEnumerator EatAnimation()
     {
         List<GameObject> foods = new List<GameObject>();
-        Vector3 outOfBounds = new Vector3(3.8f, -0.1f, 0);
+        Vector3 outOfBounds = new Vector3(3.8f, 0, 0);
 
         for (int i = 0; i < foodObjects.Length; i++)
         {
@@ -95,7 +95,7 @@ public class SpaceBabyController : MonoBehaviour
         Vector3 position;;
         while (true)
         {
-            minusX = Time.deltaTime * 2.505f;
+            minusX = Time.deltaTime * 2.9f;
             for (int i = 0; i < foods.Count; i++)
             {
                 position = foods[i].transform.position;
@@ -103,14 +103,14 @@ public class SpaceBabyController : MonoBehaviour
                 foods[i].transform.position = position;
             }
 
-            if (foods[0].transform.position.x <= 0)
+            if (foods[0].transform.position.x <= 0.1)
             {
                 Destroy(foods[0]);
                 foods.RemoveAt(0);
                 audioSource.PlayOneShot(eatSound, 0.4f);
                 if (foods.Count == 0)
                 {
-                    yield return new WaitForSeconds(0.2f);
+                    yield return new WaitForSeconds(0.4f);
                     BabyHappyAnim();
                     yield break;
                 }
