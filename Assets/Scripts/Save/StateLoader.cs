@@ -143,7 +143,7 @@ public class StateLoader : MonoBehaviour
     public void loadTutorialState(string path)
     {
         //load the json into a GameState
-        gameState = CreateFromJSON(path);
+        gameState = CreateFromJSON(path, true);
     }
 
     public void unpackState(GameState state, bool isTutorial)
@@ -302,9 +302,15 @@ public class StateLoader : MonoBehaviour
         UtilsScript.global.UpdateActions(state.actions, startingGame: true);
     }
        
-    public static GameState CreateFromJSON(string path)
+    public static GameState CreateFromJSON(string path, bool tutorial = false)
     {
-        if (Application.isEditor)
+        if (tutorial)
+        {
+            var jsonTextFile = Resources.Load<TextAsset>(path);
+            print(jsonTextFile);
+            return JsonUtility.FromJson<GameState>(jsonTextFile.ToString());
+        }
+        else if (Application.isEditor)
         {
             var jsonTextFile = Resources.Load<TextAsset>(path);
             print(jsonTextFile);
