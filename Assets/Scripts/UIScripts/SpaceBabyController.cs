@@ -82,6 +82,7 @@ public class SpaceBabyController : MonoBehaviour
     {
         List<GameObject> foods = new List<GameObject>();
         Vector3 outOfBounds = new Vector3(3.8f, 0, 0);
+        Vector3 babyScale = gameObject.transform.localScale;
 
         for (int i = 0; i < foodObjects.Length; i++)
         {
@@ -108,14 +109,14 @@ public class SpaceBabyController : MonoBehaviour
                 Destroy(foods[0]);
                 foods.RemoveAt(0);
                 audioSource.PlayOneShot(eatSound, 0.4f);
+                babyScale.x += 0.02f;
+                gameObject.transform.localScale = babyScale;
                 if (foods.Count == 0)
                 {
                     yield return new WaitForSeconds(0.4f);
                     BabyHappyAnim();
                     yield break;
                 }
-
-                position = foods[0].transform.position;
             }
 
             yield return null;
