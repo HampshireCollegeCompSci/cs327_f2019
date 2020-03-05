@@ -1120,11 +1120,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: PlayAgain
       objectReference: {fileID: 0}
-    - target: {fileID: 7084158331729663617, guid: f9e4f3524d2da456180c2be002c8dfd4,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -5.100006
-      objectReference: {fileID: 0}
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_Text
@@ -1143,6 +1138,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 12800000, guid: a49f28d605d2d4930a0e07b60b5500ad,
         type: 3}
+    - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
+        type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 7999540889534363307, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -1152,6 +1152,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -0.9000015
+      objectReference: {fileID: 0}
+    - target: {fileID: 7084158331729663617, guid: f9e4f3524d2da456180c2be002c8dfd4,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -5.100006
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f9e4f3524d2da456180c2be002c8dfd4, type: 3}
@@ -1385,11 +1390,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: MainMenu
       objectReference: {fileID: 0}
-    - target: {fileID: 7084158331729663617, guid: f9e4f3524d2da456180c2be002c8dfd4,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -5.100006
-      objectReference: {fileID: 0}
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_Text
@@ -1408,6 +1408,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 12800000, guid: a49f28d605d2d4930a0e07b60b5500ad,
         type: 3}
+    - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
+        type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 7999540889534363307, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -1417,6 +1422,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -0.8999939
+      objectReference: {fileID: 0}
+    - target: {fileID: 7084158331729663617, guid: f9e4f3524d2da456180c2be002c8dfd4,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -5.100006
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f9e4f3524d2da456180c2be002c8dfd4, type: 3}
@@ -1509,7 +1519,7 @@ SpriteRenderer:
   m_Size: {x: 9.6, y: 5.4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1164805467
@@ -1854,7 +1864,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 8229317429a3d4abdb1d85c7ea8d4a2c, type: 3}
     m_FontSize: 42
     m_FontStyle: 0
     m_BestFit: 0
