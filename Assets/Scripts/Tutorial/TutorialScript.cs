@@ -7,10 +7,11 @@ public class TutorialScript : MonoBehaviour
 {
     private List<ArgumentListWrapper> commandList;
     private Queue<List<string>> commandQueue;
-    private bool executeFlag = true;
+    public bool executeFlag = true;
 
     public GameObject tutorialText;
     public GameObject tutorialMask;
+    public GameObject tutorialNext;
 
     private void Awake()
     {
@@ -21,11 +22,13 @@ public class TutorialScript : MonoBehaviour
         else
         {
             tutorialText.SetActive(true);
+            tutorialNext.SetActive(true);
         }
     }
 
     void Start()
     {
+        commandQueue = new Queue<List<string>>();
         commandList = CreateFromJSON();
         foreach (ArgumentListWrapper command in commandList)
         {
@@ -38,22 +41,18 @@ public class TutorialScript : MonoBehaviour
     {
         foreach (ArgumentListWrapper command in commandList)
         {
+            /*List<string> tempList = new List<string>();
+            foreach (string s in command.argumentList)
+            {
+                tempList.Add(s);
+            }*/
             commandQueue.Enqueue(command.argumentList);
         }
     }
 
     private void Update()
     {
-
-        if (!Config.config.tutorialOn)
-        {
-            tutorialText.SetActive(false);
-        }
-        if (Input.touchCount > 0 && !executeFlag)
-        {
-            executeFlag = true;
-        }
-        else
+        if (executeFlag)
         {
             CommandInterpreter();
         }
@@ -121,6 +120,11 @@ public class TutorialScript : MonoBehaviour
             card.GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
         }
 
+        foreach (GameObject card in Config.config.matches.GetComponent<MatchedPileScript>().cardList)
+        {
+            card.GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
+        }
+
         StateLoader.saveSystem.loadTutorialState("GameStates/" + fileName);
         StateLoader.saveSystem.unpackState(state: StateLoader.saveSystem.gameState, isTutorial: true);
 
@@ -136,15 +140,15 @@ public class TutorialScript : MonoBehaviour
         tutorialText.GetComponent<Text>().text = text;
         if (region == "middle")
         {
-            tutorialText.transform.position.Set(0, 0, 0);
+            tutorialText.transform.localPosition.Set(0, .8f, 0);
         }
         else if (region == "top")
         {
-            tutorialText.transform.position.Set(0, 593, 0);
+            tutorialText.transform.localPosition.Set(0, 0, 0);
         }
         else if (region == "bottom")
         {
-            tutorialText.transform.position.Set(0, -570, 0);
+            tutorialText.transform.localPosition.Set(0, -.8f, 0);
         }
     }
 

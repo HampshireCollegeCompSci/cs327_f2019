@@ -275,6 +275,14 @@ public class MenuUIScript : MonoBehaviour
         Config.config.deck.GetComponent<DeckScript>().StartNextCycle(manuallyTriggered: true);
     }
 
+    public void NextTutorialStep()
+    {
+        if (Config.config.tutorialOn)
+        {
+            GameObject.Find("TutorialController").GetComponent<TutorialScript>().executeFlag = true;
+        }
+    }
+
     //IEnumerator ButtonPressedAnim(GameObject button, string scene, bool additive = false, bool unload = false)
     //{
     //    Config.config.GetComponent<SoundController>().ButtonPressSound();
