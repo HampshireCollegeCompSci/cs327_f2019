@@ -138,14 +138,13 @@ public class DeckScript : MonoBehaviour
             for (int n = 0; n < Config.config.foundationStartSize - 1; n++)
             {
                 currentCardScript = cardList[0].GetComponent<CardScript>();
-                currentCardScript.MoveCard(foundation, doLog: false);
                 currentCardScript.SetVisibility(false);
+                currentCardScript.MoveCard(foundation, doLog: false, showHolo: false);
             }
 
             // adding and revealing the top card of the foundation
             currentCardScript = cardList[0].GetComponent<CardScript>();
             currentCardScript.SetVisibility(true);
-            currentCardScript.ShowHologram();
             currentCardScript.MoveCard(foundation, doLog: false);
         }
     }

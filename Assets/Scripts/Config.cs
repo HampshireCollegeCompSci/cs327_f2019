@@ -120,7 +120,7 @@ public class Config : MonoBehaviour
         get { return moveCounter; }
         set {
             moveCounter = value;
-            Debug.Log(moveCounter);
+            //Debug.Log(moveCounter);
         }
     }
 

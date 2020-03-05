@@ -16,19 +16,21 @@ public class FoundationScript : MonoBehaviour
         sp = gameObject.GetComponent<SpriteRenderer>();
     }
 
-    public void AddCard(GameObject card)
+    public void AddCard(GameObject card, bool showHolo = true)
     {
         if (cardList.Count != 0)
             cardList[0].GetComponent<CardScript>().HideHologram();
 
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
-        cardList[0].GetComponent<CardScript>().ShowHologram();
+
+        if (showHolo)
+            cardList[0].GetComponent<CardScript>().ShowHologram();
 
         SetCardPositions();
     }
 
-    public void RemoveCard(GameObject card)
+    public void RemoveCard(GameObject card, bool showHolo = true)
     {
         cardList.Remove(card);
 
@@ -36,7 +38,9 @@ public class FoundationScript : MonoBehaviour
         {
             if (cardList[0].gameObject.GetComponent<CardScript>().isHidden())
                 cardList[0].gameObject.GetComponent<CardScript>().SetVisibility(true);
-            cardList[0].GetComponent<CardScript>().ShowHologram();
+
+            if (showHolo)
+                cardList[0].GetComponent<CardScript>().ShowHologram();
         }
 
         SetCardPositions();
@@ -165,8 +169,10 @@ public class FoundationScript : MonoBehaviour
 
                 soundController.CardStackSound();
 
-                for (int i = 0; i < utils.selectedCards.Count; i++) //goes through and moves all selesctedCards to clicked location
-                    utils.selectedCards[i].GetComponent<CardScript>().MoveCard(inputCardScript.container, isStack: true);
+                for (int i = 0; i < utils.selectedCards.Count - 1; i++) //goes through and moves all selesctedCards to clicked location
+                    utils.selectedCards[i].GetComponent<CardScript>().MoveCard(inputCardScript.container, isStack: true, showHolo: false);
+
+                utils.selectedCards[utils.selectedCards.Count - 1].GetComponent<CardScript>().MoveCard(inputCardScript.container, isStack: true);
             }
             else
                 return;
@@ -191,8 +197,12 @@ public class FoundationScript : MonoBehaviour
             if (utils.selectedCards.Count == 1)
                 selectedCardScript.MoveCard(input);
             else
-                for (int i = 0; i < utils.selectedCards.Count; i++) //goes through and moves all selesctedCards to clicked location
-                    utils.selectedCards[i].GetComponent<CardScript>().MoveCard(input, isStack: true);
+            {
+                for (int i = 0; i < utils.selectedCards.Count - 1; i++) //goes through and moves all selesctedCards to clicked location
+                    utils.selectedCards[i].GetComponent<CardScript>().MoveCard(input, isStack: true, showHolo: false);
+
+                utils.selectedCards[utils.selectedCards.Count - 1].GetComponent<CardScript>().MoveCard(input, isStack: true);
+            }
         }
         else
             return;

@@ -383,8 +383,15 @@ public class UtilsScript : MonoBehaviour
         p.z += 2;
         GameObject matchExplosion = Instantiate(matchPrefab, p, Quaternion.identity);
 
+        GameObject oldContainer = card1Script.container;
         card2Script.MoveCard(matchedPile);
         card1Script.MoveCard(matchedPile);
+
+        /*if (oldContainer.CompareTag("Foundation") && oldContainer.GetComponent<FoundationScript>().cardList.Count != 0)
+            oldContainer.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().HideHologram();
+        else
+            oldContainer = null;*/
+
         UpdateScore(matchPoints);
         UpdateActions(0);
 

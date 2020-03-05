@@ -80,9 +80,10 @@ public class UndoScript : MonoBehaviour
                 if (undoList[undoList.Count - 1].nextCardWasHidden)
                     newFoundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
 
-                for (int i = 0; i < undoList.Count; i++) // move the tokens back
-                    undoList[i].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false);
-                
+                for (int i = 0; i < undoList.Count - 1; i++) // move the tokens back
+                    undoList[i].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false, showHolo: false);
+                undoList[undoList.Count - 1].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false);
+
                 utils.UpdateActions(undoList[0].remainingActions, setAsValue: true);
                 return;
             }
@@ -123,8 +124,12 @@ public class UndoScript : MonoBehaviour
                 while (moveLog.Count != 0 && moveLog.Peek().moveNum == lastMove.moveNum)
                 {
                     lastMove = moveLog.Pop();
-                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+
+                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, showHolo: false);
                 }
+
+                if (lastMove.origin.CompareTag("Wastepile"))
+                    lastMove.card.GetComponent<CardScript>().ShowHologram();
 
                 utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
 
