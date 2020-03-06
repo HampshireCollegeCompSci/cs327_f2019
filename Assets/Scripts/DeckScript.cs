@@ -164,7 +164,7 @@ public class DeckScript : MonoBehaviour
     {
         cardList.Remove(card);
         card.GetComponent<SpriteRenderer>().enabled = true;
-        card.GetComponent<BoxCollider2D>().enabled = true;
+        //card.GetComponent<BoxCollider2D>().enabled = true;
         UpdateDeckCounter();
     }
 
