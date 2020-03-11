@@ -273,7 +273,12 @@ public class DeckScript : MonoBehaviour
                         topCardScript.number.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
 
                         Vector3 target = reactor.transform.position;
-                        target.y += -0.6f + reactor.GetComponent<ReactorScript>().cardList.Count * 0.45f;
+                        int cardCount = reactor.GetComponent<ReactorScript>().cardList.Count;
+                        if (cardCount > 4)
+                            cardCount = 4;
+
+                        target.y += -0.8f + cardCount * 0.45f;
+                        target.x -= 0.02f;
 
                         if (currentFoundation.cardList.Count > 1)
                         {
