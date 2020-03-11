@@ -80,9 +80,10 @@ public class UndoScript : MonoBehaviour
                 if (undoList[undoList.Count - 1].nextCardWasHidden)
                     newFoundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
 
-                for (int i = 0; i < undoList.Count; i++) // move the tokens back
-                    undoList[i].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false);
-                
+                for (int i = 0; i < undoList.Count - 1; i++) // move the tokens back
+                    undoList[i].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false, showHolo: false);
+                undoList[undoList.Count - 1].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false);
+
                 utils.UpdateActions(undoList[0].remainingActions, setAsValue: true);
                 return;
             }
@@ -115,37 +116,22 @@ public class UndoScript : MonoBehaviour
             }
             else if (moveLog.Peek().moveType == "draw") //move the last three drawn cards back to the deck (assuming the last action was to draw from the deck)
             {
-                
-                lastMove = moveLog.Pop();
-                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
-
+                int moveNum = moveLog.Peek().moveNum;
                 // undos the draw and possibly the deck reset as well
-                while (moveLog.Count != 0 && moveLog.Peek().moveNum == lastMove.moveNum)
+                while (true)
                 {
                     lastMove = moveLog.Pop();
-                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+
+                    if (moveLog.Count == 0 || moveLog.Peek().moveNum != moveNum)
+                    {
+                        lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+                        utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
+                        return;
+                    }
+
+                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, showHolo: false);
                 }
-
-                utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
-
-                /*if (moveLog.Count != 0 && moveLog.Peek().moveType == "deckreset")
-                    undo();*/
-
-                return;
-            }/*
-            else if (moveLog.Peek().moveType == "deckreset") //move the entire deck back into the wastepile
-            {
-                lastMove = moveLog.Pop();
-                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
-                while (moveLog.Count != 0 && moveLog.Peek().moveType == "deckreset" && moveLog.Peek().remainingActions == lastMove.remainingActions)
-                {
-                    lastMove = moveLog.Pop();
-                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
-                }
-
-                utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
-                return;
-            }*/
+            }
             else if (moveLog.Peek().moveType == "cycle") //undo a cycle turning over, resets all tokens moved up, along with the move counter
             {
                 lastMove = moveLog.Pop();

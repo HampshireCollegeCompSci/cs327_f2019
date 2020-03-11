@@ -6,26 +6,20 @@ using UnityEngine;
 public class CardScript : MonoBehaviour
 {
     public GameObject container;
-    public Sprite cardFrontSprite;
-    public Sprite cardBackSprite;
+    
     public int cardVal; //cardVal is what the card is worth to the reactor jack, queen, king are all 10
     public int cardNum; //cardNum is the number on the card, ace is 1 jack is 11 queen is 12 king is 13
     public string cardSuit;
-    public bool hidden;
-    public Color originalColor;
-    public Color newColor;
-    public bool glowing;
 
     public GameObject hologramFood, hologram;
     public Sprite hologramFoodSprite, hologramComboSprite;
     public GameObject glow;
     public GameObject number;
 
-    private int selectedLayer;
-
+    public Color originalColor;
+    private Color newColor;
     void Start()
     {
-        glowing = false;
         hologramFood.GetComponent<SpriteRenderer>().sprite = hologramFoodSprite;
 
         if (Config.config.prettyColors)
@@ -38,17 +32,9 @@ public class CardScript : MonoBehaviour
         }
     }
 
-
-    //all the scales in here have been modified deliberately because the cards were too small
-    //this will need to be changed when the sprites for the final card designs are added
-    //unless they have the same exact dimensions
-    //public void SetCardAppearance()
-    //{
-    //set collider scale to match sprite scale
-    //gameObject.GetComponent<BoxCollider2D>().size = gameObject.GetComponent<SpriteRenderer>().sprite.bounds.size;
-    //gameObject.GetComponent<BoxCollider2D>().offset = gameObject.GetComponent<SpriteRenderer>().sprite.bounds.center;
-    //}
-
+    public Sprite cardFrontSprite;
+    public Sprite cardBackSprite;
+    public bool hidden;
     public void SetVisibility(bool show)
     {
         if (show)
@@ -74,6 +60,7 @@ public class CardScript : MonoBehaviour
     {
         return hidden;
     }
+
 
     public void SetSelected(bool selected)
     {
@@ -106,6 +93,7 @@ public class CardScript : MonoBehaviour
         }
     }
 
+    private int selectedLayer;
     public void MakeVisualOnly()
     {
         gameObject.transform.localScale = new Vector3(0.2f, 0.2f, 1);
@@ -154,30 +142,58 @@ public class CardScript : MonoBehaviour
         return glow.GetComponent<SpriteRenderer>().color;
     }
 
+
+    private bool holoOn = false;
+    private Coroutine holoCoroutine;
     public void ShowHologram()
+    {
+        if (holoOn == false)
+        {
+            holoOn = true;
+            holoCoroutine = StartCoroutine(StartHologram());
+        }
+    }
+
+    IEnumerator StartHologram()
     {
         hologram.SetActive(true);
         hologramFood.SetActive(true);
         hologram.GetComponent<Animator>().speed = Random.Range(0.6f, 1f);
         UpdateMaskInteraction(gameObject.GetComponent<SpriteRenderer>().maskInteraction);
-        StartCoroutine(ResetHologramSpeed());
-    }
 
-    IEnumerator ResetHologramSpeed()
-    {
-        yield return new WaitForSeconds(1);
+        SpriteRenderer holoSR = hologram.GetComponent<SpriteRenderer>();
+        SpriteRenderer objectSR = hologramFood.GetComponent<SpriteRenderer>();
+        Color holoColor = holoSR.color;
+        holoColor.a = 0;
+        holoSR.color = holoColor;
+        objectSR.color = holoColor;
+
+        while (holoSR.color.a < 1)
+        {
+            holoSR.color = holoColor;
+            objectSR.color = holoColor;
+            holoColor.a += 0.05f;
+            yield return new WaitForSeconds(0.05f);
+        }
+        
         hologram.GetComponent<Animator>().speed = 1;
     }
 
     public void HideHologram()
     {
-        if (!isHidden() && (hologram.activeSelf || hologramFood.activeSelf))
+        if (holoOn)
         {
+            holoOn = false;
+
+            if (holoCoroutine != null)
+                StopCoroutine(holoCoroutine);
+
             hologram.SetActive(false);
             hologramFood.SetActive(false);
         }
     }
 
+    public bool glowing = false;
     public bool GlowOn(bool match)
     {
         if (!glowing)
@@ -214,7 +230,7 @@ public class CardScript : MonoBehaviour
         return glowing;
     }
 
-    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false)
+    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool showHolo = true)
     {
         bool nextCardWasHidden = false;
         if (container.CompareTag("Foundation"))
@@ -225,7 +241,7 @@ public class CardScript : MonoBehaviour
                 if (foundationScript.cardList.Count > 1 && foundationScript.cardList[1].GetComponent<CardScript>().isHidden())
                     nextCardWasHidden = true;
             }
-            container.GetComponent<FoundationScript>().RemoveCard(gameObject);
+            container.GetComponent<FoundationScript>().RemoveCard(gameObject, showHolo: showHolo);
         }
         else if (container.CompareTag("Reactor"))
         {
@@ -234,9 +250,9 @@ public class CardScript : MonoBehaviour
         else if (container.CompareTag("Wastepile"))
         {
             if (!doLog || destination.CompareTag("Deck"))
-                container.GetComponent<WastepileScript>().RemoveCard(gameObject, undoingOrDeck: true);
+                container.GetComponent<WastepileScript>().RemoveCard(gameObject, undoingOrDeck: true, showHolo: showHolo);
             else
-                container.GetComponent<WastepileScript>().RemoveCard(gameObject);
+                container.GetComponent<WastepileScript>().RemoveCard(gameObject, showHolo: showHolo);
         }
         else if (container.CompareTag("Deck"))
         {
@@ -261,7 +277,7 @@ public class CardScript : MonoBehaviour
                     UndoScript.undoScript.logMove("move", gameObject, isAction, Config.config.actions, nextCardWasHidden);
             }
 
-            destination.GetComponent<FoundationScript>().AddCard(gameObject);
+            destination.GetComponent<FoundationScript>().AddCard(gameObject, showHolo: showHolo);
         }
         else if (destination.CompareTag("Reactor"))
         {
@@ -285,7 +301,7 @@ public class CardScript : MonoBehaviour
                     UndoScript.undoScript.logMove("draw", gameObject, isAction, Config.config.actions);
             }
 
-            destination.GetComponent<WastepileScript>().AddCard(gameObject);
+            destination.GetComponent<WastepileScript>().AddCard(gameObject, showHolo: showHolo);
         }
         else if (destination.CompareTag("Deck"))
         {

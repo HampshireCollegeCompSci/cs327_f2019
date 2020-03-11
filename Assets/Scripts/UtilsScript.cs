@@ -359,7 +359,6 @@ public class UtilsScript : MonoBehaviour
         {
             selectedCardsCopy[selectedCardsCopy.Count - 1].GetComponent<CardScript>().ChangeHologram(Color.white);
             changedHologramColor = false;
-            Debug.Log("revert hologram");
         }
 
         // if we where hovering over a matching glowing token
@@ -385,30 +384,43 @@ public class UtilsScript : MonoBehaviour
 
         card2Script.MoveCard(matchedPile);
         card1Script.MoveCard(matchedPile);
-        UpdateScore(matchPoints);
-        UpdateActions(0);
+
+        int points = matchPoints + (Config.config.consecutiveMatches * Config.config.scoreMultiplier);
+        UpdateScore(points);
+        UpdateActions(0, isMatch: true);
 
         soundController.FoodMatch(card1Script.cardSuit);
         baby.GetComponent<SpaceBabyController>().BabyEatAnim();
 
         StartCoroutine(FoodComboMove(comboHologram, matchExplosion));
-        StartCoroutine(PointFade(p));
+        StartCoroutine(PointFade(points, p));
     }
 
     IEnumerator FoodComboMove(GameObject comboHologram, GameObject matchExplosion)
     {
         yield return new WaitForSeconds(0.3f);
-        Vector3 target = baby.transform.position;
+        //Vector3 target = baby.transform.position;
         SpriteRenderer comboSR = comboHologram.GetComponent<SpriteRenderer>();
         Color fadeColor = new Color(1, 1, 1, 1);
-        float initialDistance = Vector3.Distance(comboHologram.transform.position, target);
-        int speed = Config.config.cardsToReactorspeed / 2;
-        while (comboHologram.transform.position != target)
+        //float initialDistance = Vector3.Distance(comboHologram.transform.position, target);
+        //int speed = Config.config.cardsToReactorspeed / 2;
+        //while (comboHologram.transform.position != target)
+        //{
+        //    fadeColor.a = Vector3.Distance(comboHologram.transform.position, target) / initialDistance;
+        //    comboSR.color = fadeColor;
+        //    comboHologram.transform.position = Vector3.MoveTowards(comboHologram.transform.position, target, Time.deltaTime * speed);
+        //    yield return null;
+        //}
+
+        Vector3 initialScale = comboSR.transform.localScale;
+        float scale = 1;
+        while (fadeColor.a > 0)
         {
-            fadeColor.a = Vector3.Distance(comboHologram.transform.position, target) / initialDistance;
+            yield return new WaitForSeconds(0.01f);
+            scale += 0.01f;
+            comboHologram.transform.localScale = initialScale * scale;
+            fadeColor.a -= 0.01f;
             comboSR.color = fadeColor;
-            comboHologram.transform.position = Vector3.MoveTowards(comboHologram.transform.position, target, Time.deltaTime * speed);
-            yield return null;
         }
 
         //soundController.CardMatchSound();
@@ -416,29 +428,54 @@ public class UtilsScript : MonoBehaviour
         Destroy(comboHologram);
     }
 
-    IEnumerator PointFade(Vector3 position)
+    IEnumerator PointFade(int points, Vector3 position)
     {
         yield return new WaitForSeconds(0.2f);
         GameObject matchPointsEffect = Instantiate(matchPointsPrefab, position, Quaternion.identity, gameUI.transform);
-        matchPointsEffect.GetComponent<Text>().text = "+" + Config.config.matchPoints.ToString();
 
         Text pointText = matchPointsEffect.GetComponent<Text>();
-        while (pointText.fontSize < 75)
+        pointText.text = "+" + points.ToString();
+
+        Text comboText = matchPointsEffect.transform.GetChild(0).GetComponent<Text>();
+        if (Config.config.consecutiveMatches > 1)
+        {
+            comboText.text = "X" + Config.config.consecutiveMatches.ToString() + " COMBO";
+
+            Color comboColor;
+            if (Config.config.consecutiveMatches == 2)
+                comboColor = Color.cyan;
+            else if (Config.config.consecutiveMatches == 3)
+                comboColor = Color.blue;
+            else if (Config.config.consecutiveMatches == 4)
+                comboColor = Color.magenta;
+            else if (Config.config.consecutiveMatches == 5)
+                comboColor = Color.red;
+            else
+                comboColor = Color.yellow;
+
+            comboText.color = comboColor;
+            pointText.color = comboColor;
+        }
+
+        float scale = 1;
+        while (scale < 1.5)
         {
             yield return new WaitForSeconds(0.02f);
-            pointText.fontSize += 1;
+            scale += 0.01f;
+            matchPointsEffect.transform.localScale = Vector3.one * scale;
         }
 
         Color fadeColor = pointText.color;
         while (fadeColor.a > 0)
         {
             yield return new WaitForSeconds(0.02f);
-            pointText.fontSize += 1;
+            scale += 0.02f;
+            matchPointsEffect.transform.localScale = Vector3.one * scale;
             fadeColor.a -= 0.05f;
             pointText.color = fadeColor;
+            comboText.color = fadeColor;
         }
 
-        
         Destroy(matchPointsEffect);
     }
 
@@ -504,8 +541,13 @@ public class UtilsScript : MonoBehaviour
         scoreBox.GetComponent<ScoreScript>().UpdateScore();
     }
 
-    public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false, bool startingGame = false)
+    public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false, bool startingGame = false, bool isMatch = false)
     {
+        if (isMatch)
+            Config.config.consecutiveMatches++;
+        else
+            Config.config.consecutiveMatches = 0;
+
         // so that a nextcycle trigger doesn't save the state before and after, we only need the after
         bool doSaveState = true;
 
@@ -544,7 +586,6 @@ public class UtilsScript : MonoBehaviour
         {
             if (wasInAlertThreshold)
                 Alert(false, true);
-
             StateLoader.saveSystem.writeState();
             return;
         }

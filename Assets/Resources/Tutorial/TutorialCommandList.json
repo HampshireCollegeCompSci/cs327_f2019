@@ -3,8 +3,19 @@
     {
       "argumentList": [
         "ShowText",
-        "Test Text, Please Ignore",
-        "top"
+        "Text before mask applied",
+        "middle"
+      ]
+    },
+    {
+      "argumentList": [
+        "WaitForTouch"
+      ]
+    },
+    {
+      "argumentList": [
+        "ShowMask",
+        "TestMask"
       ]
     },
     {
@@ -17,6 +28,16 @@
         "ShowText",
         "Changed Test Text",
         "middle"
+      ]
+    },
+    {
+      "argumentList": [
+        "WaitForTouch"
+      ]
+    },
+    {
+      "argumentList": [
+        "EndTutorial"
       ]
     }
   ]

@@ -270,12 +270,12 @@ PrefabInstance:
     - target: {fileID: 8579137275073341565, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -3.4991016
+      value: -3.4990997
       objectReference: {fileID: 0}
     - target: {fileID: 8579137275073341565, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -2.4011993
+      value: -2.4012146
       objectReference: {fileID: 0}
     - target: {fileID: 1010067025751531231, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
@@ -290,7 +290,7 @@ PrefabInstance:
     - target: {fileID: 80007953581452257, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.80000305
+      value: -0.7999878
       objectReference: {fileID: 0}
     - target: {fileID: 80007953581452257, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
@@ -803,7 +803,7 @@ PrefabInstance:
     - target: {fileID: 8579137275073341565, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -2.4011993
+      value: -2.401184
       objectReference: {fileID: 0}
     - target: {fileID: 1010067025751531231, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
@@ -818,7 +818,7 @@ PrefabInstance:
     - target: {fileID: 80007953581452257, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.80000305
+      value: -0.7999878
       objectReference: {fileID: 0}
     - target: {fileID: 80007953581452257, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
@@ -966,7 +966,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 8229317429a3d4abdb1d85c7ea8d4a2c, type: 3}
     m_FontSize: 42
     m_FontStyle: 0
     m_BestFit: 0
@@ -1173,6 +1173,9 @@ MonoBehaviour:
   angrySound: {fileID: 8300000, guid: 7c2f90662e6a74c429575d1e408bdbca, type: 3}
   loseSound: {fileID: 8300000, guid: 567c08c1d583541238e40b972d63750c, type: 3}
   counterSound: {fileID: 8300000, guid: bc83c2c36e0e54b57a955fc50954a081, type: 3}
+  eatSound: {fileID: 0}
+  foodObjects: []
+  foodPrefab: {fileID: 0}
 --- !u!82 &905769049
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1622,12 +1625,12 @@ PrefabInstance:
     - target: {fileID: 8579137275073341565, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -3.4991016
+      value: -3.4990997
       objectReference: {fileID: 0}
     - target: {fileID: 8579137275073341565, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -2.4011993
+      value: -2.401184
       objectReference: {fileID: 0}
     - target: {fileID: 1010067025751531231, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
@@ -1642,7 +1645,7 @@ PrefabInstance:
     - target: {fileID: 80007953581452257, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.80000305
+      value: -0.7999878
       objectReference: {fileID: 0}
     - target: {fileID: 80007953581452257, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
@@ -1955,12 +1958,12 @@ PrefabInstance:
     - target: {fileID: 8579137275073341565, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -3.4991474
+      value: -3.4991455
       objectReference: {fileID: 0}
     - target: {fileID: 8579137275073341565, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -2.4011993
+      value: -2.4012146
       objectReference: {fileID: 0}
     - target: {fileID: 2985967863890170156, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
@@ -1970,7 +1973,7 @@ PrefabInstance:
     - target: {fileID: 80007953581452257, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.80000305
+      value: -0.7999878
       objectReference: {fileID: 0}
     - target: {fileID: 80007953581452257, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}

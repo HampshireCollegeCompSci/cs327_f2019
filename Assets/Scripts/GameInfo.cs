@@ -55,4 +55,5 @@ public class GameInfo
     public byte vibrationCard;
     public byte vibrationMatch;
     public int vibrationExplosion;
+    public int scoreMultiplyer;
 }

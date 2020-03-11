@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class SpaceBabyController : MonoBehaviour
 {
@@ -8,9 +10,6 @@ public class SpaceBabyController : MonoBehaviour
     public AudioSource audioSource;
     public Animator animator;
     public AudioClip happySound, angrySound, loseSound, counterSound, eatSound;
-
-    public Sprite[] foodObjects;
-    public GameObject foodPrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -65,6 +64,11 @@ public class SpaceBabyController : MonoBehaviour
         animator.Play("IdlingAnim");
     }
 
+    public void BabyLose()
+    {
+        animator.Play("Lose");
+    }
+
     public void BabyWin(int matchNumber)
     {
         animator.Play("WinStart");
@@ -78,10 +82,13 @@ public class SpaceBabyController : MonoBehaviour
         animator.Play("WinEat");
     }
 
+    public Sprite[] foodObjects;
+    public GameObject foodPrefab;
     IEnumerator EatAnimation()
     {
         List<GameObject> foods = new List<GameObject>();
         Vector3 outOfBounds = new Vector3(3.8f, 0, 0);
+        Vector3 babyScale = gameObject.transform.localScale;
 
         for (int i = 0; i < foodObjects.Length; i++)
         {
@@ -108,17 +115,43 @@ public class SpaceBabyController : MonoBehaviour
                 Destroy(foods[0]);
                 foods.RemoveAt(0);
                 audioSource.PlayOneShot(eatSound, 0.4f);
+                babyScale.x += 0.02f;
+                gameObject.transform.localScale = babyScale;
                 if (foods.Count == 0)
                 {
-                    yield return new WaitForSeconds(0.4f);
-                    BabyHappyAnim();
+                    StartCoroutine(WinTransition());
                     yield break;
                 }
-
-                position = foods[0].transform.position;
             }
 
             yield return null;
+        }
+    }
+
+    public GameObject babyPlanet;
+    public GameObject panel;
+    IEnumerator WinTransition()
+    {
+        BabyHappyAnim();
+
+        Image panelImage = panel.GetComponent<Image>();
+        Color panelColor = new Color(1, 1, 1, 0);
+
+        while (panelColor.a < 1)
+        {
+            panelColor.a += 0.05f;
+            panelImage.color = panelColor;
+            yield return new WaitForSeconds(0.05f);
+        }
+
+        gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        babyPlanet.SetActive(true);
+
+        while (panelColor.a > 0)
+        {
+            panelColor.a -= 0.05f;
+            panelImage.color = panelColor;
+            yield return new WaitForSeconds(0.05f);
         }
     }
 }

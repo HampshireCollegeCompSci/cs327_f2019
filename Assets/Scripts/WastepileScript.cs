@@ -55,8 +55,10 @@ public class WastepileScript : MonoBehaviour
         }
 
         // add the new cards
-        for (int i = 0; i < cards.Count; i++)
-            cards[i].GetComponent<CardScript>().MoveCard(gameObject, doLog);
+        for (int i = 0; i < cards.Count - 1; i++)
+            cards[i].GetComponent<CardScript>().MoveCard(gameObject, doLog, showHolo: false);
+
+        cards[cards.Count - 1].GetComponent<CardScript>().MoveCard(gameObject, doLog);
 
         // move the scroll rect's content so that the new cards are hidden to the left side of the belt
         temp.x = cards.Count;
@@ -78,7 +80,7 @@ public class WastepileScript : MonoBehaviour
             utils.UpdateActions(1);
     }
 
-    public void AddCard(GameObject card)
+    public void AddCard(GameObject card, bool showHolo = true)
     {
         // hidding the top
         if (cardList.Count != 0)
@@ -88,7 +90,12 @@ public class WastepileScript : MonoBehaviour
         }
 
         cardList.Insert(0, card);
-        cardList[0].GetComponent<CardScript>().ShowHologram();
+
+        if (showHolo)
+        {
+            card.GetComponent<CardScript>().ShowHologram();
+            card.GetComponent<BoxCollider2D>().enabled = true;
+        }
 
         // making a container for the card so that it plays nice with the scroll view
         cardContainers.Insert(0, Instantiate(cardContainer));
@@ -104,7 +111,7 @@ public class WastepileScript : MonoBehaviour
         deckScript.UpdateDeckCounter();
     }
 
-    public void RemoveCard(GameObject card, bool undoingOrDeck = false)
+    public void RemoveCard(GameObject card, bool undoingOrDeck = false, bool showHolo = true)
     {
         // removing the cards wastepile container
         GameObject parentCardContainer = card.transform.parent.gameObject;
@@ -114,7 +121,7 @@ public class WastepileScript : MonoBehaviour
         card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.None);
         cardList.Remove(card);
 
-        if (cardList.Count != 0)
+        if (showHolo && cardList.Count != 0)
         {
             cardList[0].GetComponent<CardScript>().ShowHologram();
             cardList[0].GetComponent<BoxCollider2D>().enabled = true;
@@ -166,7 +173,7 @@ public class WastepileScript : MonoBehaviour
 
         // move all the tokens
         while (cardList.Count > 0)
-            cardList[0].GetComponent<CardScript>().MoveCard(deck);
+            cardList[0].GetComponent<CardScript>().MoveCard(deck, showHolo: false);
 
         yield return new WaitForSeconds(0.5f);
 

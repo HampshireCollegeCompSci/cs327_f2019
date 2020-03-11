@@ -150,6 +150,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   reactorMove: {fileID: 0}
+  foundationMoves: []
   cardMoves: []
   cardMatches: []
 --- !u!4 &113234415
@@ -873,6 +874,10 @@ MonoBehaviour:
   levelSceneButtonsTxtEnglish: []
   pauseSceneButtonsTxtEnglish: []
   summarySceneButtonsTxtEnglish: []
+  vibrationButton: 0
+  vibrationCard: 0
+  vibrationMatch: 0
+  vibrationExplosion: 0
   json: 
 --- !u!4 &1182164522
 Transform:
@@ -1660,12 +1665,12 @@ PrefabInstance:
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_FontData.m_FontSize
-      value: 40
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_FontData.m_MaxSize
-      value: 48
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
@@ -1890,7 +1895,7 @@ PrefabInstance:
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_FontData.m_FontSize
-      value: 40
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
@@ -2149,7 +2154,7 @@ PrefabInstance:
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_FontData.m_FontSize
-      value: 40
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
