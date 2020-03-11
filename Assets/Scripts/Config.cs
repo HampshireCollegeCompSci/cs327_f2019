@@ -97,6 +97,9 @@ public class Config : MonoBehaviour
     public int turnAlertSmallThreshold;
     public int turnAlertThreshold;
 
+    public int consecutiveMatches;
+    public int scoreMultiplier;
+
     //button txt
     public string[] gameStateTxtEnglish;
     public string[] menuSceneButtonsTxtEnglish;
@@ -140,6 +143,7 @@ public class Config : MonoBehaviour
 
     private void Start()
     {
+        scoreMultiplier = 50;
         SplashScreen.SetActive(true);
         splashScreenFade = StartCoroutine(DisplayLogo());
 
@@ -311,6 +315,7 @@ public class Config : MonoBehaviour
         vibrationCard = gameInfo.vibrationCard;
         vibrationMatch = gameInfo.vibrationMatch;
         vibrationExplosion = gameInfo.vibrationExplosion;
+        //scoreMultiplier = gameInfo.scoreMultiplyer;
 }
 
     public void SetCards()

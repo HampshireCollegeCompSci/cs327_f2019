@@ -92,7 +92,10 @@ public class WastepileScript : MonoBehaviour
         cardList.Insert(0, card);
 
         if (showHolo)
-            cardList[0].GetComponent<CardScript>().ShowHologram();
+        {
+            card.GetComponent<CardScript>().ShowHologram();
+            card.GetComponent<BoxCollider2D>().enabled = true;
+        }
 
         // making a container for the card so that it plays nice with the scroll view
         cardContainers.Insert(0, Instantiate(cardContainer));
@@ -118,11 +121,9 @@ public class WastepileScript : MonoBehaviour
         card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.None);
         cardList.Remove(card);
 
-        if (cardList.Count != 0)
+        if (showHolo && cardList.Count != 0)
         {
-            if (showHolo)
-                cardList[0].GetComponent<CardScript>().ShowHologram();
-
+            cardList[0].GetComponent<CardScript>().ShowHologram();
             cardList[0].GetComponent<BoxCollider2D>().enabled = true;
         }
 

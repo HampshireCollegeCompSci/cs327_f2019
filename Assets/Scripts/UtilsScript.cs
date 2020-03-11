@@ -392,8 +392,8 @@ public class UtilsScript : MonoBehaviour
         else
             oldContainer = null;*/
 
-        UpdateScore(matchPoints);
-        UpdateActions(0);
+        UpdateScore(matchPoints+(Config.config.consecutiveMatches*Config.config.scoreMultiplier));
+        UpdateActions(0, isMatch: true);
 
         soundController.FoodMatch(card1Script.cardSuit);
         baby.GetComponent<SpaceBabyController>().BabyEatAnim();
@@ -511,8 +511,16 @@ public class UtilsScript : MonoBehaviour
         scoreBox.GetComponent<ScoreScript>().UpdateScore();
     }
 
-    public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false, bool startingGame = false)
+    public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false, bool startingGame = false, bool isMatch = false)
     {
+        if (isMatch)
+            Config.config.consecutiveMatches++;
+        else
+            Config.config.consecutiveMatches = 0;
+
+        print("Score Multiplyer: " + Config.config.scoreMultiplier);
+        print("Consecutive Matches: " + Config.config.consecutiveMatches);
+
         // so that a nextcycle trigger doesn't save the state before and after, we only need the after
         bool doSaveState = true;
 
@@ -551,7 +559,6 @@ public class UtilsScript : MonoBehaviour
         {
             if (wasInAlertThreshold)
                 Alert(false, true);
-
             StateLoader.saveSystem.writeState();
             return;
         }
