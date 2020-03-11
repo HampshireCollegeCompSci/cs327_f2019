@@ -25,7 +25,7 @@ public class ResultsScript : MonoBehaviour
         moves.GetComponent<Text>().text = "MOVES: " + Config.config.MoveCounter;
 
         if (Config.config.gameWin)
-            spaceBaby.GetComponent<SpaceBabyController>().BabyWin(0);
+            spaceBaby.GetComponent<SpaceBabyController>().BabyWin(Config.config.matchCounter);
         else
             spaceBaby.GetComponent<SpaceBabyController>().BabyLose();
     }

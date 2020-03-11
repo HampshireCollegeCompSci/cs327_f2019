@@ -69,11 +69,11 @@ public class SpaceBabyController : MonoBehaviour
         animator.Play("Lose");
     }
 
-    public void BabyWin(int matchNumber)
+    public void BabyWin(byte matchNumber)
     {
         animator.Play("WinStart");
         StartCoroutine(BabyWinAnimation());
-        StartCoroutine(EatAnimation());
+        StartCoroutine(EatAnimation(matchNumber));
     }
 
     IEnumerator BabyWinAnimation()
@@ -84,13 +84,23 @@ public class SpaceBabyController : MonoBehaviour
 
     public Sprite[] foodObjects;
     public GameObject foodPrefab;
-    IEnumerator EatAnimation()
+    IEnumerator EatAnimation(byte matchNumber)
     {
+        Debug.Log(matchNumber);
         List<GameObject> foods = new List<GameObject>();
         Vector3 outOfBounds = new Vector3(3.8f, 0, 0);
         Vector3 babyScale = gameObject.transform.localScale;
 
-        for (int i = 0; i < foodObjects.Length; i++)
+        byte limit = (byte)(matchNumber/2);
+        if (limit > 10)
+            limit = 10;
+        else if (limit == 0)
+            yield break;
+
+        if (limit > foodObjects.Length)
+            throw new System.ArgumentException("matchNumber cannot be greater than foodObjects.Length");
+
+        for (int i = 0; i < limit; i++)
         {
             GameObject foody = Instantiate(foodPrefab, outOfBounds, Quaternion.identity);
             foody.GetComponent<SpriteRenderer>().sprite = foodObjects[i];
@@ -119,7 +129,11 @@ public class SpaceBabyController : MonoBehaviour
                 gameObject.transform.localScale = babyScale;
                 if (foods.Count == 0)
                 {
-                    StartCoroutine(WinTransition());
+                    if (matchNumber == 26)
+                        StartCoroutine(WinTransition());
+                    else
+                        BabyHappyAnim();
+
                     yield break;
                 }
             }
