@@ -24,6 +24,7 @@ public class TutorialScript : MonoBehaviour
         {
             tutorialText.SetActive(true);
             tutorialNext.SetActive(true);
+            tutorialMask.SetActive(true);
         }
     }
 
@@ -136,8 +137,9 @@ public class TutorialScript : MonoBehaviour
     }
     public void ShowMask(string fileName)
     {
-        tutorialMask.GetComponent<SpriteRenderer>().sprite = Resources.Load(fileName) as Sprite;
-        tutorialMask.transform.localScale.Set(1, 1, 1);
+        print("Show Mask: TutorialMasks/" + fileName);
+        tutorialMask.GetComponent<SpriteRenderer>().sprite = Resources.Load("TutorialMasks/" + fileName) as Sprite;
+        tutorialMask.transform.localScale = GameObject.Find("GameUI").transform.localScale;
     }
 
     public void ShowText(string text, string region)
