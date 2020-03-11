@@ -108,7 +108,6 @@ public class CardScript : MonoBehaviour
         hologramFood.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
         gameObject.GetComponent<BoxCollider2D>().enabled = false;
 
-        Debug.Log("setSel");
         SetSelected(false);
     }
 
@@ -164,10 +163,10 @@ public class CardScript : MonoBehaviour
 
         SpriteRenderer holoSR = hologram.GetComponent<SpriteRenderer>();
         SpriteRenderer objectSR = hologramFood.GetComponent<SpriteRenderer>();
-        Color holoColor = hologram.GetComponent<SpriteRenderer>().color;
+        Color holoColor = holoSR.color;
         holoColor.a = 0;
 
-        while (holoColor.a < 1)
+        while (holoSR.color.a < 1)
         {
             holoSR.color = holoColor;
             objectSR.color = holoColor;
@@ -183,7 +182,10 @@ public class CardScript : MonoBehaviour
         if (holoOn)
         {
             holoOn = false;
-            StopCoroutine(holoCoroutine);
+
+            if (holoCoroutine != null)
+                StopCoroutine(holoCoroutine);
+
             hologram.SetActive(false);
             hologramFood.SetActive(false);
         }
