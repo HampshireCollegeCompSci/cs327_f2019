@@ -138,14 +138,14 @@ public class DeckScript : MonoBehaviour
             for (int n = 0; n < Config.config.foundationStartSize - 1; n++)
             {
                 currentCardScript = cardList[0].GetComponent<CardScript>();
-                currentCardScript.SetVisibility(false);
                 currentCardScript.MoveCard(foundation, doLog: false, showHolo: false);
+                currentCardScript.SetVisibility(false);
             }
 
             // adding and revealing the top card of the foundation
             currentCardScript = cardList[0].GetComponent<CardScript>();
-            currentCardScript.SetVisibility(true);
             currentCardScript.MoveCard(foundation, doLog: false);
+            currentCardScript.SetVisibility(true);
         }
     }
 
@@ -164,7 +164,7 @@ public class DeckScript : MonoBehaviour
     {
         cardList.Remove(card);
         card.GetComponent<SpriteRenderer>().enabled = true;
-        //card.GetComponent<BoxCollider2D>().enabled = true;
+        card.GetComponent<BoxCollider2D>().enabled = true;
         UpdateDeckCounter();
     }
 
