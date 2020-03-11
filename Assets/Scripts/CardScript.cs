@@ -165,6 +165,8 @@ public class CardScript : MonoBehaviour
         SpriteRenderer objectSR = hologramFood.GetComponent<SpriteRenderer>();
         Color holoColor = holoSR.color;
         holoColor.a = 0;
+        holoSR.color = holoColor;
+        objectSR.color = holoColor;
 
         while (holoSR.color.a < 1)
         {
