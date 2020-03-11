@@ -429,7 +429,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5281977, y: 0.5}
-  m_AnchoredPosition: {x: -1.0100002, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.0000039079}
   m_SizeDelta: {x: 84, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &293092341
@@ -505,7 +505,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.087424345, y: 0.367}
   m_AnchorMax: {x: 0.91964096, y: 0.4642459}
-  m_AnchoredPosition: {x: 2.5406494, y: -2.300003}
+  m_AnchoredPosition: {x: 2.5406494, y: -2.2999878}
   m_SizeDelta: {x: 7.1187143, y: 4.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &353824925
@@ -1176,6 +1176,8 @@ MonoBehaviour:
   eatSound: {fileID: 0}
   foodObjects: []
   foodPrefab: {fileID: 0}
+  babyPlanet: {fileID: 0}
+  panel: {fileID: 0}
 --- !u!82 &905769049
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1530,7 +1532,7 @@ PrefabInstance:
     - target: {fileID: 3922737605382484879, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3922737605382484879, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
@@ -1868,7 +1870,7 @@ PrefabInstance:
     - target: {fileID: 3922737605382484879, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -5.074402
+      value: -5.074463
       objectReference: {fileID: 0}
     - target: {fileID: 3922737605382484879, guid: 97120beeee53441d281db8f6df3432dc,
         type: 3}
