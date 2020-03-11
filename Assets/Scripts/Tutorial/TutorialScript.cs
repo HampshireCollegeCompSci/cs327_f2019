@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class TutorialScript : MonoBehaviour
 {
@@ -79,6 +80,10 @@ public class TutorialScript : MonoBehaviour
             {
                 WaitForTouch();
             }
+            else if (command[0] == "EndTutorial")
+            {
+                EndTutorial();
+            }
         }
     }
 
@@ -140,16 +145,29 @@ public class TutorialScript : MonoBehaviour
         tutorialText.GetComponent<Text>().text = text;
         if (region == "middle")
         {
-            tutorialText.transform.localPosition.Set(0, .8f, 0);
+            tutorialText.transform.GetComponent<RectTransform>().anchoredPosition.Set(0, 800);
         }
         else if (region == "top")
         {
-            tutorialText.transform.localPosition.Set(0, 0, 0);
+            tutorialText.transform.GetComponent<RectTransform>().anchoredPosition.Set(0, 1300);
         }
         else if (region == "bottom")
         {
-            tutorialText.transform.localPosition.Set(0, -.8f, 0);
+            tutorialText.transform.GetComponent<RectTransform>().anchoredPosition.Set(0, 45);
         }
+    }
+
+    public void EndTutorial()
+    {
+        Config.config.gamePaused = false;
+        if (Config.config != null)
+        {
+            Config.config.gameOver = false;
+            Config.config.gameWin = false;
+        }
+        SceneManager.LoadScene("MainMenuScene");
+
+        Config.config.GetComponent<MusicController>().MainMenuMusic();
     }
 
     private static List<ArgumentListWrapper> CreateFromJSON()

@@ -4,7 +4,7 @@
       "argumentList": [
         "ShowText",
         "Test Text, Please Ignore",
-        "top"
+        "middle"
       ]
     },
     {
@@ -17,6 +17,16 @@
         "ShowText",
         "Changed Test Text",
         "middle"
+      ]
+    },
+    {
+      "argumentList": [
+        "WaitForTouch"
+      ]
+    },
+    {
+      "argumentList": [
+        "EndTutorial"
       ]
     }
   ]
