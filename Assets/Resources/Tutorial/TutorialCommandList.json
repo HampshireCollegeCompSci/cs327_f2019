@@ -2,6 +2,12 @@
   "commands": [
     {
       "argumentList": [
+        "ShowMask",
+        "TransparentMask"
+      ]
+    },
+    {
+      "argumentList": [
         "ShowText",
         "Text before mask applied",
         "middle"
@@ -20,13 +26,20 @@
     },
     {
       "argumentList": [
+        "ShowText",
+        "Hey! Masks work now!",
+        "middle"
+      ]
+    },
+    {
+      "argumentList": [
         "WaitForTouch"
       ]
     },
     {
       "argumentList": [
         "ShowText",
-        "Changed Test Text",
+        "And we can adjust text!",
         "middle"
       ]
     },

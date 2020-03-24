@@ -138,8 +138,7 @@ public class TutorialScript : MonoBehaviour
     public void ShowMask(string fileName)
     {
         print("Show Mask: TutorialMasks/" + fileName);
-        tutorialMask.GetComponent<SpriteRenderer>().sprite = Resources.Load("TutorialMasks/" + fileName) as Sprite;
-        tutorialMask.transform.localScale = GameObject.Find("GameUI").transform.localScale;
+        tutorialMask.GetComponent<Image>().sprite = Resources.Load<Sprite>("TutorialMasks/" + fileName);
     }
 
     public void ShowText(string text, string region)
