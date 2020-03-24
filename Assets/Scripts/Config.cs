@@ -117,6 +117,7 @@ public class Config : MonoBehaviour
     //long term tracking
     //public int moves;
     private int moveCounter;
+    public byte matchCounter;
 
     public int MoveCounter   // property
     {
@@ -204,6 +205,7 @@ public class Config : MonoBehaviour
     {
         gameOver = true;
         gameWin = didWin;
+        matchCounter = (byte) (matches.GetComponent<MatchedPileScript>().cardList.Count / 2);
         fadeOutImage.SetActive(true);
         baby = GameObject.Find("SpaceBaby");
 
