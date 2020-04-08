@@ -250,23 +250,6 @@ public class Config : MonoBehaviour
         if (gameWin)
         {
             gameObject.GetComponent<MusicController>().WinMusic();
-            if (PlayerPrefs.HasKey(difficulty + "HighScore") && score > PlayerPrefs.GetInt(difficulty + "HighScore"))
-            {
-                PlayerPrefs.SetInt(difficulty + "HighScore", score);
-            }
-            else if (!PlayerPrefs.HasKey(difficulty + "HighScore"))
-            {
-                PlayerPrefs.SetInt(difficulty + "HighScore", score);
-            }
-
-            if (PlayerPrefs.HasKey(difficulty + "Moves") && MoveCounter < PlayerPrefs.GetInt(difficulty + "Moves"))
-            {
-                PlayerPrefs.SetInt(difficulty + "Moves", MoveCounter);
-            }
-            else if (!PlayerPrefs.HasKey(difficulty + "Moves"))
-            {
-                PlayerPrefs.SetInt(difficulty + "Moves", MoveCounter);
-            }
         }
         else
         {

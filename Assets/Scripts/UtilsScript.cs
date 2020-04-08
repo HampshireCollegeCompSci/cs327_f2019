@@ -690,7 +690,7 @@ public class UtilsScript : MonoBehaviour
             Config.config.deck.GetComponent<DeckScript>().StartNextCycle();
     }
 
-    private void SetEndGameScore()
+    public void SetEndGameScore()
     {
         int extraScore = 0;
         if (matchedPile.GetComponent<MatchedPileScript>().cardList.Count == 52)
@@ -709,6 +709,31 @@ public class UtilsScript : MonoBehaviour
             extraScore += emptyReactorPoints;
 
         UpdateScore(extraScore);
+    }
+
+    public void SetHighScores()
+    {
+        int score = Config.config.score;
+        string difficulty = Config.config.difficulty;
+        int MoveCounter = Config.config.MoveCounter;
+
+        if (PlayerPrefs.HasKey(difficulty + "HighScore") && score > PlayerPrefs.GetInt(difficulty + "HighScore"))
+        {
+            PlayerPrefs.SetInt(difficulty + "HighScore", score);
+        }
+        else if (!PlayerPrefs.HasKey(difficulty + "HighScore"))
+        {
+            PlayerPrefs.SetInt(difficulty + "HighScore", score);
+        }
+
+        if (PlayerPrefs.HasKey(difficulty + "Moves") && MoveCounter < PlayerPrefs.GetInt(difficulty + "Moves"))
+        {
+            PlayerPrefs.SetInt(difficulty + "Moves", MoveCounter);
+        }
+        else if (!PlayerPrefs.HasKey(difficulty + "Moves"))
+        {
+            PlayerPrefs.SetInt(difficulty + "Moves", MoveCounter);
+        }
     }
 
     public bool IsInputStopped()

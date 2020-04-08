@@ -33,5 +33,7 @@ public class ResultsScript : MonoBehaviour
             spaceBaby.GetComponent<SpaceBabyController>().BabyWin(Config.config.matchCounter);
         else
             spaceBaby.GetComponent<SpaceBabyController>().BabyLose();
+
+        UtilsScript.global.SetHighScores();
     }
 }
