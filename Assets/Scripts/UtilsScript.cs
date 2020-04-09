@@ -671,6 +671,7 @@ public class UtilsScript : MonoBehaviour
             else if (Config.config.actionMax - Config.config.actions == 1)
             {
                 baby.GetComponent<SpaceBabyController>().BabyAngryAnim();
+                soundController.AlertSound();
             }
         }
         // if the action counter is low
