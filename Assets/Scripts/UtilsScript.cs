@@ -421,6 +421,10 @@ public class UtilsScript : MonoBehaviour
             comboHologram.transform.localScale = initialScale * scale;
             fadeColor.a -= 0.01f;
             comboSR.color = fadeColor;
+            if (Config.config.gamePaused)
+            {
+                fadeColor.a = 0.0f;
+            }
         }
 
         //soundController.CardMatchSound();
@@ -463,6 +467,10 @@ public class UtilsScript : MonoBehaviour
             yield return new WaitForSeconds(0.02f);
             scale += 0.01f;
             matchPointsEffect.transform.localScale = Vector3.one * scale;
+            if (Config.config.gamePaused)
+            {
+                scale = 1.5f;
+            }
         }
 
         Color fadeColor = pointText.color;
@@ -474,6 +482,10 @@ public class UtilsScript : MonoBehaviour
             fadeColor.a -= 0.05f;
             pointText.color = fadeColor;
             comboText.color = fadeColor;
+            if (Config.config.gamePaused)
+            {
+                fadeColor.a = 0.0f;
+            }
         }
 
         Destroy(matchPointsEffect);
