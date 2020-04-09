@@ -33,6 +33,8 @@ public class ReactorScoreSetScript : MonoBehaviour
 
     public void SetPositions()
     {
+        return;
+
         if (reactorScore0 != null && reactorScore1 != null && reactorScore2 != null && reactorScore3 != null
             && reactor0 != null && reactor1 != null && reactor2 != null && reactor3 != null)
         {

@@ -665,12 +665,22 @@ public class UtilsScript : MonoBehaviour
         {
             // if the alert was not already turned on, turn it on and play the sound
             if (moveCounter.GetComponent<ActionCountScript>().TurnSirenOn(2))
-                soundController.AlertSound();
+            {
+                baby.GetComponent<SpaceBabyController>().BabyAngryAnim();
+            }
+            else if (Config.config.actionMax - Config.config.actions == 1)
+            {
+                baby.GetComponent<SpaceBabyController>().BabyAngryAnim();
+            }
         }
         // if the action counter is low
         else if (turnOn || checkAgain)
         {
-            moveCounter.GetComponent<ActionCountScript>().TurnSirenOn(1);
+            if (!moveCounter.GetComponent<ActionCountScript>().TurnSirenOn(1) &&
+                Config.config.actionMax - Config.config.actions == 1)
+            {
+                soundController.AlertSound();
+            }
         }
         // the action counter is not low so turn stuff off
         else
@@ -680,8 +690,8 @@ public class UtilsScript : MonoBehaviour
 
         if (turnOn)
         {
+            soundController.AlertSound();
             Config.config.GetComponent<MusicController>().AlertMusic();
-            baby.GetComponent<SpaceBabyController>().BabyAngryAnim();
         }
     }
 
