@@ -49,21 +49,21 @@ public class ReactorScoreSetScript : MonoBehaviour
             if (on)
                 reactorScore0.color = Color.red;
             else
-                reactorScore0.color = Color.white;
+                reactorScore0.color = Color.black;
         else if (reactor == reactor1)
             if (on)
                 reactorScore1.color = Color.red;
             else
-                reactorScore1.color = Color.white;
+                reactorScore1.color = Color.black;
         else if (reactor == reactor2)
             if (on)
                 reactorScore2.color = Color.red;
             else
-                reactorScore2.color = Color.white;
+                reactorScore2.color = Color.black;
         else
             if (on)
                 reactorScore3.color = Color.red;
             else
-                reactorScore3.color = Color.white;
+                reactorScore3.color = Color.black;
     }
 }
