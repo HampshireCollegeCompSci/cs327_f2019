@@ -133,6 +133,7 @@ public class TutorialScript : MonoBehaviour
 
         StateLoader.saveSystem.loadTutorialState("GameStates/" + fileName);
         StateLoader.saveSystem.unpackState(state: StateLoader.saveSystem.gameState, isTutorial: true);
+        UtilsScript.global.UpdateScore(0);
 
     }
     public void ShowMask(string fileName)
