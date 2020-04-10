@@ -421,6 +421,10 @@ public class UtilsScript : MonoBehaviour
             comboHologram.transform.localScale = initialScale * scale;
             fadeColor.a -= 0.01f;
             comboSR.color = fadeColor;
+            if (Config.config.gamePaused)
+            {
+                fadeColor.a = 0.0f;
+            }
         }
 
         //soundController.CardMatchSound();
@@ -463,6 +467,10 @@ public class UtilsScript : MonoBehaviour
             yield return new WaitForSeconds(0.02f);
             scale += 0.01f;
             matchPointsEffect.transform.localScale = Vector3.one * scale;
+            if (Config.config.gamePaused)
+            {
+                scale = 1.5f;
+            }
         }
 
         Color fadeColor = pointText.color;
@@ -474,6 +482,10 @@ public class UtilsScript : MonoBehaviour
             fadeColor.a -= 0.05f;
             pointText.color = fadeColor;
             comboText.color = fadeColor;
+            if (Config.config.gamePaused)
+            {
+                fadeColor.a = 0.0f;
+            }
         }
 
         Destroy(matchPointsEffect);
@@ -653,12 +665,23 @@ public class UtilsScript : MonoBehaviour
         {
             // if the alert was not already turned on, turn it on and play the sound
             if (moveCounter.GetComponent<ActionCountScript>().TurnSirenOn(2))
+            {
+                baby.GetComponent<SpaceBabyController>().BabyAngryAnim();
+            }
+            else if (Config.config.actionMax - Config.config.actions == 1)
+            {
+                baby.GetComponent<SpaceBabyController>().BabyAngryAnim();
                 soundController.AlertSound();
+            }
         }
         // if the action counter is low
         else if (turnOn || checkAgain)
         {
-            moveCounter.GetComponent<ActionCountScript>().TurnSirenOn(1);
+            if (!moveCounter.GetComponent<ActionCountScript>().TurnSirenOn(1) &&
+                Config.config.actionMax - Config.config.actions == 1)
+            {
+                soundController.AlertSound();
+            }
         }
         // the action counter is not low so turn stuff off
         else
@@ -668,8 +691,8 @@ public class UtilsScript : MonoBehaviour
 
         if (turnOn)
         {
+            soundController.AlertSound();
             Config.config.GetComponent<MusicController>().AlertMusic();
-            baby.GetComponent<SpaceBabyController>().BabyAngryAnim();
         }
     }
 
@@ -690,7 +713,7 @@ public class UtilsScript : MonoBehaviour
             Config.config.deck.GetComponent<DeckScript>().StartNextCycle();
     }
 
-    private void SetEndGameScore()
+    public void SetEndGameScore()
     {
         int extraScore = 0;
         if (matchedPile.GetComponent<MatchedPileScript>().cardList.Count == 52)
@@ -709,6 +732,31 @@ public class UtilsScript : MonoBehaviour
             extraScore += emptyReactorPoints;
 
         UpdateScore(extraScore);
+    }
+
+    public void SetHighScores()
+    {
+        int score = Config.config.score;
+        string difficulty = Config.config.difficulty;
+        int MoveCounter = Config.config.MoveCounter;
+
+        if (PlayerPrefs.HasKey(difficulty + "HighScore") && score > PlayerPrefs.GetInt(difficulty + "HighScore"))
+        {
+            PlayerPrefs.SetInt(difficulty + "HighScore", score);
+        }
+        else if (!PlayerPrefs.HasKey(difficulty + "HighScore"))
+        {
+            PlayerPrefs.SetInt(difficulty + "HighScore", score);
+        }
+
+        if (PlayerPrefs.HasKey(difficulty + "Moves") && MoveCounter < PlayerPrefs.GetInt(difficulty + "Moves"))
+        {
+            PlayerPrefs.SetInt(difficulty + "Moves", MoveCounter);
+        }
+        else if (!PlayerPrefs.HasKey(difficulty + "Moves"))
+        {
+            PlayerPrefs.SetInt(difficulty + "Moves", MoveCounter);
+        }
     }
 
     public bool IsInputStopped()

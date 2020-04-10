@@ -33,6 +33,8 @@ public class ReactorScoreSetScript : MonoBehaviour
 
     public void SetPositions()
     {
+        return;
+
         if (reactorScore0 != null && reactorScore1 != null && reactorScore2 != null && reactorScore3 != null
             && reactor0 != null && reactor1 != null && reactor2 != null && reactor3 != null)
         {
@@ -49,21 +51,21 @@ public class ReactorScoreSetScript : MonoBehaviour
             if (on)
                 reactorScore0.color = Color.red;
             else
-                reactorScore0.color = Color.white;
+                reactorScore0.color = Color.black;
         else if (reactor == reactor1)
             if (on)
                 reactorScore1.color = Color.red;
             else
-                reactorScore1.color = Color.white;
+                reactorScore1.color = Color.black;
         else if (reactor == reactor2)
             if (on)
                 reactorScore2.color = Color.red;
             else
-                reactorScore2.color = Color.white;
+                reactorScore2.color = Color.black;
         else
             if (on)
                 reactorScore3.color = Color.red;
             else
-                reactorScore3.color = Color.white;
+                reactorScore3.color = Color.black;
     }
 }
