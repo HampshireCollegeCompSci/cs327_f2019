@@ -50,6 +50,17 @@
     },
     {
       "argumentList": [
+        "LoadSave",
+        "tutorialState2"
+      ]
+    },
+    {
+      "argumentList": [
+        "WaitForTouch"
+      ]
+    },
+    {
+      "argumentList": [
         "EndTutorial"
       ]
     }

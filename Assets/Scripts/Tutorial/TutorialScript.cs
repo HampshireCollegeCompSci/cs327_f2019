@@ -102,33 +102,43 @@ public class TutorialScript : MonoBehaviour
         //move all tokens back to load pile, then call LoadState and UnpackState
         foreach (GameObject foundation in Config.config.foundations)
         {
-            foreach (GameObject card in foundation.GetComponent<FoundationScript>().cardList)
+            List<GameObject> cardList = foundation.GetComponent<FoundationScript>().cardList;
+            int listLength = cardList.Count;
+            for (int i = 0; i < listLength; i++)
             {
-                card.GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
+                cardList[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
             }
         }
 
         foreach (GameObject reactor in Config.config.reactors)
         {
-            foreach (GameObject card in reactor.GetComponent<FoundationScript>().cardList)
+            List<GameObject> cardList = reactor.GetComponent<ReactorScript>().cardList;
+            int listLength = cardList.Count;
+            for (int i = 0; i < listLength; i++)
             {
-                card.GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
+                cardList[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
             }
         }
 
-        foreach (GameObject card in Config.config.deck.GetComponent<DeckScript>().cardList)
+        List<GameObject> deckCardList = Config.config.deck.GetComponent<DeckScript>().cardList;
+        int deckListLength = deckCardList.Count;
+        for (int i = 0; i < deckListLength; i++)
         {
-            card.GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
+            deckCardList[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
         }
 
-        foreach (GameObject card in Config.config.wastePile.GetComponent<WastepileScript>().cardList)
+        List<GameObject> wasteCardList = Config.config.wastePile.GetComponent<WastepileScript>().cardList;
+        int wasteListLength = wasteCardList.Count;
+        for (int i = 0; i < wasteListLength; i++)
         {
-            card.GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
+            wasteCardList[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
         }
 
-        foreach (GameObject card in Config.config.matches.GetComponent<MatchedPileScript>().cardList)
+        List<GameObject> matchCardList = Config.config.matches.GetComponent<MatchedPileScript>().cardList;
+        int matchListLength = matchCardList.Count;
+        for (int i = 0; i < matchListLength; i++)
         {
-            card.GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
+            matchCardList[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
         }
 
         StateLoader.saveSystem.loadTutorialState("GameStates/" + fileName);
