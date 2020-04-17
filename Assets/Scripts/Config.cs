@@ -378,23 +378,23 @@ public class Config : MonoBehaviour
     }
     public void setDifficulty(string dif)
     {
-        if (dif.Equals("easy"))
+        if (dif.Equals("EASY"))
         {
             maxReactorVal = easy;
             actionMax = easyMoveCount;
-            difficulty = "easy";
+            difficulty = "EASY";
         }
-        if (dif.Equals("medium"))
+        if (dif.Equals("MEDIUM"))
         {
             maxReactorVal = medium;
             actionMax = mediumMoveCount;
-            difficulty = "medium";
+            difficulty = "MEDIUM";
         }
-        if (dif.Equals("hard"))
+        if (dif.Equals("HARD"))
         {
             maxReactorVal = hard;
             actionMax = hardMoveCount;
-            difficulty = "hard";
+            difficulty = "HARD";
         }
     }
 

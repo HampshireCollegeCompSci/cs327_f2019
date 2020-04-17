@@ -214,7 +214,7 @@ public class MenuUIScript : MonoBehaviour
     }
     public void HardDifficulty()
     {
-        Config.config.setDifficulty("hard");
+        Config.config.setDifficulty("HARD");
         Config.config.tutorialOn = false;
         Config.config.DeleteSave();
         NewGame();
@@ -222,7 +222,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void MediumDifficulty()
     {
-        Config.config.setDifficulty("medium");
+        Config.config.setDifficulty("MEDIUM");
         Config.config.tutorialOn = false;
         Config.config.DeleteSave();
         NewGame();
@@ -230,7 +230,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void EasyDifficulty()
     {
-        Config.config.setDifficulty("easy");
+        Config.config.setDifficulty("EASY");
         Config.config.tutorialOn = false;
         Config.config.DeleteSave();
         NewGame();
