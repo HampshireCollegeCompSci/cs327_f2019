@@ -201,11 +201,14 @@ public class Config : MonoBehaviour
         gameObject.GetComponent<MusicController>().MainMenuMusic();
     }
 
-    public void GameOver(bool didWin)
+    public void GameOver(bool didWin, bool manualWin = false)
     {
         gameOver = true;
         gameWin = didWin;
-        matchCounter = (byte) (matches.GetComponent<MatchedPileScript>().cardList.Count / 2);
+        
+        if (!manualWin)
+            matchCounter = (byte) (matches.GetComponent<MatchedPileScript>().cardList.Count / 2);
+        
         fadeOutImage.SetActive(true);
         baby = GameObject.Find("SpaceBaby");
 
@@ -378,23 +381,23 @@ public class Config : MonoBehaviour
     }
     public void setDifficulty(string dif)
     {
-        if (dif.Equals("easy"))
+        if (dif.Equals("EASY"))
         {
             maxReactorVal = easy;
             actionMax = easyMoveCount;
-            difficulty = "easy";
+            difficulty = "EASY";
         }
-        if (dif.Equals("medium"))
+        if (dif.Equals("MEDIUM"))
         {
             maxReactorVal = medium;
             actionMax = mediumMoveCount;
-            difficulty = "medium";
+            difficulty = "MEDIUM";
         }
-        if (dif.Equals("hard"))
+        if (dif.Equals("HARD"))
         {
             maxReactorVal = hard;
             actionMax = hardMoveCount;
-            difficulty = "hard";
+            difficulty = "HARD";
         }
     }
 
