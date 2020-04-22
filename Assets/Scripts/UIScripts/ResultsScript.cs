@@ -10,6 +10,8 @@ public class ResultsScript : MonoBehaviour
     public GameObject moves;
 
     public GameObject spaceBaby;
+    public Sprite spaceShipDebris;
+    public GameObject spaceShip;
 
     // Start is called before the first frame update
     void Start()
@@ -30,9 +32,14 @@ public class ResultsScript : MonoBehaviour
         moves.GetComponent<Text>().text = "MOVES: " + Config.config.MoveCounter;
 
         if (Config.config.gameWin)
+        {
             spaceBaby.GetComponent<SpaceBabyController>().BabyWin(Config.config.matchCounter);
+        }
         else
+        {
             spaceBaby.GetComponent<SpaceBabyController>().BabyLose();
+            spaceShip.GetComponent<SpriteRenderer>().sprite = spaceShipDebris;
+        }
 
         UtilsScript.global.SetHighScores();
     }
