@@ -9,10 +9,10 @@ public class SoundController : MonoBehaviour
     public AudioClip buttonPressSound, undoPressSound, pauseButtonSound;
     public AudioClip tokenRevealSound, tokenSelectSoundA, tokenSelectSoundB, tokenSelectSoundC;
     public AudioClip tokenInReactorSound, tokenStackSoundA, tokenStackSoundB, tokenStackSoundC, tokenStackSoundD;
-    public AudioClip tokenMatchSoundA, tokenMatchSoundB, tokenMatchSoundC;
     public AudioClip deckDealSound, deckReshuffleSound;
     public AudioClip winSound, loseSound, alertSound;
     public AudioClip mushroomSound, bugSound, fruitSound, rockSound;
+    public AudioClip explosionSound;
 
     public void ButtonPressSound()
     {
@@ -79,23 +79,6 @@ public class SoundController : MonoBehaviour
         soundController.PlayOneShot(tokenRevealSound);
     }
 
-    public void CardMatchSound()
-    {
-        int randomNo = Random.Range(0, 2);
-        if (randomNo == 0)
-        {
-            soundController.PlayOneShot(tokenMatchSoundA, 0.6f);
-        }
-        else if (randomNo == 1)
-        {
-            soundController.PlayOneShot(tokenMatchSoundB, 0.6f);
-        }
-        else
-        {
-            soundController.PlayOneShot(tokenMatchSoundC, 0.6f);
-        }
-    }
-
     public void DeckDeal()
     {
         Vibration.Vibrate(Config.config.vibrationCard);
@@ -118,6 +101,7 @@ public class SoundController : MonoBehaviour
 
     public void AlertSound()
     {
+        Debug.Log("alert");
         soundController.PlayOneShot(alertSound, 0.3f);
     }
 
@@ -132,6 +116,14 @@ public class SoundController : MonoBehaviour
         soundController.clip = loseSound;
         soundController.Play();
         StartCoroutine(ExplosionVibration());
+    }
+
+    public void ExplosionSound()
+    {
+        Debug.Log("EX");
+        soundController.clip = explosionSound;
+        soundController.Play();
+        Vibration.Vibrate(Config.config.vibrationExplosion);
     }
 
     IEnumerator ExplosionVibration()

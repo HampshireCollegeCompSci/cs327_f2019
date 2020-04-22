@@ -86,7 +86,6 @@ public class SpaceBabyController : MonoBehaviour
     public GameObject foodPrefab;
     IEnumerator EatAnimation(byte matchNumber)
     {
-        Debug.Log(matchNumber);
         List<GameObject> foods = new List<GameObject>();
         Vector3 outOfBounds = new Vector3(3.8f, 0, 0);
         Vector3 babyScale = gameObject.transform.localScale;

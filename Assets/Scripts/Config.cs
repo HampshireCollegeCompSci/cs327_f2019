@@ -201,11 +201,14 @@ public class Config : MonoBehaviour
         gameObject.GetComponent<MusicController>().MainMenuMusic();
     }
 
-    public void GameOver(bool didWin)
+    public void GameOver(bool didWin, bool manualWin = false)
     {
         gameOver = true;
         gameWin = didWin;
-        matchCounter = (byte) (matches.GetComponent<MatchedPileScript>().cardList.Count / 2);
+        
+        if (!manualWin)
+            matchCounter = (byte) (matches.GetComponent<MatchedPileScript>().cardList.Count / 2);
+        
         fadeOutImage.SetActive(true);
         baby = GameObject.Find("SpaceBaby");
 

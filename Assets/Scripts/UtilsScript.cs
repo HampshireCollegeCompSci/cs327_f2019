@@ -782,4 +782,15 @@ public class UtilsScript : MonoBehaviour
     {
         return dragOn;
     }
+
+    public void ManualGameOver()
+    {
+        Config.config.GameOver(true);
+    }
+
+    public void ManualGameWin()
+    {
+        Config.config.matchCounter = 26;
+        Config.config.GameOver(true, manualWin: true);
+    }
 }

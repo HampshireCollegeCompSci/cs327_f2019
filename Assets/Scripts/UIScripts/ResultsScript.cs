@@ -38,9 +38,27 @@ public class ResultsScript : MonoBehaviour
         else
         {
             spaceBaby.GetComponent<SpaceBabyController>().BabyLose();
-            spaceShip.GetComponent<SpriteRenderer>().sprite = spaceShipDebris;
+            SpaceShipExplode();
         }
 
         UtilsScript.global.SetHighScores();
+    }
+
+    private bool exploded = false;
+    public void SpaceShipExplode()
+    {
+        if (exploded)
+            return;
+
+        exploded = true;
+        StartCoroutine(Explode());
+    }
+
+    IEnumerator Explode()
+    {
+        yield return new WaitForSeconds(2);
+        Config.config.GetComponent<SoundController>().ExplosionSound();
+        spaceShip.GetComponent<Image>().sprite = spaceShipDebris;
+        spaceShip.transform.localScale = new Vector3(2, 2, 1);
     }
 }
