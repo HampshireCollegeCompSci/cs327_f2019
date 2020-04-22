@@ -17,7 +17,7 @@ public class ActionCountScript : MonoBehaviour
     public Sprite screenOn, screenAlert;
     public Sprite buttonDown, buttonUp;
     private byte currentState;
-    private Coroutine fader;
+    //private Coroutine fader;
     private Coroutine flasher;
 
     private void Start()
@@ -50,8 +50,8 @@ public class ActionCountScript : MonoBehaviour
 
     public void TurnSirenOff()
     {
-        if (fader != null)
-            StopCoroutine(fader);
+        //if (fader != null)
+            //StopCoroutine(fader);
         if (flasher != null)
             StopCoroutine(flasher);
 
@@ -59,7 +59,7 @@ public class ActionCountScript : MonoBehaviour
         gameTimerImage.sprite = gameTimerOff;
         sirenImage.sprite = sirenOff;
         currentState = 0;
-        fader = null;
+        //fader = null;
         flasher = null;
     }
 
@@ -68,8 +68,8 @@ public class ActionCountScript : MonoBehaviour
         if (currentState == alertLevel)
             return false;
 
-        if (fader != null)
-            StopCoroutine(fader);
+        //if (fader != null)
+            //StopCoroutine(fader);
         if (flasher != null)
             StopCoroutine(flasher);
 
@@ -89,7 +89,7 @@ public class ActionCountScript : MonoBehaviour
             sirenImage.sprite = sirenAlert;
         }
 
-        fader = StartCoroutine(ScreenFade());
+        //fader = StartCoroutine(ScreenFade());
         flasher = StartCoroutine(Flash());
         return true;
     }

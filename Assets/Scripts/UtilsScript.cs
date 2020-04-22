@@ -602,9 +602,14 @@ public class UtilsScript : MonoBehaviour
             return;
         }
         else
+        {
             Config.config.actions += actionUpdate;
+        }
 
         moveCounter.GetComponent<ActionCountScript>().UpdateActionText();
+
+        if (CheckNextCycle())
+            return;
 
         // foundation moves trigger this as they are the only ones that can cause a gameover via winning
         // reactors trigger their own gameovers
@@ -626,8 +631,17 @@ public class UtilsScript : MonoBehaviour
             Alert(false);
         else if (!wasInAlertThreshold && isInAlertThreshold)
             Alert(true);
+    }
 
-        CheckNextCycle();
+    private bool CheckNextCycle()
+    {
+        if (Config.config.actions >= Config.config.actionMax)
+        {
+            Config.config.deck.GetComponent<DeckScript>().StartNextCycle();
+            return true;
+        }
+
+        return false;
     }
 
     private void Alert(bool turnOn, bool checkAgain = false)
@@ -705,12 +719,6 @@ public class UtilsScript : MonoBehaviour
             return true;
         }
         return false;
-    }
-
-    private void CheckNextCycle()
-    {
-        if (Config.config.actions >= Config.config.actionMax)
-            Config.config.deck.GetComponent<DeckScript>().StartNextCycle();
     }
 
     public void SetEndGameScore()
