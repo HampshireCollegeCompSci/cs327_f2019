@@ -757,11 +757,11 @@ public class UtilsScript : MonoBehaviour
             PlayerPrefs.SetInt(difficulty + "HighScore", score);
         }
 
-        if (PlayerPrefs.HasKey(difficulty + "Moves") && MoveCounter < PlayerPrefs.GetInt(difficulty + "Moves"))
+        if (PlayerPrefs.HasKey(difficulty + "Moves") && MoveCounter < PlayerPrefs.GetInt(difficulty + "Moves") && Config.config.gameWin)
         {
             PlayerPrefs.SetInt(difficulty + "Moves", MoveCounter);
         }
-        else if (!PlayerPrefs.HasKey(difficulty + "Moves"))
+        else if (!PlayerPrefs.HasKey(difficulty + "Moves") && Config.config.gameWin)
         {
             PlayerPrefs.SetInt(difficulty + "Moves", MoveCounter);
         }
