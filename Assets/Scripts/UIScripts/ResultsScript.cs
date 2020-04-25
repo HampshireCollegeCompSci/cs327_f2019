@@ -24,10 +24,10 @@ public class ResultsScript : MonoBehaviour
         else
             highScore.GetComponent<Text>().text = "HIGH SCORE " + lastHighScore;
 
-        if (Config.config.MoveCounter < lastLeastMoves)
-            leastMoves.GetComponent<Text>().text = "NEW " + Config.config.difficulty + " LEAST MOVES: " + PlayerPrefs.GetInt(Config.config.difficulty + "Moves");
+        if (Config.config.MoveCounter < lastLeastMoves && Config.config.gameWin)
+            leastMoves.GetComponent<Text>().text = "NEW " + Config.config.difficulty + " BEST MOVES: " + PlayerPrefs.GetInt(Config.config.difficulty + "Moves");
         else
-            leastMoves.GetComponent<Text>().text = "LEAST MOVES: " + lastLeastMoves;
+            leastMoves.GetComponent<Text>().text = "BEST MOVES: " + lastLeastMoves;
 
         moves.GetComponent<Text>().text = "MOVES: " + Config.config.MoveCounter;
 

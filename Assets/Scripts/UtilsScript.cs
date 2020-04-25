@@ -550,7 +550,7 @@ public class UtilsScript : MonoBehaviour
     public void UpdateScore(int addScore)
     {
         Config.config.score += addScore;
-        scoreBox.GetComponent<ScoreScript>().UpdateScore();
+        scoreBox.GetComponent<ScoreScript>().UpdatePauseScore();
     }
 
     public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false, bool startingGame = false, bool isMatch = false)
@@ -757,11 +757,11 @@ public class UtilsScript : MonoBehaviour
             PlayerPrefs.SetInt(difficulty + "HighScore", score);
         }
 
-        if (PlayerPrefs.HasKey(difficulty + "Moves") && MoveCounter < PlayerPrefs.GetInt(difficulty + "Moves"))
+        if (PlayerPrefs.HasKey(difficulty + "Moves") && MoveCounter < PlayerPrefs.GetInt(difficulty + "Moves") && Config.config.gameWin)
         {
             PlayerPrefs.SetInt(difficulty + "Moves", MoveCounter);
         }
-        else if (!PlayerPrefs.HasKey(difficulty + "Moves"))
+        else if (!PlayerPrefs.HasKey(difficulty + "Moves") && Config.config.gameWin)
         {
             PlayerPrefs.SetInt(difficulty + "Moves", MoveCounter);
         }
