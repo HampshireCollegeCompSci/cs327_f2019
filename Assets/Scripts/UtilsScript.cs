@@ -550,7 +550,7 @@ public class UtilsScript : MonoBehaviour
     public void UpdateScore(int addScore)
     {
         Config.config.score += addScore;
-        scoreBox.GetComponent<ScoreScript>().UpdateScore();
+        scoreBox.GetComponent<ScoreScript>().UpdatePauseScore();
     }
 
     public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false, bool startingGame = false, bool isMatch = false)
