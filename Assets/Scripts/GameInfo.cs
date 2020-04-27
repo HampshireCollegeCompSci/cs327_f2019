@@ -43,6 +43,7 @@ public class GameInfo
     public float selectedCardOpacity;
     public float[] cardMoveHighlightColor;
     public float[] cardMatchHighlightColor;
+    public float[] pointColor;
     public string[] gameStateTxtEnglish;
     public string[] menuSceneButtonsTxtEnglish;
     public string loadingSceneTxtEnglish;

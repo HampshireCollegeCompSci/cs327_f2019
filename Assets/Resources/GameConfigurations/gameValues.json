@@ -20,6 +20,7 @@
   "selectedCardOpacity": 0.25,
   "cardMoveHighlightColor": [ 1, 1, 0, 1 ],
   "cardMatchHighlightColor": [ 0, 1, 0, 1 ],
+  "pointColor": [ 0, 1, 0, 1 ],
   "turnAlertSmallThreshold": 10,
   "turnAlertThreshold": 5,
   "vibrationButton": 5,

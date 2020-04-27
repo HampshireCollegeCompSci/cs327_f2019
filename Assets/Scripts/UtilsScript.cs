@@ -442,24 +442,10 @@ public class UtilsScript : MonoBehaviour
 
         Text comboText = matchPointsEffect.transform.GetChild(0).GetComponent<Text>();
         if (Config.config.consecutiveMatches > 1)
-        {
             comboText.text = "X" + Config.config.consecutiveMatches.ToString() + " COMBO";
 
-            Color comboColor;
-            if (Config.config.consecutiveMatches == 2)
-                comboColor = Color.cyan;
-            else if (Config.config.consecutiveMatches == 3)
-                comboColor = Color.blue;
-            else if (Config.config.consecutiveMatches == 4)
-                comboColor = Color.magenta;
-            else if (Config.config.consecutiveMatches == 5)
-                comboColor = Color.red;
-            else
-                comboColor = Color.yellow;
-
-            comboText.color = comboColor;
-            pointText.color = comboColor;
-        }
+        comboText.color = Config.config.pointColor;
+        pointText.color = Config.config.pointColor;
 
         float scale = 1;
         while (scale < 1.5)
@@ -467,9 +453,11 @@ public class UtilsScript : MonoBehaviour
             yield return new WaitForSeconds(0.02f);
             scale += 0.01f;
             matchPointsEffect.transform.localScale = Vector3.one * scale;
+
             if (Config.config.gamePaused)
             {
-                scale = 1.5f;
+                Destroy(matchPointsEffect);
+                yield break;
             }
         }
 
@@ -482,9 +470,11 @@ public class UtilsScript : MonoBehaviour
             fadeColor.a -= 0.05f;
             pointText.color = fadeColor;
             comboText.color = fadeColor;
+
             if (Config.config.gamePaused)
             {
-                fadeColor.a = 0.0f;
+                Destroy(matchPointsEffect);
+                yield break;
             }
         }
 
