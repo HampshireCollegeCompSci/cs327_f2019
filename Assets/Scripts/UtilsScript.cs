@@ -581,7 +581,7 @@ public class UtilsScript : MonoBehaviour
         {
             // check if reactor alerts should be turned off
             if (wasInAlertThreshold)
-                Alert(false, true);
+                Alert(false, true, true);
 
             if (!CheckGameOver()) // if a match didn't win the game
                 StateLoader.saveSystem.writeState();
@@ -590,7 +590,7 @@ public class UtilsScript : MonoBehaviour
         else if (actionUpdate == -1) // a match undo
         {
             if (wasInAlertThreshold)
-                Alert(false, true);
+                Alert(false, true, true);
             StateLoader.saveSystem.writeState();
             return;
         }
@@ -637,12 +637,13 @@ public class UtilsScript : MonoBehaviour
         return false;
     }
 
-    private void Alert(bool turnOn, bool checkAgain = false)
+    private void Alert(bool turnOnAlert, bool checkAgain = false, bool matchRelated = false)
     {
-        bool alertTurnedOn = false;
+        bool highAlertTurnedOn = false;
 
-        // if we are checking again to see if anything has changed since the last move
-        if (turnOn || checkAgain)
+        // if turning on the alert for the first time
+        // or checking again if the previous move changed something
+        if (turnOnAlert || checkAgain)
         {
             foreach (GameObject reactor in Config.config.reactors)
             {
@@ -651,15 +652,13 @@ public class UtilsScript : MonoBehaviour
                     reactor.GetComponent<ReactorScript>().GetIncreaseOnNextCycle() >= Config.config.maxReactorVal)
                 {
                     reactor.GetComponent<ReactorScript>().AlertOn();
-                    alertTurnedOn = true;
+                    highAlertTurnedOn = true;
                 }
-                // try turning the glow off just in case if it already on
-                else if (checkAgain)
+                else if (checkAgain) // try turning the glow off just in case if it already on
                     reactor.GetComponent<ReactorScript>().AlertOff();
             }
         }
-        // we are done with the alert
-        else
+        else // we are done with the alert
         {
             Config.config.GetComponent<MusicController>().GameMusic();
 
@@ -667,39 +666,38 @@ public class UtilsScript : MonoBehaviour
                 reactor.GetComponent<ReactorScript>().AlertOff();
         }
 
-        // if the alert was turned on during this check
-        if (alertTurnedOn)
-        {
-            // if the alert was not already turned on, turn it on and play the sound
-            if (moveCounter.GetComponent<ActionCountScript>().TurnSirenOn(2))
-            {
-                baby.GetComponent<SpaceBabyController>().BabyAngryAnim();
-            }
-            else if (Config.config.actionMax - Config.config.actions == 1)
-            {
-                baby.GetComponent<SpaceBabyController>().BabyAngryAnim();
-                soundController.AlertSound();
-            }
-        }
-        // if the action counter is low
-        else if (turnOn || checkAgain)
-        {
-            if (!moveCounter.GetComponent<ActionCountScript>().TurnSirenOn(1) &&
-                Config.config.actionMax - Config.config.actions == 1)
-            {
-                soundController.AlertSound();
-            }
-        }
-        // the action counter is not low so turn stuff off
-        else
-        {
-            moveCounter.GetComponent<ActionCountScript>().TurnSirenOff();
-        }
+        Debug.Log(turnOnAlert + " " + highAlertTurnedOn);
 
-        if (turnOn)
+        if (turnOnAlert)
         {
             soundController.AlertSound();
             Config.config.GetComponent<MusicController>().AlertMusic();
+        }
+        // if there is one move left
+        else if (checkAgain && !matchRelated && Config.config.actionMax - Config.config.actions == 1)
+        {
+            soundController.AlertSound();
+        }
+
+
+        if (highAlertTurnedOn) // if the high alert was turned on during this check
+        {
+            // if the alert was not already on turn it on
+            // or if the alert is already on and there is only 1 move left,
+            // have the baby be angry and play the alert sound
+            if (moveCounter.GetComponent<ActionCountScript>().TurnSirenOn(2) ||
+                (!matchRelated && Config.config.actionMax - Config.config.actions == 1))
+            {
+                baby.GetComponent<SpaceBabyController>().BabyAngryAnim();
+            }
+        }
+        else if (turnOnAlert || checkAgain)
+        {
+            moveCounter.GetComponent<ActionCountScript>().TurnSirenOn(1);
+        }
+        else // the action counter is not low so turn stuff off
+        {
+            moveCounter.GetComponent<ActionCountScript>().TurnSirenOff();
         }
     }
 
