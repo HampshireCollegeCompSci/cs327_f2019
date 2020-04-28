@@ -25,7 +25,7 @@ public class ScoreScript : MonoBehaviour
 
     public void UpdateScore()
     {
-        gameScore.text = "Score " + Config.config.score.ToString();
+        gameScore.text = "SCORE " + Config.config.score.ToString();
     }
 
     public void UpdatePauseScore()
