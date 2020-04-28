@@ -332,7 +332,6 @@ public class UtilsScript : MonoBehaviour
             else if (foundationIsGlowing && hoveringOver.CompareTag("Foundation") &&
                 hoveringOver.GetComponent<FoundationScript>().IsGlowing())
             {
-                Debug.Log("hover");
                 selectedCardsCopy[selectedCardsCopy.Count - 1].GetComponent<CardScript>().ChangeHologram(hoveringOver.GetComponent<FoundationScript>().GetGlowColor());
                 changedHologramColor = true;
             }
@@ -537,9 +536,13 @@ public class UtilsScript : MonoBehaviour
         throw new System.ArgumentException("suitObject must have a suit variable");
     }
 
-    public void UpdateScore(int addScore)
+    public void UpdateScore(int addScore, bool setAsValue = false)
     {
-        Config.config.score += addScore;
+        if (setAsValue)
+            Config.config.score = addScore;
+        else
+            Config.config.score += addScore;
+
         scoreBox.GetComponent<ScoreScript>().UpdatePauseScore();
     }
 

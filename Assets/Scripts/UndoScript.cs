@@ -29,7 +29,7 @@ public class UndoScript : MonoBehaviour
     /*
      *logMove takes a number of  paramaters, detects if the card below the moved card was hidden, then logs the move.
      */
-    public void logMove(string moveType, GameObject card, bool isAction = true, int actionsRemaining = 1, bool nextCardWasHidden = false)
+    public void logMove(string moveType, GameObject card, bool isAction = true, bool nextCardWasHidden = false)
     {
         GameObject origin = card.GetComponent<CardScript>().container; //get the cards original location
 
@@ -41,11 +41,20 @@ public class UndoScript : MonoBehaviour
             origin = origin,
             nextCardWasHidden = nextCardWasHidden,
             isAction = isAction,
-            remainingActions = actionsRemaining,
+            remainingActions = Config.config.actions,
+            score = Config.config.score,
             moveNum = Config.config.MoveCounter,
         };
         moveLog.Push(move); //push the log to the undo stack
         return;
+    }
+
+    private void MoveFoundationCard(Move toMove)
+    {
+        if (toMove.nextCardWasHidden)
+            toMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
+
+        toMove.card.GetComponent<CardScript>().MoveCard(toMove.origin, doLog: false);
     }
 
     /*
@@ -90,10 +99,8 @@ public class UndoScript : MonoBehaviour
             else if (moveLog.Peek().moveType == "move") //standard behavior, move a single token back where it was
             {
                 lastMove = moveLog.Pop();
-                if (lastMove.nextCardWasHidden)
-                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
+                MoveFoundationCard(lastMove);
 
-                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
                 if (lastMove.isAction)
                     utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
 
@@ -101,28 +108,22 @@ public class UndoScript : MonoBehaviour
             }
             else if (moveLog.Peek().moveType == "match") //undo a match, removing the score gained and moving both cards back to their original locations
             {
-                for (int i = 0; i < 2; i++)
-                {
-                    lastMove = moveLog.Pop();
-                    if (lastMove.nextCardWasHidden)
-                        lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
+                MoveFoundationCard(moveLog.Pop());
 
-                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
-                }
+                lastMove = moveLog.Pop();
+                MoveFoundationCard(lastMove);
 
-                utils.UpdateScore(-Config.config.matchPoints);
+                utils.UpdateScore(lastMove.score, setAsValue: true);
                 utils.UpdateActions(-1);
                 return;
             }
             else if (moveLog.Peek().moveType == "draw") //move the last three drawn cards back to the deck (assuming the last action was to draw from the deck)
             {
-                int moveNum = moveLog.Peek().moveNum;
-                // undos the draw and possibly the deck reset as well
                 while (true)
                 {
                     lastMove = moveLog.Pop();
 
-                    if (moveLog.Count == 0 || moveLog.Peek().moveNum != moveNum)
+                    if (moveLog.Count == 0 || moveLog.Peek().moveNum != lastMove.moveNum)
                     {
                         lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
                         utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
@@ -135,18 +136,12 @@ public class UndoScript : MonoBehaviour
             else if (moveLog.Peek().moveType == "cycle") //undo a cycle turning over, resets all tokens moved up, along with the move counter
             {
                 lastMove = moveLog.Pop();
-                if (lastMove.nextCardWasHidden)
-                    lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
-
-                lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+                MoveFoundationCard(lastMove);
 
                 while (moveLog.Count != 0 && moveLog.Peek().moveNum == lastMove.moveNum)
                 {
                     lastMove = moveLog.Pop();
-                    if (lastMove.nextCardWasHidden)
-                        lastMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
-
-                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+                    MoveFoundationCard(lastMove);
                 }
 
                 utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
