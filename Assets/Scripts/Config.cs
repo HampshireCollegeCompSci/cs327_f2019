@@ -22,6 +22,7 @@ public class Config : MonoBehaviour
     public bool prettyColors;
     public Color cardMoveHighlightColor;
     public Color cardMatchHighlightColor;
+    public Color pointColor;
 
     //score
     public int matchPoints;
@@ -296,6 +297,11 @@ public class Config : MonoBehaviour
                                            gameInfo.cardMatchHighlightColor[1],
                                            gameInfo.cardMatchHighlightColor[2],
                                            gameInfo.cardMatchHighlightColor[3]);
+        pointColor = new Color(gameInfo.pointColor[0],
+                               gameInfo.pointColor[1],
+                               gameInfo.pointColor[2],
+                               gameInfo.pointColor[3]);
+
         turnAlertSmallThreshold = gameInfo.turnAlertSmallThreshold;
         turnAlertThreshold = gameInfo.turnAlertThreshold;
 

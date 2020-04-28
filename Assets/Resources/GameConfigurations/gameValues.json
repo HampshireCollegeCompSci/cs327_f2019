@@ -20,6 +20,7 @@
   "selectedCardOpacity": 0.25,
   "cardMoveHighlightColor": [ 1, 1, 0, 1 ],
   "cardMatchHighlightColor": [ 0, 1, 0, 1 ],
+  "pointColor": [ 0, 1, 0, 1 ],
   "turnAlertSmallThreshold": 10,
   "turnAlertThreshold": 5,
   "vibrationButton": 5,
@@ -28,7 +29,7 @@
   "vibrationExplosion": 500,
   "scoreMultiplyer": 50,
 
-  "gameStateTxtEnglish": [ "You Won!", "You Lost..." ],
+  "gameStateTxtEnglish": [ "You Won", "You Lost" ],
   "menuSceneButtonsTxtEnglish": [ "Play", "Tutorial", "Credits" ],
   "loadingSceneTxtEnglish": "Loading",
   "levelSceneButtonsTxtEnglish": [ "Continue", "Easy", "Medium", "Hard", "Return" ],

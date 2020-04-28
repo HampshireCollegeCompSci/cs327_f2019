@@ -81,7 +81,6 @@ public class StateLoader : MonoBehaviour
         gameState.matches = matchList;
 
         //save undo
-        print("attempting to save undo log.");
         List<AltMove> altMoveLog = new List<AltMove>();
         Stack<AltMove> tempMoveLog = new Stack<AltMove>();
         foreach (Move move in UndoScript.undoScript.moveLog)
