@@ -101,7 +101,6 @@ public class SoundController : MonoBehaviour
 
     public void AlertSound()
     {
-        Debug.Log("alert");
         soundController.PlayOneShot(alertSound, 0.3f);
     }
 
@@ -120,7 +119,6 @@ public class SoundController : MonoBehaviour
 
     public void ExplosionSound()
     {
-        Debug.Log("EX");
         soundController.clip = explosionSound;
         soundController.Play();
         Vibration.Vibrate(Config.config.vibrationExplosion);
