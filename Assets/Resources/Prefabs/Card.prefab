@@ -359,21 +359,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   container: {fileID: 0}
-  cardFrontSprite: {fileID: 21300000, guid: d7429ac0871f26d42813ea0e65d2b6b4, type: 3}
-  cardBackSprite: {fileID: 21300000, guid: b2acde3c6f5c55a4298f960e500a2e80, type: 3}
   cardVal: 0
   cardNum: 0
   cardSuit: 
-  hidden: 0
-  originalColor: {r: 0, g: 0, b: 0, a: 0}
-  newColor: {r: 0, g: 0, b: 0, a: 0}
-  glowing: 0
   hologramFood: {fileID: 1869234980773205396}
   hologram: {fileID: 2950253550288827638}
   hologramFoodSprite: {fileID: 0}
   hologramComboSprite: {fileID: 0}
   glow: {fileID: 1699734583824506818}
   number: {fileID: 7555772184302617973}
+  originalColor: {r: 0, g: 0, b: 0, a: 0}
+  cardFrontSprite: {fileID: 21300000, guid: d7429ac0871f26d42813ea0e65d2b6b4, type: 3}
+  cardBackSprite: {fileID: 21300000, guid: b2acde3c6f5c55a4298f960e500a2e80, type: 3}
+  hidden: 0
+  glowing: 0
 --- !u!61 &5589543899514788396
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -398,7 +397,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 9, y: 7}
+  m_Size: {x: 8.5, y: 7}
   m_EdgeRadius: 0
 --- !u!1 &7555772184302617973
 GameObject:
@@ -425,7 +424,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7555772184302617973}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.001}
+  m_LocalPosition: {x: 0, y: -0.1, z: -0.001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5176008346855944175}

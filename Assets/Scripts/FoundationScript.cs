@@ -61,37 +61,18 @@ public class FoundationScript : MonoBehaviour
             {
                 hiddenCards++;
                 if (cardList.Count > 18)
-                {
                     yOffset += 0.01f;
-                }
                 else if (cardList.Count > 12)
-                {
                     yOffset += 0.05f;
-                }
                 else if (cardList.Count > 10)
-                {
                     yOffset += 0.1f;
-                }
                 else
-                {
                     yOffset += 0.2f;
-                }
             }
-            else if (hiddenCards > 0)
-            {
-                if (cardList.Count > 11)
-                {
-                    yOffset += 0.42f;
-                }
-                else
-                {
-                    yOffset += 0.45f;
-                }
-            }
+            else if (hiddenCards != 0 && cardList.Count > 17)
+                yOffset += 0.42f;
             else
-            {
                 yOffset += 0.45f;
-            }
 
             positionCounter++;
         }

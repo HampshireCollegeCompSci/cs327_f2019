@@ -147,6 +147,14 @@ public class DeckScript : MonoBehaviour
             currentCardScript.MoveCard(foundation, doLog: false);
             currentCardScript.SetVisibility(true);
         }
+
+        /*GameObject foundation0 = Config.config.foundations[1];
+        for (int i = 0; i < 12; i++)
+        {
+            currentCardScript = cardList[0].GetComponent<CardScript>();
+            currentCardScript.MoveCard(foundation0, doLog: false);
+            currentCardScript.SetVisibility(true);
+        }*/
     }
 
     public void AddCard(GameObject card)
