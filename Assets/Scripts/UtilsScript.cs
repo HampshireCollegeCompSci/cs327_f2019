@@ -772,7 +772,7 @@ public class UtilsScript : MonoBehaviour
         else if (!isNextCycle)
             inputStopped = setTo;
 
-        Debug.Log(setTo + "->" + inputStopped);
+        //Debug.Log(setTo + "->" + inputStopped);
     }
 
     public bool IsDragging()

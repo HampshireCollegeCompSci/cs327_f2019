@@ -41,6 +41,7 @@ public class GameInfo
     public int mediumMoveCount;
     public int hardMoveCount;
     public float selectedCardOpacity;
+    public float[] cardObstructedColor;
     public float[] cardMoveHighlightColor;
     public float[] cardMatchHighlightColor;
     public float[] pointColor;

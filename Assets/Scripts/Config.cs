@@ -20,6 +20,7 @@ public class Config : MonoBehaviour
     public float draggedTokenOffset;
     public float selectedCardOpacity;
     public bool prettyColors;
+    public Color cardObstructedColor;
     public Color cardMoveHighlightColor;
     public Color cardMatchHighlightColor;
     public Color pointColor;
@@ -279,6 +280,10 @@ public class Config : MonoBehaviour
         levelSceneButtonsTxtEnglish = gameInfo.levelSceneButtonsTxtEnglish;
         pauseSceneButtonsTxtEnglish = gameInfo.pauseSceneButtonsTxtEnglish;
         summarySceneButtonsTxtEnglish = gameInfo.summarySceneButtonsTxtEnglish;
+        cardObstructedColor = new Color(gameInfo.cardObstructedColor[0],
+                                        gameInfo.cardObstructedColor[1],
+                                        gameInfo.cardObstructedColor[2],
+                                        gameInfo.cardObstructedColor[3]);
         cardMoveHighlightColor = new Color(gameInfo.cardMoveHighlightColor[0],
                                            gameInfo.cardMoveHighlightColor[1],
                                            gameInfo.cardMoveHighlightColor[2],

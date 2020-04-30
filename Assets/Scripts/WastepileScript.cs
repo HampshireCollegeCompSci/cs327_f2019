@@ -42,7 +42,10 @@ public class WastepileScript : MonoBehaviour
             DisableScrolling();
 
         if (cardList.Count != 0) // hide the current top tokens hologram now
+        {
             cardList[0].GetComponent<CardScript>().HideHologram();
+            cardList[0].GetComponent<SpriteRenderer>().color = Config.config.cardObstructedColor;
+        }
 
         Vector3 temp = contentRectTransform.anchoredPosition;
 
@@ -56,7 +59,10 @@ public class WastepileScript : MonoBehaviour
 
         // add the new cards
         for (int i = 0; i < cards.Count - 1; i++)
+        {
             cards[i].GetComponent<CardScript>().MoveCard(gameObject, doLog, showHolo: false);
+            cards[i].GetComponent<SpriteRenderer>().color = Config.config.cardObstructedColor;
+        }
 
         cards[cards.Count - 1].GetComponent<CardScript>().MoveCard(gameObject, doLog);
 
@@ -86,6 +92,7 @@ public class WastepileScript : MonoBehaviour
         if (cardList.Count != 0)
         {
             cardList[0].GetComponent<CardScript>().HideHologram();
+            cardList[0].GetComponent<SpriteRenderer>().color = Config.config.cardObstructedColor;
             cardList[0].GetComponent<BoxCollider2D>().enabled = false;
         }
 
@@ -118,12 +125,16 @@ public class WastepileScript : MonoBehaviour
         card.transform.parent = null;
         cardContainers.Remove(parentCardContainer);
 
-        card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.None);
+        CardScript cardScriptPointer = card.GetComponent<CardScript>();
+        card.GetComponent<SpriteRenderer>().color = cardScriptPointer.originalColor;
+        cardScriptPointer.UpdateMaskInteraction(SpriteMaskInteraction.None);
         cardList.Remove(card);
 
         if (showHolo && cardList.Count != 0)
         {
-            cardList[0].GetComponent<CardScript>().ShowHologram();
+            cardScriptPointer = cardList[0].GetComponent<CardScript>();
+            cardScriptPointer.ShowHologram();
+            cardList[0].GetComponent<SpriteRenderer>().color = cardScriptPointer.originalColor;
             cardList[0].GetComponent<BoxCollider2D>().enabled = true;
         }
 
