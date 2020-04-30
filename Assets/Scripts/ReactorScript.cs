@@ -35,7 +35,10 @@ public class ReactorScript : MonoBehaviour
     public void AddCard(GameObject card)
     {
         if (cardList.Count != 0)
+        {
             cardList[0].GetComponent<BoxCollider2D>().enabled = false;
+            cardList[0].GetComponent<SpriteRenderer>().color = Config.config.cardObstructedColor;
+        }
 
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
@@ -48,9 +51,14 @@ public class ReactorScript : MonoBehaviour
 
     public void RemoveCard(GameObject card)
     {
+        card.GetComponent<SpriteRenderer>().color = card.GetComponent<CardScript>().originalColor;
         cardList.Remove(card);
+
         if (cardList.Count != 0)
+        {
             cardList[0].GetComponent<BoxCollider2D>().enabled = true;
+            cardList[0].GetComponent<SpriteRenderer>().color = cardList[0].GetComponent<CardScript>().originalColor;
+        }
 
         SetCardPositions();
         rsss.SetReactorScore();

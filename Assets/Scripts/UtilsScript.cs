@@ -25,7 +25,7 @@ public class UtilsScript : MonoBehaviour
     private GameObject wastePile;
 
     private bool inputStopped = false;
-    public bool isMatching = false;
+    private bool isNextCycle;
 
     private int selectedLayer;
     private int gameplayLayer;
@@ -422,7 +422,9 @@ public class UtilsScript : MonoBehaviour
             comboSR.color = fadeColor;
             if (Config.config.gamePaused)
             {
-                fadeColor.a = 0.0f;
+                Destroy(matchExplosion);
+                Destroy(comboHologram);
+                yield break;
             }
         }
 
@@ -548,10 +550,13 @@ public class UtilsScript : MonoBehaviour
 
     public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false, bool startingGame = false, bool isMatch = false)
     {
-        if (isMatch)
-            Config.config.consecutiveMatches++;
-        else
-            Config.config.consecutiveMatches = 0;
+        if (!startingGame)
+        {
+            if (isMatch)
+                Config.config.consecutiveMatches++;
+            else
+                Config.config.consecutiveMatches = 0;
+        }
 
         // so that a nextcycle trigger doesn't save the state before and after, we only need the after
         bool doSaveState = true;
@@ -560,7 +565,7 @@ public class UtilsScript : MonoBehaviour
         if (startingGame || (!setAsValue && ((Config.config.actions + actionUpdate) >= Config.config.actionMax)))
             doSaveState = false;
         else
-            Config.config.MoveCounter++;
+            Config.config.moveCounter++;
 
         bool wasInAlertThreshold = Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold;
 
@@ -666,18 +671,12 @@ public class UtilsScript : MonoBehaviour
                 reactor.GetComponent<ReactorScript>().AlertOff();
         }
 
-        Debug.Log(turnOnAlert + " " + highAlertTurnedOn);
-
-        if (turnOnAlert)
-        {
-            soundController.AlertSound();
+        if (turnOnAlert || checkAgain)
             Config.config.GetComponent<MusicController>().AlertMusic();
-        }
+
         // if there is one move left
-        else if (checkAgain && !matchRelated && Config.config.actionMax - Config.config.actions == 1)
-        {
+        if (turnOnAlert || (checkAgain && !matchRelated && Config.config.actionMax - Config.config.actions == 1))
             soundController.AlertSound();
-        }
 
 
         if (highAlertTurnedOn) // if the high alert was turned on during this check
@@ -737,7 +736,7 @@ public class UtilsScript : MonoBehaviour
     {
         int score = Config.config.score;
         string difficulty = Config.config.difficulty;
-        int MoveCounter = Config.config.MoveCounter;
+        int MoveCounter = Config.config.moveCounter;
 
         if (PlayerPrefs.HasKey(difficulty + "HighScore") && score > PlayerPrefs.GetInt(difficulty + "HighScore"))
         {
@@ -763,10 +762,17 @@ public class UtilsScript : MonoBehaviour
         return inputStopped;
     }
 
-    public void SetInputStopped(bool setTo)
+    public void SetInputStopped(bool setTo, bool nextCycle = false)
     {
-        if (!isMatching)
+        if (nextCycle)
+            isNextCycle = setTo;
+
+        if (isNextCycle && nextCycle)
             inputStopped = setTo;
+        else if (!isNextCycle)
+            inputStopped = setTo;
+
+        //Debug.Log(setTo + "->" + inputStopped);
     }
 
     public bool IsDragging()

@@ -43,7 +43,7 @@ public class UndoScript : MonoBehaviour
             isAction = isAction,
             remainingActions = Config.config.actions,
             score = Config.config.score,
-            moveNum = Config.config.MoveCounter,
+            moveNum = Config.config.moveCounter,
         };
         moveLog.Push(move); //push the log to the undo stack
         return;

@@ -147,6 +147,14 @@ public class DeckScript : MonoBehaviour
             currentCardScript.MoveCard(foundation, doLog: false);
             currentCardScript.SetVisibility(true);
         }
+
+        /*GameObject foundation0 = Config.config.foundations[1];
+        for (int i = 0; i < 12; i++)
+        {
+            currentCardScript = cardList[0].GetComponent<CardScript>();
+            currentCardScript.MoveCard(foundation0, doLog: false);
+            currentCardScript.SetVisibility(true);
+        }*/
     }
 
     public void AddCard(GameObject card)
@@ -243,7 +251,7 @@ public class DeckScript : MonoBehaviour
     {
         if (!(manuallyTriggered && utils.IsInputStopped())) // stops 2 NextCycles from happening at once
         {
-            utils.SetInputStopped(true);
+            utils.SetInputStopped(true, nextCycle: true);
             StartCoroutine(NextCycle());
         }
     }
@@ -305,7 +313,7 @@ public class DeckScript : MonoBehaviour
 
                         if (Config.config.gameOver)
                         {
-                            Config.config.MoveCounter += 1;
+                            Config.config.moveCounter += 1;
                             yield break;
                         }
 
@@ -315,7 +323,7 @@ public class DeckScript : MonoBehaviour
             }
         }
 
-        utils.SetInputStopped(false);
+        utils.SetInputStopped(false, nextCycle: true);
         utils.UpdateActions(0, setAsValue: true);
     }
 

@@ -20,6 +20,7 @@ public class Config : MonoBehaviour
     public float draggedTokenOffset;
     public float selectedCardOpacity;
     public bool prettyColors;
+    public Color cardObstructedColor;
     public Color cardMoveHighlightColor;
     public Color cardMatchHighlightColor;
     public Color pointColor;
@@ -98,7 +99,7 @@ public class Config : MonoBehaviour
     public int turnAlertSmallThreshold;
     public int turnAlertThreshold;
 
-    public int consecutiveMatches;
+    public byte consecutiveMatches;
     public int scoreMultiplier;
 
     //button txt
@@ -117,18 +118,8 @@ public class Config : MonoBehaviour
 
     //long term tracking
     //public int moves;
-    private int moveCounter;
+    public int moveCounter;
     public byte matchCounter;
-
-    public int MoveCounter   // property
-    {
-        get { return moveCounter; }
-        set {
-            moveCounter = value;
-            //Debug.Log(moveCounter);
-        }
-    }
-
 
     private void Awake()
     {
@@ -289,6 +280,10 @@ public class Config : MonoBehaviour
         levelSceneButtonsTxtEnglish = gameInfo.levelSceneButtonsTxtEnglish;
         pauseSceneButtonsTxtEnglish = gameInfo.pauseSceneButtonsTxtEnglish;
         summarySceneButtonsTxtEnglish = gameInfo.summarySceneButtonsTxtEnglish;
+        cardObstructedColor = new Color(gameInfo.cardObstructedColor[0],
+                                        gameInfo.cardObstructedColor[1],
+                                        gameInfo.cardObstructedColor[2],
+                                        gameInfo.cardObstructedColor[3]);
         cardMoveHighlightColor = new Color(gameInfo.cardMoveHighlightColor[0],
                                            gameInfo.cardMoveHighlightColor[1],
                                            gameInfo.cardMoveHighlightColor[2],

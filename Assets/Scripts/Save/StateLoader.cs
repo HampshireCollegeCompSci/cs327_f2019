@@ -30,6 +30,8 @@ public class StateLoader : MonoBehaviour
             reactors = new List<StringListWrapper>(),
             moveLog = new List<AltMove>(),
             score = 0,
+            consecutiveMatches = 0,
+            moveCounter = 0,
             actions = 0,
             difficulty = ""
         };
@@ -98,6 +100,7 @@ public class StateLoader : MonoBehaviour
                 nextCardWasHidden = move.nextCardWasHidden,
                 isAction = move.isAction,
                 remainingActions = move.remainingActions,
+                score = move.score,
                 moveNum = move.moveNum
             });
         }
@@ -109,6 +112,8 @@ public class StateLoader : MonoBehaviour
         gameState.moveLog = altMoveLog;
         //save other data
         gameState.score = Config.config.score;
+        gameState.consecutiveMatches = Config.config.consecutiveMatches;
+        gameState.moveCounter = Config.config.moveCounter;
         gameState.actions = Config.config.actions;
         gameState.difficulty = Config.config.difficulty;
 
@@ -287,17 +292,18 @@ public class StateLoader : MonoBehaviour
             tempMove.moveType = a.moveType;
             tempMove.nextCardWasHidden = a.nextCardWasHidden;
             tempMove.remainingActions = a.remainingActions;
+            tempMove.score = a.score;
             tempMove.moveNum = a.moveNum;
             UndoScript.undoScript.moveLog.Push(tempMove);
         }
 
         //set up simple variables
-        print("actions taken: " + state.actions);
-        print("max actions: " + Config.config.actionMax);
+        //print("actions taken: " + state.actions);
+        //print("max actions: " + Config.config.actionMax);
         Config.config.difficulty = state.difficulty;
         Config.config.score = state.score;
-        if (tempMove != null)
-            Config.config.MoveCounter = tempMove.moveNum + 1;
+        Config.config.consecutiveMatches = state.consecutiveMatches;
+        Config.config.moveCounter = state.moveCounter;
         UtilsScript.global.UpdateActions(state.actions, startingGame: true);
     }
        
@@ -312,7 +318,6 @@ public class StateLoader : MonoBehaviour
         else if (Application.isEditor)
         {
             var jsonTextFile = Resources.Load<TextAsset>(path);
-            print(jsonTextFile);
             return JsonUtility.FromJson<GameState>(jsonTextFile.ToString());
         } else
         {
