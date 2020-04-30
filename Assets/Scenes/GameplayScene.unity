@@ -2038,8 +2038,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 266, y: 243.19}
-  m_SizeDelta: {x: -643.3, y: -1265.6}
+  m_AnchoredPosition: {x: 260.69, y: 272.9}
+  m_SizeDelta: {x: -634.08, y: -1256.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &612237310
 MonoBehaviour:
@@ -4176,8 +4176,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.24125001, y: 0.6297634}
   m_AnchorMax: {x: 0.42125002, y: 0.72650087}
-  m_AnchoredPosition: {x: -0.000030517578, y: 10.799988}
-  m_SizeDelta: {x: 0, y: 12.8}
+  m_AnchoredPosition: {x: 11.45, y: 10.9}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1489602704
 MonoBehaviour:
@@ -4321,8 +4321,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -267, y: 243.49}
-  m_SizeDelta: {x: -648, y: -1265}
+  m_AnchoredPosition: {x: -260, y: 273.21997}
+  m_SizeDelta: {x: -639.06, y: -1255.76}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1489801183
 MonoBehaviour:
@@ -4852,7 +4852,6 @@ MonoBehaviour:
   moveCounter: {fileID: 338821812}
   soundController: {fileID: 307181958}
   indexCounter: 0
-  isMatching: 0
   baby: {fileID: 1616627633}
   matchPoints: 200
   emptyReactorPoints: 1000
