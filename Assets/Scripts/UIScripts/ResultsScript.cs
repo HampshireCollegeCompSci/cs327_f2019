@@ -26,7 +26,7 @@ public class ResultsScript : MonoBehaviour
             highScore.GetComponent<Text>().color = Color.cyan;
         }
         else
-            highScore.GetComponent<Text>().text = "HIGH SCORE " + lastHighScore;
+            highScore.GetComponent<Text>().text = Config.config.difficulty + "HIGH SCORE " + lastHighScore;
 
         if (Config.config.gameWin && Config.config.moveCounter < lastLeastMoves)
         {
@@ -35,7 +35,7 @@ public class ResultsScript : MonoBehaviour
             leastMoves.GetComponent<Text>().color = Color.cyan;
         }
         else
-            leastMoves.GetComponent<Text>().text = "BEST MOVES " + lastLeastMoves;
+            leastMoves.GetComponent<Text>().text = Config.config.difficulty + "BEST MOVES " + lastLeastMoves;
 
         moves.GetComponent<Text>().text = "MOVES " + Config.config.moveCounter;
 
