@@ -16,7 +16,7 @@ public class UtilsScript : MonoBehaviour
 
     public GameObject errorImage;
     public GameObject gameUI;
-    public GameObject scoreBox;
+    public Text score;
     public GameObject moveCounter;
     public SoundController soundController;
     public int indexCounter;
@@ -545,7 +545,7 @@ public class UtilsScript : MonoBehaviour
         else
             Config.config.score += addScore;
 
-        scoreBox.GetComponent<ScoreScript>().UpdatePauseScore();
+        score.text = Config.config.score.ToString();
     }
 
     public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false, bool startingGame = false, bool isMatch = false)
