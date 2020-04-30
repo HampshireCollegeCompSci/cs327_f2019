@@ -98,7 +98,7 @@ public class Config : MonoBehaviour
     public int turnAlertSmallThreshold;
     public int turnAlertThreshold;
 
-    public int consecutiveMatches;
+    public byte consecutiveMatches;
     public int scoreMultiplier;
 
     //button txt
@@ -117,18 +117,8 @@ public class Config : MonoBehaviour
 
     //long term tracking
     //public int moves;
-    private int moveCounter;
+    public int moveCounter;
     public byte matchCounter;
-
-    public int MoveCounter   // property
-    {
-        get { return moveCounter; }
-        set {
-            moveCounter = value;
-            //Debug.Log(moveCounter);
-        }
-    }
-
 
     private void Awake()
     {

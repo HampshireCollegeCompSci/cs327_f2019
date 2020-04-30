@@ -305,7 +305,7 @@ public class DeckScript : MonoBehaviour
 
                         if (Config.config.gameOver)
                         {
-                            Config.config.MoveCounter += 1;
+                            Config.config.moveCounter += 1;
                             yield break;
                         }
 
