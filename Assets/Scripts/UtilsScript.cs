@@ -25,7 +25,7 @@ public class UtilsScript : MonoBehaviour
     private GameObject wastePile;
 
     private bool inputStopped = false;
-    public bool isMatching = false;
+    private bool isNextCycle;
 
     private int selectedLayer;
     private int gameplayLayer;
@@ -422,7 +422,9 @@ public class UtilsScript : MonoBehaviour
             comboSR.color = fadeColor;
             if (Config.config.gamePaused)
             {
-                fadeColor.a = 0.0f;
+                Destroy(matchExplosion);
+                Destroy(comboHologram);
+                yield break;
             }
         }
 
@@ -760,10 +762,17 @@ public class UtilsScript : MonoBehaviour
         return inputStopped;
     }
 
-    public void SetInputStopped(bool setTo)
+    public void SetInputStopped(bool setTo, bool nextCycle = false)
     {
-        if (!isMatching)
+        if (nextCycle)
+            isNextCycle = setTo;
+
+        if (isNextCycle && nextCycle)
             inputStopped = setTo;
+        else if (!isNextCycle)
+            inputStopped = setTo;
+
+        Debug.Log(setTo + "->" + inputStopped);
     }
 
     public bool IsDragging()

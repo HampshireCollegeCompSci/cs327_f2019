@@ -212,14 +212,13 @@ public class WastepileScript : MonoBehaviour
         {
             card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.None);
             scrollRect.horizontal = false;
+            scrollRect.horizontalScrollbar.interactable = false;
         }
-        else
+        else if (card.GetComponent<CardScript>().container == this.gameObject)
         {
-            if (!utils.isMatching && card.GetComponent<CardScript>().container == this.gameObject)
-            {
-                card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.VisibleInsideMask);
-                scrollRect.horizontal = true;
-            }
+            card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.VisibleInsideMask);
+            scrollRect.horizontal = true;
+            scrollRect.horizontalScrollbar.interactable = true;
         }
     }
 

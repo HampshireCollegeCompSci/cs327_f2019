@@ -243,7 +243,7 @@ public class DeckScript : MonoBehaviour
     {
         if (!(manuallyTriggered && utils.IsInputStopped())) // stops 2 NextCycles from happening at once
         {
-            utils.SetInputStopped(true);
+            utils.SetInputStopped(true, nextCycle: true);
             StartCoroutine(NextCycle());
         }
     }
@@ -315,7 +315,7 @@ public class DeckScript : MonoBehaviour
             }
         }
 
-        utils.SetInputStopped(false);
+        utils.SetInputStopped(false, nextCycle: true);
         utils.UpdateActions(0, setAsValue: true);
     }
 
