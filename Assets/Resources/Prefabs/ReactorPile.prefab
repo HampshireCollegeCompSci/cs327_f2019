@@ -126,10 +126,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4fd65a0211dd4ed3a122d927e9bf66f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardList: []
-  utils: {fileID: 0}
   gameUI: {fileID: 0}
-  soundController: {fileID: 0}
+  cardList: []
   suit: 
   suitGlow: {fileID: 810047309885786345}
   glow: {fileID: 21300000, guid: ed7404c9ac20125458ce6656e4a88907, type: 3}

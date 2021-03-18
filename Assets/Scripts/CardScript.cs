@@ -11,10 +11,10 @@ public class CardScript : MonoBehaviour
     public int cardNum; //cardNum is the number on the card, ace is 1 jack is 11 queen is 12 king is 13
     public string cardSuit;
 
+    public GameObject suitObject, rankObject;
     public GameObject hologramFood, hologram;
     public Sprite hologramFoodSprite, hologramComboSprite;
     public GameObject glow;
-    public GameObject number;
 
     public Color originalColor;
     private Color newColor;
@@ -41,7 +41,8 @@ public class CardScript : MonoBehaviour
         {
             //Debug.Log("showing card" + cardNum + cardSuit);
             gameObject.GetComponent<BoxCollider2D>().enabled = true;
-            number.SetActive(true);
+            suitObject.SetActive(true);
+            rankObject.SetActive(true);
             gameObject.GetComponent<SpriteRenderer>().sprite = cardFrontSprite;
             hidden = false;
         }
@@ -49,7 +50,8 @@ public class CardScript : MonoBehaviour
         {
             //Debug.Log("hiding card" + cardNum + cardSuit);
             gameObject.GetComponent<BoxCollider2D>().enabled = false;
-            number.SetActive(false);
+            suitObject.SetActive(false);
+            rankObject.SetActive(false);
             gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
             HideHologram();
             hidden = true;
@@ -69,14 +71,24 @@ public class CardScript : MonoBehaviour
             newColor = gameObject.GetComponent<SpriteRenderer>().material.color;
             newColor.a = Config.config.selectedCardOpacity;
             gameObject.GetComponent<SpriteRenderer>().material.color = newColor;
-            number.GetComponent<SpriteRenderer>().material.color = newColor;
+            suitObject.GetComponent<SpriteRenderer>().material.color = newColor;
+
+            Color rankColor = rankObject.GetComponent<TextMesh>().color;
+            rankColor.a = Config.config.selectedCardOpacity;
+            rankObject.GetComponent<TextMesh>().color = rankColor;
+
             hologram.GetComponent<SpriteRenderer>().color = newColor;
             hologramFood.GetComponent<SpriteRenderer>().color = newColor;
         }
         else
         {
             gameObject.GetComponent<SpriteRenderer>().material.color = originalColor;
-            number.GetComponent<SpriteRenderer>().material.color = originalColor;
+            suitObject.GetComponent<SpriteRenderer>().material.color = originalColor;
+
+            Color rankColor = rankObject.GetComponent<TextMesh>().color;
+            rankColor.a = 1;
+            rankObject.GetComponent<TextMesh>().color = rankColor;
+
             hologram.GetComponent<SpriteRenderer>().color = originalColor;
             hologramFood.GetComponent<SpriteRenderer>().color = originalColor;
         }
@@ -85,7 +97,7 @@ public class CardScript : MonoBehaviour
     public void UpdateMaskInteraction(SpriteMaskInteraction update)
     {
         gameObject.GetComponent<SpriteRenderer>().maskInteraction = update;
-        number.GetComponent<SpriteRenderer>().maskInteraction = update;
+        suitObject.GetComponent<SpriteRenderer>().maskInteraction = update;
         if (hologram != null && hologramFood != null)
         {
             hologram.GetComponent<SpriteRenderer>().maskInteraction = update;
@@ -103,7 +115,8 @@ public class CardScript : MonoBehaviour
             selectedLayer = SortingLayer.NameToID("SelectedCards");
 
         gameObject.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
-        number.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
+        suitObject.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
+        rankObject.GetComponent<MeshRenderer>().sortingLayerID = selectedLayer;
         hologram.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
         hologramFood.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
         gameObject.GetComponent<BoxCollider2D>().enabled = false;

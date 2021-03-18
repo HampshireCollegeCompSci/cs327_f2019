@@ -13,13 +13,12 @@ public class DeckScript : MonoBehaviour
     public GameObject wastePile;
     private WastepileScript wastePileScript;
 
-    public GameObject myPrefab;
-    public Sprite[] sprites;
+    public GameObject cardPrefab;
+    public Sprite[] suitSprites;
     public Sprite[] holograms;
     public Sprite[] combinedHolograms;
 
     public List<GameObject> cardList;
-    private String[] suits;
 
     private Image buttonImage;
     public Sprite[] buttonAnimation;
@@ -73,28 +72,44 @@ public class DeckScript : MonoBehaviour
     // sets up card list
     public void InstantiateCards(GameObject target)
     {
-        suits = new String[4] { "clubs", "spades", "hearts", "diamonds" };
+        string[] suitStrings = new string[] { "clubs", "spades", "hearts", "diamonds" };
 
         GameObject newCard;
         CardScript newCardScript;
 
         // order: club ace, 2, 3... 10, jack, queen, king, spades... hearts... diamonds
         int cardIndex = 0; // 1 - 52
-        int hFSIndex;
-        int num;
+        int hFSIndex; // used for assigning holograms
+        int rank;
+        Color rankColor = Color.black;
         for (int suit = 0; suit < 4; suit++) // order: club, spades, hearts, diamonds
         {
+            if (suit == 2)
+                rankColor = Color.red;
+
             hFSIndex = suit * 5;
-            for (num = 1; num < 14; num++) // card num: 1 - 13
+
+            for (rank = 1; rank < 14; rank++) // card num: 1 - 13
             {
-                newCard = Instantiate(myPrefab);
+                newCard = Instantiate(cardPrefab);
                 newCardScript = newCard.GetComponent<CardScript>();
 
-                if (num < 10)
+                // setting up the cards reactor value, in-game appearance, and hologram sprites
+                if (rank < 10)
                 {
-                    newCardScript.cardVal = num;
+                    // reactor value
+                    newCardScript.cardVal = rank;
+
+                    // in-game appearance of the card's rank
+                    if (rank == 1)
+                        newCardScript.rankObject.GetComponent<TextMesh>().text = "A";
+                    else
+                        newCardScript.rankObject.GetComponent<TextMesh>().text = rank.ToString();
+
+                    // basic hologram shown
                     newCardScript.hologramFoodSprite = holograms[hFSIndex];
 
+                    // hologram shown during match
                     if (suit < 2)
                         newCardScript.hologramComboSprite = combinedHolograms[0];
                     else
@@ -102,23 +117,48 @@ public class DeckScript : MonoBehaviour
                 }
                 else
                 {
-                    // all face cards have a value of 10
+                    // reactor value, all face cards have a value of 10
                     newCardScript.cardVal = 10;
-                    newCardScript.hologramFoodSprite = holograms[num - (9 - hFSIndex)];
-                    
-                    if (suit < 2)
-                        newCardScript.hologramComboSprite = combinedHolograms[num - 9];
+
+                    // in-game appearance of the card's rank
+                    if (rank == 10)
+                        newCardScript.rankObject.GetComponent<TextMesh>().text = "10";
+                    else if (rank == 11)
+                        newCardScript.rankObject.GetComponent<TextMesh>().text = "J";
+                    else if (rank == 12)
+                        newCardScript.rankObject.GetComponent<TextMesh>().text = "Q";
                     else
-                        newCardScript.hologramComboSprite = combinedHolograms[num - 4];
+                        newCardScript.rankObject.GetComponent<TextMesh>().text = "K";
+
+                    // all cards >10 have fancy holograms, this is a complex way of assigning them
+                    newCardScript.hologramFoodSprite = holograms[rank - (9 - hFSIndex)];
+
+                    // cards >10 have fancy holograms for matching as well
+                    if (suit < 2)
+                        newCardScript.hologramComboSprite = combinedHolograms[rank - 9];
+                    else
+                        newCardScript.hologramComboSprite = combinedHolograms[rank - 4];
                 }
 
-                newCardScript.cardNum = num;
-                newCardScript.cardSuit = suits[suit];
+                // setting up the cards internal rank and suit
+                newCardScript.cardNum = rank;
+                newCardScript.cardSuit = suitStrings[suit];
 
-                newCardScript.number.GetComponent<SpriteRenderer>().sprite = sprites[cardIndex];
+                // setting up the text renderer's sorting layer and order because you can't do it via Unity's Inspector
+                newCardScript.rankObject.GetComponent<MeshRenderer>().sortingLayerName = "Gameplay";
+                newCardScript.rankObject.GetComponent<MeshRenderer>().sortingOrder = 1;
+
+                // setting up the in-game appearance of the card's rank color
+                newCardScript.rankObject.GetComponent<TextMesh>().color = rankColor;
+
+                // setting up the in-game appearance of the card's suit
+                newCardScript.suitObject.GetComponent<SpriteRenderer>().sprite = suitSprites[suit];
+
+                // forgot if this is necessary, nothing is broken atm so i'm leaving it
                 newCardScript.SetVisibility(true);
+
+                // moving card to desired location
                 newCardScript.container = target;
-                
                 if (target.CompareTag("Deck"))
                     AddCard(newCard);
                 else if (target.CompareTag("LoadPile"))
@@ -278,7 +318,8 @@ public class DeckScript : MonoBehaviour
                     {
                         topCardScript.HideHologram();
                         topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
-                        topCardScript.number.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
+                        topCardScript.suitObject.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
+                        topCardScript.rankObject.GetComponent<MeshRenderer>().sortingLayerName = "SelectedCards";
 
                         Vector3 target = reactor.transform.position;
                         int cardCount = reactor.GetComponent<ReactorScript>().cardList.Count;
@@ -307,7 +348,9 @@ public class DeckScript : MonoBehaviour
                         }
 
                         topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
-                        topCardScript.number.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
+                        topCardScript.suitObject.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
+                        topCardScript.rankObject.GetComponent<MeshRenderer>().sortingLayerName = "Gameplay";
+
                         soundController.CardToReactorSound();
                         topCardScript.MoveCard(reactor, isCycle: true);
 
