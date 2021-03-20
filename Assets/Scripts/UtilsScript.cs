@@ -22,13 +22,10 @@ public class UtilsScript : MonoBehaviour
     public int indexCounter;
     private bool dragOn;
     private bool draggingWastepile = false;
-    private GameObject wastePile;
+    public GameObject wastePile;
 
     private bool inputStopped = false;
     private bool isNextCycle;
-
-    private int selectedLayer;
-    private int gameplayLayer;
 
     public GameObject baby;
     public int matchPoints;
@@ -43,17 +40,6 @@ public class UtilsScript : MonoBehaviour
     private bool moveTokensAreGlowing;
     private bool reactorIsGlowing;
     private bool foundationIsGlowing;
-
-    public void SetCards()
-    {
-        matchedPile = GameObject.Find("MatchedPile");
-        gameUI = GameObject.Find("GameUI");
-        soundController = GameObject.Find("Sound").GetComponent<SoundController>();
-        wastePile = GameObject.Find("Scroll View");
-        selectedLayer = SortingLayer.NameToID("SelectedCards");
-        gameplayLayer = SortingLayer.NameToID("Gameplay");
-        baby = GameObject.Find("SpaceBaby");
-    }
 
     void Awake()
     {
@@ -71,7 +57,6 @@ public class UtilsScript : MonoBehaviour
     void Start()
     {
         selectedCardsCopy = new List<GameObject>();
-        baby = GameObject.FindWithTag("Baby");
         matchPoints = Config.config.matchPoints;
         emptyReactorPoints = Config.config.emptyReactorPoints;
         PerfectGamePoints = Config.config.perfectGamePoints;
