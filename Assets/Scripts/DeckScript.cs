@@ -14,7 +14,7 @@ public class DeckScript : MonoBehaviour
     private WastepileScript wastePileScript;
 
     public GameObject cardPrefab;
-    public Sprite[] suitSprites;
+    private Sprite[] suitSprites;
     public Sprite[] holograms;
     public Sprite[] combinedHolograms;
 
@@ -39,12 +39,13 @@ public class DeckScript : MonoBehaviour
         }
     }
 
-    public void DeckStart()
+    public void DeckStart(Sprite[] suitSprites)
     {
         utils = UtilsScript.global;
         wastePileScript = wastePile.GetComponent<WastepileScript>();
         buttonImage = gameObject.GetComponent<Image>();
 
+        this.suitSprites = suitSprites;
         cardList = new List<GameObject>();
         if ((File.Exists("Assets/Resources/GameStates/testState.json") && Application.isEditor) || Config.config.tutorialOn)
         {

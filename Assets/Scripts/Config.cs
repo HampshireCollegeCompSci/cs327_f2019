@@ -25,6 +25,9 @@ public class Config : MonoBehaviour
     public Color cardMatchHighlightColor;
     public Color pointColor;
 
+    //Suits
+    public byte suitsToUseStartIndex;
+
     //score
     public int matchPoints;
     public int emptyReactorPoints;
@@ -255,6 +258,7 @@ public class Config : MonoBehaviour
 
     public void ConfigFromJSON()
     {
+        suitsToUseStartIndex = gameInfo.suitsToUseStartIndex;
         foundationStartSize = gameInfo.foundationStartingSize;
         wastepileAnimationSpeedSlow = gameInfo.wastepileAnimationSpeedSlow;
         wastepileAnimationSpeedFast = gameInfo.wastepileAnimationSpeedFast;
@@ -307,7 +311,7 @@ public class Config : MonoBehaviour
         //scoreMultiplier = gameInfo.scoreMultiplyer;
 }
 
-    public void SetCards()
+    public void StartupFindObjects()
     {
         foundation1 = GameObject.Find("Foundation (0)");
         foundation2 = GameObject.Find("Foundation (1)");

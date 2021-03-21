@@ -1,4 +1,5 @@
 {
+  "suitsToUseStartIndex": 4,
   "foundationStartingSize": 7,
   "wastepileAnimationSpeedSlow": 7,
   "wastepileAnimationSpeedFast": 15,
