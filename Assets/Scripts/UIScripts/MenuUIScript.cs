@@ -206,8 +206,8 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI starting tutorial");
 
-        StateLoader.saveSystem.loadTutorialState("GameStates/tutorialState");
-        Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
+        StateLoader.saveSystem.LoadTutorialState("GameStates/tutorialState");
+        Config.config.SetDifficulty(StateLoader.saveSystem.gameState.difficulty);
         Config.config.tutorialOn = true;
         Config.config.DeleteSave();
         NewGame();
@@ -215,7 +215,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void HardDifficulty()
     {
-        Config.config.setDifficulty("HARD");
+        Config.config.SetDifficulty("HARD");
         Config.config.tutorialOn = false;
         Config.config.DeleteSave();
         NewGame();
@@ -223,7 +223,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void MediumDifficulty()
     {
-        Config.config.setDifficulty("MEDIUM");
+        Config.config.SetDifficulty("MEDIUM");
         Config.config.tutorialOn = false;
         Config.config.DeleteSave();
         NewGame();
@@ -231,7 +231,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void EasyDifficulty()
     {
-        Config.config.setDifficulty("EASY");
+        Config.config.SetDifficulty("EASY");
         Config.config.tutorialOn = false;
         Config.config.DeleteSave();
         NewGame();
@@ -251,8 +251,8 @@ public class MenuUIScript : MonoBehaviour
                 #endif
 
 
-                StateLoader.saveSystem.loadState();
-                Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
+                StateLoader.saveSystem.LoadState();
+                Config.config.SetDifficulty(StateLoader.saveSystem.gameState.difficulty);
                 Config.config.tutorialOn = false;
                 NewGame(true);
             }
@@ -261,8 +261,8 @@ public class MenuUIScript : MonoBehaviour
         {
             if (File.Exists(Application.persistentDataPath + "/testState.json"))
             {
-                StateLoader.saveSystem.loadState();
-                Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
+                StateLoader.saveSystem.LoadState();
+                Config.config.SetDifficulty(StateLoader.saveSystem.gameState.difficulty);
                 Config.config.tutorialOn = false;
                 NewGame(true);
             }

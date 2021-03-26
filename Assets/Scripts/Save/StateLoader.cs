@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -7,6 +6,7 @@ public class StateLoader : MonoBehaviour
 {
     public static StateLoader saveSystem;
     public GameState gameState;
+
     private void Awake()
     {
         if (saveSystem == null)
@@ -20,8 +20,10 @@ public class StateLoader : MonoBehaviour
         }
     }
 
-    public void writeState(/*string path*/)
+    public void WriteState(/*string path*/)
     {
+        Debug.Log("writing state");
+
         gameState = new GameState() {
             wastePile = new List<string>(),
             deck = new List<string>(),
@@ -35,6 +37,7 @@ public class StateLoader : MonoBehaviour
             actions = 0,
             difficulty = ""
         };
+
         //save foundations
         foreach (GameObject foundation in Config.config.foundations)
         {
@@ -46,6 +49,7 @@ public class StateLoader : MonoBehaviour
             }
             gameState.foundations.Add(new StringListWrapper() { stringList = tempList });
         }
+
         //save reactors
         foreach (GameObject reactor in Config.config.reactors)
         {
@@ -57,6 +61,7 @@ public class StateLoader : MonoBehaviour
             }
             gameState.reactors.Add(new StringListWrapper() { stringList = tempList });
         }
+
         //save wastepile
         List<string> wastePileList = new List<string>();
         foreach (GameObject token in Config.config.wastePile.GetComponent<WastepileScript>().cardList)
@@ -65,6 +70,7 @@ public class StateLoader : MonoBehaviour
                 + "_" + token.GetComponent<CardScript>().isHidden().ToString());
         }
         gameState.wastePile = wastePileList;
+
         //save deck
         List<string> deckList = new List<string>();
         foreach (GameObject token in Config.config.deck.GetComponent<DeckScript>().cardList)
@@ -73,6 +79,7 @@ public class StateLoader : MonoBehaviour
                 + "_" + token.GetComponent<CardScript>().isHidden().ToString());
         }
         gameState.deck = deckList;
+
         //save matches
         List<string> matchList = new List<string>();
         foreach (GameObject token in Config.config.matches.GetComponent<MatchedPileScript>().cardList)
@@ -83,7 +90,6 @@ public class StateLoader : MonoBehaviour
         gameState.matches = matchList;
 
         //save undo
-        List<AltMove> altMoveLog = new List<AltMove>();
         Stack<AltMove> tempMoveLog = new Stack<AltMove>();
         foreach (Move move in UndoScript.undoScript.moveLog)
         {
@@ -104,12 +110,15 @@ public class StateLoader : MonoBehaviour
                 moveNum = move.moveNum
             });
         }
+
+        List<AltMove> altMoveLog = new List<AltMove>();
         int altMoveLogSize = tempMoveLog.Count;
         for (int i = 0; i < altMoveLogSize; i++)
         {
             altMoveLog.Add(tempMoveLog.Pop());
         }
         gameState.moveLog = altMoveLog;
+
         //save other data
         gameState.score = Config.config.score;
         gameState.consecutiveMatches = Config.config.consecutiveMatches;
@@ -117,6 +126,7 @@ public class StateLoader : MonoBehaviour
         gameState.actions = Config.config.actions;
         gameState.difficulty = Config.config.difficulty;
 
+        //saving to json
         string json = JsonUtility.ToJson(gameState, true);
         if (Application.isEditor)
         {
@@ -126,11 +136,14 @@ public class StateLoader : MonoBehaviour
         {
             File.WriteAllText(Application.persistentDataPath + "/testState.json", json);
         }
+
         //UnityEditor.AssetDatabase.Refresh();
     }
 
-    public void loadState()
+    public void LoadState()
     {
+        Debug.Log("loading state");
+
         string path;
         if (Application.isEditor)
         {
@@ -144,14 +157,18 @@ public class StateLoader : MonoBehaviour
         gameState = CreateFromJSON(path);
     }
 
-    public void loadTutorialState(string path)
+    public void LoadTutorialState(string path)
     {
+        Debug.Log("loading tutorial state");
+
         //load the json into a GameState
         gameState = CreateFromJSON(path, true);
     }
 
-    public void unpackState(GameState state, bool isTutorial)
+    public void UnpackState(GameState state, bool isTutorial)
     {
+        Debug.Log("unpacking state");
+
         //create unsorted full deck.
         GameObject LoadPile = Config.config.loadPile;
         LoadPileScript LoadPileList = LoadPile.GetComponent<LoadPileScript>();
@@ -272,7 +289,7 @@ public class StateLoader : MonoBehaviour
         }
         //set up undo log
         GameObject[] cards = GameObject.FindGameObjectsWithTag("Card");
-        Move tempMove = null;
+        Move tempMove;
         foreach (AltMove a in state.moveLog)
         {
             tempMove = new Move();
@@ -309,17 +326,19 @@ public class StateLoader : MonoBehaviour
        
     public static GameState CreateFromJSON(string path, bool tutorial = false)
     {
+        Debug.Log("creating gamestate from path: " + path);
+
         if (tutorial)
         {
             var jsonTextFile = Resources.Load<TextAsset>(path);
-            print(jsonTextFile);
             return JsonUtility.FromJson<GameState>(jsonTextFile.ToString());
         }
         else if (Application.isEditor)
         {
             var jsonTextFile = Resources.Load<TextAsset>(path);
             return JsonUtility.FromJson<GameState>(jsonTextFile.ToString());
-        } else
+        }
+        else
         {
             var jsonTextFile = File.ReadAllText(path);
             return JsonUtility.FromJson<GameState>(jsonTextFile);

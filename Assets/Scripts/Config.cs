@@ -81,7 +81,6 @@ public class Config : MonoBehaviour
     public bool gamePaused;
 
     //internal variables
-    private string JSON;
     GameInfo gameInfo;
     GameObject fadeOutImage;
     public GameObject SplashScreen;
@@ -384,7 +383,7 @@ public class Config : MonoBehaviour
         return width;
 
     }
-    public void setDifficulty(string dif)
+    public void SetDifficulty(string dif)
     {
         if (dif.Equals("EASY"))
         {

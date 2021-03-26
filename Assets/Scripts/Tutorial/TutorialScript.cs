@@ -8,7 +8,7 @@ public class TutorialScript : MonoBehaviour
 {
     private List<ArgumentListWrapper> commandList;
     private Queue<List<string>> commandQueue;
-    public bool executeFlag = true;
+    public bool executeFlag;
 
     public GameObject tutorialText;
     public GameObject tutorialMask;
@@ -30,24 +30,20 @@ public class TutorialScript : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("starting tutorialScript");
+
         commandQueue = new Queue<List<string>>();
         commandList = CreateFromJSON();
-        foreach (ArgumentListWrapper command in commandList)
-        {
-            print(command.argumentList);
-        }
         CommandReader(commandList);
+        executeFlag = true;
     }
 
-    void CommandReader(List<ArgumentListWrapper> commandList)
+    private void CommandReader(List<ArgumentListWrapper> commandList)
     {
+        Debug.Log("populating command queue");
+
         foreach (ArgumentListWrapper command in commandList)
         {
-            /*List<string> tempList = new List<string>();
-            foreach (string s in command.argumentList)
-            {
-                tempList.Add(s);
-            }*/
             commandQueue.Enqueue(command.argumentList);
         }
     }
@@ -60,8 +56,10 @@ public class TutorialScript : MonoBehaviour
         }
     }
 
-    void CommandInterpreter()
+    private void CommandInterpreter()
     {
+        Debug.Log("interpreting command");
+
         if (commandQueue.Count > 0)
         {
             List<string> command = commandQueue.Dequeue();
@@ -86,19 +84,28 @@ public class TutorialScript : MonoBehaviour
                 EndTutorial();
             }
         }
+        else
+        {
+            Debug.LogWarning("commandQueue found to be empty, the queue should end with \"EndTutorial\"");
+            EndTutorial();
+        }
     }
 
     //Tutorial Commands
-    public void WaitForTouch()
+    private void WaitForTouch()
     {
+        Debug.Log("waiting for touch");
+
         if (executeFlag)
         {
             executeFlag = false;
         }
     }
 
-    public void LoadSave(string fileName)
+    private void LoadSave(string fileName)
     {
+        Debug.Log("loading save: " + fileName);
+
         //move all tokens back to load pile, then call LoadState and UnpackState
         foreach (GameObject foundation in Config.config.foundations)
         {
@@ -141,19 +148,22 @@ public class TutorialScript : MonoBehaviour
             matchCardList[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
         }
 
-        StateLoader.saveSystem.loadTutorialState("GameStates/" + fileName);
-        StateLoader.saveSystem.unpackState(state: StateLoader.saveSystem.gameState, isTutorial: true);
+        StateLoader.saveSystem.LoadTutorialState("GameStates/" + fileName);
+        StateLoader.saveSystem.UnpackState(state: StateLoader.saveSystem.gameState, isTutorial: true);
         UtilsScript.global.UpdateScore(0);
 
     }
-    public void ShowMask(string fileName)
+    private void ShowMask(string fileName)
     {
-        print("Show Mask: TutorialMasks/" + fileName);
+        Debug.Log("Show Mask: TutorialMasks/" + fileName);
+
         tutorialMask.GetComponent<Image>().sprite = Resources.Load<Sprite>("TutorialMasks/" + fileName);
     }
 
-    public void ShowText(string text, string region)
+    private void ShowText(string text, string region)
     {
+        Debug.Log("showing text: \"" + text + "\" at " + region);
+
         tutorialText.GetComponent<Text>().text = text;
         if (region == "middle")
         {
@@ -169,21 +179,25 @@ public class TutorialScript : MonoBehaviour
         }
     }
 
-    public void EndTutorial()
+    private void EndTutorial()
     {
-        Config.config.gamePaused = false;
+        Debug.Log("ending tutorial");
+
         if (Config.config != null)
         {
+            Config.config.gamePaused = false;
             Config.config.gameOver = false;
             Config.config.gameWin = false;
         }
-        SceneManager.LoadScene("MainMenuScene");
 
+        SceneManager.LoadScene("MainMenuScene");
         Config.config.GetComponent<MusicController>().MainMenuMusic();
     }
 
     private static List<ArgumentListWrapper> CreateFromJSON()
     {
+        Debug.Log("creating list from JSON");
+
         var jsonTextFile = Resources.Load<TextAsset>("Tutorial/TutorialCommandList");
         TutorialCommands commandFile = JsonUtility.FromJson<TutorialCommands>(jsonTextFile.ToString());
         return commandFile.commands;
