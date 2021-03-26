@@ -1367,6 +1367,12 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 853457954}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &853457956 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7084158332299253292, guid: f9e4f3524d2da456180c2be002c8dfd4,
+    type: 3}
+  m_PrefabInstance: {fileID: 853457954}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &871851463
 GameObject:
   m_ObjectHideFlags: 0
@@ -1709,6 +1715,12 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 988906844}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &988906846 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7084158332299253292, guid: f9e4f3524d2da456180c2be002c8dfd4,
+    type: 3}
+  m_PrefabInstance: {fileID: 988906844}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1185776311
 GameObject:
   m_ObjectHideFlags: 0
@@ -1741,6 +1753,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 871aa0b01d410402f817ec623c1b35ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playButton: {fileID: 0}
+  tutorialButton: {fileID: 0}
+  creditsButton: {fileID: 0}
+  continueButton: {fileID: 0}
+  easyButton: {fileID: 0}
+  normalButton: {fileID: 0}
+  hardButton: {fileID: 0}
+  returnButton: {fileID: 0}
+  restartButton: {fileID: 0}
+  mainMenuButton: {fileID: 988906846}
+  resumeButton: {fileID: 0}
+  playAgainButton: {fileID: 853457956}
 --- !u!114 &1185776313
 MonoBehaviour:
   m_ObjectHideFlags: 0

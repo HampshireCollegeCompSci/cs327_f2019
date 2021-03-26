@@ -619,6 +619,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 871aa0b01d410402f817ec623c1b35ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playButton: {fileID: 7084158332501743150}
+  tutorialButton: {fileID: 1676171831}
+  creditsButton: {fileID: 2132402028}
+  continueButton: {fileID: 0}
+  easyButton: {fileID: 0}
+  normalButton: {fileID: 0}
+  hardButton: {fileID: 0}
+  returnButton: {fileID: 0}
+  restartButton: {fileID: 0}
+  mainMenuButton: {fileID: 0}
+  resumeButton: {fileID: 0}
+  playAgainButton: {fileID: 0}
 --- !u!1 &630166689
 GameObject:
   m_ObjectHideFlags: 0
@@ -731,6 +743,8 @@ MonoBehaviour:
     reactors: []
     moveLog: []
     score: 0
+    consecutiveMatches: 0
+    moveCounter: 0
     actions: 0
     difficulty: 
 --- !u!4 &787589800
@@ -900,8 +914,11 @@ MonoBehaviour:
   draggedTokenOffset: 0
   selectedCardOpacity: 0
   prettyColors: 0
+  cardObstructedColor: {r: 0, g: 0, b: 0, a: 0}
   cardMoveHighlightColor: {r: 0, g: 0, b: 0, a: 0}
   cardMatchHighlightColor: {r: 0, g: 0, b: 0, a: 0}
+  pointColor: {r: 0, g: 0, b: 0, a: 0}
+  suitsToUseStartIndex: 0
   matchPoints: 0
   emptyReactorPoints: 0
   perfectGamePoints: 0
@@ -953,6 +970,7 @@ MonoBehaviour:
   vibrationCard: 0
   vibrationMatch: 0
   vibrationExplosion: 0
+  moveCounter: 0
   matchCounter: 0
   json: 
 --- !u!4 &1182164522
@@ -1787,6 +1805,12 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1676171829}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1676171831 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7084158332299253292, guid: f9e4f3524d2da456180c2be002c8dfd4,
+    type: 3}
+  m_PrefabInstance: {fileID: 1676171829}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1857838901
 GameObject:
   m_ObjectHideFlags: 0
@@ -1994,6 +2018,12 @@ PrefabInstance:
 --- !u!224 &2132402027 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7084158332299253295, guid: f9e4f3524d2da456180c2be002c8dfd4,
+    type: 3}
+  m_PrefabInstance: {fileID: 2132402026}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2132402028 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7084158332299253292, guid: f9e4f3524d2da456180c2be002c8dfd4,
     type: 3}
   m_PrefabInstance: {fileID: 2132402026}
   m_PrefabAsset: {fileID: 0}
@@ -2251,3 +2281,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f9e4f3524d2da456180c2be002c8dfd4, type: 3}
+--- !u!1 &7084158332501743150 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7084158332299253292, guid: f9e4f3524d2da456180c2be002c8dfd4,
+    type: 3}
+  m_PrefabInstance: {fileID: 7084158332501743149}
+  m_PrefabAsset: {fileID: 0}

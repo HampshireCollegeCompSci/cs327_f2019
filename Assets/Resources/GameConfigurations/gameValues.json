@@ -32,10 +32,10 @@
   "scoreMultiplyer": 50,
 
   "gameStateTxtEnglish": [ "You Won", "You Lost" ],
-  "menuSceneButtonsTxtEnglish": [ "Play", "Tutorial", "Credits" ],
-  "loadingSceneTxtEnglish": "Loading",
-  "levelSceneButtonsTxtEnglish": [ "Continue", "Easy", "Medium", "Hard", "Return" ],
-  "pauseSceneButtonsTxtEnglish": [ "Resume", "Restart", "Settings", "Main Menu" ],
-  "summarySceneButtonsTxtEnglish": [ "Main\n Menu", "Play\n Again" ],
+  "menuSceneButtonsTxtEnglish": [ "PLAY", "TUTORIAL", "CREDITS" ],
+  "loadingSceneTxtEnglish": "LOADING...",
+  "levelSceneButtonsTxtEnglish": [ "CONTINUE", "EASY", "MEDIUM", "HARD", "RETURN" ],
+  "pauseSceneButtonsTxtEnglish": [ "RESUME", "RESTART", "SETTINGS", "MAIN MENU" ],
+  "summarySceneButtonsTxtEnglish": [ "MAIN\nMENU", "PLAY\nAGAIN" ],
   "scoreActionLabelsTxtEnglish": [ "Score", "Action" ]
 }
