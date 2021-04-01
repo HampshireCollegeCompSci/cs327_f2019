@@ -48,9 +48,11 @@ public class MenuUIScript : MonoBehaviour
         }
         else if (activeSceneName == "LoadingScene")
         {
-            Debug.Log("updating loading text");
             if (loadingText != null)
+            {
+                Debug.Log("updating loading text");
                 loadingText.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish;
+            }
         }
         else if (SceneManager.GetSceneByName("PauseScene").isLoaded)
         {
@@ -278,15 +280,5 @@ public class MenuUIScript : MonoBehaviour
             return;
 
         Config.config.deck.GetComponent<DeckScript>().StartNextCycle(manuallyTriggered: true);
-    }
-
-    public void NextTutorialStep()
-    {
-        Debug.Log("MenuUI next tutorial step");
-
-        if (Config.config.tutorialOn)
-        {
-            GameObject.Find("TutorialController").GetComponent<TutorialScript>().executeFlag = true;
-        }
     }
 }

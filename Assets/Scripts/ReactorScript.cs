@@ -28,6 +28,9 @@ public class ReactorScript : MonoBehaviour
 
     private void CheckGameOver()
     {
+        if (Config.config.tutorialOn)
+            return;
+
         if (CountReactorCard() >= Config.config.maxReactorVal && !Config.config.gameOver)
             Config.config.GameOver(false);
     }
