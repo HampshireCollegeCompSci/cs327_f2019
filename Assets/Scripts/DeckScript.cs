@@ -73,17 +73,17 @@ public class DeckScript : MonoBehaviour
     // sets up card list
     public void InstantiateCards(GameObject target)
     {
-        string[] suitStrings = new string[] { "clubs", "spades", "hearts", "diamonds" };
+        string[] suitStrings = new string[] { "spades", "clubs", "diamonds", "hearts" };
 
         GameObject newCard;
         CardScript newCardScript;
 
-        // order: club ace, 2, 3... 10, jack, queen, king, spades... hearts... diamonds
+        // order: spade ace, 2, 3... 10, jack, queen, king, clubs... diamonds... hearts
         int cardIndex = 0; // 1 - 52
         int hFSIndex; // used for assigning holograms
         int rank;
         Color rankColor = Color.black;
-        for (int suit = 0; suit < 4; suit++) // order: club, spades, hearts, diamonds
+        for (int suit = 0; suit < 4; suit++) // order: spades, clubs, diamonds, hearts
         {
             if (suit == 2)
                 rankColor = Color.red;

@@ -6284,22 +6284,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deckButton: {fileID: 1524850547}
   topSuitObjects:
-  - {fileID: 1612621287}
   - {fileID: 1469716015}
-  - {fileID: 430376982}
+  - {fileID: 1612621287}
   - {fileID: 1872904796}
+  - {fileID: 430376982}
   bottomSuitObjects:
-  - {fileID: 1238413161}
   - {fileID: 475533257}
-  - {fileID: 1056600008}
+  - {fileID: 1238413161}
   - {fileID: 353182529}
+  - {fileID: 1056600008}
   suitSprites:
-  - {fileID: 21300000, guid: 3ba323e5fa17abe4eb0ae37aa97665d0, type: 3}
   - {fileID: 21300000, guid: 1d7cf345496cfe84a85df0142b9ed2cd, type: 3}
+  - {fileID: 21300000, guid: 3ba323e5fa17abe4eb0ae37aa97665d0, type: 3}
   - {fileID: 21300000, guid: 2e099957b9bbe3c4d9490adab732070a, type: 3}
   - {fileID: 21300000, guid: e0d1dfa170bba8943a45221283716a9b, type: 3}
-  - {fileID: 21300000, guid: ead76294ef40e694e9506afab6965c81, type: 3}
   - {fileID: 21300000, guid: 3df2e932fcad929478fc9b1583fc0996, type: 3}
+  - {fileID: 21300000, guid: ead76294ef40e694e9506afab6965c81, type: 3}
   - {fileID: 21300000, guid: d35c2965d44e73b4b90392fc6a8c8696, type: 3}
   - {fileID: 21300000, guid: 41c560bc9c90ce440a2a29c1e47a2531, type: 3}
 --- !u!4 &1615020385
