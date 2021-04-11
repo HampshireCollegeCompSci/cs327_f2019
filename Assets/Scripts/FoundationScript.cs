@@ -36,8 +36,8 @@ public class FoundationScript : MonoBehaviour
 
         if (cardList.Count != 0)
         {
-            if (cardList[0].gameObject.GetComponent<CardScript>().isHidden())
-                cardList[0].gameObject.GetComponent<CardScript>().SetVisibility(true);
+            if (cardList[0].gameObject.GetComponent<CardScript>().IsHidden)
+                cardList[0].gameObject.GetComponent<CardScript>().SetFoundationVisibility(true);
 
             if (showHolo)
                 cardList[0].GetComponent<CardScript>().ShowHologram();
@@ -57,7 +57,7 @@ public class FoundationScript : MonoBehaviour
             // as we go through, place cards above and in-front the previous one
             cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -1 - positionCounter * 0.1f);
 
-            if (cardList[i].GetComponent<CardScript>().isHidden())  // don't show hidden cards as much
+            if (cardList[i].GetComponent<CardScript>().IsHidden)  // don't show hidden cards as much
             {
                 hiddenCards++;
                 if (cardList.Count > 18)

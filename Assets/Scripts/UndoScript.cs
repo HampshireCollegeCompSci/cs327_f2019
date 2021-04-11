@@ -52,7 +52,7 @@ public class UndoScript : MonoBehaviour
     private void MoveFoundationCard(Move toMove)
     {
         if (toMove.nextCardWasHidden)
-            toMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
+            toMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetFoundationVisibility(false);
 
         toMove.card.GetComponent<CardScript>().MoveCard(toMove.origin, doLog: false);
     }
@@ -87,7 +87,7 @@ public class UndoScript : MonoBehaviour
                 // nextCardWasHidden expects that it's token was on the top (index 0) of the stack
                 // therefore, the top of the stack is the only card that will know if the stack sat on a hidden card
                 if (undoList[undoList.Count - 1].nextCardWasHidden)
-                    newFoundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetVisibility(false);
+                    newFoundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetFoundationVisibility(false);
 
                 for (int i = 0; i < undoList.Count - 1; i++) // move the tokens back
                     undoList[i].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false, showHolo: false);

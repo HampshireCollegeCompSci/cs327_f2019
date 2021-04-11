@@ -34,35 +34,65 @@ public class CardScript : MonoBehaviour
 
     public Sprite cardFrontSprite;
     public Sprite cardBackSprite;
-    public bool hidden;
-    public void SetVisibility(bool show)
+    private bool isHidden;
+    public bool IsHidden
+    {
+        get { return isHidden; }
+    }
+
+    public void SetFoundationVisibility(bool show, bool isNotForNextCycle = true)
     {
         if (show)
         {
-            //Debug.Log("showing card" + cardNum + cardSuit);
-            gameObject.GetComponent<BoxCollider2D>().enabled = true;
-            suitObject.SetActive(true);
-            rankObject.SetActive(true);
             gameObject.GetComponent<SpriteRenderer>().sprite = cardFrontSprite;
-            hidden = false;
+
+            // for undo to work right:
+            // during a Next Cycle we manually reveal the card before it's automatically done
+            // this could cause the isHidden flag to be set to false before undo records it, when in reality it should've been true
+            if (isNotForNextCycle)
+            {
+                isHidden = false;
+            }
         }
         else
         {
-            //Debug.Log("hiding card" + cardNum + cardSuit);
+            gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
+            isHidden = true;
+        }
+
+        UpdateTokenVisibility(show);
+    }
+
+    public void SetGameplayVisibility(bool show)
+    {
+        if (show)
+        {
+            gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        }
+        else
+        {
+            gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        }
+
+        UpdateTokenVisibility(show);
+    }
+
+    private void UpdateTokenVisibility(bool show)
+    {
+        if (show)
+        {
+            gameObject.GetComponent<BoxCollider2D>().enabled = true;
+            suitObject.SetActive(true);
+            rankObject.SetActive(true);
+        }
+        else
+        {
             gameObject.GetComponent<BoxCollider2D>().enabled = false;
             suitObject.SetActive(false);
             rankObject.SetActive(false);
-            gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
             HideHologram();
-            hidden = true;
         }
     }
-
-    public bool isHidden()
-    {
-        return hidden;
-    }
-
 
     public void SetSelected(bool selected)
     {
@@ -251,7 +281,7 @@ public class CardScript : MonoBehaviour
             if (doLog)
             {
                 FoundationScript foundationScript = container.GetComponent<FoundationScript>();
-                if (foundationScript.cardList.Count > 1 && foundationScript.cardList[1].GetComponent<CardScript>().isHidden())
+                if (foundationScript.cardList.Count > 1 && foundationScript.cardList[1].GetComponent<CardScript>().IsHidden)
                     nextCardWasHidden = true;
             }
             container.GetComponent<FoundationScript>().RemoveCard(gameObject, showHolo: showHolo);

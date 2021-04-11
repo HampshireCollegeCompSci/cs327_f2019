@@ -15,15 +15,12 @@ public class MatchedPileScript : MonoBehaviour
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
         card.transform.localPosition = Vector3.zero;
-        card.GetComponent<CardScript>().HideHologram();
-        card.GetComponent<SpriteRenderer>().enabled = false;
-        card.GetComponent<BoxCollider2D>().enabled = false;
+        card.GetComponent<CardScript>().SetGameplayVisibility(false);
     }
 
     public void RemoveCard(GameObject card)
     {
-        card.GetComponent<SpriteRenderer>().enabled = true;
-        card.GetComponent<BoxCollider2D>().enabled = true;
+        card.GetComponent<CardScript>().SetGameplayVisibility(true);
         cardList.Remove(card);
     }
 }

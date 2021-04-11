@@ -45,7 +45,7 @@ public class StateLoader : MonoBehaviour
             foreach (GameObject token in foundation.GetComponent<FoundationScript>().cardList)
             {
                 tempList.Insert(0,token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString() 
-                    + "_" + token.GetComponent<CardScript>().isHidden().ToString());
+                    + "_" + token.GetComponent<CardScript>().IsHidden.ToString());
             }
             gameState.foundations.Add(new StringListWrapper() { stringList = tempList });
         }
@@ -57,7 +57,7 @@ public class StateLoader : MonoBehaviour
             foreach (GameObject token in reactor.GetComponent<ReactorScript>().cardList)
             {
                 tempList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString()
-                    + "_" + token.GetComponent<CardScript>().isHidden().ToString());
+                    + "_" + token.GetComponent<CardScript>().IsHidden.ToString());
             }
             gameState.reactors.Add(new StringListWrapper() { stringList = tempList });
         }
@@ -67,7 +67,7 @@ public class StateLoader : MonoBehaviour
         foreach (GameObject token in Config.config.wastePile.GetComponent<WastepileScript>().cardList)
         {
             wastePileList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString()
-                + "_" + token.GetComponent<CardScript>().isHidden().ToString());
+                + "_" + token.GetComponent<CardScript>().IsHidden.ToString());
         }
         gameState.wastePile = wastePileList;
 
@@ -76,7 +76,7 @@ public class StateLoader : MonoBehaviour
         foreach (GameObject token in Config.config.deck.GetComponent<DeckScript>().cardList)
         {
             deckList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString()
-                + "_" + token.GetComponent<CardScript>().isHidden().ToString());
+                + "_" + token.GetComponent<CardScript>().IsHidden.ToString());
         }
         gameState.deck = deckList;
 
@@ -85,7 +85,7 @@ public class StateLoader : MonoBehaviour
         foreach (GameObject token in Config.config.matches.GetComponent<MatchedPileScript>().cardList)
         {
             matchList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString()
-                + "_" + token.GetComponent<CardScript>().isHidden().ToString());
+                + "_" + token.GetComponent<CardScript>().IsHidden.ToString());
         }
         gameState.matches = matchList;
 
@@ -180,6 +180,7 @@ public class StateLoader : MonoBehaviour
                 Config.config.deck.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>().MoveCard(LoadPile, false, false, false);
             }
         }
+
         //set up foundations
         int i = 0;
         foreach (StringListWrapper lw in state.foundations)
@@ -197,7 +198,7 @@ public class StateLoader : MonoBehaviour
                         token.GetComponent<CardScript>().MoveCard(Config.config.foundations[i], false, false, false);
                         if (hiddenState == "True")
                         {
-                            token.GetComponent<CardScript>().SetVisibility(false);
+                            token.GetComponent<CardScript>().SetFoundationVisibility(false);
                         }
                         break;
                     }
@@ -205,6 +206,7 @@ public class StateLoader : MonoBehaviour
             }
             i++;
         }
+
         //set up reactors
         i = 0;
         foreach (StringListWrapper lw in state.reactors)
@@ -222,7 +224,7 @@ public class StateLoader : MonoBehaviour
                         token.GetComponent<CardScript>().MoveCard(Config.config.reactors[i], false, false, false);
                         if (hiddenState == "True")
                         {
-                            token.GetComponent<CardScript>().SetVisibility(false);
+                            token.GetComponent<CardScript>().SetFoundationVisibility(false);
                         }
                         break;
                     }
@@ -230,6 +232,7 @@ public class StateLoader : MonoBehaviour
             }
             i++;
         }
+
         //set up wastepile
         foreach (string s in state.wastePile)
         {
@@ -244,12 +247,13 @@ public class StateLoader : MonoBehaviour
                     token.GetComponent<CardScript>().MoveCard(Config.config.wastePile, false, false, false);
                     if (hiddenState == "True")
                     {
-                        token.GetComponent<CardScript>().SetVisibility(false);
+                        token.GetComponent<CardScript>().SetFoundationVisibility(false);
                     }
                     break;
                 }
             }
         }
+
         //set up matches
         foreach (string s in state.matches)
         {
@@ -264,12 +268,13 @@ public class StateLoader : MonoBehaviour
                     token.GetComponent<CardScript>().MoveCard(Config.config.matches, false, false, false);
                     if (hiddenState == "True")
                     {
-                        token.GetComponent<CardScript>().SetVisibility(false);
+                        token.GetComponent<CardScript>().SetFoundationVisibility(false);
                     }
                     break;
                 }
             }
         }
+
         //set up deck
         foreach (string s in state.deck)
         {
@@ -287,6 +292,7 @@ public class StateLoader : MonoBehaviour
                 }
             }
         }
+
         //set up undo log
         GameObject[] cards = GameObject.FindGameObjectsWithTag("Card");
         Move tempMove;

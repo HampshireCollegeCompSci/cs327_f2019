@@ -155,9 +155,6 @@ public class DeckScript : MonoBehaviour
                 // setting up the in-game appearance of the card's suit
                 newCardScript.suitObject.GetComponent<SpriteRenderer>().sprite = suitSprites[suit];
 
-                // forgot if this is necessary, nothing is broken atm so i'm leaving it
-                newCardScript.SetVisibility(true);
-
                 // moving card to desired location
                 newCardScript.container = target;
                 if (target.CompareTag("Deck"))
@@ -180,15 +177,15 @@ public class DeckScript : MonoBehaviour
             {
                 currentCardScript = cardList[0].GetComponent<CardScript>();
                 currentCardScript.MoveCard(foundation, doLog: false, showHolo: false);
-                currentCardScript.SetVisibility(false);
+                currentCardScript.SetFoundationVisibility(false);
             }
 
             // adding and revealing the top card of the foundation
             currentCardScript = cardList[0].GetComponent<CardScript>();
             currentCardScript.MoveCard(foundation, doLog: false);
-            currentCardScript.SetVisibility(true);
         }
 
+        // testing purposes: this makes foundation 0 contain the max number of cards a foundation can carry at one
         /*GameObject foundation0 = Config.config.foundations[1];
         for (int i = 0; i < 12; i++)
         {
@@ -203,17 +200,14 @@ public class DeckScript : MonoBehaviour
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
         card.transform.localPosition = Vector3.zero;
-        card.GetComponent<CardScript>().HideHologram();
-        card.GetComponent<SpriteRenderer>().enabled = false;
-        card.GetComponent<BoxCollider2D>().enabled = false;
+        card.GetComponent<CardScript>().SetGameplayVisibility(false);
         UpdateDeckCounter();
     }
 
     public void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
-        card.GetComponent<SpriteRenderer>().enabled = true;
-        card.GetComponent<BoxCollider2D>().enabled = true;
+        card.GetComponent<CardScript>().SetGameplayVisibility(true);
         UpdateDeckCounter();
     }
 
@@ -330,14 +324,14 @@ public class DeckScript : MonoBehaviour
                         target.y += -0.8f + cardCount * 0.45f;
                         target.x -= 0.02f;
 
+                        // immediately unhide the next possible top foundation card and start its hologram
                         if (currentFoundation.cardList.Count > 1)
                         {
                             CardScript nextTopFoundationCard = currentFoundation.cardList[1].GetComponent<CardScript>();
-                            if (nextTopFoundationCard.isHidden())
+                            if (nextTopFoundationCard.IsHidden)
                             {
-                                nextTopFoundationCard.SetVisibility(true);
+                                nextTopFoundationCard.SetFoundationVisibility(true, isNotForNextCycle: false);
                                 nextTopFoundationCard.ShowHologram();
-                                nextTopFoundationCard.hidden = true; // for undo to work right
                             }
                         }
 
