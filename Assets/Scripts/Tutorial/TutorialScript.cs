@@ -22,6 +22,7 @@ public class TutorialScript : MonoBehaviour
 
         Debug.Log("starting tutorialScript");
 
+        UtilsScript.global.SetInputStopped(true);
         tutorial.SetActive(true);
 
         commandQueue = new Queue<List<string>>();
