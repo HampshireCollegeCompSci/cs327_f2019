@@ -169,165 +169,166 @@ public class StateLoader : MonoBehaviour
     {
         Debug.Log("unpacking state");
 
-        //create unsorted full deck.
-        GameObject LoadPile = Config.config.loadPile;
-        LoadPileScript LoadPileList = LoadPile.GetComponent<LoadPileScript>();
+        LoadPileScript loadPileScript = Config.config.loadPile.GetComponent<LoadPileScript>();
+
+        // if the tutorial isn't being loaded then we need to make new cards and setup the move log
         if (!isTutorial)
         {
-            DeckScript.deckScript.InstantiateCards(Config.config.deck);
-            while (Config.config.deck.GetComponent<DeckScript>().cardList.Count > 0)
-            {
-                Config.config.deck.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>().MoveCard(LoadPile, false, false, false);
-            }
+            DeckScript.deckScript.InstantiateCards(addToLoadPile: true);
+            SetUpMoveLog(state.moveLog, loadPileScript.cardList);
         }
 
+        // sharing the index variable for the foundations and reactors
+        int index;
+
         //set up foundations
-        int i = 0;
+        index = 0;
         foreach (StringListWrapper lw in state.foundations)
         {
-            foreach (string s in lw.stringList)
-            {
-                string[] segments = s.Split('_');
-                string suite = segments[0];
-                string number = segments[1];
-                string hiddenState = segments[2];
-                foreach (GameObject token in LoadPileList.cardList)
-                {
-                    if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
-                    {
-                        token.GetComponent<CardScript>().MoveCard(Config.config.foundations[i], false, false, false);
-                        if (hiddenState == "True")
-                        {
-                            token.GetComponent<CardScript>().SetFoundationVisibility(false);
-                        }
-                        break;
-                    }
-                }
-            }
-            i++;
+            SetUpLocationWithCards(lw.stringList, loadPileScript.cardList, Config.config.foundations[index]);
+            index++;
         }
 
         //set up reactors
-        i = 0;
+        index = 0;
         foreach (StringListWrapper lw in state.reactors)
         {
-            foreach (string s in lw.stringList)
-            {
-                string[] segments = s.Split('_');
-                string suite = segments[0];
-                string number = segments[1];
-                string hiddenState = segments[2];
-                foreach (GameObject token in LoadPileList.cardList)
-                {
-                    if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
-                    {
-                        token.GetComponent<CardScript>().MoveCard(Config.config.reactors[i], false, false, false);
-                        if (hiddenState == "True")
-                        {
-                            token.GetComponent<CardScript>().SetFoundationVisibility(false);
-                        }
-                        break;
-                    }
-                }
-            }
-            i++;
+            SetUpLocationWithCards(lw.stringList, loadPileScript.cardList, Config.config.reactors[index]);
+            index++;
         }
 
         //set up wastepile
-        foreach (string s in state.wastePile)
-        {
-            string[] segments = s.Split('_');
-            string suite = segments[0];
-            string number = segments[1];
-            string hiddenState = segments[2];
-            foreach (GameObject token in LoadPileList.cardList)
-            {
-                if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
-                {
-                    token.GetComponent<CardScript>().MoveCard(Config.config.wastePile, false, false, false);
-                    if (hiddenState == "True")
-                    {
-                        token.GetComponent<CardScript>().SetFoundationVisibility(false);
-                    }
-                    break;
-                }
-            }
-        }
+        SetUpLocationWithCards(state.wastePile, loadPileScript.cardList, Config.config.wastePile);
 
         //set up matches
-        foreach (string s in state.matches)
-        {
-            string[] segments = s.Split('_');
-            string suite = segments[0];
-            string number = segments[1];
-            string hiddenState = segments[2];
-            foreach (GameObject token in LoadPileList.cardList)
-            {
-                if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
-                {
-                    token.GetComponent<CardScript>().MoveCard(Config.config.matches, false, false, false);
-                    if (hiddenState == "True")
-                    {
-                        token.GetComponent<CardScript>().SetFoundationVisibility(false);
-                    }
-                    break;
-                }
-            }
-        }
+        SetUpLocationWithCards(state.matches, loadPileScript.cardList, Config.config.matches);
 
         //set up deck
-        foreach (string s in state.deck)
+        if (!isTutorial)
         {
-            string[] segments = s.Split('_');
-            string suite = segments[0];
-            string number = segments[1];
-            string hiddenState = segments[2];
-
-            foreach (GameObject token in LoadPileList.cardList)
-            {
-                if (token.GetComponent<CardScript>().cardNum.ToString() == number && token.GetComponent<CardScript>().cardSuit == suite)
-                {
-                    token.GetComponent<CardScript>().MoveCard(Config.config.deck, false, false, false);
-                    break;
-                }
-            }
+            SetUpLocationWithCards(state.deck, loadPileScript.cardList, Config.config.deck);
         }
-
-        //set up undo log
-        GameObject[] cards = GameObject.FindGameObjectsWithTag("Card");
-        Move tempMove;
-        foreach (AltMove a in state.moveLog)
+        else
         {
-            tempMove = new Move();
-            string[] segments = a.cardName.Split('_');
-            string suite = segments[0];
-            string number = segments[1];
-            //string hiddenState = segments[2];
-            foreach (GameObject card in cards)
+            // during the tutorial the deck order doesn't matter
+            int cardCount = loadPileScript.cardList.Count;
+            while (cardCount != 0)
             {
-                if (card.GetComponent<CardScript>().cardSuit == suite && card.GetComponent<CardScript>().cardNum.ToString() == number)
-                {
-                    tempMove.card = card;
-                }
+                loadPileScript.cardList[0].GetComponent<CardScript>().MoveCard(Config.config.deck, false, false, false);
+                cardCount--;
             }
-            tempMove.origin = GameObject.Find(a.originName);
-            tempMove.isAction = a.isAction;
-            tempMove.moveType = a.moveType;
-            tempMove.nextCardWasHidden = a.nextCardWasHidden;
-            tempMove.remainingActions = a.remainingActions;
-            tempMove.score = a.score;
-            tempMove.moveNum = a.moveNum;
-            UndoScript.undoScript.moveLog.Push(tempMove);
         }
 
         //set up simple variables
-        //print("actions taken: " + state.actions);
-        //print("max actions: " + Config.config.actionMax);
         Config.config.difficulty = state.difficulty;
         Config.config.score = state.score;
         Config.config.consecutiveMatches = state.consecutiveMatches;
         Config.config.moveCounter = state.moveCounter;
         UtilsScript.global.UpdateActions(state.actions, startingGame: true);
+    }
+
+    private static void SetUpMoveLog(List<AltMove> moves, List<GameObject> cardList)
+    {
+        //set up undo log
+        
+        // creating a list of card containing objects to reference from later
+        List<GameObject> origins = new List<GameObject>()
+        {
+            Config.config.deck,
+            Config.config.wastePile,
+            Config.config.matches
+        };
+        origins.AddRange(Config.config.foundations);
+        origins.AddRange(Config.config.reactors);
+
+        // variables that will be used repeatedly when setting up the move log
+        Move tempMove;
+        string[] segments;
+        string suite;
+        int number;
+
+        CardScript cardScriptRef;
+
+        // going through all the saved moves and recreating them
+        foreach (AltMove move in moves)
+        {
+            tempMove = new Move();
+
+            // extracting move info relating to the specific card
+            segments = move.cardName.Split('_');
+            suite = segments[0];
+            number = System.Int32.Parse(segments[1]);
+
+            // looking for the card that the move is associated with
+            foreach (GameObject card in cardList)
+            {
+                cardScriptRef = card.GetComponent<CardScript>();
+                if (cardScriptRef.cardNum == number && cardScriptRef.cardSuit == suite)
+                {
+                    tempMove.card = card;
+                    break;
+                }
+            }
+
+            // looking for the move's card containg object
+            foreach (GameObject origin in origins)
+            {
+                if (origin.name == move.originName)
+                {
+                    tempMove.origin = origin;
+                    break;
+                }
+            }
+
+            // other variables
+            tempMove.isAction = move.isAction;
+            tempMove.moveType = move.moveType;
+            tempMove.nextCardWasHidden = move.nextCardWasHidden;
+            tempMove.remainingActions = move.remainingActions;
+            tempMove.score = move.score;
+            tempMove.moveNum = move.moveNum;
+
+            // making the move official
+            UndoScript.undoScript.moveLog.Push(tempMove);
+        }
+    }
+
+    private static void SetUpLocationWithCards(List<string> tokenStrings, List<GameObject> cardList, GameObject newLocation)
+    {
+        // seting up the new location with cards using the given commands, and cards
+
+        // variables that will be used repeatedly when setting up the location
+        string[] segments;
+        string suite;
+        int number;
+        bool hiddenState;
+
+        CardScript cardScriptRef;
+
+        foreach (string s in tokenStrings)
+        {
+            // extracting info relating to the specific card
+            segments = s.Split('_');
+            suite = segments[0];
+            number = System.Int32.Parse(segments[1]);
+            hiddenState = bool.Parse(segments[2]);
+
+            // looking for the card that needs to be moved
+            foreach (GameObject card in cardList)
+            {
+                cardScriptRef = card.GetComponent<CardScript>();
+                if (cardScriptRef.cardNum == number && cardScriptRef.cardSuit == suite)
+                {
+                    cardScriptRef.MoveCard(newLocation, false, false, false);
+                    if (hiddenState)
+                    {
+                        cardScriptRef.SetFoundationVisibility(false);
+                    }
+
+                    break;
+                }
+            }
+        }
     }
        
     public static GameState CreateFromJSON(string path, bool tutorial = false)

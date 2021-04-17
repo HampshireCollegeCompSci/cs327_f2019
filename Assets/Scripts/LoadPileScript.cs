@@ -8,20 +8,17 @@ public class LoadPileScript : MonoBehaviour
 
     private void Start()
     {
-        Config.config.loadPile = gameObject;
-    }
-    public void AddCard(GameObject card, bool checkHolo = true)
-    {
-        card.GetComponent<CardScript>().HideHologram();
-        cardList.Insert(0, card);
-        card.transform.SetParent(gameObject.transform);
-        card.transform.localPosition = Vector3.zero;
-        card.SetActive(false);
+        Config.config.loadPile = this.gameObject;
     }
 
-    public void RemoveCard(GameObject card, bool checkHolo = false)
+    public void AddCard(GameObject card)
+    {
+        //card.GetComponent<CardScript>().HideHologram();
+        cardList.Add(card);
+    }
+
+    public void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
-        card.SetActive(true);
     }
 }

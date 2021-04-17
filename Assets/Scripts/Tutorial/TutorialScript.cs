@@ -139,51 +139,33 @@ public class TutorialScript : MonoBehaviour
         Debug.Log("loading save: " + fileName);
 
         //move all tokens back to load pile, then call LoadState and UnpackState
+
         foreach (GameObject foundation in Config.config.foundations)
         {
-            List<GameObject> cardList = foundation.GetComponent<FoundationScript>().cardList;
-            int listLength = cardList.Count;
-            for (int i = 0; i < listLength; i++)
-            {
-                cardList[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
-            }
+            MoveCardsToLoadPile(foundation.GetComponent<FoundationScript>().cardList);
         }
 
         foreach (GameObject reactor in Config.config.reactors)
         {
-            List<GameObject> cardList = reactor.GetComponent<ReactorScript>().cardList;
-            int listLength = cardList.Count;
-            for (int i = 0; i < listLength; i++)
-            {
-                cardList[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
-            }
+            MoveCardsToLoadPile(reactor.GetComponent<ReactorScript>().cardList);
         }
 
-        List<GameObject> deckCardList = Config.config.deck.GetComponent<DeckScript>().cardList;
-        int deckListLength = deckCardList.Count;
-        for (int i = 0; i < deckListLength; i++)
-        {
-            deckCardList[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
-        }
-
-        List<GameObject> wasteCardList = Config.config.wastePile.GetComponent<WastepileScript>().cardList;
-        int wasteListLength = wasteCardList.Count;
-        for (int i = 0; i < wasteListLength; i++)
-        {
-            wasteCardList[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
-        }
-
-        List<GameObject> matchCardList = Config.config.matches.GetComponent<MatchedPileScript>().cardList;
-        int matchListLength = matchCardList.Count;
-        for (int i = 0; i < matchListLength; i++)
-        {
-            matchCardList[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
-        }
+        MoveCardsToLoadPile(Config.config.deck.GetComponent<DeckScript>().cardList);
+        MoveCardsToLoadPile(Config.config.wastePile.GetComponent<WastepileScript>().cardList);
+        MoveCardsToLoadPile(Config.config.matches.GetComponent<MatchedPileScript>().cardList);
 
         StateLoader.saveSystem.LoadTutorialState("GameStates/" + fileName);
         StateLoader.saveSystem.UnpackState(state: StateLoader.saveSystem.gameState, isTutorial: true);
-        UtilsScript.global.UpdateScore(0);
+    }
 
+    private static void MoveCardsToLoadPile(List<GameObject> cards)
+    {
+        int cardCount = cards.Count;
+        while (cardCount != 0)
+        {
+            cards[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, doLog: false, isAction: false);
+            cardCount--;
+        }
     }
 
     private void ShowText(List<string> command)

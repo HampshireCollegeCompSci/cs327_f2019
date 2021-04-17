@@ -62,7 +62,7 @@ public class DeckScript : MonoBehaviour
         else
         {
             //print("New Game");
-            InstantiateCards(this.gameObject);
+            InstantiateCards();
             Shuffle();
             SetUpFoundations();
             Deal(false);
@@ -71,8 +71,10 @@ public class DeckScript : MonoBehaviour
     }
 
     // sets up card list
-    public void InstantiateCards(GameObject target)
+    public void InstantiateCards(bool addToLoadPile = false)
     {
+        LoadPileScript lps = Config.config.loadPile.GetComponent<LoadPileScript>();
+
         string[] suitStrings = new string[] { "spades", "clubs", "diamonds", "hearts" };
 
         GameObject newCard;
@@ -156,11 +158,16 @@ public class DeckScript : MonoBehaviour
                 newCardScript.suitObject.GetComponent<SpriteRenderer>().sprite = suitSprites[suit];
 
                 // moving card to desired location
-                newCardScript.container = target;
-                if (target.CompareTag("Deck"))
+                if (!addToLoadPile)
+                {
+                    newCardScript.container = this.gameObject;
                     AddCard(newCard);
-                else if (target.CompareTag("LoadPile"))
-                    target.GetComponent<LoadPileScript>().AddCard(newCard);
+                }
+                else
+                {
+                    newCardScript.container = Config.config.loadPile;
+                    lps.AddCard(newCard);
+                }
                 
                 cardIndex += 1;
             }
