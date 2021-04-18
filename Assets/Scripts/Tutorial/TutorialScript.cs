@@ -52,6 +52,8 @@ public class TutorialScript : MonoBehaviour
 
     public void Touch()
     {
+        // the tutorial next button calls this
+
         Debug.Log("tutorial touch");
 
         if (waiting)
@@ -102,6 +104,10 @@ public class TutorialScript : MonoBehaviour
             else if (command[0] == "HighlightToken")
             {
                 HighlightToken(command);
+            }
+            else if (command[0] == "HighlightAllInteractableTokens")
+            {
+                HighlightAllInteractableTokens();
             }
             else if (command[0] == "UnHighlightAllTokens")
             {
@@ -518,6 +524,47 @@ public class TutorialScript : MonoBehaviour
         else
         {
             throw new FormatException("contains an invalid object that contains the token for the 1st command");
+        }
+    }
+
+    private void HighlightAllInteractableTokens()
+    {
+        Debug.Log("highlighting all interactable tokens");
+
+        List<GameObject> cardListRef;
+
+        foreach (GameObject reactor in Config.config.reactors)
+        {
+            cardListRef = reactor.GetComponent<ReactorScript>().cardList;
+            if (cardListRef.Count != 0)
+            {
+                cardListRef[0].GetComponent<CardScript>().GlowOn(false);
+            }
+        }
+
+        foreach (GameObject foundation in Config.config.foundations)
+        {
+            cardListRef = foundation.GetComponent<FoundationScript>().cardList;
+            if (cardListRef.Count != 0)
+            {
+                CardScript cardScriptRef;
+                foreach(GameObject card in cardListRef)
+                {
+                    cardScriptRef = card.GetComponent<CardScript>();
+                    if (cardScriptRef.IsHidden)
+                    {
+                        break;
+                    }
+
+                    cardScriptRef.GlowOn(false);
+                }
+            }
+        }
+
+        cardListRef = Config.config.wastePile.GetComponent<WastepileScript>().cardList;
+        if (cardListRef.Count != 0)
+        {
+            cardListRef[0].GetComponent<CardScript>().GlowOn(false);
         }
     }
 
