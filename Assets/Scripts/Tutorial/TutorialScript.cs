@@ -50,7 +50,7 @@ public class TutorialScript : MonoBehaviour
         }
     }
 
-    public void Touch()
+    public void NextButton()
     {
         // the tutorial next button calls this
 
@@ -202,6 +202,14 @@ public class TutorialScript : MonoBehaviour
             tutorialText.transform.GetComponent<RectTransform>().anchoredPosition.Set(0, 45);
         }
         */
+    }
+
+    public void ExitButton()
+    {
+        // the tutorial exit button calls this
+
+        Debug.Log("exit tutorial requested");
+        EndTutorial();
     }
 
     private void EndTutorial()
@@ -384,7 +392,7 @@ public class TutorialScript : MonoBehaviour
     {
         // command format: 
         // 0:Highlight Token, 1:Object(s) Containing Token,   2:Object Index, 3:Token Index, 4:Highlight On/Off, 5:Is Match
-        // 0:HighlightToken,  1:Reactor-Foundation-Wastepile, 2:0-1-2-3,      3:0-Count,     4:On-Off,           5:True-False
+        // 0:HighlightToken,  1:Reactor-Foundation-WastePile, 2:0-1-2-3,      3:0-Count,     4:On-Off,           5:True-False
 
         Debug.Log("highlighting token");
 
