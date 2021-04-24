@@ -47,21 +47,28 @@ public class DeckScript : MonoBehaviour
 
         this.suitSprites = suitSprites;
         cardList = new List<GameObject>();
-        if ((File.Exists("Assets/Resources/GameStates/testState.json") && Application.isEditor) || Config.config.tutorialOn)
+
+        if (Config.config.tutorialOn)
         {
-            StateLoader.saveSystem.UnpackState(StateLoader.saveSystem.gameState, false);
+            Debug.Log("deck start loading tutorial");
+            InstantiateCards(addToLoadPile: true);
+            StateLoader.saveSystem.UnpackState(StateLoader.saveSystem.gameState, true);
             utils.UpdateScore(0);
-            //print("Loading save mode 1");
         }
-        else if (File.Exists(Application.persistentDataPath + "/testState.json") && !Application.isEditor)
+        else if (Application.isEditor && File.Exists("Assets/Resources/GameStates/testState.json"))
         {
+            Debug.Log("editor: deck start loading saved game");
             StateLoader.saveSystem.UnpackState(StateLoader.saveSystem.gameState, false);
             utils.UpdateScore(0);
-            //print("Loading save mode 2");
+        }
+        else if (!Application.isEditor && File.Exists(Application.persistentDataPath + "/testState.json"))
+        {
+            Debug.Log("application: deck start loading saved game");
+            StateLoader.saveSystem.UnpackState(StateLoader.saveSystem.gameState, false);
+            utils.UpdateScore(0);
         }
         else
         {
-            //print("New Game");
             InstantiateCards();
             Shuffle();
             SetUpFoundations();
