@@ -160,7 +160,7 @@ public class TutorialScript : MonoBehaviour
         MoveCardsToLoadPile(Config.config.wastePile.GetComponent<WastepileScript>().cardList);
         MoveCardsToLoadPile(Config.config.matches.GetComponent<MatchedPileScript>().cardList);
 
-        StateLoader.saveSystem.LoadTutorialState("GameStates/" + fileName);
+        StateLoader.saveSystem.LoadTutorialState(fileName);
         StateLoader.saveSystem.UnpackState(state: StateLoader.saveSystem.gameState, isTutorial: true);
     }
 

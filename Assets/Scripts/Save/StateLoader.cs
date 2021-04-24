@@ -130,17 +130,17 @@ public class StateLoader : MonoBehaviour
         gameState = CreateFromJSON(path);
     }
 
-    public void LoadTutorialState(string path)
+    public void LoadTutorialState(string fileName)
     {
         Debug.Log("loading tutorial state");
 
         //load the json into a GameState
-        gameState = CreateFromJSON(path, true);
+        gameState = CreateFromJSON($"Tutorial/{fileName}", true);
     }
 
     public void UnpackState(GameState state, bool isTutorial)
     {
-        Debug.Log("unpacking state");
+        Debug.Log($"unpacking state, isTutorial: {isTutorial}");
 
         LoadPileScript loadPileScript = Config.config.loadPile.GetComponent<LoadPileScript>();
 
