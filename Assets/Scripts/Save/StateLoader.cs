@@ -25,82 +25,44 @@ public class StateLoader : MonoBehaviour
         Debug.Log("writing state");
 
         gameState = new GameState() {
-            wastePile = new List<string>(),
-            deck = new List<string>(),
-            matches = new List<string>(),
             foundations = new List<StringListWrapper>(),
-            reactors = new List<StringListWrapper>(),
-            moveLog = new List<AltMove>(),
-            score = 0,
-            consecutiveMatches = 0,
-            moveCounter = 0,
-            actions = 0,
-            difficulty = ""
+            reactors = new List<StringListWrapper>()
         };
 
         //save foundations
         foreach (GameObject foundation in Config.config.foundations)
         {
-            List<string> tempList = new List<string>();
-            foreach (GameObject token in foundation.GetComponent<FoundationScript>().cardList)
-            {
-                tempList.Insert(0,token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString() 
-                    + "_" + token.GetComponent<CardScript>().IsHidden.ToString());
-            }
-            gameState.foundations.Add(new StringListWrapper() { stringList = tempList });
+            gameState.foundations.Add(new StringListWrapper() {
+                stringList = ConvertCardListToStringList(foundation.GetComponent<FoundationScript>().cardList)
+            });
         }
 
         //save reactors
         foreach (GameObject reactor in Config.config.reactors)
         {
-            List<string> tempList = new List<string>();
-            foreach (GameObject token in reactor.GetComponent<ReactorScript>().cardList)
-            {
-                tempList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString()
-                    + "_" + token.GetComponent<CardScript>().IsHidden.ToString());
-            }
-            gameState.reactors.Add(new StringListWrapper() { stringList = tempList });
+            gameState.reactors.Add(new StringListWrapper() {
+                stringList = ConvertCardListToStringList(reactor.GetComponent<ReactorScript>().cardList)
+            });
         }
 
         //save wastepile
-        List<string> wastePileList = new List<string>();
-        foreach (GameObject token in Config.config.wastePile.GetComponent<WastepileScript>().cardList)
-        {
-            wastePileList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString()
-                + "_" + token.GetComponent<CardScript>().IsHidden.ToString());
-        }
-        gameState.wastePile = wastePileList;
+        gameState.wastePile = ConvertCardListToStringList(Config.config.wastePile.GetComponent<WastepileScript>().cardList);
 
         //save deck
-        List<string> deckList = new List<string>();
-        foreach (GameObject token in Config.config.deck.GetComponent<DeckScript>().cardList)
-        {
-            deckList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString()
-                + "_" + token.GetComponent<CardScript>().IsHidden.ToString());
-        }
-        gameState.deck = deckList;
+        gameState.deck = ConvertCardListToStringList(Config.config.deck.GetComponent<DeckScript>().cardList);
 
         //save matches
-        List<string> matchList = new List<string>();
-        foreach (GameObject token in Config.config.matches.GetComponent<MatchedPileScript>().cardList)
-        {
-            matchList.Insert(0, token.GetComponent<CardScript>().cardSuit + "_" + token.GetComponent<CardScript>().cardNum.ToString()
-                + "_" + token.GetComponent<CardScript>().IsHidden.ToString());
-        }
-        gameState.matches = matchList;
+        gameState.matches = ConvertCardListToStringList(Config.config.matches.GetComponent<MatchedPileScript>().cardList);
 
         //save undo
-        Stack<AltMove> tempMoveLog = new Stack<AltMove>();
+        CardScript cardScriptRef;
+        List<AltMove> saveMoveLog = new List<AltMove>();
         foreach (Move move in UndoScript.undoScript.moveLog)
         {
-            /*print(move.card.GetComponent<CardScript>().cardSuit + "_" + move.card.GetComponent<CardScript>().cardNum.ToString());
-            print(move.origin.name);
-            print(move.moveType);
-            print(move.nextCardWasHidden);
-            print(move.isAction);
-            print(move.remainingActions);*/
-            tempMoveLog.Push(new AltMove() {
-                cardName = move.card.GetComponent<CardScript>().cardSuit + "_" + move.card.GetComponent<CardScript>().cardNum.ToString(),
+            cardScriptRef = move.card.GetComponent<CardScript>();
+
+            saveMoveLog.Add(new AltMove() {
+                cardName = $"{cardScriptRef.cardSuit}_{cardScriptRef.cardNum}",
                 originName = move.origin.name,
                 moveType = move.moveType,
                 nextCardWasHidden = move.nextCardWasHidden,
@@ -111,13 +73,7 @@ public class StateLoader : MonoBehaviour
             });
         }
 
-        List<AltMove> altMoveLog = new List<AltMove>();
-        int altMoveLogSize = tempMoveLog.Count;
-        for (int i = 0; i < altMoveLogSize; i++)
-        {
-            altMoveLog.Add(tempMoveLog.Pop());
-        }
-        gameState.moveLog = altMoveLog;
+        gameState.moveLog = saveMoveLog;
 
         //save other data
         gameState.score = Config.config.score;
@@ -127,17 +83,34 @@ public class StateLoader : MonoBehaviour
         gameState.difficulty = Config.config.difficulty;
 
         //saving to json
-        string json = JsonUtility.ToJson(gameState, true);
+        string json;
         if (Application.isEditor)
         {
+            json = JsonUtility.ToJson(gameState, true);
             File.WriteAllText("Assets/Resources/GameStates/testState.json", json);
         }
         else
         {
+            json = JsonUtility.ToJson(gameState);
             File.WriteAllText(Application.persistentDataPath + "/testState.json", json);
         }
 
         //UnityEditor.AssetDatabase.Refresh();
+    }
+
+    private static List<string> ConvertCardListToStringList(List<GameObject> cardList)
+    {
+        List<string> stringList = new List<string>();
+        CardScript cardScriptRef;
+        
+        // go backwards through the list as the top cards are at index 0
+        for (int i = cardList.Count - 1; i != -1; i--)
+        {
+            cardScriptRef = cardList[i].GetComponent<CardScript>();
+            stringList.Add($"{cardScriptRef.cardSuit}_{cardScriptRef.cardNum}_{cardScriptRef.IsHidden}");
+        }
+
+        return stringList;
     }
 
     public void LoadState()
@@ -249,13 +222,13 @@ public class StateLoader : MonoBehaviour
 
         CardScript cardScriptRef;
 
-        // going through all the saved moves and recreating them
-        foreach (AltMove move in moves)
+        // going backwards through all the saved moves and recreate them
+        for (int i = moves.Count - 1; i != -1; i--)
         {
             tempMove = new Move();
 
             // extracting move info relating to the specific card
-            segments = move.cardName.Split('_');
+            segments = moves[i].cardName.Split('_');
             suite = segments[0];
             number = System.Int32.Parse(segments[1]);
 
@@ -273,7 +246,7 @@ public class StateLoader : MonoBehaviour
             // looking for the move's card containg object
             foreach (GameObject origin in origins)
             {
-                if (origin.name == move.originName)
+                if (origin.name == moves[i].originName)
                 {
                     tempMove.origin = origin;
                     break;
@@ -281,19 +254,19 @@ public class StateLoader : MonoBehaviour
             }
 
             // other variables
-            tempMove.isAction = move.isAction;
-            tempMove.moveType = move.moveType;
-            tempMove.nextCardWasHidden = move.nextCardWasHidden;
-            tempMove.remainingActions = move.remainingActions;
-            tempMove.score = move.score;
-            tempMove.moveNum = move.moveNum;
+            tempMove.isAction = moves[i].isAction;
+            tempMove.moveType = moves[i].moveType;
+            tempMove.nextCardWasHidden = moves[i].nextCardWasHidden;
+            tempMove.remainingActions = moves[i].remainingActions;
+            tempMove.score = moves[i].score;
+            tempMove.moveNum = moves[i].moveNum;
 
             // making the move official
             UndoScript.undoScript.moveLog.Push(tempMove);
         }
     }
 
-    private static void SetUpLocationWithCards(List<string> tokenStrings, List<GameObject> cardList, GameObject newLocation)
+    private static void SetUpLocationWithCards(List<string> stringList, List<GameObject> cardList, GameObject newLocation)
     {
         // seting up the new location with cards using the given commands, and cards
 
@@ -305,7 +278,7 @@ public class StateLoader : MonoBehaviour
 
         CardScript cardScriptRef;
 
-        foreach (string s in tokenStrings)
+        foreach (string s in stringList)
         {
             // extracting info relating to the specific card
             segments = s.Split('_');
