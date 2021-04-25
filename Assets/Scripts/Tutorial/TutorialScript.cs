@@ -291,15 +291,15 @@ public class TutorialScript : MonoBehaviour
     private void HighlightContainer(List<string> command)
     {
         // command format: 
-        // 0:HighlightContainer, 1:Container(s) to Highlight,           2:Highlight On/Off, 3:Alert Level
-        // 0:HighlightContainer, 1:Reactors-Foundations-Deck-WastePile, 2:On/Off,           3:1-2
+        // 0:HighlightContainer, 1:Container(s) to Highlight,                 2:Highlight On/Off, 3:Index,   4:Alert Level
+        // 0:HighlightContainer, 1:Reactor(s)-Foundation(s)-Deck-WastePile,   2:On/Off,           3:0-Count, 4:1-2
 
         Debug.Log("highlighting container");
 
         // detect if the command is the right length
-        if (command.Count != 4)
+        if (command.Count < 3)
         {
-            throw new FormatException("does not contain only 4 entries");
+            throw new FormatException("contains less than 3 entries");
         }
 
         // detect if the 2nd command is valid
@@ -318,15 +318,15 @@ public class TutorialScript : MonoBehaviour
                 byte alertLevel;
                 try
                 {
-                    alertLevel = byte.Parse(command[3]);
+                    alertLevel = byte.Parse(command[4]);
                 }
                 catch (FormatException)
                 {
-                    throw new FormatException("does not contain a byte in the 3rd command");
+                    throw new FormatException("does not contain a byte in the 4th command");
                 }
-                if (alertLevel != 1 || alertLevel != 2)
+                if (alertLevel != 1 && alertLevel != 2)
                 {
-                    throw new FormatException("does not properly specify either \"1\" nor \"2\" for the 3rd command");
+                    throw new FormatException("does not properly specify either \"1\" nor \"2\" for the 4th command");
                 }
 
                 foreach (GameObject reactor in Config.config.reactors)
@@ -340,6 +340,48 @@ public class TutorialScript : MonoBehaviour
                 {
                     reactor.GetComponent<ReactorScript>().GlowOff();
                 }
+            }
+        }
+
+
+        // detect if the container to highlight is a reactor
+        else if (command[1] == "Reactor")
+        {
+            byte index;
+            try
+            {
+                index = byte.Parse(command[3]);
+            }
+            catch (FormatException)
+            {
+                throw new FormatException("does not contain a byte in the 3rd command");
+            }
+            if (index < 0 || index > 3)
+            {
+                throw new FormatException("does not properly specify a number between 0 and 3 for the 3rd command");
+            }
+
+            if (highlightOn)
+            {
+                byte alertLevel;
+                try
+                {
+                    alertLevel = byte.Parse(command[4]);
+                }
+                catch (FormatException)
+                {
+                    throw new FormatException("does not contain a byte in the 4th command");
+                }
+                if (alertLevel != 1 && alertLevel != 2)
+                {
+                    throw new FormatException("does not properly specify either \"1\" nor \"2\" for the 4th command");
+                }
+
+                Config.config.reactors[index].GetComponent<ReactorScript>().GlowOn(alertLevel);
+            }
+            else
+            {
+                Config.config.reactors[index].GetComponent<ReactorScript>().GlowOff();
             }
         }
 
@@ -359,6 +401,32 @@ public class TutorialScript : MonoBehaviour
                 {
                     foundation.GetComponent<FoundationScript>().GlowOff();
                 }
+            }
+        }
+
+        else if (command[1] == "Foundation")
+        {
+            byte index;
+            try
+            {
+                index = byte.Parse(command[3]);
+            }
+            catch (FormatException)
+            {
+                throw new FormatException("does not contain a byte in the 3rd command");
+            }
+            if (index < 0 || index > 3)
+            {
+                throw new FormatException("does not properly specify a number between 0 and 3 for the 3rd command");
+            }
+
+            if (highlightOn)
+            {
+                Config.config.foundations[index].GetComponent<FoundationScript>().GlowOn();
+            }
+            else
+            {
+                Config.config.foundations[index].GetComponent<FoundationScript>().GlowOff();
             }
         }
 
