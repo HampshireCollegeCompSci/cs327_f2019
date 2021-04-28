@@ -24,12 +24,25 @@ public class TutorialScript : MonoBehaviour
 
         UtilsScript.global.SetInputStopped(true);
         tutorial.SetActive(true);
+        UpdateHighlightObjectsColor(new Color(1, 1, 0, 0.35f));
 
         commandQueue = new Queue<List<string>>();
         commandList = CreateFromJSON();
         CommandReader(commandList);
         waiting = false;
         NextStep();
+    }
+
+    private void UpdateHighlightObjectsColor(Color newColor)
+    {
+        tutorialReactors.GetComponent<Image>().color = newColor;
+        tutorialScore.GetComponent<Image>().color = newColor;
+        tutorialMoveCounter.GetComponent<Image>().color = newColor;
+        tutorialUndo.GetComponent<Image>().color = newColor;
+        tutorialPause.GetComponent<Image>().color = newColor;
+        tutorialFoundations.GetComponent<Image>().color = newColor;
+        tutorialDeck.GetComponent<Image>().color = newColor;
+        tutorialWastePile.GetComponent<Image>().color = newColor;
     }
 
     private void CommandReader(List<ArgumentListWrapper> commandList)
