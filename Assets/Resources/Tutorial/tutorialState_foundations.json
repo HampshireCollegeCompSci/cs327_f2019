@@ -1,0 +1,68 @@
+{
+	"wastePile": [
+		"diamonds_13_False",
+		"hearts_4_False",
+		"clubs_10_False"
+	],
+	"deck": [],
+	"matches": [
+		"hearts_7_True",
+		"diamonds_5_True",
+		"spades_10_False",
+		"clubs_3_True",
+		"clubs_7_True",
+		"diamonds_8_True",
+		"hearts_3_False",
+		"diamonds_2_False",
+		"hearts_1_False",
+		"spades_11_True",
+		"diamonds_1_True",
+		"clubs_2_True",
+		"clubs_4_False",
+		"spades_3_False",
+		"spades_13_False",
+		"diamonds_12_False",
+		"hearts_11_False"
+	],
+	"foundations": [
+		{
+			"stringList": []
+		},
+		{
+			"stringList": []
+		},
+		{
+			"stringList": []
+		},
+		{
+			"stringList": []
+		}
+	],
+	"reactors": [
+		{
+			"stringList": [
+				"spades_1_False",
+				"spades_12_False"
+			]
+		},
+		{
+			"stringList": [
+				"clubs_12_False"
+			]
+		},
+		{
+			"stringList": [
+				"diamonds_3_False"
+			]
+		},
+		{
+			"stringList": []
+		}
+	],
+	"moveLog": [],
+	"score": 2000,
+	"consecutiveMatches": 0,
+	"moveCounter": 0,
+	"actions": 15,
+	"difficulty": "MEDIUM"
+}

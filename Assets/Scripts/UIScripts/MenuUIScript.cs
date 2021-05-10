@@ -208,7 +208,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI starting tutorial");
 
-        StateLoader.saveSystem.LoadTutorialState("tutorialStart");
+        StateLoader.saveSystem.LoadTutorialState("tutorialState_start");
         Config.config.SetDifficulty(StateLoader.saveSystem.gameState.difficulty);
         Config.config.tutorialOn = true;
         //Config.config.DeleteSave();

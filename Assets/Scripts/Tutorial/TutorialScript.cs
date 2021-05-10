@@ -82,7 +82,7 @@ public class TutorialScript : MonoBehaviour
 
         if (commandQueue.Count == 0)
         {
-            Debug.LogError("tutorial command list does not end with \"EndTutorial\". ending tutorial now");
+            Debug.Log("the end of the tutorial command list has been reached, ending the tutorial now");
             EndTutorial();
             return;
         }

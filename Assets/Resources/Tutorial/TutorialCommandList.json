@@ -1,68 +1,554 @@
 {
-  "commands": [
-    {
-      "argumentList": [
-        "ShowMask",
-        "TransparentMask"
-      ]
-    },
-    {
-      "argumentList": [
-        "ShowText",
-        "Text before mask applied",
-        "middle"
-      ]
-    },
-    {
-      "argumentList": [
-        "WaitForTouch"
-      ]
-    },
-    {
-      "argumentList": [
-        "ShowMask",
-        "TestMask"
-      ]
-    },
-    {
-      "argumentList": [
-        "ShowText",
-        "Hey! Masks work now!",
-        "middle"
-      ]
-    },
-    {
-      "argumentList": [
-        "WaitForTouch"
-      ]
-    },
-    {
-      "argumentList": [
-        "ShowText",
-        "And we can adjust text!",
-        "middle"
-      ]
-    },
-    {
-      "argumentList": [
-        "WaitForTouch"
-      ]
-    },
-    {
-      "argumentList": [
-        "LoadSave",
-        "tutorialState2"
-      ]
-    },
-    {
-      "argumentList": [
-        "WaitForTouch"
-      ]
-    },
-    {
-      "argumentList": [
-        "EndTutorial"
-      ]
-    }
-  ]
+	"commands": [
+		{
+			"argumentList": [
+				"ShowText",
+				"Welcome to the visual tutorial.\nTo continue, press on next below."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_tokens"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightAllInteractableTokens"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"Any tokens that are fully visible and not grayed out can be interacted with.\nThey are currently being highlighted yellow."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"UnHighlightAllTokens"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"Reactor",
+				"0",
+				"0",
+				"On",
+				"True"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"Reactor",
+				"1",
+				"0",
+				"On",
+				"True"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"Foundation",
+				"0",
+				"0",
+				"On",
+				"True"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"WastePile",
+				"0",
+				"0",
+				"On",
+				"True"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"Remove tokens from the field by matching them together.\nMatching tokens share their rank and suit color.\nTokens that can be matched together right now are being highlighted green."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"UnHighlightAllTokens"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"MoveCounter",
+				"On"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"Each token interaction depletes the move counter by one.\nHowever, matching tokens or undoing do not count towards this."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"MoveCounter",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Foundations",
+				"On"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"These are the foundations. Tokens can be stacked here in order of their rank, with ace counting as one."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Foundations",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"Foundation",
+				"1",
+				"1",
+				"On",
+				"False"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"Foundation",
+				"2",
+				"0",
+				"On",
+				"False"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"Foundation",
+				"1",
+				"2",
+				"On",
+				"True"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"Reactor",
+				"2",
+				"0",
+				"On",
+				"True"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"Here is an example of a move you could make to be able to match the two red 3s."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"UnHighlightAllTokens"
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_foundations"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"Clear the foundations of all tokens to win the game."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_tokens"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Reactors",
+				"On"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"These are the reactors. Individual tokens can be moved to their respective reactors, but you can't move them back out unless it's for a match."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Reactors",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"Foundation",
+				"0",
+				"0",
+				"On",
+				"False"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"Foundation",
+				"1",
+				"0",
+				"On",
+				"False"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"Foundation",
+				"2",
+				"0",
+				"On",
+				"False"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"Foundation",
+				"3",
+				"0",
+				"On",
+				"False"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightContainer",
+				"Reactor",
+				"On",
+				"0",
+				"2"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightContainer",
+				"Reactor",
+				"On",
+				"3",
+				"1"
+			]
+		},
+		{
+			"argumentList": [
+				"SetMoveCounterText",
+				"0"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"When the move counter reaches 0, all top foundation cards (from left to right) move to their respective reactors automatically, resetting the movecounter afterwards."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"UnHighlightAllTokens"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightContainer",
+				"Reactor",
+				"Off",
+				"3",
+				""
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_reactors"
+
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"If the sum of tokens in a reactor goes above it's limit, you lose the game. Aces count as 1 and all face cards count as 10 towards these limits."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightContainer",
+				"Reactors",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"MoveCounter",
+				"On"
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_tokens"
+
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"You can manually trigger the movecounter's 0 effect by pressing the button attached to the side of it."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"MoveCounter",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Deck",
+				"On"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"This is the deck. You can press its button to add at most 3 new tokens to the waste pile. Pressing this counts towards the move counter."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Deck",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"WastePile",
+				"On"
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_deck"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"The waste pile can be scrolled through using the conveyor belt or the scroll bar to view any tokens in it that might be hidden offscreen."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"WastePile",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Undo",
+				"On"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"You can press the undo button to undo the entire last move."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_tokens"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Undo",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Scoreboard",
+				"On"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"The scoreboard shows the cumulative points for each match you have made during a game.\nChaining together consecutive matches grants increasing amounts of bonus points."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"If you match all tokens by the end of the game, you get bonus points."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Scoreboard",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"Your game is saved after each move or undo and can be continued later. "
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"There are three gameplay difficulties to choose from the play menu. The harder it is, the fewer moves you get until the move counter reaches 0 and the lower the reactor limits are."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"That's the end of the tutorial!"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		}
+	]
 }
