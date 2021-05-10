@@ -72,6 +72,7 @@ public class TutorialScript : MonoBehaviour
         if (waiting)
         {
             waiting = false;
+            UtilsScript.global.soundController.ButtonPressSound();
             NextStep();
         }
     }
