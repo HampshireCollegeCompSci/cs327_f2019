@@ -126,6 +126,10 @@ public class TutorialScript : MonoBehaviour
             {
                 UnHighlightAllTokens();
             }
+            else if (command[0] == "SetMoveCounterText")
+            {
+                SetMoveCounterText(command);
+            }
             else
             {
                 throw new FormatException("does not contain a valid command request for the 0th command");
@@ -267,7 +271,7 @@ public class TutorialScript : MonoBehaviour
         {
             tutorialReactors.SetActive(highlightOn);
         }
-        else if (command[1] == "Score")
+        else if (command[1] == "Scoreboard")
         {
             tutorialScore.SetActive(highlightOn);
         }
@@ -680,6 +684,18 @@ public class TutorialScript : MonoBehaviour
         {
             card.GetComponent<CardScript>().GlowOff();
         }
+    }
+
+    private void SetMoveCounterText(List<string> command)
+    {
+        Debug.Log("setting move counter text");
+
+        if (command.Count != 2)
+        {
+            throw new FormatException("does not contain only 2 entries");
+        }
+
+        UtilsScript.global.moveCounter.GetComponent<ActionCountScript>().UpdateActionText(command[1]);
     }
 
     private static List<ArgumentListWrapper> CreateFromJSON()
