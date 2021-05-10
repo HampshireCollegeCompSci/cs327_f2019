@@ -134,6 +134,11 @@ public class StateLoader : MonoBehaviour
     {
         Debug.Log("loading tutorial state");
 
+        if (!File.Exists($"Assets/Resources/Tutorial/{fileName}.json"))
+        {
+            throw new System.IO.FileNotFoundException($"Assets/Resources/Tutorial/{fileName}.json");
+        }
+
         //load the json into a GameState
         gameState = CreateFromJSON($"Tutorial/{fileName}", true);
     }
@@ -253,6 +258,15 @@ public class StateLoader : MonoBehaviour
                 }
             }
 
+            if (tempMove.card == null)
+            {
+                throw new System.NullReferenceException($"card \"{moves[i].cardName}\" was not found");
+            }
+            if (tempMove.origin == null)
+            {
+                throw new System.NullReferenceException($"origin \"{moves[i].originName}\" was not found");
+            }
+
             // other variables
             tempMove.isAction = moves[i].isAction;
             tempMove.moveType = moves[i].moveType;
@@ -276,6 +290,7 @@ public class StateLoader : MonoBehaviour
         int number;
         bool hiddenState;
 
+        bool foundCard;
         CardScript cardScriptRef;
 
         foreach (string s in stringList)
@@ -287,6 +302,7 @@ public class StateLoader : MonoBehaviour
             hiddenState = bool.Parse(segments[2]);
 
             // looking for the card that needs to be moved
+            foundCard = false;
             foreach (GameObject card in cardList)
             {
                 cardScriptRef = card.GetComponent<CardScript>();
@@ -298,8 +314,14 @@ public class StateLoader : MonoBehaviour
                         cardScriptRef.SetFoundationVisibility(false);
                     }
 
+                    foundCard = true;
                     break;
                 }
+            }
+
+            if (!foundCard)
+            {
+                throw new System.NullReferenceException($"card \"{s}\" was not found");
             }
         }
     }
