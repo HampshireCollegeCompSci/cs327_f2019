@@ -22,6 +22,7 @@ public class GameInfo
     //cardsToDeal = int
     //(how many cards to deal per click on the deck)
 
+    public byte suitsToUseStartIndex;
     public int foundationStartingSize;
     public byte wastepileAnimationSpeedSlow;
     public byte wastepileAnimationSpeedFast;

@@ -30,9 +30,16 @@ public class ActionCountScript : MonoBehaviour
         flasher = null;
     }
 
-    public void UpdateActionText()
+    public void UpdateActionText(string setTo = null)
     {
-        actionText.text = (Config.config.actionMax - Config.config.actions).ToString();
+        if (setTo == null)
+        {
+            actionText.text = (Config.config.actionMax - Config.config.actions).ToString();
+        }
+        else
+        {
+            actionText.text = setTo;
+        }
     }
 
     public void PressKnob()

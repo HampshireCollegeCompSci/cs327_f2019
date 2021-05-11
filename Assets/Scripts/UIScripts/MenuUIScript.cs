@@ -1,109 +1,98 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.IO;
 
 public class MenuUIScript : MonoBehaviour
 {
+    // MainMenuScene buttons
+    public GameObject playButton, tutorialButton, creditsButton;
+
+    // LevelSelectScene buttons
+    public GameObject continueButton, easyButton, normalButton, hardButton, returnButton;
+
+    // LoadingScene text
+    public GameObject loadingText;
+
+    // PauseScene buttons
+    public GameObject resumeButton, restartButton;
+
+    // PauseScene and SummaryScene button
+    public GameObject mainMenuButton;
+
+    // SummaryScene buttons
+    public GameObject playAgainButton;
+
+
     private void Start()
     {
+        Debug.Log("starting MenuUIScript");
 
-        if (GameObject.Find("Spacebaby Loading") != null)
-            GameObject.Find("Spacebaby Loading").GetComponent<Animator>().enabled = true;
+        string activeSceneName = SceneManager.GetActiveScene().name;
 
-        //update main menu button txt
-        if (GameObject.Find("Play") != null)
+        if (activeSceneName == "MainMenuScene")
         {
-            GameObject button = GameObject.Find("Play");
-            button.GetComponentInChildren<Text>().text = Config.config.menuSceneButtonsTxtEnglish[0].ToUpper();
+            Debug.Log("updating main menu buttons");
+            UpdateButtonText(playButton, Config.config.menuSceneButtonsTxtEnglish[0]);
+            UpdateButtonText(tutorialButton, Config.config.menuSceneButtonsTxtEnglish[1]);
+            UpdateButtonText(creditsButton, Config.config.menuSceneButtonsTxtEnglish[2]);
         }
-        if (GameObject.Find("Tutorial") != null)
+        else if (activeSceneName == "LevelSelectScene")
         {
-            GameObject button = GameObject.Find("Tutorial");
-            button.GetComponentInChildren<Text>().text = Config.config.menuSceneButtonsTxtEnglish[1].ToUpper();
+            Debug.Log("updating level select buttons");
+            UpdateButtonText(continueButton, Config.config.levelSceneButtonsTxtEnglish[0]);
+            UpdateButtonText(easyButton, Config.config.levelSceneButtonsTxtEnglish[1]);
+            UpdateButtonText(normalButton, Config.config.levelSceneButtonsTxtEnglish[2]);
+            UpdateButtonText(hardButton, Config.config.levelSceneButtonsTxtEnglish[3]);
+            UpdateButtonText(returnButton, Config.config.levelSceneButtonsTxtEnglish[4]);
         }
-        if (GameObject.Find("Credits") != null)
+        else if (activeSceneName == "LoadingScene")
         {
-            GameObject button = GameObject.Find("Credits");
-            button.GetComponentInChildren<Text>().text = Config.config.menuSceneButtonsTxtEnglish[2].ToUpper();
+            if (loadingText != null)
+            {
+                Debug.Log("updating loading text");
+                loadingText.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish;
+            }
         }
-        if (GameObject.Find("Loading") != null)
+        else if (SceneManager.GetSceneByName("PauseScene").isLoaded)
         {
-            GameObject txt = GameObject.Find("Loading");
-            txt.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish.ToUpper();
+            Debug.Log("updating pause scene buttons");
+            UpdateButtonText(resumeButton, Config.config.pauseSceneButtonsTxtEnglish[0]);
+            UpdateButtonText(restartButton, Config.config.pauseSceneButtonsTxtEnglish[1]);
+            //UpdateButtonText(settingsButton, Config.config.pauseSceneButtonsTxtEnglish[2]);
+            UpdateButtonText(mainMenuButton, Config.config.pauseSceneButtonsTxtEnglish[3]);
         }
-
-        //update level txt
-        if (GameObject.Find("Continue") != null)
+        else if (activeSceneName == "SummaryScene")
         {
-            GameObject button = GameObject.Find("Continue");
-            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[0].ToUpper();
-        }
-        if (GameObject.Find("Easy") != null)
-        {
-            GameObject button = GameObject.Find("Easy");
-            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[1].ToUpper();
-        }
-        if (GameObject.Find("Normal") != null)
-        {
-            GameObject button = GameObject.Find("Normal");
-            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[2].ToUpper();
-        }
-        if (GameObject.Find("Hard") != null)
-        {
-            GameObject button = GameObject.Find("Hard");
-            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[3].ToUpper();
-        }
-        // update return txt
-        if (GameObject.Find("Return") != null)
-        {
-            GameObject button = GameObject.Find("Return");
-            button.GetComponentInChildren<Text>().text = Config.config.levelSceneButtonsTxtEnglish[4].ToUpper();
-        }
-        //update pause menu txt
-        if (GameObject.Find("Resume") != null)
-        {
-            GameObject button = GameObject.Find("Resume");
-            button.GetComponentInChildren<Text>().text = Config.config.pauseSceneButtonsTxtEnglish[0].ToUpper();
-        }
-        if (GameObject.Find("Restart") != null)
-        {
-            GameObject button = GameObject.Find("Restart");
-            button.GetComponentInChildren<Text>().text = Config.config.pauseSceneButtonsTxtEnglish[1].ToUpper();
-        }
-        if (GameObject.Find("Settings") != null)
-        {
-            GameObject button = GameObject.Find("Settings");
-            button.GetComponentInChildren<Text>().text = Config.config.pauseSceneButtonsTxtEnglish[2].ToUpper();
-        }
-        //update summary txt
-        if (GameObject.Find("MainMenu") != null)
-        {
-            GameObject button = GameObject.Find("MainMenu");
-            button.GetComponentInChildren<Text>().text = Config.config.summarySceneButtonsTxtEnglish[0].ToUpper();
-        }
-        if (GameObject.Find("PlayAgain") != null)
-        {
-            GameObject button = GameObject.Find("PlayAgain");
-            button.GetComponentInChildren<Text>().text = Config.config.summarySceneButtonsTxtEnglish[1].ToUpper();
+            Debug.Log("updating summary scene buttons");
+            UpdateButtonText(mainMenuButton, Config.config.summarySceneButtonsTxtEnglish[0]);
+            UpdateButtonText(playAgainButton, Config.config.summarySceneButtonsTxtEnglish[1]);
         }
 
     }
 
+    private void UpdateButtonText(GameObject button, string text)
+    {
+        button.transform.GetChild(2).GetComponent<Text>().text = text;
+    }
+
     public void Play()
     {
+        Debug.Log("MenuUI play");
+
         //Preprocessor Directive to make builds work
         #if (UNITY_EDITOR)
             UnityEditor.AssetDatabase.Refresh();
         #endif
+
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         SceneManager.LoadScene("LevelSelectScene");
     }
 
     public void NewGame(bool isContinue = false)
     {
+        Debug.Log("MenuUI new game");
+
         UndoScript.undoScript.moveLog.Clear();
         if (!isContinue)
         {
@@ -121,34 +110,35 @@ public class MenuUIScript : MonoBehaviour
 
     public void UndoButton()
     {
+        Debug.Log("MenuUI undo button");
+
         if (UtilsScript.global.IsInputStopped())
             return;
 
         UndoScript.undoScript.undo();
         Config.config.GetComponent<SoundController>().UndoPressSound();
-
-        /*Animator undoAnim = GameObject.Find("Undo").GetComponentInChildren<Animator>();
-        if (!undoAnim.enabled)
-            undoAnim.enabled = true;
-        else
-            undoAnim.Play("");
-        */
     }
 
     public void PlayAgain()
     {
+        Debug.Log("MenuUI play again");
+
         Config.config.DeleteSave();
         NewGame();
     }
 
     public void Restart()
     {
+        Debug.Log("MenuUI restart");
+
         Config.config.DeleteSave();
         NewGame();
     }
 
     public void MainMenu()
     {
+        Debug.Log("MenuUI main menu");
+
         Config.config.gamePaused = false;
         if (Config.config != null)
         {
@@ -165,18 +155,24 @@ public class MenuUIScript : MonoBehaviour
     //possibly be renamed to settings
     public void Settings()
     {
+        Debug.Log("MenuUI settings");
+
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         SceneManager.LoadScene("SoundScene");
     }
 
     public void Credits()
     {
+        Debug.Log("MenuUI credits");
+
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         SceneManager.LoadScene("CreditScene");
     }
 
     public void PauseGame()
     {
+        Debug.Log("MenuUI pause game");
+
         if (UtilsScript.global.IsInputStopped())
             return;
 
@@ -189,6 +185,8 @@ public class MenuUIScript : MonoBehaviour
 
     public void ResumeGame()
     {
+        Debug.Log("MenuUI resume game");
+
         Config.config.gamePaused = false;
         //TODO load the saved game scene then uncomment the above code
         Config.config.GetComponent<SoundController>().ButtonPressSound();
@@ -197,24 +195,29 @@ public class MenuUIScript : MonoBehaviour
 
     public void Return()
     {
+        Debug.Log("MenuUI return");
+
         Config.config.GetComponent<SoundController>().ButtonPressSound();
         if (Config.config.gamePaused)
             SceneManager.UnloadSceneAsync("SoundScene");
         else
             SceneManager.LoadScene("MainMenuScene");
     }
+
     public void Tutorial()
     {
-        Debug.Log("tutorial <3");
-        StateLoader.saveSystem.loadTutorialState("GameStates/tutorialState");
-        Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
+        Debug.Log("MenuUI starting tutorial");
+
+        StateLoader.saveSystem.LoadTutorialState("tutorialState_start");
+        Config.config.SetDifficulty(StateLoader.saveSystem.gameState.difficulty);
         Config.config.tutorialOn = true;
-        Config.config.DeleteSave();
+        //Config.config.DeleteSave();
         NewGame();
     }
+
     public void HardDifficulty()
     {
-        Config.config.setDifficulty("HARD");
+        Config.config.SetDifficulty("HARD");
         Config.config.tutorialOn = false;
         Config.config.DeleteSave();
         NewGame();
@@ -222,7 +225,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void MediumDifficulty()
     {
-        Config.config.setDifficulty("MEDIUM");
+        Config.config.SetDifficulty("MEDIUM");
         Config.config.tutorialOn = false;
         Config.config.DeleteSave();
         NewGame();
@@ -230,7 +233,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void EasyDifficulty()
     {
-        Config.config.setDifficulty("EASY");
+        Config.config.SetDifficulty("EASY");
         Config.config.tutorialOn = false;
         Config.config.DeleteSave();
         NewGame();
@@ -238,6 +241,8 @@ public class MenuUIScript : MonoBehaviour
 
     public void Continue()
     {
+        Debug.Log("MenuUI continue");
+
         if (Application.isEditor)
         {
             if (File.Exists("Assets/Resources/GameStates/testState.json"))
@@ -248,8 +253,8 @@ public class MenuUIScript : MonoBehaviour
                 #endif
 
 
-                StateLoader.saveSystem.loadState();
-                Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
+                StateLoader.saveSystem.LoadState();
+                Config.config.SetDifficulty(StateLoader.saveSystem.gameState.difficulty);
                 Config.config.tutorialOn = false;
                 NewGame(true);
             }
@@ -258,8 +263,8 @@ public class MenuUIScript : MonoBehaviour
         {
             if (File.Exists(Application.persistentDataPath + "/testState.json"))
             {
-                StateLoader.saveSystem.loadState();
-                Config.config.setDifficulty(StateLoader.saveSystem.gameState.difficulty);
+                StateLoader.saveSystem.LoadState();
+                Config.config.SetDifficulty(StateLoader.saveSystem.gameState.difficulty);
                 Config.config.tutorialOn = false;
                 NewGame(true);
             }
@@ -269,37 +274,11 @@ public class MenuUIScript : MonoBehaviour
 
     public void MakeActionsMax()
     {
+        Debug.Log("MenuUI make actions max");
+
         if (UtilsScript.global.IsInputStopped())
             return;
 
         Config.config.deck.GetComponent<DeckScript>().StartNextCycle(manuallyTriggered: true);
     }
-
-    public void NextTutorialStep()
-    {
-        if (Config.config.tutorialOn)
-        {
-            GameObject.Find("TutorialController").GetComponent<TutorialScript>().executeFlag = true;
-        }
-    }
-
-    //IEnumerator ButtonPressedAnim(GameObject button, string scene, bool additive = false, bool unload = false)
-    //{
-    //    Config.config.GetComponent<SoundController>().ButtonPressSound();
-    //    button.GetComponentInChildren<Animator>().enabled = true;
-
-    //    for (float ft = 0.2f; ft >= 0; ft -= 0.1f)
-    //    {
-    //        yield return new WaitForSeconds(0.08f);
-    //    }
-
-    //    button.GetComponentInChildren<Animator>().enabled = false;
-
-    //    if (!additive && !unload)
-    //        SceneManager.LoadScene(scene);
-    //    else if (additive)
-    //        SceneManager.LoadScene(scene, LoadSceneMode.Additive);
-    //    else if (unload)
-    //        SceneManager.UnloadSceneAsync(scene);
-    //}
 }

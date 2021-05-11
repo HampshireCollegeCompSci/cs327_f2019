@@ -5,47 +5,66 @@ using UnityEngine.UI;
 
 public class ResultsScript : MonoBehaviour
 {
-    public GameObject highScore;
-    public GameObject leastMoves;
-    public GameObject moves;
+    public Text state;
 
-    public GameObject spaceBaby;
+    public Text scoreStat;
+    public Text highScore, highScoreStat;
+
+    public Text leastMoves, leastMovesStat;
+    public Text movesStat;
+
+    public SpaceBabyController spaceBaby;
     public Sprite spaceShipDebris;
     public GameObject spaceShip;
 
     // Start is called before the first frame update
     void Start()
     {
-        int lastHighScore = PlayerPrefs.GetInt(Config.config.difficulty + "HighScore");
-        int lastLeastMoves = PlayerPrefs.GetInt(Config.config.difficulty + "Moves");
-
-        if (Config.config.score > lastHighScore)
-        {
-            //highScore.GetComponent<Text>().text = "NEW " + Config.config.difficulty + " HIGH SCORE " + Config.config.score;
-            highScore.GetComponent<Text>().text = Config.config.difficulty + " HIGH SCORE " + Config.config.score;
-            highScore.GetComponent<Text>().color = Color.cyan;
-        }
-        else
-            highScore.GetComponent<Text>().text = "HIGH SCORE " + lastHighScore;
-
-        if (Config.config.gameWin && Config.config.moveCounter < lastLeastMoves)
-        {
-            //leastMoves.GetComponent<Text>().text = "NEW " + Config.config.difficulty + " BEST MOVES: " + PlayerPrefs.GetInt(Config.config.difficulty + "Moves");
-            leastMoves.GetComponent<Text>().text = Config.config.difficulty + " BEST MOVES " + PlayerPrefs.GetInt(Config.config.difficulty + "Moves");
-            leastMoves.GetComponent<Text>().color = Color.cyan;
-        }
-        else
-            leastMoves.GetComponent<Text>().text = "BEST MOVES " + lastLeastMoves;
-
-        moves.GetComponent<Text>().text = "MOVES " + Config.config.moveCounter;
-
+        // state
         if (Config.config.gameWin)
+            state.text = Config.config.gameStateTxtEnglish[0].ToUpper();
+        else
+            state.text = Config.config.gameStateTxtEnglish[1].ToUpper();
+
+        // score
+        scoreStat.text = Config.config.score.ToString();
+
+        // high score
+        highScore.text = Config.config.difficulty + " HIGH SCORE";
+
+        int last = PlayerPrefs.GetInt(Config.config.difficulty + "HighScore");
+        if (Config.config.score > last)
         {
-            spaceBaby.GetComponent<SpaceBabyController>().BabyWin(Config.config.matchCounter);
+            highScore.color = Color.cyan;
+            highScoreStat.color = Color.cyan;
+            highScoreStat.text = Config.config.score.ToString();
         }
         else
+            highScoreStat.text = last.ToString();
+
+
+        // least moves
+        last = PlayerPrefs.GetInt(Config.config.difficulty + "Moves");
+        if (Config.config.gameWin && Config.config.moveCounter < last)
         {
-            spaceBaby.GetComponent<SpaceBabyController>().BabyLose();
+            leastMoves.color = Color.cyan;
+            leastMovesStat.color = Color.cyan;
+            leastMovesStat.text = Config.config.moveCounter.ToString();
+        }
+        else
+            leastMovesStat.text = last.ToString();
+
+
+        // moves
+        movesStat.text = Config.config.moveCounter.ToString();
+
+
+        // spacebaby
+        if (Config.config.gameWin)
+            spaceBaby.BabyWin(Config.config.matchCounter);
+        else
+        {
+            spaceBaby.BabyLose();
             SpaceShipExplode();
         }
 

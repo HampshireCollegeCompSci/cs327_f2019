@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,74 +8,96 @@ public class TutorialScript : MonoBehaviour
 {
     private List<ArgumentListWrapper> commandList;
     private Queue<List<string>> commandQueue;
-    public bool executeFlag = true;
+    private bool waiting;
 
-    public GameObject tutorialText;
-    public GameObject tutorialMask;
-    public GameObject tutorialNext;
+    public GameObject tutorial, tutorialText;
+    public GameObject tutorialReactors, tutorialScore, tutorialMoveCounter;
+    public GameObject tutorialUndo, tutorialPause;
+    public GameObject tutorialFoundations, tutorialDeck, tutorialWastePile;
 
     private void Awake()
     {
         if (!Config.config.tutorialOn)
-        {
-            gameObject.SetActive(false);
-        }
-        else
-        {
-            tutorialText.SetActive(true);
-            tutorialNext.SetActive(true);
-            tutorialMask.SetActive(true);
-        }
-    }
+            return;
 
-    void Start()
-    {
+        Debug.Log("starting tutorialScript");
+
+        UtilsScript.global.SetInputStopped(true);
+        tutorial.SetActive(true);
+        UpdateHighlightObjectsColor(new Color(1, 1, 0, 0.35f));
+
         commandQueue = new Queue<List<string>>();
         commandList = CreateFromJSON();
-        foreach (ArgumentListWrapper command in commandList)
-        {
-            print(command.argumentList);
-        }
         CommandReader(commandList);
+        waiting = false;
+        NextStep();
     }
 
-    void CommandReader(List<ArgumentListWrapper> commandList)
+    private void UpdateHighlightObjectsColor(Color newColor)
     {
+        tutorialReactors.GetComponent<Image>().color = newColor;
+        tutorialScore.GetComponent<Image>().color = newColor;
+        tutorialMoveCounter.GetComponent<Image>().color = newColor;
+        tutorialUndo.GetComponent<Image>().color = newColor;
+        tutorialPause.GetComponent<Image>().color = newColor;
+        tutorialFoundations.GetComponent<Image>().color = newColor;
+        tutorialDeck.GetComponent<Image>().color = newColor;
+        tutorialWastePile.GetComponent<Image>().color = newColor;
+    }
+
+    private void CommandReader(List<ArgumentListWrapper> commandList)
+    {
+        Debug.Log("populating command queue");
+
         foreach (ArgumentListWrapper command in commandList)
         {
-            /*List<string> tempList = new List<string>();
-            foreach (string s in command.argumentList)
-            {
-                tempList.Add(s);
-            }*/
             commandQueue.Enqueue(command.argumentList);
         }
     }
 
-    private void Update()
+    private void NextStep()
     {
-        if (executeFlag)
+        if (!waiting)
         {
             CommandInterpreter();
         }
     }
 
-    void CommandInterpreter()
+    public void NextButton()
     {
-        if (commandQueue.Count > 0)
+        // the tutorial next button calls this
+
+        Debug.Log("tutorial touch");
+
+        if (waiting)
         {
-            List<string> command = commandQueue.Dequeue();
+            waiting = false;
+            UtilsScript.global.soundController.ButtonPressSound();
+            NextStep();
+        }
+    }
+
+    private void CommandInterpreter()
+    {
+        Debug.Log("interpreting command");
+
+        if (commandQueue.Count == 0)
+        {
+            Debug.Log("the end of the tutorial command list has been reached, ending the tutorial now");
+            EndTutorial();
+            return;
+        }
+
+        List<string> command = commandQueue.Dequeue();
+        try
+        {
             if (command[0] == "LoadSave")
             {
-                LoadSave(command[1]);
-            }
-            else if (command[0] == "ShowMask")
-            {
-                ShowMask(command[1]);
+                LoadSave(command);
             }
             else if (command[0] == "ShowText")
             {
-                ShowText(command[1], command[2]);
+                ShowText(command);
             }
             else if (command[0] == "WaitForTouch")
             {
@@ -85,75 +107,105 @@ public class TutorialScript : MonoBehaviour
             {
                 EndTutorial();
             }
-        }
-    }
+            else if (command[0] == "HighlightObject")
+            {
+                HighlightObject(command);
+            }
+            else if (command[0] == "HighlightContainer")
+            {
+                HighlightContainer(command);
+            }
+            else if (command[0] == "HighlightToken")
+            {
+                HighlightToken(command);
+            }
+            else if (command[0] == "HighlightAllInteractableTokens")
+            {
+                HighlightAllInteractableTokens();
+            }
+            else if (command[0] == "UnHighlightAllTokens")
+            {
+                UnHighlightAllTokens();
+            }
+            else if (command[0] == "SetMoveCounterText")
+            {
+                SetMoveCounterText(command);
+            }
+            else
+            {
+                throw new FormatException("does not contain a valid command request for the 0th command");
+            }
 
-    //Tutorial Commands
-    public void WaitForTouch()
-    {
-        if (executeFlag)
+            NextStep();
+        }
+        catch (FormatException e)
         {
-            executeFlag = false;
+            Debug.LogError($"tutorial command: \"{string.Join(", ", command)}\", {e.Message}");
         }
     }
 
-    public void LoadSave(string fileName)
+    private void WaitForTouch()
     {
+        Debug.Log("waiting for touch");
+
+        waiting = true;
+    }
+
+    private void LoadSave(List<string> command)
+    {
+        if (command.Count != 2)
+        {
+            throw new FormatException("does not contain exactly 2 entries");
+        }
+
+        string fileName = command[1];
+
+        Debug.Log("loading save: " + fileName);
+
         //move all tokens back to load pile, then call LoadState and UnpackState
+
         foreach (GameObject foundation in Config.config.foundations)
         {
-            List<GameObject> cardList = foundation.GetComponent<FoundationScript>().cardList;
-            int listLength = cardList.Count;
-            for (int i = 0; i < listLength; i++)
-            {
-                cardList[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
-            }
+            MoveCardsToLoadPile(foundation.GetComponent<FoundationScript>().cardList);
         }
 
         foreach (GameObject reactor in Config.config.reactors)
         {
-            List<GameObject> cardList = reactor.GetComponent<ReactorScript>().cardList;
-            int listLength = cardList.Count;
-            for (int i = 0; i < listLength; i++)
-            {
-                cardList[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
-            }
+            MoveCardsToLoadPile(reactor.GetComponent<ReactorScript>().cardList);
         }
 
-        List<GameObject> deckCardList = Config.config.deck.GetComponent<DeckScript>().cardList;
-        int deckListLength = deckCardList.Count;
-        for (int i = 0; i < deckListLength; i++)
-        {
-            deckCardList[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
-        }
+        MoveCardsToLoadPile(Config.config.deck.GetComponent<DeckScript>().cardList);
+        MoveCardsToLoadPile(Config.config.wastePile.GetComponent<WastepileScript>().cardList);
+        MoveCardsToLoadPile(Config.config.matches.GetComponent<MatchedPileScript>().cardList);
 
-        List<GameObject> wasteCardList = Config.config.wastePile.GetComponent<WastepileScript>().cardList;
-        int wasteListLength = wasteCardList.Count;
-        for (int i = 0; i < wasteListLength; i++)
-        {
-            wasteCardList[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
-        }
-
-        List<GameObject> matchCardList = Config.config.matches.GetComponent<MatchedPileScript>().cardList;
-        int matchListLength = matchCardList.Count;
-        for (int i = 0; i < matchListLength; i++)
-        {
-            matchCardList[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, false, false);
-        }
-
-        StateLoader.saveSystem.loadTutorialState("GameStates/" + fileName);
-        StateLoader.saveSystem.unpackState(state: StateLoader.saveSystem.gameState, isTutorial: true);
-        UtilsScript.global.UpdateScore(0);
-
-    }
-    public void ShowMask(string fileName)
-    {
-        print("Show Mask: TutorialMasks/" + fileName);
-        tutorialMask.GetComponent<Image>().sprite = Resources.Load<Sprite>("TutorialMasks/" + fileName);
+        StateLoader.saveSystem.LoadTutorialState(fileName);
+        StateLoader.saveSystem.UnpackState(state: StateLoader.saveSystem.gameState, isTutorial: true);
     }
 
-    public void ShowText(string text, string region)
+    private static void MoveCardsToLoadPile(List<GameObject> cards)
     {
+        int cardCount = cards.Count;
+        while (cardCount != 0)
+        {
+            cards[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, doLog: false, isAction: false);
+            cardCount--;
+        }
+    }
+
+    private void ShowText(List<string> command)
+    {
+        if (command.Count != 2)
+        {
+            throw new FormatException("does not contain exactly 2 entries");
+        }
+
+        Debug.Log($"showing text: {command[1]}");
+
+        tutorialText.GetComponent<Text>().text = command[1];
+
+        /*
+        Debug.Log("showing text: \"" + text + "\" at " + region);
+
         tutorialText.GetComponent<Text>().text = text;
         if (region == "middle")
         {
@@ -167,23 +219,490 @@ public class TutorialScript : MonoBehaviour
         {
             tutorialText.transform.GetComponent<RectTransform>().anchoredPosition.Set(0, 45);
         }
+        */
     }
 
-    public void EndTutorial()
+    public void ExitButton()
     {
-        Config.config.gamePaused = false;
+        // the tutorial exit button calls this
+
+        Debug.Log("exit tutorial requested");
+        EndTutorial();
+    }
+
+    private void EndTutorial()
+    {
+        Debug.Log("ending tutorial");
+
+        tutorial.SetActive(false);
+
         if (Config.config != null)
         {
+            Config.config.gamePaused = false;
             Config.config.gameOver = false;
             Config.config.gameWin = false;
         }
-        SceneManager.LoadScene("MainMenuScene");
 
+        SceneManager.LoadScene("MainMenuScene");
         Config.config.GetComponent<MusicController>().MainMenuMusic();
+    }
+
+    private void HighlightObject(List<string> command)
+    {
+        // command format: 
+        // 0:HighlightObject, 1:Object to Highlight, 2:Highlight On/Off
+        // 0:HighlightObject, 1:MANY,                2:On/Off
+
+        Debug.Log("highlighting object");
+
+        // detect if the command is the right length
+        if (command.Count != 3)
+        {
+            throw new FormatException("does not contain only 3 entries");
+        }
+
+        // detect if the 2nd command is valid
+        bool highlightOn = command[2].Equals("On");
+        if (!highlightOn && command[2] != "Off")
+        {
+            throw new FormatException("does not properly specify either \"On\" nor \"Off\" for the 2nd command");
+        }
+
+        if (command[1] == "Reactors")
+        {
+            tutorialReactors.SetActive(highlightOn);
+        }
+        else if (command[1] == "Scoreboard")
+        {
+            tutorialScore.SetActive(highlightOn);
+        }
+        else if (command[1] == "MoveCounter")
+        {
+            tutorialMoveCounter.SetActive(highlightOn);
+        }
+        else if (command[1] == "Undo")
+        {
+            tutorialUndo.SetActive(highlightOn);
+        }
+        else if (command[1] == "Pause")
+        {
+            tutorialPause.SetActive(highlightOn);
+        }
+        else if (command[1] == "Foundations")
+        {
+            tutorialFoundations.SetActive(highlightOn);
+        }
+        else if (command[1] == "Deck")
+        {
+            tutorialDeck.SetActive(highlightOn);
+        }
+        else if (command[1] == "WastePile")
+        {
+            tutorialWastePile.SetActive(highlightOn);
+        }
+        else
+        {
+            throw new FormatException("does not contain a valid object to highlight in the 1st command");
+        }
+    }
+
+    private void HighlightContainer(List<string> command)
+    {
+        // command format: 
+        // 0:HighlightContainer, 1:Container(s) to Highlight,                 2:Highlight On/Off, 3:Index,   4:Alert Level
+        // 0:HighlightContainer, 1:Reactor(s)-Foundation(s)-Deck-WastePile,   2:On/Off,           3:0-Count, 4:1-2
+
+        Debug.Log("highlighting container");
+
+        // detect if the command is the right length
+        if (command.Count < 3)
+        {
+            throw new FormatException("contains less than 3 entries");
+        }
+
+        // detect if the 2nd command is valid
+        bool highlightOn = command[2].Equals("On");
+        if (!highlightOn && command[2] != "Off")
+        {
+            throw new FormatException("does not properly specify either \"On\" nor \"Off\" for the 2nd command");
+        }
+
+        // detect if the containers to highlight are the reactors
+        // the reactors have 2 ways they can glow
+        if (command[1] == "Reactors")
+        {
+            if (highlightOn)
+            {
+                byte alertLevel;
+                try
+                {
+                    alertLevel = byte.Parse(command[4]);
+                }
+                catch (FormatException)
+                {
+                    throw new FormatException("does not contain a byte in the 4th command");
+                }
+                if (alertLevel != 1 && alertLevel != 2)
+                {
+                    throw new FormatException("does not properly specify either \"1\" nor \"2\" for the 4th command");
+                }
+
+                foreach (GameObject reactor in Config.config.reactors)
+                {
+                    reactor.GetComponent<ReactorScript>().GlowOn(alertLevel);
+                }
+            }
+            else
+            {
+                foreach (GameObject reactor in Config.config.reactors)
+                {
+                    reactor.GetComponent<ReactorScript>().GlowOff();
+                }
+            }
+        }
+
+
+        // detect if the container to highlight is a reactor
+        else if (command[1] == "Reactor")
+        {
+            byte index;
+            try
+            {
+                index = byte.Parse(command[3]);
+            }
+            catch (FormatException)
+            {
+                throw new FormatException("does not contain a byte in the 3rd command");
+            }
+            if (index < 0 || index > 3)
+            {
+                throw new FormatException("does not properly specify a number between 0 and 3 for the 3rd command");
+            }
+
+            if (highlightOn)
+            {
+                byte alertLevel;
+                try
+                {
+                    alertLevel = byte.Parse(command[4]);
+                }
+                catch (FormatException)
+                {
+                    throw new FormatException("does not contain a byte in the 4th command");
+                }
+                if (alertLevel != 1 && alertLevel != 2)
+                {
+                    throw new FormatException("does not properly specify either \"1\" nor \"2\" for the 4th command");
+                }
+
+                Config.config.reactors[index].GetComponent<ReactorScript>().GlowOn(alertLevel);
+            }
+            else
+            {
+                Config.config.reactors[index].GetComponent<ReactorScript>().GlowOff();
+            }
+        }
+
+        // detect if the containers to highlight are the foundations
+        else if (command[1] == "Foundations")
+        {
+            if (highlightOn)
+            {
+                foreach (GameObject foundation in Config.config.foundations)
+                {
+                    foundation.GetComponent<FoundationScript>().GlowOn();
+                }
+            }
+            else
+            {
+                foreach (GameObject foundation in Config.config.foundations)
+                {
+                    foundation.GetComponent<FoundationScript>().GlowOff();
+                }
+            }
+        }
+
+        else if (command[1] == "Foundation")
+        {
+            byte index;
+            try
+            {
+                index = byte.Parse(command[3]);
+            }
+            catch (FormatException)
+            {
+                throw new FormatException("does not contain a byte in the 3rd command");
+            }
+            if (index < 0 || index > 3)
+            {
+                throw new FormatException("does not properly specify a number between 0 and 3 for the 3rd command");
+            }
+
+            if (highlightOn)
+            {
+                Config.config.foundations[index].GetComponent<FoundationScript>().GlowOn();
+            }
+            else
+            {
+                Config.config.foundations[index].GetComponent<FoundationScript>().GlowOff();
+            }
+        }
+
+        // detect if the container to highlight is the deck
+        else if (command[1] == "Deck")
+        {
+            if (highlightOn)
+            {
+                Config.config.deck.GetComponent<Image>().color = Color.yellow;
+            }
+            else
+            {
+                Config.config.deck.GetComponent<Image>().color = Color.white;
+            }
+        }
+
+        // detect if the container to highlight is the waste pile
+        else if (command[1] == "WastePile")
+        {
+
+        }
+
+        // the container to highlight is invalid
+        else
+        {
+            throw new FormatException("does not contain a valid container to highlight in the 1st command");
+        }
+    }
+
+    private void HighlightToken(List<string> command)
+    {
+        // command format: 
+        // 0:Highlight Token, 1:Object(s) Containing Token,   2:Object Index, 3:Token Index, 4:Highlight On/Off, 5:Is Match
+        // 0:HighlightToken,  1:Reactor-Foundation-WastePile, 2:0-1-2-3,      3:0-Count,     4:On-Off,           5:True-False
+
+        Debug.Log("highlighting token");
+
+        // detect if the command is the right length
+        if (command.Count != 6)
+        {
+            throw new FormatException("does not contain only 6 entries");
+        }
+
+        // detect if the 4th command is valid
+        bool highlightOn = command[4].Equals("On");
+        if (!highlightOn && command[4] != "Off")
+        {
+            throw new FormatException("does not properly specify either \"On\" nor \"Off\" for the 4th command");
+        }
+
+        // detect if the 2nd command is valid and parse it
+        int objectIndex;
+        try
+        {
+            objectIndex = Int32.Parse(command[2]);
+        }
+        catch (FormatException)
+        {
+            throw new FormatException("does not contain a int in the 2nd command");
+        }
+        if (objectIndex < 0)
+        {
+            throw new FormatException("contains a negative int in the 2nd command");
+        }
+
+        // detect if the 3rd command is valid and parse it
+        int tokenIndex;
+        try
+        {
+            tokenIndex = Int32.Parse(command[3]);
+        }
+        catch (FormatException)
+        {
+            throw new FormatException("does not contain a int in the 3rd command");
+        }
+        if (tokenIndex < 0)
+        {
+            throw new FormatException("does a negative int in the 3rd command");
+        }
+
+        // detect if the 5th command is needed, then validate and parse it
+        bool match = false;
+        if (highlightOn)
+        {
+            try
+            {
+                match = bool.Parse(command[5]);
+            }
+            catch (FormatException)
+            {
+                throw new FormatException("does not contain a bool in the 5th command");
+            }
+        }
+
+        // detect if the desired token is in a reactor
+        // there are only 4 reactors and only so many tokens in them
+        if (command[1] == "Reactor")
+        {
+            if (objectIndex < 0 || objectIndex > 3)
+            {
+                throw new FormatException("contains an invalid reactor index for the 2nd command");
+            }
+
+            List<GameObject> reactorCardList = Config.config.reactors[objectIndex].GetComponent<ReactorScript>().cardList;
+            if (reactorCardList.Count < tokenIndex)
+            {
+                throw new FormatException($"contains an out of bounds token index for the 3nd command. there are only {reactorCardList.Count} token(s) to choose from in reactor {objectIndex}");
+            }
+
+            if (highlightOn)
+            {
+                reactorCardList[tokenIndex].GetComponent<CardScript>().GlowOn(match);
+            }
+            else
+            {
+                reactorCardList[tokenIndex].GetComponent<CardScript>().GlowOff();
+            }
+        }
+
+        // detect if the desired token is in a foundation
+        // there are only 4 foundations and only so many tokens in them
+        else if (command[1] == "Foundation")
+        {
+            if (objectIndex < 0 || objectIndex > 3)
+            {
+                throw new FormatException("contains an invalid foundation index for the 2nd command");
+            }
+
+            List<GameObject> foundationCardList = Config.config.foundations[objectIndex].GetComponent<FoundationScript>().cardList;
+            if (foundationCardList.Count < tokenIndex)
+            {
+                throw new FormatException($"contains an out of bounds token index for the 3nd command. there are only {foundationCardList.Count} token(s) to choose from in foundation {objectIndex}");
+            }
+
+            if (highlightOn)
+            {
+                foundationCardList[tokenIndex].GetComponent<CardScript>().GlowOn(match);
+            }
+            else
+            {
+                foundationCardList[tokenIndex].GetComponent<CardScript>().GlowOff();
+            }
+        }
+
+        // detect if the desired token is in the waste pile
+        // there is only 1 waste pile and only so many tokens in it
+        else if (command[1] == "WastePile")
+        {
+            if (objectIndex != 0)
+            {
+                throw new FormatException("contains an invalid waste pile index for the 2nd command, it must be 0");
+            }
+
+            List<GameObject> wastePileCardList = Config.config.wastePile.GetComponent<WastepileScript>().cardList;
+            if (wastePileCardList.Count < tokenIndex)
+            {
+                throw new FormatException($"contains an out of bounds token index for the 3nd command. there are only {wastePileCardList.Count} token(s) to choose from in the waste pile");
+            }
+
+            if (highlightOn)
+            {
+                wastePileCardList[tokenIndex].GetComponent<CardScript>().GlowOn(match);
+            }
+            else
+            {
+                wastePileCardList[tokenIndex].GetComponent<CardScript>().GlowOff();
+            }
+        }
+
+        // the object that contains the desired token is invalid
+        else
+        {
+            throw new FormatException("contains an invalid object that contains the token for the 1st command");
+        }
+    }
+
+    private void HighlightAllInteractableTokens()
+    {
+        Debug.Log("highlighting all interactable tokens");
+
+        List<GameObject> cardListRef;
+
+        foreach (GameObject reactor in Config.config.reactors)
+        {
+            cardListRef = reactor.GetComponent<ReactorScript>().cardList;
+            if (cardListRef.Count != 0)
+            {
+                cardListRef[0].GetComponent<CardScript>().GlowOn(false);
+            }
+        }
+
+        foreach (GameObject foundation in Config.config.foundations)
+        {
+            cardListRef = foundation.GetComponent<FoundationScript>().cardList;
+            if (cardListRef.Count != 0)
+            {
+                CardScript cardScriptRef;
+                foreach(GameObject card in cardListRef)
+                {
+                    cardScriptRef = card.GetComponent<CardScript>();
+                    if (cardScriptRef.IsHidden)
+                    {
+                        break;
+                    }
+
+                    cardScriptRef.GlowOn(false);
+                }
+            }
+        }
+
+        cardListRef = Config.config.wastePile.GetComponent<WastepileScript>().cardList;
+        if (cardListRef.Count != 0)
+        {
+            cardListRef[0].GetComponent<CardScript>().GlowOn(false);
+        }
+    }
+
+    private void UnHighlightAllTokens()
+    {
+        Debug.Log("unhighlighting all tokens");
+
+        foreach (GameObject reactor in Config.config.reactors)
+        {
+            CardListGlowOff(reactor.GetComponent<ReactorScript>().cardList);
+        }
+
+        foreach (GameObject foundation in Config.config.foundations)
+        {
+            CardListGlowOff(foundation.GetComponent<FoundationScript>().cardList);
+        }
+
+        CardListGlowOff(Config.config.wastePile.GetComponent<WastepileScript>().cardList);
+    }
+
+    private void CardListGlowOff(List<GameObject> cardList)
+    {
+        foreach (GameObject card in cardList)
+        {
+            card.GetComponent<CardScript>().GlowOff();
+        }
+    }
+
+    private void SetMoveCounterText(List<string> command)
+    {
+        Debug.Log("setting move counter text");
+
+        if (command.Count != 2)
+        {
+            throw new FormatException("does not contain only 2 entries");
+        }
+
+        UtilsScript.global.moveCounter.GetComponent<ActionCountScript>().UpdateActionText(command[1]);
     }
 
     private static List<ArgumentListWrapper> CreateFromJSON()
     {
+        Debug.Log("creating list from JSON");
+
         var jsonTextFile = Resources.Load<TextAsset>("Tutorial/TutorialCommandList");
         TutorialCommands commandFile = JsonUtility.FromJson<TutorialCommands>(jsonTextFile.ToString());
         return commandFile.commands;

@@ -25,6 +25,9 @@ public class Config : MonoBehaviour
     public Color cardMatchHighlightColor;
     public Color pointColor;
 
+    //Suits
+    public byte suitsToUseStartIndex;
+
     //score
     public int matchPoints;
     public int emptyReactorPoints;
@@ -78,7 +81,6 @@ public class Config : MonoBehaviour
     public bool gamePaused;
 
     //internal variables
-    private string JSON;
     GameInfo gameInfo;
     GameObject fadeOutImage;
     public GameObject SplashScreen;
@@ -255,6 +257,7 @@ public class Config : MonoBehaviour
 
     public void ConfigFromJSON()
     {
+        suitsToUseStartIndex = gameInfo.suitsToUseStartIndex;
         foundationStartSize = gameInfo.foundationStartingSize;
         wastepileAnimationSpeedSlow = gameInfo.wastepileAnimationSpeedSlow;
         wastepileAnimationSpeedFast = gameInfo.wastepileAnimationSpeedFast;
@@ -307,7 +310,7 @@ public class Config : MonoBehaviour
         //scoreMultiplier = gameInfo.scoreMultiplyer;
 }
 
-    public void SetCards()
+    public void StartupFindObjects()
     {
         foundation1 = GameObject.Find("Foundation (0)");
         foundation2 = GameObject.Find("Foundation (1)");
@@ -380,7 +383,7 @@ public class Config : MonoBehaviour
         return width;
 
     }
-    public void setDifficulty(string dif)
+    public void SetDifficulty(string dif)
     {
         if (dif.Equals("EASY"))
         {
@@ -412,7 +415,7 @@ public class Config : MonoBehaviour
         if (Application.isEditor && File.Exists("Assets/Resources/GameStates/testState.json"))
         {
             File.Delete("Assets/Resources/GameStates/testState.json");
-            File.Delete("Assets/Resources/GameStates/testState.json");
+            File.Delete("Assets/Resources/GameStates/testState.json.meta");
         }
     }
 }

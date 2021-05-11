@@ -1,35 +1,39 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class StartScript : MonoBehaviour
 {
-    public GameObject config;
-    public GameObject utils;
-    public GameObject showpossiblemoves;
-    public int listLen;
-    public int counter;
+    public GameObject deckButton;
+    public GameObject[] topSuitObjects, bottomSuitObjects;
+    public Sprite[] suitSprites;
+
     void Start()
     {
+        // unloading the loading scene if it's still active
         if (SceneManager.GetActiveScene().name == "LoadingScene")
             SceneManager.UnloadSceneAsync("LoadingScene");
 
-        config = GameObject.Find("Config");
-        config.GetComponent<Config>().SetCards();
+        // setting stuff up for the game
+        GameObject config = GameObject.Find("Config");
+        config.GetComponent<Config>().StartupFindObjects();
         config.GetComponent<Config>().gamePaused = false;
 
-        GameObject.Find("DeckButton").GetComponent<DeckScript>().DeckStart();
-
-        utils = GameObject.Find("Utils");
-        utils.GetComponent<UtilsScript>().SetCards();
-        listLen = utils.GetComponent<UtilsScript>().selectedCards.Count;
-        for (counter = 1; counter <= listLen; counter++)
+        // assigning sprites to the reactor suits
+        byte suitSpritesIndex = Config.config.suitsToUseStartIndex;
+        for (int i = 0; i < 4; i++)
         {
-            utils.GetComponent<UtilsScript>().selectedCards.RemoveAt(0);
+            topSuitObjects[i].GetComponent<SpriteRenderer>().sprite = suitSprites[suitSpritesIndex];
+            bottomSuitObjects[i].GetComponent<SpriteRenderer>().sprite = suitSprites[suitSpritesIndex];
+            suitSpritesIndex++;
         }
 
-        showpossiblemoves = GameObject.Find("ShowPossibleMoves");
+        // getting the suit sprites to use for the token/cards
+        Sprite[] suitSpritesSubset = new Sprite[4];
+        Array.Copy(suitSprites, Config.config.suitsToUseStartIndex, suitSpritesSubset, 0, 4);
+
+        // starting the game
+        deckButton.GetComponent<DeckScript>().DeckStart(suitSpritesSubset);
     }
 
 }
