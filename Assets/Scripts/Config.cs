@@ -139,60 +139,12 @@ public class Config : MonoBehaviour
     private void Start()
     {
         scoreMultiplier = 50;
-        SplashScreen.SetActive(true);
         splashScreenFade = StartCoroutine(DisplayLogo());
 
         string path = "GameConfigurations/gameValues";
         gameInfo = CreateFromJSON(path);
         ConfigFromJSON();
         //SetCards();
-
-    }
-
-    IEnumerator DisplayLogo()
-    {
-        Image[] logos = SplashScreen.GetComponentsInChildren<Image>(true);
-
-        float fade = 1;
-        Color splashScreenColor = new Color(0, 0, 0, 1);
-        Color logosColor = new Color(1, 1, 1, 1);
-        /*while (fade < 1)
-        {
-            yield return null;
-
-            fade += Time.deltaTime *0.5f;
-            splashScreenColor.a = fade;
-            logosColor.a = fade;
-
-            logos[0].color = splashScreenColor;
-            logos[1].color = logosColor;
-            logos[2].color = logosColor;
-        }*/
-
-        yield return new WaitForSeconds(2);
-        gameObject.GetComponent<MusicController>().MainMenuMusic();
-
-        while (fade > 0)
-        {
-            yield return null;
-
-            fade -= Time.deltaTime * 0.5f;
-            splashScreenColor.a = fade;
-            logosColor.a = fade;
-
-            logos[0].color = splashScreenColor;
-            logos[1].color = logosColor;
-            logos[2].color = logosColor;
-        }
-
-        SplashScreen.SetActive(false);
-    }
-
-    public void SkipSplashScreen()
-    {
-        StopCoroutine(splashScreenFade);
-        SplashScreen.SetActive(false);
-        gameObject.GetComponent<MusicController>().MainMenuMusic();
     }
 
     public void GameOver(bool didWin, bool manualWin = false)
