@@ -85,7 +85,7 @@ public class MenuUIScript : MonoBehaviour
             UnityEditor.AssetDatabase.Refresh();
         #endif
 
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.LoadScene("LevelSelectScene");
     }
 
@@ -103,7 +103,7 @@ public class MenuUIScript : MonoBehaviour
         Config.config.gameOver = false;
         Config.config.gameWin = false;
         Config.config.gamePaused = false;
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SoundEffectsController.Instance.ButtonPressSound();
 
         SceneManager.LoadScene("LoadingScene");
     }
@@ -116,7 +116,7 @@ public class MenuUIScript : MonoBehaviour
             return;
 
         UndoScript.undoScript.undo();
-        Config.config.GetComponent<SoundController>().UndoPressSound();
+        SoundEffectsController.Instance.UndoPressSound();
     }
 
     public void PlayAgain()
@@ -146,10 +146,10 @@ public class MenuUIScript : MonoBehaviour
             Config.config.gameWin = false;
         }
 
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.LoadScene("MainMenuScene");
 
-        Config.config.GetComponent<MusicController>().MainMenuMusic();
+        MusicController.Instance.MainMenuMusic();
     }
 
     //possibly be renamed to settings
@@ -157,7 +157,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI settings");
 
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.LoadScene("SoundScene");
     }
 
@@ -165,7 +165,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI credits");
 
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.LoadScene("CreditScene");
     }
 
@@ -176,7 +176,7 @@ public class MenuUIScript : MonoBehaviour
         if (UtilsScript.global.IsInputStopped())
             return;
 
-        Config.config.GetComponent<SoundController>().PauseMenuButtonSound();
+        SoundEffectsController.Instance.PauseMenuButtonSound();
         //TODO save the game scene
         Config.config.gamePaused = true;
         SceneManager.LoadScene("PauseScene", LoadSceneMode.Additive);
@@ -189,7 +189,7 @@ public class MenuUIScript : MonoBehaviour
 
         Config.config.gamePaused = false;
         //TODO load the saved game scene then uncomment the above code
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.UnloadSceneAsync("PauseScene");
     }
 
@@ -197,7 +197,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI return");
 
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SoundEffectsController.Instance.ButtonPressSound();
         if (Config.config.gamePaused)
             SceneManager.UnloadSceneAsync("SoundScene");
         else

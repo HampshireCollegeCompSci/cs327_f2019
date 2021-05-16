@@ -18,7 +18,6 @@ public class UtilsScript : MonoBehaviour
     public GameObject gameUI;
     public Text score;
     public GameObject moveCounter;
-    public SoundController soundController;
     public int indexCounter;
     private bool dragOn;
     private bool draggingWastepile = false;
@@ -252,7 +251,7 @@ public class UtilsScript : MonoBehaviour
         else
             foundationIsGlowing = false;
 
-        soundController.CardPressSound();
+        SoundEffectsController.Instance.CardPressSound();
     }
 
     private void DragSelectedTokens(RaycastHit2D hit)
@@ -373,7 +372,7 @@ public class UtilsScript : MonoBehaviour
         UpdateScore(points);
         UpdateActions(0, isMatch: true);
 
-        soundController.FoodMatch(card1Script.cardSuit);
+        SoundEffectsController.Instance.FoodMatch(card1Script.cardSuit);
         baby.GetComponent<SpaceBabyController>().BabyEatAnim();
 
         StartCoroutine(FoodComboMove(comboHologram, matchExplosion));
@@ -413,7 +412,7 @@ public class UtilsScript : MonoBehaviour
             }
         }
 
-        //soundController.CardMatchSound();
+        //SoundController.Instance.CardMatchSound();
         Destroy(matchExplosion);
         Destroy(comboHologram);
     }
@@ -650,18 +649,18 @@ public class UtilsScript : MonoBehaviour
         }
         else // we are done with the alert
         {
-            Config.config.GetComponent<MusicController>().GameMusic();
+            MusicController.Instance.GameMusic();
 
             foreach (GameObject reactor in Config.config.reactors)
                 reactor.GetComponent<ReactorScript>().AlertOff();
         }
 
         if (turnOnAlert || checkAgain)
-            Config.config.GetComponent<MusicController>().AlertMusic();
+            MusicController.Instance.AlertMusic();
 
         // if there is one move left
         if (turnOnAlert || (checkAgain && !matchRelated && Config.config.actionMax - Config.config.actions == 1))
-            soundController.AlertSound();
+            SoundEffectsController.Instance.AlertSound();
 
 
         if (highAlertTurnedOn) // if the high alert was turned on during this check

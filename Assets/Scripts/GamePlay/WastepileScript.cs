@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class WastepileScript : MonoBehaviour
 {
     private UtilsScript utils;
-    public SoundController soundController;
     public GameObject deck;
     private DeckScript deckScript;
     public GameObject contentPanel;
@@ -255,7 +254,7 @@ public class WastepileScript : MonoBehaviour
                 if (!utils.IsSameSuit(input, selectedCard))
                     return;
 
-                soundController.CardToReactorSound();
+                SoundEffectsController.Instance.CardToReactorSound();
                 selectedCardScript.MoveCard(inputCardScript.container);
             }
             else if (inputCardScript.container.CompareTag("Foundation"))
@@ -264,7 +263,7 @@ public class WastepileScript : MonoBehaviour
                     inputCardScript.cardNum != selectedCardScript.cardNum + 1)
                     return;
 
-                soundController.CardStackSound();
+                SoundEffectsController.Instance.CardStackSound();
                 selectedCardScript.MoveCard(inputCardScript.container);
             }
             else
@@ -275,7 +274,7 @@ public class WastepileScript : MonoBehaviour
             if (!utils.IsSameSuit(input, selectedCard))
                 return;
 
-            soundController.CardToReactorSound();
+            SoundEffectsController.Instance.CardToReactorSound();
             selectedCardScript.MoveCard(input);
         }
         else if (input.CompareTag("Foundation"))
@@ -283,7 +282,7 @@ public class WastepileScript : MonoBehaviour
             if (input.GetComponent<FoundationScript>().cardList.Count != 0)
                 return;
 
-            soundController.CardStackSound();
+            SoundEffectsController.Instance.CardStackSound();
             selectedCardScript.MoveCard(input);
         }
         else

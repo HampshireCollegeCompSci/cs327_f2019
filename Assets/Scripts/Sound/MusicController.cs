@@ -1,16 +1,39 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MusicController : MonoBehaviour
 {
+    // Audio players components
     public AudioSource soundTrack1;
     public AudioSource soundTrack2;
 
+    // Music files
     public AudioClip menuMusic, themeMusic, transitionMusic, loseMusic, winMusic;
+
+    // Variables to keep track of the current playing song
     private bool playing1 = false;
     private byte playingTrack = 0;
 
+    // Singleton instance.
+    public static MusicController Instance = null;
+
+    // Initialize the singleton instance.
+    private void Awake()
+    {
+        // If there is not already an instance of SoundManager, set it to this.
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        //If an instance already exists, destroy whatever this object is to enforce the singleton.
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+        }
+
+        //Set SoundManager to DontDestroyOnLoad so that it won't be destroyed when reloading our scene.
+        DontDestroyOnLoad(gameObject);
+    }
 
     public void LoadGap()
     {

@@ -23,7 +23,7 @@ public class SplashScreen : MonoBehaviour
         Color logosColor = new Color(1, 1, 1, 1);
 
         yield return new WaitForSeconds(2);
-        Config.config.gameObject.GetComponent<MusicController>().MainMenuMusic();
+        MusicController.Instance.MainMenuMusic();
 
         while (fade > 0)
         {
@@ -47,6 +47,6 @@ public class SplashScreen : MonoBehaviour
 
         StopCoroutine(splashScreenFade);
         splashScreen.SetActive(false);
-        Config.config.gameObject.GetComponent<MusicController>().MainMenuMusic();
+        MusicController.Instance.MainMenuMusic();
     }
 }

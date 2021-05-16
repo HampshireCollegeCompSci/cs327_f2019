@@ -24,8 +24,6 @@ public class DeckScript : MonoBehaviour
     public Sprite[] buttonAnimation;
     public Text deckCounter;
 
-    public SoundController soundController;
-
     private void Awake()
     {
         if (deckScript == null)
@@ -236,7 +234,7 @@ public class DeckScript : MonoBehaviour
 
         if (cardList.Count != 0) // can the deck can be drawn from
         {
-            soundController.DeckDeal();
+            SoundEffectsController.Instance.DeckDeal();
             Deal();
 
             StartCoroutine(ButtonDown());
@@ -269,7 +267,7 @@ public class DeckScript : MonoBehaviour
         // moves all wastePile cards into the deck
 
         wastePileScript.StartDeckReset();
-        soundController.DeckReshuffle();
+        SoundEffectsController.Instance.DeckReshuffle();
     }
 
     IEnumerator ButtonDown()
@@ -360,7 +358,7 @@ public class DeckScript : MonoBehaviour
                         topCardScript.suitObject.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
                         topCardScript.rankObject.GetComponent<MeshRenderer>().sortingLayerName = "Gameplay";
 
-                        soundController.CardToReactorSound();
+                        SoundEffectsController.Instance.CardToReactorSound();
                         topCardScript.MoveCard(reactor, isCycle: true);
 
                         if (Config.config.gameOver)

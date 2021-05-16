@@ -72,7 +72,7 @@ public class TutorialScript : MonoBehaviour
         if (waiting)
         {
             waiting = false;
-            UtilsScript.global.soundController.ButtonPressSound();
+            SoundEffectsController.Instance.ButtonPressSound();
             NextStep();
         }
     }
@@ -244,7 +244,7 @@ public class TutorialScript : MonoBehaviour
         }
 
         SceneManager.LoadScene("MainMenuScene");
-        Config.config.GetComponent<MusicController>().MainMenuMusic();
+        MusicController.Instance.MainMenuMusic();
     }
 
     private void HighlightObject(List<string> command)

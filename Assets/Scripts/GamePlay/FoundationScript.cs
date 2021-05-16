@@ -6,7 +6,6 @@ public class FoundationScript : MonoBehaviour
 {
     private UtilsScript utils;
     public List<GameObject> cardList;
-    public SoundController soundController;
     private SpriteRenderer sp;
     private bool isGlowing;
 
@@ -125,7 +124,7 @@ public class FoundationScript : MonoBehaviour
                     if (!utils.IsSameSuit(input, selectedCard))
                         return;
 
-                    soundController.CardToReactorSound();
+                    SoundEffectsController.Instance.CardToReactorSound();
                     selectedCardScript.MoveCard(inputCardScript.container);
                     utils.UpdateActions(1, checkGameOver: true);
                     return;
@@ -136,7 +135,7 @@ public class FoundationScript : MonoBehaviour
                         inputCardScript.cardNum != selectedCardScript.cardNum + 1)
                         return;
 
-                    soundController.CardStackSound();
+                    SoundEffectsController.Instance.CardStackSound();
                     selectedCardScript.MoveCard(inputCardScript.container);
                 }
                 else
@@ -148,7 +147,7 @@ public class FoundationScript : MonoBehaviour
                     inputCardScript.cardNum != selectedCardScript.cardNum + 1)
                     return;
 
-                soundController.CardStackSound();
+                SoundEffectsController.Instance.CardStackSound();
 
                 for (int i = 0; i < utils.selectedCards.Count - 1; i++) //goes through and moves all selesctedCards to clicked location
                     utils.selectedCards[i].GetComponent<CardScript>().MoveCard(inputCardScript.container, isStack: true, showHolo: false);
@@ -163,7 +162,7 @@ public class FoundationScript : MonoBehaviour
             if (utils.selectedCards.Count != 1 || !utils.IsSameSuit(input, selectedCard))
                 return;
 
-            soundController.CardToReactorSound();
+            SoundEffectsController.Instance.CardToReactorSound();
             selectedCardScript.MoveCard(input);
             utils.UpdateActions(1, checkGameOver: true);
             return;
@@ -173,7 +172,7 @@ public class FoundationScript : MonoBehaviour
             if (input.GetComponent<FoundationScript>().cardList.Count != 0)
                 return;
 
-            soundController.CardStackSound();
+            SoundEffectsController.Instance.CardStackSound();
 
             if (utils.selectedCards.Count == 1)
                 selectedCardScript.MoveCard(input);

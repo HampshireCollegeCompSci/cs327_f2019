@@ -122,7 +122,7 @@ public class ResultsScript : MonoBehaviour
     IEnumerator Explode()
     {
         yield return new WaitForSeconds(2);
-        Config.config.GetComponent<SoundController>().ExplosionSound();
+        SoundEffectsController.Instance.ExplosionSound();
         spaceShip.GetComponent<Image>().sprite = spaceShipDebris;
         spaceShip.transform.localScale = new Vector3(2, 2, 1);
     }

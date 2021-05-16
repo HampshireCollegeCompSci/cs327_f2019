@@ -31,14 +31,10 @@ public class Config : MonoBehaviour
     public int emptyReactorPoints;
     public int perfectGamePoints;
 
-    //card scale
-    public Vector3 cardScale;
-
     //baby
     private GameObject baby;
 
     //foundations
-    public float foundationStackDensity;
     public int foundationStartSize;
 
     public GameObject foundation1;
@@ -149,7 +145,6 @@ public class Config : MonoBehaviour
 
         //delay to show summary
         StartCoroutine(EndGame());
-
     }
 
     IEnumerator EndGame()
@@ -159,7 +154,7 @@ public class Config : MonoBehaviour
         if (gameWin)
         {
             baby.GetComponent<SpaceBabyController>().BabyHappyAnim();
-            gameObject.GetComponent<SoundController>().WinSound();
+            SoundEffectsController.Instance.WinSound();
 
             while (countdown > 0)
             {
@@ -172,7 +167,7 @@ public class Config : MonoBehaviour
         else
         {
             //baby.GetComponent<SpaceBabyController>().BabyLoseSound();
-            gameObject.GetComponent<SoundController>().LoseSound();
+            SoundEffectsController.Instance.LoseSound();
 
             UtilsScript.global.errorImage.SetActive(true);
             while (countdown > 0)
@@ -187,11 +182,11 @@ public class Config : MonoBehaviour
 
         if (gameWin)
         {
-            gameObject.GetComponent<MusicController>().WinMusic();
+            MusicController.Instance.WinMusic();
         }
         else
         {
-            gameObject.GetComponent<MusicController>().LoseMusic();
+            MusicController.Instance.LoseMusic();
         }
         DeleteSave();
     }
