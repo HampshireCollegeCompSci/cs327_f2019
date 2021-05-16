@@ -27,7 +27,7 @@
 	"vibrationExplosion": 500,
 	"scoreMultiplier": 50,
 
-	"gameStateTxtEnglish": [ "You Won", "You Lost" ],
+	"gameStateTxtEnglish": [ "YOU WON", "YOU LOST" ],
 	"menuSceneButtonsTxtEnglish": [ "PLAY", "TUTORIAL", "CREDITS" ],
 	"loadingSceneTxtEnglish": "LOADING...",
 	"levelSceneButtonsTxtEnglish": [ "CONTINUE", "EASY", "MEDIUM", "HARD", "RETURN" ],

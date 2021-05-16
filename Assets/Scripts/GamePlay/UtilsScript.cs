@@ -717,36 +717,6 @@ public class UtilsScript : MonoBehaviour
         UpdateScore(extraScore);
     }
 
-    public void SetHighScores()
-    {
-        int score = Config.config.score;
-        string difficulty = Config.config.currentDifficulty;
-        int moveCounter = Config.config.moveCounter;
-
-        if (PlayerPrefs.HasKey(difficulty + "HighScore"))
-        {
-            if (score > PlayerPrefs.GetInt(difficulty + "HighScore"))
-                PlayerPrefs.SetInt(difficulty + "HighScore", score);
-        }
-        else
-        {
-            PlayerPrefs.SetInt(difficulty + "HighScore", score);
-        }
-
-        if (Config.config.gameWin)
-        {
-            if (PlayerPrefs.HasKey(difficulty + "Moves"))
-            {
-                if (moveCounter < PlayerPrefs.GetInt(difficulty + "Moves"))
-                    PlayerPrefs.SetInt(difficulty + "Moves", moveCounter);
-            }
-            else
-            {
-                PlayerPrefs.SetInt(difficulty + "Moves", moveCounter);
-            }
-        }
-    }
-
     public bool IsInputStopped()
     {
         return inputStopped;
