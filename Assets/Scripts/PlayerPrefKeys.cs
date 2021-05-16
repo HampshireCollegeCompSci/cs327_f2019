@@ -3,7 +3,7 @@
 /// <summary>
 /// Stores All PlayerPref keys that are used.
 /// </summary>
-public class PlayerPrefKeys : MonoBehaviour
+public static class PlayerPrefKeys
 {
     // summary stat keys
     private const string highScoreKey = "HighScore";
