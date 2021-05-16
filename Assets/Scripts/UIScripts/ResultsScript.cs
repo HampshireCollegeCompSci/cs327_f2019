@@ -30,9 +30,9 @@ public class ResultsScript : MonoBehaviour
         scoreStat.text = Config.config.score.ToString();
 
         // high score
-        highScore.text = Config.config.difficulty + " HIGH SCORE";
+        highScore.text = Config.config.currentDifficulty + " HIGH SCORE";
 
-        int last = PlayerPrefs.GetInt(Config.config.difficulty + "HighScore");
+        int last = PlayerPrefs.GetInt(Config.config.currentDifficulty + "HighScore");
         if (Config.config.score > last)
         {
             highScore.color = Color.cyan;
@@ -44,7 +44,7 @@ public class ResultsScript : MonoBehaviour
 
 
         // least moves
-        last = PlayerPrefs.GetInt(Config.config.difficulty + "Moves");
+        last = PlayerPrefs.GetInt(Config.config.currentDifficulty + "Moves");
         if (Config.config.gameWin && Config.config.moveCounter < last)
         {
             leastMoves.color = Color.cyan;

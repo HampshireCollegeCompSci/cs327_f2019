@@ -14,6 +14,7 @@ public class Config : MonoBehaviour
     public bool gameOver;
     public bool gameWin;
     public int score;
+
     public float relativeCardScale;
     public int turnsTillReset;
     public int delayToShowGameSummary;
@@ -24,9 +25,6 @@ public class Config : MonoBehaviour
     public Color cardMoveHighlightColor;
     public Color cardMatchHighlightColor;
     public Color pointColor;
-
-    //Suits
-    public byte suitsToUseStartIndex;
 
     //score
     public int matchPoints;
@@ -55,7 +53,7 @@ public class Config : MonoBehaviour
     public byte wastepileAnimationSpeedFast;
 
     //reactor
-    public int maxReactorVal = 18;
+    public int maxReactorVal;
 
     public GameObject reactor1;
     public GameObject reactor2;
@@ -81,20 +79,15 @@ public class Config : MonoBehaviour
     public bool gamePaused;
 
     //internal variables
-    GameInfo gameInfo;
-    GameObject fadeOutImage;
-    public GameObject SplashScreen;
-    private Coroutine splashScreenFade;
+    private GameInfo gameInfo;
+    private GameObject fadeOutImage;
 
-    public string difficulty;
 
-    public int easy;
-    public int medium;
-    public int hard;
+    public string[] difficulties;
+    public int[] reactorLimits;
+    public int[] moveLimits;
 
-    public int easyMoveCount;
-    public int mediumMoveCount;
-    public int hardMoveCount;
+    public string currentDifficulty;
 
     public int actionMax;
     public int actions;
@@ -113,9 +106,9 @@ public class Config : MonoBehaviour
     public string[] summarySceneButtonsTxtEnglish;
 
     //vibration
-    public byte vibrationButton;
-    public byte vibrationCard;
-    public byte vibrationMatch;
+    public int vibrationButton;
+    public int vibrationCard;
+    public int vibrationMatch;
     public int vibrationExplosion;
 
     //long term tracking
@@ -138,13 +131,9 @@ public class Config : MonoBehaviour
 
     private void Start()
     {
-        scoreMultiplier = 50;
-        splashScreenFade = StartCoroutine(DisplayLogo());
-
         string path = "GameConfigurations/gameValues";
         gameInfo = CreateFromJSON(path);
         ConfigFromJSON();
-        //SetCards();
     }
 
     public void GameOver(bool didWin, bool manualWin = false)
@@ -209,7 +198,6 @@ public class Config : MonoBehaviour
 
     public void ConfigFromJSON()
     {
-        suitsToUseStartIndex = gameInfo.suitsToUseStartIndex;
         foundationStartSize = gameInfo.foundationStartingSize;
         wastepileAnimationSpeedSlow = gameInfo.wastepileAnimationSpeedSlow;
         wastepileAnimationSpeedFast = gameInfo.wastepileAnimationSpeedFast;
@@ -221,12 +209,9 @@ public class Config : MonoBehaviour
         emptyReactorPoints = gameInfo.emptyReactorPoints;
         perfectGamePoints = gameInfo.perfectGamePoints;
         delayToShowGameSummary = gameInfo.delayToShowGameSummary;
-        easy = gameInfo.easyReactorLimit;
-        medium = gameInfo.mediumReactorLimit;
-        hard = gameInfo.hardReactorLimit;
-        easyMoveCount = gameInfo.easyMoveCount;
-        mediumMoveCount = gameInfo.mediumMoveCount;
-        hardMoveCount = gameInfo.hardMoveCount;
+        difficulties = gameInfo.difficulties;
+        reactorLimits = gameInfo.reactorLimits;
+        moveLimits = gameInfo.moveLimits;
         draggedTokenOffset = gameInfo.draggedTokenOffset;
         selectedCardOpacity = gameInfo.selectedCardOpacity;
         gameStateTxtEnglish = gameInfo.gameStateTxtEnglish;
@@ -259,7 +244,7 @@ public class Config : MonoBehaviour
         vibrationCard = gameInfo.vibrationCard;
         vibrationMatch = gameInfo.vibrationMatch;
         vibrationExplosion = gameInfo.vibrationExplosion;
-        //scoreMultiplier = gameInfo.scoreMultiplyer;
+        scoreMultiplier = gameInfo.scoreMultiplier;
 }
 
     public void StartupFindObjects()
@@ -335,25 +320,25 @@ public class Config : MonoBehaviour
         return width;
 
     }
+
     public void SetDifficulty(string dif)
     {
-        if (dif.Equals("EASY"))
+        currentDifficulty = dif;
+
+        if (dif == difficulties[0])
         {
-            maxReactorVal = easy;
-            actionMax = easyMoveCount;
-            difficulty = "EASY";
+            maxReactorVal = reactorLimits[0];
+            actionMax = moveLimits[0];
         }
-        if (dif.Equals("MEDIUM"))
+        if (dif == difficulties[1])
         {
-            maxReactorVal = medium;
-            actionMax = mediumMoveCount;
-            difficulty = "MEDIUM";
+            maxReactorVal = reactorLimits[1];
+            actionMax = moveLimits[1];
         }
-        if (dif.Equals("HARD"))
+        if (dif == difficulties[2])
         {
-            maxReactorVal = hard;
-            actionMax = hardMoveCount;
-            difficulty = "HARD";
+            maxReactorVal = reactorLimits[2];
+            actionMax = moveLimits[2];
         }
     }
 

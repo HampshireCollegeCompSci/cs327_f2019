@@ -720,25 +720,30 @@ public class UtilsScript : MonoBehaviour
     public void SetHighScores()
     {
         int score = Config.config.score;
-        string difficulty = Config.config.difficulty;
-        int MoveCounter = Config.config.moveCounter;
+        string difficulty = Config.config.currentDifficulty;
+        int moveCounter = Config.config.moveCounter;
 
-        if (PlayerPrefs.HasKey(difficulty + "HighScore") && score > PlayerPrefs.GetInt(difficulty + "HighScore"))
+        if (PlayerPrefs.HasKey(difficulty + "HighScore"))
+        {
+            if (score > PlayerPrefs.GetInt(difficulty + "HighScore"))
+                PlayerPrefs.SetInt(difficulty + "HighScore", score);
+        }
+        else
         {
             PlayerPrefs.SetInt(difficulty + "HighScore", score);
         }
-        else if (!PlayerPrefs.HasKey(difficulty + "HighScore"))
-        {
-            PlayerPrefs.SetInt(difficulty + "HighScore", score);
-        }
 
-        if (PlayerPrefs.HasKey(difficulty + "Moves") && MoveCounter < PlayerPrefs.GetInt(difficulty + "Moves") && Config.config.gameWin)
+        if (Config.config.gameWin)
         {
-            PlayerPrefs.SetInt(difficulty + "Moves", MoveCounter);
-        }
-        else if (!PlayerPrefs.HasKey(difficulty + "Moves") && Config.config.gameWin)
-        {
-            PlayerPrefs.SetInt(difficulty + "Moves", MoveCounter);
+            if (PlayerPrefs.HasKey(difficulty + "Moves"))
+            {
+                if (moveCounter < PlayerPrefs.GetInt(difficulty + "Moves"))
+                    PlayerPrefs.SetInt(difficulty + "Moves", moveCounter);
+            }
+            else
+            {
+                PlayerPrefs.SetInt(difficulty + "Moves", moveCounter);
+            }
         }
     }
 

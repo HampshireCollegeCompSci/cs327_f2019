@@ -80,7 +80,7 @@ public class StateLoader : MonoBehaviour
         gameState.consecutiveMatches = Config.config.consecutiveMatches;
         gameState.moveCounter = Config.config.moveCounter;
         gameState.actions = Config.config.actions;
-        gameState.difficulty = Config.config.difficulty;
+        gameState.difficulty = Config.config.currentDifficulty;
 
         //saving to json
         string json;
@@ -198,7 +198,7 @@ public class StateLoader : MonoBehaviour
         }
 
         //set up simple variables
-        Config.config.difficulty = state.difficulty;
+        Config.config.currentDifficulty = state.difficulty;
         Config.config.score = state.score;
         Config.config.consecutiveMatches = state.consecutiveMatches;
         Config.config.moveCounter = state.moveCounter;

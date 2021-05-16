@@ -919,7 +919,6 @@ MonoBehaviour:
   cardMoveHighlightColor: {r: 0, g: 0, b: 0, a: 0}
   cardMatchHighlightColor: {r: 0, g: 0, b: 0, a: 0}
   pointColor: {r: 0, g: 0, b: 0, a: 0}
-  suitsToUseStartIndex: 0
   matchPoints: 0
   emptyReactorPoints: 0
   perfectGamePoints: 0
@@ -947,13 +946,10 @@ MonoBehaviour:
   matches: {fileID: 0}
   loadPile: {fileID: 0}
   gamePaused: 0
-  difficulty: 
-  easy: 0
-  medium: 0
-  hard: 0
-  easyMoveCount: 0
-  mediumMoveCount: 0
-  hardMoveCount: 0
+  difficulties: []
+  reactorLimits: 
+  moveLimits: 
+  currentDifficulty: 
   actionMax: 0
   actions: 0
   turnAlertSmallThreshold: 0

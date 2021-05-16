@@ -20,7 +20,7 @@ public class StartScript : MonoBehaviour
         config.GetComponent<Config>().gamePaused = false;
 
         // assigning sprites to the reactor suits
-        byte suitSpritesIndex = Config.config.suitsToUseStartIndex;
+        byte suitSpritesIndex = 0;
         for (int i = 0; i < 4; i++)
         {
             topSuitObjects[i].GetComponent<SpriteRenderer>().sprite = suitSprites[suitSpritesIndex];
@@ -30,7 +30,7 @@ public class StartScript : MonoBehaviour
 
         // getting the suit sprites to use for the token/cards
         Sprite[] suitSpritesSubset = new Sprite[4];
-        Array.Copy(suitSprites, Config.config.suitsToUseStartIndex, suitSpritesSubset, 0, 4);
+        Array.Copy(suitSprites, 0, suitSpritesSubset, 0, 4);
 
         // starting the game
         deckButton.GetComponent<DeckScript>().DeckStart(suitSpritesSubset);

@@ -1,28 +1,7 @@
-﻿using UnityEngine;
-using System.IO;
+﻿
 [System.Serializable]
 public class GameInfo
 {
-
-    //reactorLimit = int
-    //(A four element array)
-
-    //startingStack = int
-    //(How many cards are dealt to each starting stack.A value of 7 results in 6 face down and 1 face up)
-
-    //cardsToDeal = int
-    //(How many cards should we deal at a time?)
-
-    //wastepileCardsToShow
-    //(how many cards to fully show on top of the wastepile)
-
-    //nonTopXOffset = float
-    //(adjusts how compressed the hidden cards in the wastepile are)
-
-    //cardsToDeal = int
-    //(how many cards to deal per click on the deck)
-
-    public byte suitsToUseStartIndex;
     public int foundationStartingSize;
     public byte wastepileAnimationSpeedSlow;
     public byte wastepileAnimationSpeedFast;
@@ -35,12 +14,9 @@ public class GameInfo
     public int emptyReactorPoints;
     public int perfectGamePoints;
     public int delayToShowGameSummary;
-    public int easyReactorLimit;
-    public int mediumReactorLimit;
-    public int hardReactorLimit;
-    public int easyMoveCount;
-    public int mediumMoveCount;
-    public int hardMoveCount;
+    public string[] difficulties;
+    public int[] reactorLimits;
+    public int[] moveLimits;
     public float selectedCardOpacity;
     public float[] cardObstructedColor;
     public float[] cardMoveHighlightColor;
@@ -54,9 +30,9 @@ public class GameInfo
     public string[] summarySceneButtonsTxtEnglish;
     public int turnAlertSmallThreshold;
     public int turnAlertThreshold;
-    public byte vibrationButton;
-    public byte vibrationCard;
-    public byte vibrationMatch;
+    public int vibrationButton;
+    public int vibrationCard;
+    public int vibrationMatch;
     public int vibrationExplosion;
-    public int scoreMultiplyer;
+    public int scoreMultiplier;
 }
