@@ -66,7 +66,6 @@ public class UtilsScript : MonoBehaviour
         matchPoints = Config.config.matchPoints;
         emptyReactorPoints = Config.config.emptyReactorPoints;
         PerfectGamePoints = Config.config.perfectGamePoints;
-        UndoScript.undoScript.utils = gameObject.GetComponent<UtilsScript>();
     }
 
     void Update()

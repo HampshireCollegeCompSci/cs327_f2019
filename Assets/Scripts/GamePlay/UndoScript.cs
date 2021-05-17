@@ -5,7 +5,6 @@ public class UndoScript : MonoBehaviour
 {
     public static UndoScript undoScript;
     public Stack<Move> moveLog;
-    public UtilsScript utils;
 
     private void Awake()
     {
@@ -60,7 +59,7 @@ public class UndoScript : MonoBehaviour
      */
     public void Undo()
     {
-        if (utils.IsInputStopped())
+        if (UtilsScript.Instance.IsInputStopped())
             return;
 
         if (moveLog.Count != 0) //only run if there's something in the stack
@@ -91,7 +90,7 @@ public class UndoScript : MonoBehaviour
                     undoList[i].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false, showHolo: false);
                 undoList[undoList.Count - 1].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false);
 
-                utils.UpdateActions(undoList[0].remainingActions, setAsValue: true);
+                UtilsScript.Instance.UpdateActions(undoList[0].remainingActions, setAsValue: true);
                 return;
             }
             else if (moveLog.Peek().moveType == "move") //standard behavior, move a single token back where it was
@@ -100,7 +99,7 @@ public class UndoScript : MonoBehaviour
                 MoveFoundationCard(lastMove);
 
                 if (lastMove.isAction)
-                    utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
+                    UtilsScript.Instance.UpdateActions(lastMove.remainingActions, setAsValue: true);
 
                 return;
             }
@@ -111,8 +110,8 @@ public class UndoScript : MonoBehaviour
                 lastMove = moveLog.Pop();
                 MoveFoundationCard(lastMove);
 
-                utils.UpdateScore(lastMove.score, setAsValue: true);
-                utils.UpdateActions(-1);
+                UtilsScript.Instance.UpdateScore(lastMove.score, setAsValue: true);
+                UtilsScript.Instance.UpdateActions(-1);
                 return;
             }
             else if (moveLog.Peek().moveType == "draw") //move the last three drawn cards back to the deck (assuming the last action was to draw from the deck)
@@ -124,7 +123,7 @@ public class UndoScript : MonoBehaviour
                     if (moveLog.Count == 0 || moveLog.Peek().moveNum != lastMove.moveNum)
                     {
                         lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
-                        utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
+                        UtilsScript.Instance.UpdateActions(lastMove.remainingActions, setAsValue: true);
                         return;
                     }
 
@@ -142,7 +141,7 @@ public class UndoScript : MonoBehaviour
                     MoveFoundationCard(lastMove);
                 }
 
-                utils.UpdateActions(lastMove.remainingActions, setAsValue: true);
+                UtilsScript.Instance.UpdateActions(lastMove.remainingActions, setAsValue: true);
 
                 return;
             }

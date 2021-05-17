@@ -9,7 +9,6 @@ public class DeckScript : MonoBehaviour
 {
     public static DeckScript deckScript;
 
-    private UtilsScript utils;
     public GameObject wastePile;
     private WastepileScript wastePileScript;
 
@@ -39,7 +38,6 @@ public class DeckScript : MonoBehaviour
 
     public void DeckStart(Sprite[] suitSprites)
     {
-        utils = UtilsScript.Instance;
         wastePileScript = wastePile.GetComponent<WastepileScript>();
         buttonImage = gameObject.GetComponent<Image>();
 
@@ -51,19 +49,19 @@ public class DeckScript : MonoBehaviour
             Debug.Log("deck start loading tutorial");
             InstantiateCards(addToLoadPile: true);
             StateLoader.saveSystem.UnpackState(StateLoader.saveSystem.gameState, true);
-            utils.UpdateScore(0);
+            UtilsScript.Instance.UpdateScore(0);
         }
         else if (Application.isEditor && File.Exists("Assets/Resources/GameStates/testState.json"))
         {
             Debug.Log("editor: deck start loading saved game");
             StateLoader.saveSystem.UnpackState(StateLoader.saveSystem.gameState, false);
-            utils.UpdateScore(0);
+            UtilsScript.Instance.UpdateScore(0);
         }
         else if (!Application.isEditor && File.Exists(Application.persistentDataPath + "/testState.json"))
         {
             Debug.Log("application: deck start loading saved game");
             StateLoader.saveSystem.UnpackState(StateLoader.saveSystem.gameState, false);
-            utils.UpdateScore(0);
+            UtilsScript.Instance.UpdateScore(0);
         }
         else
         {
@@ -71,7 +69,7 @@ public class DeckScript : MonoBehaviour
             Shuffle();
             SetUpFoundations();
             Deal(false);
-            utils.UpdateActions(0, startingGame: true);
+            UtilsScript.Instance.UpdateActions(0, startingGame: true);
         }
     }
 
@@ -229,7 +227,7 @@ public class DeckScript : MonoBehaviour
         // user wants to deal cards, other things might need to be done before that
 
         // don't allow dealing when other stuff is happening
-        if (utils.IsInputStopped())
+        if (UtilsScript.Instance.IsInputStopped())
             return;
 
         if (cardList.Count != 0) // can the deck can be drawn from
@@ -296,16 +294,16 @@ public class DeckScript : MonoBehaviour
     // moves all of the top foundation cards into their appropriate reactors
     public void StartNextCycle(bool manuallyTriggered = false)
     {
-        if (!(manuallyTriggered && utils.IsInputStopped())) // stops 2 NextCycles from happening at once
+        if (!(manuallyTriggered && UtilsScript.Instance.IsInputStopped())) // stops 2 NextCycles from happening at once
         {
-            utils.SetInputStopped(true, nextCycle: true);
+            UtilsScript.Instance.SetInputStopped(true, nextCycle: true);
             StartCoroutine(NextCycle());
         }
     }
 
     IEnumerator NextCycle()
     {
-        utils.baby.GetComponent<SpaceBabyController>().BabyActionCounterSound();
+        UtilsScript.Instance.baby.GetComponent<SpaceBabyController>().BabyActionCounterSound();
 
         FoundationScript currentFoundation;
         GameObject topFoundationCard;
@@ -373,8 +371,8 @@ public class DeckScript : MonoBehaviour
             }
         }
 
-        utils.SetInputStopped(false, nextCycle: true);
-        utils.UpdateActions(0, setAsValue: true);
+        UtilsScript.Instance.SetInputStopped(false, nextCycle: true);
+        UtilsScript.Instance.UpdateActions(0, setAsValue: true);
     }
 
     //Shuffles cardList using Knuth shuffle aka Fisher-Yates shuffle

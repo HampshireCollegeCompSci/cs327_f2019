@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class WastepileScript : MonoBehaviour
 {
-    private UtilsScript utils;
     public GameObject deck;
     private DeckScript deckScript;
     public GameObject contentPanel;
@@ -21,7 +20,6 @@ public class WastepileScript : MonoBehaviour
 
     private void Start()
     {
-        utils = UtilsScript.Instance;
         deckScript = deck.GetComponent<DeckScript>();
 
         cardContainers = new List<GameObject>();
@@ -82,7 +80,7 @@ public class WastepileScript : MonoBehaviour
         ResetScrollBar();
 
         if (doLog)
-            utils.UpdateActions(1);
+            UtilsScript.Instance.UpdateActions(1);
     }
 
     public void AddCard(GameObject card, bool showHolo = true)
@@ -193,7 +191,7 @@ public class WastepileScript : MonoBehaviour
     private void DisableScrolling()
     {
         scrollingDisabled = true;
-        utils.SetInputStopped(true);
+        UtilsScript.Instance.SetInputStopped(true);
 
         // disable scrolling
         scrollRect.horizontal = false;
@@ -212,7 +210,7 @@ public class WastepileScript : MonoBehaviour
         scrollRect.horizontal = true;
         scrollRect.horizontalScrollbar.interactable = true;
 
-        utils.SetInputStopped(false);
+        UtilsScript.Instance.SetInputStopped(false);
         scrollingDisabled = false;
     }
 
@@ -234,10 +232,10 @@ public class WastepileScript : MonoBehaviour
 
     public void ProcessAction(GameObject input)
     {
-        if (utils.selectedCards.Count != 1)
+        if (UtilsScript.Instance.selectedCards.Count != 1)
             throw new System.ArgumentException("utils.selectedCards must be of size 1");
 
-        GameObject selectedCard = utils.selectedCards[0];
+        GameObject selectedCard = UtilsScript.Instance.selectedCards[0];
         CardScript selectedCardScript = selectedCard.GetComponent<CardScript>();
 
         if (input.CompareTag("Card"))
@@ -246,7 +244,7 @@ public class WastepileScript : MonoBehaviour
 
             if (CardTools.CanMatch(inputCardScript, selectedCardScript))
             {
-                utils.Match(input, selectedCard);
+                UtilsScript.Instance.Match(input, selectedCard);
                 return;
             }
             else if (inputCardScript.container.CompareTag("Reactor"))
@@ -290,6 +288,6 @@ public class WastepileScript : MonoBehaviour
             return;
         }
 
-        utils.UpdateActions(1);
+        UtilsScript.Instance.UpdateActions(1);
     }
 }

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ReactorScript : MonoBehaviour
 {
-    private UtilsScript utils;
     public GameObject gameUI;
     private ReactorScoreSetScript rsss;
 
@@ -21,7 +20,6 @@ public class ReactorScript : MonoBehaviour
 
     void Start()
     {
-        utils = UtilsScript.Instance;
         rsss = gameUI.GetComponent<ReactorScoreSetScript>();
         suitGlowSR = suitGlow.GetComponent<SpriteRenderer>();
     }
@@ -92,13 +90,13 @@ public class ReactorScript : MonoBehaviour
         if (!input.CompareTag("Card"))
             return;
 
-        if (utils.selectedCards.Count != 1)
+        if (UtilsScript.Instance.selectedCards.Count != 1)
             throw new System.ArgumentException("utils.selectedCards must be of size 1");
 
-        GameObject selectedCard = utils.selectedCards[0];
+        GameObject selectedCard = UtilsScript.Instance.selectedCards[0];
 
         if (CardTools.CanMatch(input.GetComponent<CardScript>(), selectedCard.GetComponent<CardScript>()))
-            utils.Match(input, selectedCard);
+            UtilsScript.Instance.Match(input, selectedCard);
     }
 
     public int GetIncreaseOnNextCycle()
