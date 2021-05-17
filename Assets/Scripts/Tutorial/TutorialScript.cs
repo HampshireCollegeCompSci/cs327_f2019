@@ -174,9 +174,9 @@ public class TutorialScript : MonoBehaviour
             MoveCardsToLoadPile(reactor.GetComponent<ReactorScript>().cardList);
         }
 
-        MoveCardsToLoadPile(Config.config.deck.GetComponent<DeckScript>().cardList);
-        MoveCardsToLoadPile(Config.config.wastePile.GetComponent<WastepileScript>().cardList);
-        MoveCardsToLoadPile(Config.config.matches.GetComponent<MatchedPileScript>().cardList);
+        MoveCardsToLoadPile(DeckScript.Instance.cardList);
+        MoveCardsToLoadPile(WastepileScript.Instance.cardList);
+        MoveCardsToLoadPile(MatchedPileScript.Instance.cardList);
 
         StateLoader.saveSystem.LoadTutorialState(fileName);
         StateLoader.saveSystem.UnpackState(state: StateLoader.saveSystem.gameState, isTutorial: true);
@@ -187,7 +187,7 @@ public class TutorialScript : MonoBehaviour
         int cardCount = cards.Count;
         while (cardCount != 0)
         {
-            cards[0].GetComponent<CardScript>().MoveCard(Config.config.loadPile, doLog: false, isAction: false);
+            cards[0].GetComponent<CardScript>().MoveCard(LoadPileScript.Instance.gameObject, doLog: false, isAction: false);
             cardCount--;
         }
     }
@@ -453,11 +453,11 @@ public class TutorialScript : MonoBehaviour
         {
             if (highlightOn)
             {
-                Config.config.deck.GetComponent<Image>().color = Color.yellow;
+                DeckScript.Instance.gameObject.GetComponent<Image>().color = Color.yellow;
             }
             else
             {
-                Config.config.deck.GetComponent<Image>().color = Color.white;
+                DeckScript.Instance.gameObject.GetComponent<Image>().color = Color.white;
             }
         }
 
@@ -598,19 +598,19 @@ public class TutorialScript : MonoBehaviour
                 throw new FormatException("contains an invalid waste pile index for the 2nd command, it must be 0");
             }
 
-            List<GameObject> wastePileCardList = Config.config.wastePile.GetComponent<WastepileScript>().cardList;
-            if (wastePileCardList.Count < tokenIndex)
+            if (WastepileScript.Instance.cardList.Count < tokenIndex)
             {
-                throw new FormatException($"contains an out of bounds token index for the 3nd command. there are only {wastePileCardList.Count} token(s) to choose from in the waste pile");
+                throw new FormatException($"contains an out of bounds token index for the 3nd command." +
+                    $"there are only {WastepileScript.Instance.cardList.Count} token(s) to choose from in the waste pile");
             }
 
             if (highlightOn)
             {
-                wastePileCardList[tokenIndex].GetComponent<CardScript>().GlowOn(match);
+                WastepileScript.Instance.cardList[tokenIndex].GetComponent<CardScript>().GlowOn(match);
             }
             else
             {
-                wastePileCardList[tokenIndex].GetComponent<CardScript>().GlowOff();
+                WastepileScript.Instance.cardList[tokenIndex].GetComponent<CardScript>().GlowOff();
             }
         }
 
@@ -655,10 +655,9 @@ public class TutorialScript : MonoBehaviour
             }
         }
 
-        cardListRef = Config.config.wastePile.GetComponent<WastepileScript>().cardList;
-        if (cardListRef.Count != 0)
+        if (WastepileScript.Instance.cardList.Count != 0)
         {
-            cardListRef[0].GetComponent<CardScript>().GlowOn(false);
+            WastepileScript.Instance.cardList[0].GetComponent<CardScript>().GlowOn(false);
         }
     }
 
@@ -676,7 +675,7 @@ public class TutorialScript : MonoBehaviour
             CardListGlowOff(foundation.GetComponent<FoundationScript>().cardList);
         }
 
-        CardListGlowOff(Config.config.wastePile.GetComponent<WastepileScript>().cardList);
+        CardListGlowOff(WastepileScript.Instance.cardList);
     }
 
     private void CardListGlowOff(List<GameObject> cardList)

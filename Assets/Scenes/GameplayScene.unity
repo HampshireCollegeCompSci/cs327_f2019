@@ -3551,12 +3551,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aace81811416b496487ac4b00885372a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deck: {fileID: 1524850547}
-  contentPanel: {fileID: 225234669}
   cardList: []
-  cardContainer: {fileID: 4445628893480912193, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
+  cardContainerPrefab: {fileID: 4445628893480912193, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
     type: 3}
-  scrollRect: {fileID: 0}
+  contentPanel: {fileID: 225234669}
 --- !u!222 &1092020363
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5732,7 +5730,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 588991f7981904dbeb5fea6cffa8c7ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wastePile: {fileID: 1092020358}
   cardPrefab: {fileID: 5176008346855944174, guid: 0fafc5a2a71a38f4ab87e6c3145b6a8b,
     type: 3}
   holograms:

@@ -7,10 +7,6 @@ using System.IO;
 
 public class DeckScript : MonoBehaviour
 {
-    public static DeckScript deckScript;
-
-    public GameObject wastePile;
-    private WastepileScript wastePileScript;
 
     public GameObject cardPrefab;
     private Sprite[] suitSprites;
@@ -23,22 +19,26 @@ public class DeckScript : MonoBehaviour
     public Sprite[] buttonAnimation;
     public Text deckCounter;
 
+    // Singleton instance.
+    public static DeckScript Instance = null;
+
+    // Initialize the singleton instance.
     private void Awake()
     {
-        if (deckScript == null)
+        // If there is not already an instance of SoundManager, set it to this.
+        if (Instance == null)
         {
-            //DontDestroyOnLoad(gameObject); //makes instance persist across scenes
-            deckScript = this;
+            Instance = this;
         }
-        else if (deckScript != this)
+        //If an instance already exists, destroy whatever this object is to enforce the singleton.
+        else if (Instance != this)
         {
-            Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
+            throw new System.ArgumentException("there should not already be an instance of this");
         }
     }
 
     public void DeckStart(Sprite[] suitSprites)
     {
-        wastePileScript = wastePile.GetComponent<WastepileScript>();
         buttonImage = gameObject.GetComponent<Image>();
 
         this.suitSprites = suitSprites;
@@ -76,8 +76,6 @@ public class DeckScript : MonoBehaviour
     // sets up card list
     public void InstantiateCards(bool addToLoadPile = false)
     {
-        LoadPileScript lps = Config.config.loadPile.GetComponent<LoadPileScript>();
-
         string[] suitStrings = new string[] { "spades", "clubs", "diamonds", "hearts" };
 
         GameObject newCard;
@@ -168,8 +166,8 @@ public class DeckScript : MonoBehaviour
                 }
                 else
                 {
-                    newCardScript.container = Config.config.loadPile;
-                    lps.AddCard(newCard);
+                    newCardScript.container = LoadPileScript.Instance.gameObject;
+                    LoadPileScript.Instance.AddCard(newCard);
                 }
                 
                 cardIndex += 1;
@@ -238,7 +236,7 @@ public class DeckScript : MonoBehaviour
             StartCoroutine(ButtonDown());
         }
         // if it is possible to repopulate the deck
-        else if (wastePileScript.cardList.Count > Config.config.cardsToDeal) 
+        else if (WastepileScript.Instance.cardList.Count > Config.config.cardsToDeal) 
         {
             DeckReset();
             StartCoroutine(ButtonDown());
@@ -257,14 +255,14 @@ public class DeckScript : MonoBehaviour
         }
 
         if (toMoveList.Count != 0)
-            wastePileScript.AddCards(toMoveList, doLog);
+            WastepileScript.Instance.AddCards(toMoveList, doLog);
     }
 
     public void DeckReset()
     {
         // moves all wastePile cards into the deck
 
-        wastePileScript.StartDeckReset();
+        WastepileScript.Instance.StartDeckReset();
         SoundEffectsController.Instance.DeckReshuffle();
     }
 
@@ -376,7 +374,7 @@ public class DeckScript : MonoBehaviour
     }
 
     //Shuffles cardList using Knuth shuffle aka Fisher-Yates shuffle
-    public void Shuffle()
+    private void Shuffle()
     {
         System.Random rand = new System.Random();
 
@@ -398,15 +396,15 @@ public class DeckScript : MonoBehaviour
         }
         else
         {
-            if (wastePileScript.cardList.Count > Config.config.cardsToDeal)
+            if (WastepileScript.Instance.cardList.Count > Config.config.cardsToDeal)
             {
-                deckScript.deckCounter.fontSize = 45;
-                deckScript.deckCounter.text = "FLIP";
+                deckCounter.fontSize = 45;
+                deckCounter.text = "FLIP";
             }
             else
             {
-                deckScript.deckCounter.fontSize = 40;
-                deckScript.deckCounter.text = "EMPTY";
+                deckCounter.fontSize = 40;
+                deckCounter.text = "EMPTY";
             }
         }
     }

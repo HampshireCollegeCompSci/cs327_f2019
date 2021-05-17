@@ -44,7 +44,6 @@ public class Config : MonoBehaviour
     public GameObject[] foundations;
 
     //wastepile
-    public GameObject wastePile;
     public byte wastepileAnimationSpeedSlow;
     public byte wastepileAnimationSpeedFast;
 
@@ -58,18 +57,11 @@ public class Config : MonoBehaviour
     public GameObject[] reactors;
 
     //deck
-    public GameObject deck;
     public byte cardsToDeal;
     public byte cardsToReactorspeed;
 
     //tutorial
     public bool tutorialOn;
-
-    //matches
-    public GameObject matches;
-
-    //LoadPile
-    public GameObject loadPile;
 
     //UI
     public bool gamePaused;
@@ -77,7 +69,6 @@ public class Config : MonoBehaviour
     //internal variables
     private GameInfo gameInfo;
     private GameObject fadeOutImage;
-
 
     public string[] difficulties;
     public int[] reactorLimits;
@@ -138,7 +129,7 @@ public class Config : MonoBehaviour
         gameWin = didWin;
         
         if (!manualWin)
-            matchCounter = (byte) (matches.GetComponent<MatchedPileScript>().cardList.Count / 2);
+            matchCounter = (byte) (MatchedPileScript.Instance.cardList.Count / 2);
         
         fadeOutImage.SetActive(true);
         baby = GameObject.Find("SpaceBaby");
@@ -255,10 +246,6 @@ public class Config : MonoBehaviour
         reactor3 = GameObject.Find("ReactorPile (2)");
         reactor4 = GameObject.Find("ReactorPile (3)");
         reactors = new GameObject[] { reactor1, reactor2, reactor3, reactor4 };
-
-        wastePile = GameObject.Find("Scroll View");
-
-        deck = GameObject.Find("DeckButton");
 
         fadeOutImage = GameObject.Find("FadeOutImage");
         if (fadeOutImage != null)

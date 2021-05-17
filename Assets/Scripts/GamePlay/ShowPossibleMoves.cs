@@ -128,9 +128,9 @@ public class ShowPossibleMoves : MonoBehaviour
         }
 
         // if the card can match and matches with the wastepile top
-        if (cardCanBeMatched && Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count != 0)
+        if (cardCanBeMatched && WastepileScript.Instance.cardList.Count != 0)
         {
-            GameObject topWastepileCard = Config.config.wastePile.GetComponent<WastepileScript>().cardList[0];
+            GameObject topWastepileCard = WastepileScript.Instance.cardList[0];
             if (CardTools.CanMatch(topWastepileCard.GetComponent<CardScript>(), selectedCardScript, checkIsTop: false))
                 cardMatches.Add(topWastepileCard);
         }

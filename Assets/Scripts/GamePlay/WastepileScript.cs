@@ -5,23 +5,37 @@ using UnityEngine.UI;
 
 public class WastepileScript : MonoBehaviour
 {
-    public GameObject deck;
-    private DeckScript deckScript;
-    public GameObject contentPanel;
-
     public List<GameObject> cardList;
 
-    public GameObject cardContainer;
+    public GameObject cardContainerPrefab;
     private List<GameObject> cardContainers;
 
-    public ScrollRect scrollRect;
+    public GameObject contentPanel;
+    private ScrollRect scrollRect;
     private RectTransform contentRectTransform;
+
     private bool scrollingDisabled;
+
+    // Singleton instance.
+    public static WastepileScript Instance = null;
+
+    // Initialize the singleton instance.
+    private void Awake()
+    {
+        // If there is not already an instance of SoundManager, set it to this.
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        //If an instance already exists, destroy whatever this object is to enforce the singleton.
+        else if (Instance != this)
+        {
+            throw new System.ArgumentException("there should not already be an instance of this");
+        }
+    }
 
     private void Start()
     {
-        deckScript = deck.GetComponent<DeckScript>();
-
         cardContainers = new List<GameObject>();
 
         scrollRect = gameObject.GetComponent<ScrollRect>();
@@ -75,7 +89,7 @@ public class WastepileScript : MonoBehaviour
             contentRectTransform.anchoredPosition = temp;
         }
 
-        deckScript.StartButtonUp();
+        DeckScript.Instance.StartButtonUp();
 
         ResetScrollBar();
 
@@ -102,7 +116,7 @@ public class WastepileScript : MonoBehaviour
         }
 
         // making a container for the card so that it plays nice with the scroll view
-        cardContainers.Insert(0, Instantiate(cardContainer));
+        cardContainers.Insert(0, Instantiate(cardContainerPrefab));
         cardContainers[0].transform.SetParent(contentPanel.transform, false);
         cardContainers[0].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1);
         cardContainers[0].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1);
@@ -112,7 +126,7 @@ public class WastepileScript : MonoBehaviour
         card.transform.position = new Vector3(card.transform.parent.position.x, card.transform.parent.position.y, -1 - (cardList.Count * 0.01f));
         card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.VisibleInsideMask);
 
-        deckScript.UpdateDeckCounter();
+        DeckScript.Instance.UpdateDeckCounter();
     }
 
     public void RemoveCard(GameObject card, bool undoingOrDeck = false, bool showHolo = true)
@@ -140,7 +154,7 @@ public class WastepileScript : MonoBehaviour
         else
             StartCoroutine(ScrollBarRemoving(parentCardContainer));
 
-        deckScript.UpdateDeckCounter();
+        DeckScript.Instance.UpdateDeckCounter();
     }
 
     IEnumerator ScrollBarRemoving(GameObject parentCardContainer)
@@ -181,11 +195,11 @@ public class WastepileScript : MonoBehaviour
 
         // move all the tokens
         while (cardList.Count > 0)
-            cardList[0].GetComponent<CardScript>().MoveCard(deck, showHolo: false);
+            cardList[0].GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, showHolo: false);
 
         yield return new WaitForSeconds(0.5f);
 
-        deckScript.Deal();
+        DeckScript.Instance.Deal();
     }
 
     private void DisableScrolling()

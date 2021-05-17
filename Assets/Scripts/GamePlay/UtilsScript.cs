@@ -9,7 +9,6 @@ public class UtilsScript : MonoBehaviour
 {
     public List<GameObject> selectedCards;
     private List<GameObject> selectedCardsCopy;
-    public GameObject matchedPile;
     public GameObject matchPrefab;
     public GameObject matchPointsPrefab;
 
@@ -20,7 +19,6 @@ public class UtilsScript : MonoBehaviour
     public int indexCounter;
     private bool dragOn;
     private bool draggingWastepile = false;
-    public GameObject wastePile;
 
     private bool inputStopped = false;
     private bool isNextCycle;
@@ -53,11 +51,8 @@ public class UtilsScript : MonoBehaviour
         //If an instance already exists, destroy whatever this object is to enforce the singleton.
         else if (Instance != this)
         {
-            Destroy(gameObject);
+            throw new System.ArgumentException("there should not already be an instance of this");
         }
-
-        //Set SoundManager to DontDestroyOnLoad so that it won't be destroyed when reloading our scene.
-        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
@@ -195,7 +190,7 @@ public class UtilsScript : MonoBehaviour
     {
         if (draggingWastepile)
         {
-            wastePile.GetComponent<WastepileScript>().DraggingCard(selectedCards[0], false);
+            WastepileScript.Instance.DraggingCard(selectedCards[0], false);
             draggingWastepile = false;
         }
 
@@ -371,8 +366,8 @@ public class UtilsScript : MonoBehaviour
         p.z += 2;
         GameObject matchExplosion = Instantiate(matchPrefab, p, Quaternion.identity);
 
-        card2Script.MoveCard(matchedPile);
-        card1Script.MoveCard(matchedPile);
+        card2Script.MoveCard(MatchedPileScript.Instance.gameObject);
+        card1Script.MoveCard(MatchedPileScript.Instance.gameObject);
 
         int points = matchPoints + (Config.config.consecutiveMatches * Config.config.scoreMultiplier);
         UpdateScore(points);
@@ -569,7 +564,7 @@ public class UtilsScript : MonoBehaviour
     {
         if (Config.config.actions >= Config.config.actionMax)
         {
-            Config.config.deck.GetComponent<DeckScript>().StartNextCycle();
+           DeckScript.Instance.StartNextCycle();
             return true;
         }
 
@@ -648,7 +643,7 @@ public class UtilsScript : MonoBehaviour
     public void SetEndGameScore()
     {
         int extraScore = 0;
-        if (matchedPile.GetComponent<MatchedPileScript>().cardList.Count == 52)
+        if (MatchedPileScript.Instance.cardList.Count == 52)
             extraScore += PerfectGamePoints;
 
         if (Config.config.reactor1.GetComponent<ReactorScript>().cardList.Count == 0)
