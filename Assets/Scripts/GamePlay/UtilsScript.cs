@@ -7,7 +7,6 @@ using System.IO;
 
 public class UtilsScript : MonoBehaviour
 {
-    public static UtilsScript global; //Creates a new instance if one does not yet exist
     public List<GameObject> selectedCards;
     private List<GameObject> selectedCardsCopy;
     public GameObject matchedPile;
@@ -40,17 +39,25 @@ public class UtilsScript : MonoBehaviour
     private bool reactorIsGlowing;
     private bool foundationIsGlowing;
 
+    // Singleton instance.
+    public static UtilsScript Instance = null;
+
+    // Initialize the singleton instance.
     void Awake()
     {
-        if (global == null)
+        // If there is not already an instance of SoundManager, set it to this.
+        if (Instance == null)
         {
-            //DontDestroyOnLoad(gameObject); //makes instance persist across scenes
-            global = this;
+            Instance = this;
         }
-        else if (global != this)
+        //If an instance already exists, destroy whatever this object is to enforce the singleton.
+        else if (Instance != this)
         {
-            Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
+            Destroy(gameObject);
         }
+
+        //Set SoundManager to DontDestroyOnLoad so that it won't be destroyed when reloading our scene.
+        DontDestroyOnLoad(gameObject);
     }
 
     void Start()

@@ -23,7 +23,6 @@ public class MenuUIScript : MonoBehaviour
     // SummaryScene buttons
     public GameObject playAgainButton;
 
-
     private void Start()
     {
         Debug.Log("starting MenuUIScript");
@@ -112,10 +111,10 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI undo button");
 
-        if (UtilsScript.global.IsInputStopped())
+        if (UtilsScript.Instance.IsInputStopped())
             return;
 
-        UndoScript.undoScript.undo();
+        UndoScript.undoScript.Undo();
         SoundEffectsController.Instance.UndoPressSound();
     }
 
@@ -173,7 +172,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI pause game");
 
-        if (UtilsScript.global.IsInputStopped())
+        if (UtilsScript.Instance.IsInputStopped())
             return;
 
         SoundEffectsController.Instance.PauseMenuButtonSound();
@@ -276,7 +275,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI make actions max");
 
-        if (UtilsScript.global.IsInputStopped())
+        if (UtilsScript.Instance.IsInputStopped())
             return;
 
         Config.config.deck.GetComponent<DeckScript>().StartNextCycle(manuallyTriggered: true);

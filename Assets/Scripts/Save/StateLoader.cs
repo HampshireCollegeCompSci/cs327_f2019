@@ -98,7 +98,7 @@ public class StateLoader : MonoBehaviour
         //UnityEditor.AssetDatabase.Refresh();
     }
 
-    private static List<string> ConvertCardListToStringList(List<GameObject> cardList)
+    private List<string> ConvertCardListToStringList(List<GameObject> cardList)
     {
         List<string> stringList = new List<string>();
         CardScript cardScriptRef;
@@ -202,10 +202,10 @@ public class StateLoader : MonoBehaviour
         Config.config.score = state.score;
         Config.config.consecutiveMatches = state.consecutiveMatches;
         Config.config.moveCounter = state.moveCounter;
-        UtilsScript.global.UpdateActions(state.actions, startingGame: true);
+        UtilsScript.Instance.UpdateActions(state.actions, startingGame: true);
     }
 
-    private static void SetUpMoveLog(List<AltMove> moves, List<GameObject> cardList)
+    private void SetUpMoveLog(List<AltMove> moves, List<GameObject> cardList)
     {
         //set up undo log
         
@@ -280,7 +280,7 @@ public class StateLoader : MonoBehaviour
         }
     }
 
-    private static void SetUpLocationWithCards(List<string> stringList, List<GameObject> cardList, GameObject newLocation)
+    private void SetUpLocationWithCards(List<string> stringList, List<GameObject> cardList, GameObject newLocation)
     {
         // seting up the new location with cards using the given commands, and cards
 
@@ -326,7 +326,7 @@ public class StateLoader : MonoBehaviour
         }
     }
        
-    public static GameState CreateFromJSON(string path, bool tutorial = false)
+    private GameState CreateFromJSON(string path, bool tutorial = false)
     {
         Debug.Log("creating gamestate from path: " + path);
 

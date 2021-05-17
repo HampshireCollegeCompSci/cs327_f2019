@@ -22,7 +22,7 @@ public class TutorialScript : MonoBehaviour
 
         Debug.Log("starting tutorialScript");
 
-        UtilsScript.global.SetInputStopped(true);
+        UtilsScript.Instance.SetInputStopped(true);
         tutorial.SetActive(true);
         UpdateHighlightObjectsColor(new Color(1, 1, 0, 0.35f));
 
@@ -696,7 +696,7 @@ public class TutorialScript : MonoBehaviour
             throw new FormatException("does not contain only 2 entries");
         }
 
-        UtilsScript.global.moveCounter.GetComponent<ActionCountScript>().UpdateActionText(command[1]);
+        UtilsScript.Instance.moveCounter.GetComponent<ActionCountScript>().UpdateActionText(command[1]);
     }
 
     private static List<ArgumentListWrapper> CreateFromJSON()

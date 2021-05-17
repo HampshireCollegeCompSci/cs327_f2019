@@ -39,7 +39,7 @@ public class DeckScript : MonoBehaviour
 
     public void DeckStart(Sprite[] suitSprites)
     {
-        utils = UtilsScript.global;
+        utils = UtilsScript.Instance;
         wastePileScript = wastePile.GetComponent<WastepileScript>();
         buttonImage = gameObject.GetComponent<Image>();
 

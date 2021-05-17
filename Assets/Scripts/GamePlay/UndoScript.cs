@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class UndoScript : MonoBehaviour
@@ -60,7 +58,7 @@ public class UndoScript : MonoBehaviour
     /*
      *undo is the function which reads from the moveLog and resets cards, score, moves, etc to their old state. 
      */
-    public void undo()
+    public void Undo()
     {
         if (utils.IsInputStopped())
             return;

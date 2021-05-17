@@ -21,7 +21,7 @@ public class ReactorScript : MonoBehaviour
 
     void Start()
     {
-        utils = UtilsScript.global;
+        utils = UtilsScript.Instance;
         rsss = gameUI.GetComponent<ReactorScoreSetScript>();
         suitGlowSR = suitGlow.GetComponent<SpriteRenderer>();
     }

@@ -169,7 +169,7 @@ public class Config : MonoBehaviour
             //baby.GetComponent<SpaceBabyController>().BabyLoseSound();
             SoundEffectsController.Instance.LoseSound();
 
-            UtilsScript.global.errorImage.SetActive(true);
+            UtilsScript.Instance.errorImage.SetActive(true);
             while (countdown > 0)
             {
                 yield return new WaitForSeconds(0.01f);

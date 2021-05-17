@@ -11,7 +11,7 @@ public class FoundationScript : MonoBehaviour
 
     void Start()
     {
-        utils = UtilsScript.global;
+        utils = UtilsScript.Instance;
         sp = gameObject.GetComponent<SpriteRenderer>();
     }
 

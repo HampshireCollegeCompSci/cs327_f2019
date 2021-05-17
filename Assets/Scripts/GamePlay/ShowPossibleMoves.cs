@@ -50,7 +50,7 @@ public class ShowPossibleMoves : MonoBehaviour
             {
                 // if the card matches the card in the top of the reactor
                 if (reactor.GetComponent<ReactorScript>().cardList.Count != 0 && 
-                    UtilsScript.global.CanMatch(reactor.GetComponent<ReactorScript>().cardList[0].GetComponent<CardScript>(),
+                    UtilsScript.Instance.CanMatch(reactor.GetComponent<ReactorScript>().cardList[0].GetComponent<CardScript>(),
                                                 selectedCardScript, checkIsTop: false))
                     cardMatches.Add(reactor.GetComponent<ReactorScript>().cardList[0]);
             }
@@ -59,7 +59,7 @@ public class ShowPossibleMoves : MonoBehaviour
             if (!selectedCard.GetComponent<CardScript>().container.CompareTag("Reactor"))
                 // get the reactor that we can match into
                 foreach (GameObject reactor in Config.config.reactors)
-                    if (UtilsScript.global.IsSameSuit(selectedCard, reactor))
+                    if (UtilsScript.Instance.IsSameSuit(selectedCard, reactor))
                     {
                         reactorMove = reactor;
                         break;
@@ -73,7 +73,7 @@ public class ShowPossibleMoves : MonoBehaviour
                 CardScript topFoundationCardScript = foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>();
 
                 // if the card can match and matches with the foundation top
-                if (cardCanBeMatched && UtilsScript.global.CanMatch(selectedCardScript, topFoundationCardScript, checkIsTop: false))
+                if (cardCanBeMatched && UtilsScript.Instance.CanMatch(selectedCardScript, topFoundationCardScript, checkIsTop: false))
                     cardMatches.Add(foundation.GetComponent<FoundationScript>().cardList[0]);
                 // if the card is not from a reactor can it stack?
                 else if ((cardIsFromFoundation || cardIsFromWastepile) &&
@@ -88,7 +88,7 @@ public class ShowPossibleMoves : MonoBehaviour
         if (cardCanBeMatched && Config.config.wastePile.GetComponent<WastepileScript>().cardList.Count != 0)
         {
             GameObject topWastepileCard = Config.config.wastePile.GetComponent<WastepileScript>().cardList[0];
-            if (UtilsScript.global.CanMatch(topWastepileCard.GetComponent<CardScript>(), selectedCardScript, checkIsTop: false))
+            if (UtilsScript.Instance.CanMatch(topWastepileCard.GetComponent<CardScript>(), selectedCardScript, checkIsTop: false))
                 cardMatches.Add(topWastepileCard);
         }
     }

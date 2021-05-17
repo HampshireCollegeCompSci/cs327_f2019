@@ -21,7 +21,7 @@ public class WastepileScript : MonoBehaviour
 
     private void Start()
     {
-        utils = UtilsScript.global;
+        utils = UtilsScript.Instance;
         deckScript = deck.GetComponent<DeckScript>();
 
         cardContainers = new List<GameObject>();
