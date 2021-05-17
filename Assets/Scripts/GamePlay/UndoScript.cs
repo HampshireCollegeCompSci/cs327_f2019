@@ -26,7 +26,7 @@ public class UndoScript : MonoBehaviour
     /*
      *logMove takes a number of  paramaters, detects if the card below the moved card was hidden, then logs the move.
      */
-    public void logMove(string moveType, GameObject card, bool isAction = true, bool nextCardWasHidden = false)
+    public void LogMove(string moveType, GameObject card, bool isAction = true, bool nextCardWasHidden = false)
     {
         GameObject origin = card.GetComponent<CardScript>().container; //get the cards original location
 
