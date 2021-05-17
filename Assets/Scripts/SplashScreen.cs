@@ -4,14 +4,20 @@ using UnityEngine.UI;
 
 public class SplashScreen : MonoBehaviour
 {
+    private static bool firstRun = true;
+
     public GameObject splashScreen;
     private Coroutine splashScreenFade;
 
     // Start is called before the first frame update
     private void Start()
     {
-        splashScreen.SetActive(true);
-        splashScreenFade = StartCoroutine(DisplayLogo());
+        if (firstRun)
+        {
+            firstRun = false;
+            splashScreen.SetActive(true);
+            splashScreenFade = StartCoroutine(DisplayLogo());
+        }
     }
 
     IEnumerator DisplayLogo()
