@@ -244,14 +244,14 @@ public class WastepileScript : MonoBehaviour
         {
             CardScript inputCardScript = input.GetComponent<CardScript>();
 
-            if (utils.CanMatch(inputCardScript, selectedCardScript))
+            if (CardTools.CanMatch(inputCardScript, selectedCardScript))
             {
                 utils.Match(input, selectedCard);
                 return;
             }
             else if (inputCardScript.container.CompareTag("Reactor"))
             {
-                if (!utils.IsSameSuit(input, selectedCard))
+                if (!CardTools.IsSameSuit(input, selectedCard))
                     return;
 
                 SoundEffectsController.Instance.CardToReactorSound();
@@ -271,7 +271,7 @@ public class WastepileScript : MonoBehaviour
         }
         else if (input.CompareTag("Reactor"))
         {
-            if (!utils.IsSameSuit(input, selectedCard))
+            if (!CardTools.IsSameSuit(input, selectedCard))
                 return;
 
             SoundEffectsController.Instance.CardToReactorSound();

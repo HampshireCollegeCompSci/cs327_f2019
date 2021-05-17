@@ -114,14 +114,14 @@ public class FoundationScript : MonoBehaviour
 
             if (utils.selectedCards.Count == 1)
             {
-                if (utils.CanMatch(inputCardScript, selectedCardScript))
+                if (CardTools.CanMatch(inputCardScript, selectedCardScript))
                 {
                     utils.Match(input, selectedCard);
                     return;
                 }
                 else if (inputCardScript.container.CompareTag("Reactor"))
                 {
-                    if (!utils.IsSameSuit(input, selectedCard))
+                    if (!CardTools.IsSameSuit(input, selectedCard))
                         return;
 
                     SoundEffectsController.Instance.CardToReactorSound();
@@ -159,7 +159,7 @@ public class FoundationScript : MonoBehaviour
         }
         else if (input.CompareTag("Reactor"))
         {
-            if (utils.selectedCards.Count != 1 || !utils.IsSameSuit(input, selectedCard))
+            if (utils.selectedCards.Count != 1 || !CardTools.IsSameSuit(input, selectedCard))
                 return;
 
             SoundEffectsController.Instance.CardToReactorSound();

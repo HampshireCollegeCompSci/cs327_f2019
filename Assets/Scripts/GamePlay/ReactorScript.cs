@@ -97,7 +97,7 @@ public class ReactorScript : MonoBehaviour
 
         GameObject selectedCard = utils.selectedCards[0];
 
-        if (utils.CanMatch(input.GetComponent<CardScript>(), selectedCard.GetComponent<CardScript>()))
+        if (CardTools.CanMatch(input.GetComponent<CardScript>(), selectedCard.GetComponent<CardScript>()))
             utils.Match(input, selectedCard);
     }
 

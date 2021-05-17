@@ -473,62 +473,6 @@ public class UtilsScript : MonoBehaviour
         Destroy(matchPointsEffect);
     }
 
-    public bool CanMatch(CardScript card1, CardScript card2, bool checkIsTop = true)
-    {
-        //checks if the two cards can match together
-        
-        // checks if the cards are at the top of their containers
-        if (checkIsTop && (!IsAtContainerTop(card1) || !IsAtContainerTop(card2)))
-            return false;
-
-        if (card1.cardNum != card2.cardNum)
-            return false;
-
-        if ((card1.cardSuit.Equals("hearts") && card2.cardSuit.Equals("diamonds")) ||
-            (card1.cardSuit.Equals("diamonds") && card2.cardSuit.Equals("hearts")) ||
-            (card1.cardSuit.Equals("spades") && card2.cardSuit.Equals("clubs")) ||
-            (card1.cardSuit.Equals("clubs") && card2.cardSuit.Equals("spades")))
-            return true;
-
-        //otherwise not a match 
-        return false;
-    }
-
-    private bool IsAtContainerTop(CardScript card)
-    {
-        // checks if the card is at the top of its container's cardList
-        // hitboxes are disabled for all cards not on the top for the reactor, wastepile, and deck
-
-        if (card.container.CompareTag("Foundation") &&
-            card.container.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>() != card)
-            return false;
-        /*if (card.container.CompareTag("Reactor") &&
-            card.container.GetComponent<ReactorScript>().cardList[0].GetComponent<CardScript>() != card)
-            return false;
-        if (card.container.CompareTag("Wastepile") &&
-            card.container.GetComponent<WastepileScript>().cardList[0].GetComponent<CardScript>() != card)
-            return false;
-        if (card.container.CompareTag("Deck") &&
-            card.container.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>() != card)
-            return false;*/
-        return true;
-    }
-
-    public bool IsSameSuit(GameObject object1, GameObject object2)
-    {
-        return (GetSuit(object1) == GetSuit(object2));
-    }
-
-    public string GetSuit(GameObject suitObject)
-    {
-        if (suitObject.CompareTag("Card"))
-            return suitObject.GetComponent<CardScript>().cardSuit;
-        if (suitObject.CompareTag("Reactor"))
-            return suitObject.GetComponent<ReactorScript>().suit;
-
-        throw new System.ArgumentException("suitObject must have a suit variable");
-    }
-
     public void UpdateScore(int addScore, bool setAsValue = false)
     {
         if (setAsValue)
