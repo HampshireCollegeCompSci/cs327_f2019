@@ -7,13 +7,12 @@ using System.IO;
 
 public class DeckScript : MonoBehaviour
 {
+    public List<GameObject> cardList;
 
     public GameObject cardPrefab;
     private Sprite[] suitSprites;
     public Sprite[] holograms;
     public Sprite[] combinedHolograms;
-
-    public List<GameObject> cardList;
 
     private Image buttonImage;
     public Sprite[] buttonAnimation;
@@ -25,12 +24,10 @@ public class DeckScript : MonoBehaviour
     // Initialize the singleton instance.
     private void Awake()
     {
-        // If there is not already an instance of SoundManager, set it to this.
         if (Instance == null)
         {
             Instance = this;
         }
-        //If an instance already exists, destroy whatever this object is to enforce the singleton.
         else if (Instance != this)
         {
             throw new System.ArgumentException("there should not already be an instance of this");

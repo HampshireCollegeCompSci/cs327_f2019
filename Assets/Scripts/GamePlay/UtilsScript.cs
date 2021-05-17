@@ -26,7 +26,7 @@ public class UtilsScript : MonoBehaviour
     public GameObject baby;
     public int matchPoints;
     public int emptyReactorPoints;
-    public int PerfectGamePoints;
+    public int perfectGamePoints;
 
     private GameObject hoveringOver;
     private bool changedHologramColor;
@@ -43,12 +43,10 @@ public class UtilsScript : MonoBehaviour
     // Initialize the singleton instance.
     void Awake()
     {
-        // If there is not already an instance of SoundManager, set it to this.
         if (Instance == null)
         {
             Instance = this;
         }
-        //If an instance already exists, destroy whatever this object is to enforce the singleton.
         else if (Instance != this)
         {
             throw new System.ArgumentException("there should not already be an instance of this");
@@ -60,7 +58,7 @@ public class UtilsScript : MonoBehaviour
         selectedCardsCopy = new List<GameObject>();
         matchPoints = Config.config.matchPoints;
         emptyReactorPoints = Config.config.emptyReactorPoints;
-        PerfectGamePoints = Config.config.perfectGamePoints;
+        perfectGamePoints = Config.config.perfectGamePoints;
     }
 
     void Update()
@@ -644,7 +642,7 @@ public class UtilsScript : MonoBehaviour
     {
         int extraScore = 0;
         if (MatchedPileScript.Instance.cardList.Count == 52)
-            extraScore += PerfectGamePoints;
+            extraScore += perfectGamePoints;
 
         if (Config.config.reactor1.GetComponent<ReactorScript>().cardList.Count == 0)
             extraScore += emptyReactorPoints;

@@ -12,12 +12,10 @@ public class MatchedPileScript : MonoBehaviour
     // Initialize the singleton instance.
     private void Awake()
     {
-        // If there is not already an instance of SoundManager, set it to this.
         if (Instance == null)
         {
             Instance = this;
         }
-        //If an instance already exists, destroy whatever this object is to enforce the singleton.
         else if (Instance != this)
         {
             throw new System.ArgumentException("there should not already be an instance of this");
