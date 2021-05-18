@@ -157,7 +157,7 @@ public class MenuUIScript : MonoBehaviour
         Debug.Log("MenuUI settings");
 
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.LoadScene("SoundScene");
+        SceneManager.LoadScene("SettingsScene");
     }
 
     public void Credits()

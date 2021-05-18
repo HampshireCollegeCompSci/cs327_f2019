@@ -10,24 +10,26 @@ public static class PlayerPrefKeys
     private const string leastMovesKey = "LeastMoves";
 
     // settings keys
-    public const string effectsVolumeKey = "EffectsVolume";
+    public const string soundEffectsVolumeKey = "SoundEffectsVolume";
     public const string musicVolumeKey = "MusicVolume";
     public const string vibrationEnabledKey = "VibrationEnabled";
-    public const string oldSuitsEnabledKey = "OldSuitsEnabled";
+    public const string foodSuitsEnabledKey = "FoodSuitsEnabled";
 
     /// <summary>
     /// Checks if some keys already exist and sets them to a default value if they don't. 
     /// </summary>
     public static void CheckKeys()
     {
-        if (!PlayerPrefs.HasKey(effectsVolumeKey))
+        Debug.Log("checking keys");
+
+        if (!PlayerPrefs.HasKey(soundEffectsVolumeKey))
         {
-            PlayerPrefs.SetFloat(effectsVolumeKey, 5);
+            PlayerPrefs.SetFloat(soundEffectsVolumeKey, 0.5f);
         }
 
         if (!PlayerPrefs.HasKey(musicVolumeKey))
         {
-            PlayerPrefs.SetFloat(musicVolumeKey, 5);
+            PlayerPrefs.SetFloat(musicVolumeKey, 0.5f);
         }
 
         if (!PlayerPrefs.HasKey(vibrationEnabledKey))
@@ -35,9 +37,9 @@ public static class PlayerPrefKeys
             PlayerPrefs.SetString(vibrationEnabledKey, true.ToString());
         }
 
-        if (!PlayerPrefs.HasKey(oldSuitsEnabledKey))
+        if (!PlayerPrefs.HasKey(foodSuitsEnabledKey))
         {
-            PlayerPrefs.SetString(oldSuitsEnabledKey, true.ToString());
+            PlayerPrefs.SetString(foodSuitsEnabledKey, true.ToString());
         }
     }
 

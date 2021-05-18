@@ -114,6 +114,8 @@ public class Config : MonoBehaviour
         {
             Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
         }
+
+        PlayerPrefKeys.CheckKeys();
     }
 
     private void Start()

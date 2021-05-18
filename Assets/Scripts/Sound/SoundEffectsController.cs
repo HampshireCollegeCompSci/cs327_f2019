@@ -21,7 +21,7 @@ public class SoundEffectsController : MonoBehaviour
     // Initialize the singleton instance.
     private void Awake()
     {
-        // If there is not already an instance of SoundManager, set it to this.
+        // If there is not already an instance, set it to this.
         if (Instance == null)
         {
             Instance = this;
@@ -32,8 +32,19 @@ public class SoundEffectsController : MonoBehaviour
             Destroy(gameObject);
         }
 
-        //Set SoundManager to DontDestroyOnLoad so that it won't be destroyed when reloading our scene.
+        //Set the GameObject to DontDestroyOnLoad so that it won't be destroyed when reloading our scene.
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
+        UpdateMaxVolume(PlayerPrefs.GetFloat(PlayerPrefKeys.soundEffectsVolumeKey));
+    }
+
+    public void UpdateMaxVolume(float newVolume)
+    {
+        Debug.Log($"updating sound effects volume to: {newVolume}");
+        soundController.volume = newVolume;
     }
 
     public void ButtonPressSound()

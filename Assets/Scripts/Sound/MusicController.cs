@@ -11,8 +11,10 @@ public class MusicController : MonoBehaviour
     public AudioClip menuMusic, themeMusic, transitionMusic, loseMusic, winMusic;
 
     // Variables to keep track of the current playing song
-    private bool playing1 = false;
-    private byte playingTrack = 0;
+    private bool playing1;
+    private byte playingTrack;
+
+    private float maxVolume;
 
     // Singleton instance.
     public static MusicController Instance = null;
@@ -20,7 +22,7 @@ public class MusicController : MonoBehaviour
     // Initialize the singleton instance.
     private void Awake()
     {
-        // If there is not already an instance of SoundManager, set it to this.
+        // If there is not already an instance, set it to this.
         if (Instance == null)
         {
             Instance = this;
@@ -31,8 +33,30 @@ public class MusicController : MonoBehaviour
             Destroy(gameObject);
         }
 
-        //Set SoundManager to DontDestroyOnLoad so that it won't be destroyed when reloading our scene.
+        //Set the GameObject to DontDestroyOnLoad so that it won't be destroyed when reloading our scene.
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
+        playing1 = false;
+        playingTrack = 0;
+        UpdateMaxVolume(PlayerPrefs.GetFloat(PlayerPrefKeys.musicVolumeKey));
+    }
+
+    public void UpdateMaxVolume(float newVolume)
+    {
+        Debug.Log($"updating music volume to: {newVolume}");
+        maxVolume = newVolume;
+
+        if (playing1)
+        {
+            soundTrack1.volume = maxVolume;
+        }
+        else
+        {
+            soundTrack2.volume = maxVolume;
+        }
     }
 
     public void LoadGap()
@@ -42,6 +66,7 @@ public class MusicController : MonoBehaviour
         soundTrack2.Stop();
         soundTrack2.clip = null;
     }
+
     public void MainMenuMusic()
     {
         if (playingTrack == 1)
@@ -132,7 +157,7 @@ public class MusicController : MonoBehaviour
     }
 
     // https://medium.com/@wyattferguson/how-to-fade-out-in-audio-in-unity-8fce422ab1a8
-    public static IEnumerator FadeOut(AudioSource audioSource, float FadeTime = 2f)
+    public IEnumerator FadeOut(AudioSource audioSource, float FadeTime = 2f)
     {
         if (!audioSource.isPlaying)
         {
@@ -148,11 +173,12 @@ public class MusicController : MonoBehaviour
         audioSource.Stop();
         //audioSource.clip.UnloadAudioData();
     }
-    public static IEnumerator FadeIn(AudioSource audioSource, float FadeTime = 2f)
+
+    public IEnumerator FadeIn(AudioSource audioSource, float FadeTime = 2f)
     {
         audioSource.volume = 0;
         audioSource.Play();
-        while (audioSource.volume < 0.5)
+        while (audioSource.volume < maxVolume)
         {
             audioSource.volume += Time.deltaTime / FadeTime;
             yield return null;
