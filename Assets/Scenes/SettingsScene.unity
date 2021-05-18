@@ -566,7 +566,7 @@ PrefabInstance:
     - target: {fileID: 1137054517756066026, guid: 16d6b704c448c344b86a9666a87394fb,
         type: 3}
       propertyPath: m_Text
-      value: Enable Food Suits
+      value: Alternative Suit Art
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 16d6b704c448c344b86a9666a87394fb, type: 3}
