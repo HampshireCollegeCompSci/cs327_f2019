@@ -63,7 +63,7 @@ public class UtilsScript : MonoBehaviour
 
     void Update()
     {
-        if (SceneManager.GetActiveScene().buildIndex != 2)
+        if (SceneManager.GetActiveScene().buildIndex != 1)
             return;
 
         if (!Config.config.gameOver && !Config.config.gamePaused && !Config.config.tutorialOn)
