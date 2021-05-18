@@ -59,13 +59,13 @@ public class MusicController : MonoBehaviour
         }
     }
 
-    public void LoadGap()
+    /*public void LoadGap()
     {
         soundTrack1.Stop();
         soundTrack1.clip = null;
         soundTrack2.Stop();
         soundTrack2.clip = null;
-    }
+    }*/
 
     public void MainMenuMusic()
     {
@@ -80,6 +80,8 @@ public class MusicController : MonoBehaviour
 
     public void GameMusic(bool force = false)
     {
+        Debug.Log($"GameMusic force: {force}");
+
         if (force)
         {
             if ((soundTrack1.isPlaying && soundTrack1.clip != themeMusic) ||
@@ -140,6 +142,8 @@ public class MusicController : MonoBehaviour
 
     private void Transition(AudioClip newTrack)
     {
+        Debug.Log($"Music Transition to: {newTrack.name}");
+
         StopAllCoroutines();
         if (playing1)
         {
@@ -164,10 +168,9 @@ public class MusicController : MonoBehaviour
             yield break;
         }
 
-        float startVolume = audioSource.volume;
         while (audioSource.volume > 0)
         {
-            audioSource.volume -= startVolume * Time.deltaTime / FadeTime;
+            audioSource.volume -= Time.deltaTime / FadeTime;
             yield return null;
         }
         audioSource.Stop();
