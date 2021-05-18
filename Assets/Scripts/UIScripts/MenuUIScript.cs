@@ -23,7 +23,6 @@ public class MenuUIScript : MonoBehaviour
     // SummaryScene buttons
     public GameObject playAgainButton;
 
-
     private void Start()
     {
         Debug.Log("starting MenuUIScript");
@@ -85,7 +84,7 @@ public class MenuUIScript : MonoBehaviour
             UnityEditor.AssetDatabase.Refresh();
         #endif
 
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.LoadScene("LevelSelectScene");
     }
 
@@ -103,7 +102,7 @@ public class MenuUIScript : MonoBehaviour
         Config.config.gameOver = false;
         Config.config.gameWin = false;
         Config.config.gamePaused = false;
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SoundEffectsController.Instance.ButtonPressSound();
 
         SceneManager.LoadScene("LoadingScene");
     }
@@ -112,11 +111,11 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI undo button");
 
-        if (UtilsScript.global.IsInputStopped())
+        if (UtilsScript.Instance.IsInputStopped())
             return;
 
-        UndoScript.undoScript.undo();
-        Config.config.GetComponent<SoundController>().UndoPressSound();
+        UndoScript.undoScript.Undo();
+        SoundEffectsController.Instance.UndoPressSound();
     }
 
     public void PlayAgain()
@@ -146,10 +145,10 @@ public class MenuUIScript : MonoBehaviour
             Config.config.gameWin = false;
         }
 
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.LoadScene("MainMenuScene");
 
-        Config.config.GetComponent<MusicController>().MainMenuMusic();
+        MusicController.Instance.MainMenuMusic();
     }
 
     //possibly be renamed to settings
@@ -157,15 +156,15 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI settings");
 
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
-        SceneManager.LoadScene("SoundScene");
+        SoundEffectsController.Instance.ButtonPressSound();
+        SceneManager.LoadScene("SettingsScene");
     }
 
     public void Credits()
     {
         Debug.Log("MenuUI credits");
 
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.LoadScene("CreditScene");
     }
 
@@ -173,10 +172,10 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI pause game");
 
-        if (UtilsScript.global.IsInputStopped())
+        if (UtilsScript.Instance.IsInputStopped())
             return;
 
-        Config.config.GetComponent<SoundController>().PauseMenuButtonSound();
+        SoundEffectsController.Instance.PauseMenuButtonSound();
         //TODO save the game scene
         Config.config.gamePaused = true;
         SceneManager.LoadScene("PauseScene", LoadSceneMode.Additive);
@@ -189,7 +188,7 @@ public class MenuUIScript : MonoBehaviour
 
         Config.config.gamePaused = false;
         //TODO load the saved game scene then uncomment the above code
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.UnloadSceneAsync("PauseScene");
     }
 
@@ -197,7 +196,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI return");
 
-        Config.config.GetComponent<SoundController>().ButtonPressSound();
+        SoundEffectsController.Instance.ButtonPressSound();
         if (Config.config.gamePaused)
             SceneManager.UnloadSceneAsync("SoundScene");
         else
@@ -217,7 +216,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void HardDifficulty()
     {
-        Config.config.SetDifficulty("HARD");
+        Config.config.SetDifficulty(Config.config.difficulties[2]);
         Config.config.tutorialOn = false;
         Config.config.DeleteSave();
         NewGame();
@@ -225,7 +224,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void MediumDifficulty()
     {
-        Config.config.SetDifficulty("MEDIUM");
+        Config.config.SetDifficulty(Config.config.difficulties[1]);
         Config.config.tutorialOn = false;
         Config.config.DeleteSave();
         NewGame();
@@ -233,7 +232,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void EasyDifficulty()
     {
-        Config.config.SetDifficulty("EASY");
+        Config.config.SetDifficulty(Config.config.difficulties[0]);
         Config.config.tutorialOn = false;
         Config.config.DeleteSave();
         NewGame();
@@ -276,9 +275,9 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI make actions max");
 
-        if (UtilsScript.global.IsInputStopped())
+        if (UtilsScript.Instance.IsInputStopped())
             return;
 
-        Config.config.deck.GetComponent<DeckScript>().StartNextCycle(manuallyTriggered: true);
+        DeckScript.Instance.StartNextCycle(manuallyTriggered: true);
     }
 }

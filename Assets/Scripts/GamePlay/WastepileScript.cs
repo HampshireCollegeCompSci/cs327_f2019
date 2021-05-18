@@ -5,26 +5,35 @@ using UnityEngine.UI;
 
 public class WastepileScript : MonoBehaviour
 {
-    private UtilsScript utils;
-    public SoundController soundController;
-    public GameObject deck;
-    private DeckScript deckScript;
-    public GameObject contentPanel;
-
     public List<GameObject> cardList;
 
-    public GameObject cardContainer;
+    public GameObject cardContainerPrefab;
     private List<GameObject> cardContainers;
 
-    public ScrollRect scrollRect;
+    public GameObject contentPanel;
+    private ScrollRect scrollRect;
     private RectTransform contentRectTransform;
+
     private bool scrollingDisabled;
+
+    // Singleton instance.
+    public static WastepileScript Instance = null;
+
+    // Initialize the singleton instance.
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            throw new System.ArgumentException("there should not already be an instance of this");
+        }
+    }
 
     private void Start()
     {
-        utils = UtilsScript.global;
-        deckScript = deck.GetComponent<DeckScript>();
-
         cardContainers = new List<GameObject>();
 
         scrollRect = gameObject.GetComponent<ScrollRect>();
@@ -78,12 +87,12 @@ public class WastepileScript : MonoBehaviour
             contentRectTransform.anchoredPosition = temp;
         }
 
-        deckScript.StartButtonUp();
+        DeckScript.Instance.StartButtonUp();
 
         ResetScrollBar();
 
         if (doLog)
-            utils.UpdateActions(1);
+            UtilsScript.Instance.UpdateActions(1);
     }
 
     public void AddCard(GameObject card, bool showHolo = true)
@@ -105,7 +114,7 @@ public class WastepileScript : MonoBehaviour
         }
 
         // making a container for the card so that it plays nice with the scroll view
-        cardContainers.Insert(0, Instantiate(cardContainer));
+        cardContainers.Insert(0, Instantiate(cardContainerPrefab));
         cardContainers[0].transform.SetParent(contentPanel.transform, false);
         cardContainers[0].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1);
         cardContainers[0].GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1);
@@ -115,7 +124,7 @@ public class WastepileScript : MonoBehaviour
         card.transform.position = new Vector3(card.transform.parent.position.x, card.transform.parent.position.y, -1 - (cardList.Count * 0.01f));
         card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.VisibleInsideMask);
 
-        deckScript.UpdateDeckCounter();
+        DeckScript.Instance.UpdateDeckCounter();
     }
 
     public void RemoveCard(GameObject card, bool undoingOrDeck = false, bool showHolo = true)
@@ -143,7 +152,7 @@ public class WastepileScript : MonoBehaviour
         else
             StartCoroutine(ScrollBarRemoving(parentCardContainer));
 
-        deckScript.UpdateDeckCounter();
+        DeckScript.Instance.UpdateDeckCounter();
     }
 
     IEnumerator ScrollBarRemoving(GameObject parentCardContainer)
@@ -184,17 +193,17 @@ public class WastepileScript : MonoBehaviour
 
         // move all the tokens
         while (cardList.Count > 0)
-            cardList[0].GetComponent<CardScript>().MoveCard(deck, showHolo: false);
+            cardList[0].GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, showHolo: false);
 
         yield return new WaitForSeconds(0.5f);
 
-        deckScript.Deal();
+        DeckScript.Instance.Deal();
     }
 
     private void DisableScrolling()
     {
         scrollingDisabled = true;
-        utils.SetInputStopped(true);
+        UtilsScript.Instance.SetInputStopped(true);
 
         // disable scrolling
         scrollRect.horizontal = false;
@@ -213,7 +222,7 @@ public class WastepileScript : MonoBehaviour
         scrollRect.horizontal = true;
         scrollRect.horizontalScrollbar.interactable = true;
 
-        utils.SetInputStopped(false);
+        UtilsScript.Instance.SetInputStopped(false);
         scrollingDisabled = false;
     }
 
@@ -235,27 +244,27 @@ public class WastepileScript : MonoBehaviour
 
     public void ProcessAction(GameObject input)
     {
-        if (utils.selectedCards.Count != 1)
+        if (UtilsScript.Instance.selectedCards.Count != 1)
             throw new System.ArgumentException("utils.selectedCards must be of size 1");
 
-        GameObject selectedCard = utils.selectedCards[0];
+        GameObject selectedCard = UtilsScript.Instance.selectedCards[0];
         CardScript selectedCardScript = selectedCard.GetComponent<CardScript>();
 
         if (input.CompareTag("Card"))
         {
             CardScript inputCardScript = input.GetComponent<CardScript>();
 
-            if (utils.CanMatch(inputCardScript, selectedCardScript))
+            if (CardTools.CanMatch(inputCardScript, selectedCardScript))
             {
-                utils.Match(input, selectedCard);
+                UtilsScript.Instance.Match(input, selectedCard);
                 return;
             }
             else if (inputCardScript.container.CompareTag("Reactor"))
             {
-                if (!utils.IsSameSuit(input, selectedCard))
+                if (!CardTools.IsSameSuit(input, selectedCard))
                     return;
 
-                soundController.CardToReactorSound();
+                SoundEffectsController.Instance.CardToReactorSound();
                 selectedCardScript.MoveCard(inputCardScript.container);
             }
             else if (inputCardScript.container.CompareTag("Foundation"))
@@ -264,7 +273,7 @@ public class WastepileScript : MonoBehaviour
                     inputCardScript.cardNum != selectedCardScript.cardNum + 1)
                     return;
 
-                soundController.CardStackSound();
+                SoundEffectsController.Instance.CardStackSound();
                 selectedCardScript.MoveCard(inputCardScript.container);
             }
             else
@@ -272,10 +281,10 @@ public class WastepileScript : MonoBehaviour
         }
         else if (input.CompareTag("Reactor"))
         {
-            if (!utils.IsSameSuit(input, selectedCard))
+            if (!CardTools.IsSameSuit(input, selectedCard))
                 return;
 
-            soundController.CardToReactorSound();
+            SoundEffectsController.Instance.CardToReactorSound();
             selectedCardScript.MoveCard(input);
         }
         else if (input.CompareTag("Foundation"))
@@ -283,7 +292,7 @@ public class WastepileScript : MonoBehaviour
             if (input.GetComponent<FoundationScript>().cardList.Count != 0)
                 return;
 
-            soundController.CardStackSound();
+            SoundEffectsController.Instance.CardStackSound();
             selectedCardScript.MoveCard(input);
         }
         else
@@ -291,6 +300,6 @@ public class WastepileScript : MonoBehaviour
             return;
         }
 
-        utils.UpdateActions(1);
+        UtilsScript.Instance.UpdateActions(1);
     }
 }

@@ -46,13 +46,13 @@ public class StateLoader : MonoBehaviour
         }
 
         //save wastepile
-        gameState.wastePile = ConvertCardListToStringList(Config.config.wastePile.GetComponent<WastepileScript>().cardList);
+        gameState.wastePile = ConvertCardListToStringList(WastepileScript.Instance.cardList);
 
         //save deck
-        gameState.deck = ConvertCardListToStringList(Config.config.deck.GetComponent<DeckScript>().cardList);
+        gameState.deck = ConvertCardListToStringList(DeckScript.Instance.cardList);
 
         //save matches
-        gameState.matches = ConvertCardListToStringList(Config.config.matches.GetComponent<MatchedPileScript>().cardList);
+        gameState.matches = ConvertCardListToStringList(MatchedPileScript.Instance.cardList);
 
         //save undo
         CardScript cardScriptRef;
@@ -80,7 +80,7 @@ public class StateLoader : MonoBehaviour
         gameState.consecutiveMatches = Config.config.consecutiveMatches;
         gameState.moveCounter = Config.config.moveCounter;
         gameState.actions = Config.config.actions;
-        gameState.difficulty = Config.config.difficulty;
+        gameState.difficulty = Config.config.currentDifficulty;
 
         //saving to json
         string json;
@@ -98,7 +98,7 @@ public class StateLoader : MonoBehaviour
         //UnityEditor.AssetDatabase.Refresh();
     }
 
-    private static List<string> ConvertCardListToStringList(List<GameObject> cardList)
+    private List<string> ConvertCardListToStringList(List<GameObject> cardList)
     {
         List<string> stringList = new List<string>();
         CardScript cardScriptRef;
@@ -147,13 +147,11 @@ public class StateLoader : MonoBehaviour
     {
         Debug.Log($"unpacking state, isTutorial: {isTutorial}");
 
-        LoadPileScript loadPileScript = Config.config.loadPile.GetComponent<LoadPileScript>();
-
         // if the tutorial isn't being loaded then we need to make new cards and setup the move log
         if (!isTutorial)
         {
-            DeckScript.deckScript.InstantiateCards(addToLoadPile: true);
-            SetUpMoveLog(state.moveLog, loadPileScript.cardList);
+            DeckScript.Instance.InstantiateCards(addToLoadPile: true);
+            SetUpMoveLog(state.moveLog, LoadPileScript.Instance.cardList);
         }
 
         // sharing the index variable for the foundations and reactors
@@ -163,7 +161,7 @@ public class StateLoader : MonoBehaviour
         index = 0;
         foreach (StringListWrapper lw in state.foundations)
         {
-            SetUpLocationWithCards(lw.stringList, loadPileScript.cardList, Config.config.foundations[index]);
+            SetUpLocationWithCards(lw.stringList, LoadPileScript.Instance.cardList, Config.config.foundations[index]);
             index++;
         }
 
@@ -171,50 +169,50 @@ public class StateLoader : MonoBehaviour
         index = 0;
         foreach (StringListWrapper lw in state.reactors)
         {
-            SetUpLocationWithCards(lw.stringList, loadPileScript.cardList, Config.config.reactors[index]);
+            SetUpLocationWithCards(lw.stringList, LoadPileScript.Instance.cardList, Config.config.reactors[index]);
             index++;
         }
 
         //set up wastepile
-        SetUpLocationWithCards(state.wastePile, loadPileScript.cardList, Config.config.wastePile);
+        SetUpLocationWithCards(state.wastePile, LoadPileScript.Instance.cardList, WastepileScript.Instance.gameObject);
 
         //set up matches
-        SetUpLocationWithCards(state.matches, loadPileScript.cardList, Config.config.matches);
+        SetUpLocationWithCards(state.matches, LoadPileScript.Instance.cardList, MatchedPileScript.Instance.gameObject);
 
         //set up deck
         if (!isTutorial)
         {
-            SetUpLocationWithCards(state.deck, loadPileScript.cardList, Config.config.deck);
+            SetUpLocationWithCards(state.deck, LoadPileScript.Instance.cardList, DeckScript.Instance.gameObject);
         }
         else
         {
             // during the tutorial the deck order doesn't matter
-            int cardCount = loadPileScript.cardList.Count;
+            int cardCount = LoadPileScript.Instance.cardList.Count;
             while (cardCount != 0)
             {
-                loadPileScript.cardList[0].GetComponent<CardScript>().MoveCard(Config.config.deck, false, false, false);
+                LoadPileScript.Instance.cardList[0].GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, false, false, false);
                 cardCount--;
             }
         }
 
         //set up simple variables
-        Config.config.difficulty = state.difficulty;
+        Config.config.currentDifficulty = state.difficulty;
         Config.config.score = state.score;
         Config.config.consecutiveMatches = state.consecutiveMatches;
         Config.config.moveCounter = state.moveCounter;
-        UtilsScript.global.UpdateActions(state.actions, startingGame: true);
+        UtilsScript.Instance.UpdateActions(state.actions, startingGame: true);
     }
 
-    private static void SetUpMoveLog(List<AltMove> moves, List<GameObject> cardList)
+    private void SetUpMoveLog(List<AltMove> moves, List<GameObject> cardList)
     {
         //set up undo log
-        
+
         // creating a list of card containing objects to reference from later
         List<GameObject> origins = new List<GameObject>()
         {
-            Config.config.deck,
-            Config.config.wastePile,
-            Config.config.matches
+            DeckScript.Instance.gameObject,
+            WastepileScript.Instance.gameObject,
+            MatchedPileScript.Instance.gameObject
         };
         origins.AddRange(Config.config.foundations);
         origins.AddRange(Config.config.reactors);
@@ -280,7 +278,7 @@ public class StateLoader : MonoBehaviour
         }
     }
 
-    private static void SetUpLocationWithCards(List<string> stringList, List<GameObject> cardList, GameObject newLocation)
+    private void SetUpLocationWithCards(List<string> stringList, List<GameObject> cardList, GameObject newLocation)
     {
         // seting up the new location with cards using the given commands, and cards
 
@@ -326,7 +324,7 @@ public class StateLoader : MonoBehaviour
         }
     }
        
-    public static GameState CreateFromJSON(string path, bool tutorial = false)
+    private GameState CreateFromJSON(string path, bool tutorial = false)
     {
         Debug.Log("creating gamestate from path: " + path);
 

@@ -7,10 +7,8 @@ using System.IO;
 
 public class UtilsScript : MonoBehaviour
 {
-    public static UtilsScript global; //Creates a new instance if one does not yet exist
     public List<GameObject> selectedCards;
     private List<GameObject> selectedCardsCopy;
-    public GameObject matchedPile;
     public GameObject matchPrefab;
     public GameObject matchPointsPrefab;
 
@@ -18,11 +16,9 @@ public class UtilsScript : MonoBehaviour
     public GameObject gameUI;
     public Text score;
     public GameObject moveCounter;
-    public SoundController soundController;
     public int indexCounter;
     private bool dragOn;
     private bool draggingWastepile = false;
-    public GameObject wastePile;
 
     private bool inputStopped = false;
     private bool isNextCycle;
@@ -30,7 +26,7 @@ public class UtilsScript : MonoBehaviour
     public GameObject baby;
     public int matchPoints;
     public int emptyReactorPoints;
-    public int PerfectGamePoints;
+    public int perfectGamePoints;
 
     private GameObject hoveringOver;
     private bool changedHologramColor;
@@ -41,16 +37,19 @@ public class UtilsScript : MonoBehaviour
     private bool reactorIsGlowing;
     private bool foundationIsGlowing;
 
+    // Singleton instance.
+    public static UtilsScript Instance = null;
+
+    // Initialize the singleton instance.
     void Awake()
     {
-        if (global == null)
+        if (Instance == null)
         {
-            //DontDestroyOnLoad(gameObject); //makes instance persist across scenes
-            global = this;
+            Instance = this;
         }
-        else if (global != this)
+        else if (Instance != this)
         {
-            Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
+            throw new System.ArgumentException("there should not already be an instance of this");
         }
     }
 
@@ -59,13 +58,12 @@ public class UtilsScript : MonoBehaviour
         selectedCardsCopy = new List<GameObject>();
         matchPoints = Config.config.matchPoints;
         emptyReactorPoints = Config.config.emptyReactorPoints;
-        PerfectGamePoints = Config.config.perfectGamePoints;
-        UndoScript.undoScript.utils = gameObject.GetComponent<UtilsScript>();
+        perfectGamePoints = Config.config.perfectGamePoints;
     }
 
     void Update()
     {
-        if (SceneManager.GetActiveScene().buildIndex != 2)
+        if (SceneManager.GetActiveScene().buildIndex != 1)
             return;
 
         if (!Config.config.gameOver && !Config.config.gamePaused && !Config.config.tutorialOn)
@@ -190,7 +188,7 @@ public class UtilsScript : MonoBehaviour
     {
         if (draggingWastepile)
         {
-            wastePile.GetComponent<WastepileScript>().DraggingCard(selectedCards[0], false);
+            WastepileScript.Instance.DraggingCard(selectedCards[0], false);
             draggingWastepile = false;
         }
 
@@ -252,7 +250,7 @@ public class UtilsScript : MonoBehaviour
         else
             foundationIsGlowing = false;
 
-        soundController.CardPressSound();
+        SoundEffectsController.Instance.CardPressSound();
     }
 
     private void DragSelectedTokens(RaycastHit2D hit)
@@ -366,14 +364,14 @@ public class UtilsScript : MonoBehaviour
         p.z += 2;
         GameObject matchExplosion = Instantiate(matchPrefab, p, Quaternion.identity);
 
-        card2Script.MoveCard(matchedPile);
-        card1Script.MoveCard(matchedPile);
+        card2Script.MoveCard(MatchedPileScript.Instance.gameObject);
+        card1Script.MoveCard(MatchedPileScript.Instance.gameObject);
 
         int points = matchPoints + (Config.config.consecutiveMatches * Config.config.scoreMultiplier);
         UpdateScore(points);
         UpdateActions(0, isMatch: true);
 
-        soundController.FoodMatch(card1Script.cardSuit);
+        SoundEffectsController.Instance.FoodMatch(card1Script.cardSuit);
         baby.GetComponent<SpaceBabyController>().BabyEatAnim();
 
         StartCoroutine(FoodComboMove(comboHologram, matchExplosion));
@@ -413,7 +411,7 @@ public class UtilsScript : MonoBehaviour
             }
         }
 
-        //soundController.CardMatchSound();
+        //SoundController.Instance.CardMatchSound();
         Destroy(matchExplosion);
         Destroy(comboHologram);
     }
@@ -465,62 +463,6 @@ public class UtilsScript : MonoBehaviour
         }
 
         Destroy(matchPointsEffect);
-    }
-
-    public bool CanMatch(CardScript card1, CardScript card2, bool checkIsTop = true)
-    {
-        //checks if the two cards can match together
-        
-        // checks if the cards are at the top of their containers
-        if (checkIsTop && (!IsAtContainerTop(card1) || !IsAtContainerTop(card2)))
-            return false;
-
-        if (card1.cardNum != card2.cardNum)
-            return false;
-
-        if ((card1.cardSuit.Equals("hearts") && card2.cardSuit.Equals("diamonds")) ||
-            (card1.cardSuit.Equals("diamonds") && card2.cardSuit.Equals("hearts")) ||
-            (card1.cardSuit.Equals("spades") && card2.cardSuit.Equals("clubs")) ||
-            (card1.cardSuit.Equals("clubs") && card2.cardSuit.Equals("spades")))
-            return true;
-
-        //otherwise not a match 
-        return false;
-    }
-
-    private bool IsAtContainerTop(CardScript card)
-    {
-        // checks if the card is at the top of its container's cardList
-        // hitboxes are disabled for all cards not on the top for the reactor, wastepile, and deck
-
-        if (card.container.CompareTag("Foundation") &&
-            card.container.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>() != card)
-            return false;
-        /*if (card.container.CompareTag("Reactor") &&
-            card.container.GetComponent<ReactorScript>().cardList[0].GetComponent<CardScript>() != card)
-            return false;
-        if (card.container.CompareTag("Wastepile") &&
-            card.container.GetComponent<WastepileScript>().cardList[0].GetComponent<CardScript>() != card)
-            return false;
-        if (card.container.CompareTag("Deck") &&
-            card.container.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>() != card)
-            return false;*/
-        return true;
-    }
-
-    public bool IsSameSuit(GameObject object1, GameObject object2)
-    {
-        return (GetSuit(object1) == GetSuit(object2));
-    }
-
-    public string GetSuit(GameObject suitObject)
-    {
-        if (suitObject.CompareTag("Card"))
-            return suitObject.GetComponent<CardScript>().cardSuit;
-        if (suitObject.CompareTag("Reactor"))
-            return suitObject.GetComponent<ReactorScript>().suit;
-
-        throw new System.ArgumentException("suitObject must have a suit variable");
     }
 
     public void UpdateScore(int addScore, bool setAsValue = false)
@@ -620,7 +562,7 @@ public class UtilsScript : MonoBehaviour
     {
         if (Config.config.actions >= Config.config.actionMax)
         {
-            Config.config.deck.GetComponent<DeckScript>().StartNextCycle();
+           DeckScript.Instance.StartNextCycle();
             return true;
         }
 
@@ -650,18 +592,18 @@ public class UtilsScript : MonoBehaviour
         }
         else // we are done with the alert
         {
-            Config.config.GetComponent<MusicController>().GameMusic();
+            MusicController.Instance.GameMusic();
 
             foreach (GameObject reactor in Config.config.reactors)
                 reactor.GetComponent<ReactorScript>().AlertOff();
         }
 
         if (turnOnAlert || checkAgain)
-            Config.config.GetComponent<MusicController>().AlertMusic();
+            MusicController.Instance.AlertMusic();
 
         // if there is one move left
         if (turnOnAlert || (checkAgain && !matchRelated && Config.config.actionMax - Config.config.actions == 1))
-            soundController.AlertSound();
+            SoundEffectsController.Instance.AlertSound();
 
 
         if (highAlertTurnedOn) // if the high alert was turned on during this check
@@ -699,8 +641,8 @@ public class UtilsScript : MonoBehaviour
     public void SetEndGameScore()
     {
         int extraScore = 0;
-        if (matchedPile.GetComponent<MatchedPileScript>().cardList.Count == 52)
-            extraScore += PerfectGamePoints;
+        if (MatchedPileScript.Instance.cardList.Count == 52)
+            extraScore += perfectGamePoints;
 
         if (Config.config.reactor1.GetComponent<ReactorScript>().cardList.Count == 0)
             extraScore += emptyReactorPoints;
@@ -715,31 +657,6 @@ public class UtilsScript : MonoBehaviour
             extraScore += emptyReactorPoints;
 
         UpdateScore(extraScore);
-    }
-
-    public void SetHighScores()
-    {
-        int score = Config.config.score;
-        string difficulty = Config.config.difficulty;
-        int MoveCounter = Config.config.moveCounter;
-
-        if (PlayerPrefs.HasKey(difficulty + "HighScore") && score > PlayerPrefs.GetInt(difficulty + "HighScore"))
-        {
-            PlayerPrefs.SetInt(difficulty + "HighScore", score);
-        }
-        else if (!PlayerPrefs.HasKey(difficulty + "HighScore"))
-        {
-            PlayerPrefs.SetInt(difficulty + "HighScore", score);
-        }
-
-        if (PlayerPrefs.HasKey(difficulty + "Moves") && MoveCounter < PlayerPrefs.GetInt(difficulty + "Moves") && Config.config.gameWin)
-        {
-            PlayerPrefs.SetInt(difficulty + "Moves", MoveCounter);
-        }
-        else if (!PlayerPrefs.HasKey(difficulty + "Moves") && Config.config.gameWin)
-        {
-            PlayerPrefs.SetInt(difficulty + "Moves", MoveCounter);
-        }
     }
 
     public bool IsInputStopped()

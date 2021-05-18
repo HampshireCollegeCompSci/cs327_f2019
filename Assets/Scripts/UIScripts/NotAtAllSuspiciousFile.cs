@@ -7,6 +7,6 @@ public class NotAtAllSuspiciousFile : MonoBehaviour
     public void Max()
     {
         Config.config.prettyColors = !Config.config.prettyColors;
-        Config.config.GetComponent<SoundController>().PauseMenuButtonSound();
+        SoundEffectsController.Instance.PauseMenuButtonSound();
     }
 }

@@ -7,42 +7,35 @@ using System.IO;
 
 public class DeckScript : MonoBehaviour
 {
-    public static DeckScript deckScript;
-
-    private UtilsScript utils;
-    public GameObject wastePile;
-    private WastepileScript wastePileScript;
+    public List<GameObject> cardList;
 
     public GameObject cardPrefab;
     private Sprite[] suitSprites;
     public Sprite[] holograms;
     public Sprite[] combinedHolograms;
 
-    public List<GameObject> cardList;
-
     private Image buttonImage;
     public Sprite[] buttonAnimation;
     public Text deckCounter;
 
-    public SoundController soundController;
+    // Singleton instance.
+    public static DeckScript Instance = null;
 
+    // Initialize the singleton instance.
     private void Awake()
     {
-        if (deckScript == null)
+        if (Instance == null)
         {
-            //DontDestroyOnLoad(gameObject); //makes instance persist across scenes
-            deckScript = this;
+            Instance = this;
         }
-        else if (deckScript != this)
+        else if (Instance != this)
         {
-            Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
+            throw new System.ArgumentException("there should not already be an instance of this");
         }
     }
 
     public void DeckStart(Sprite[] suitSprites)
     {
-        utils = UtilsScript.global;
-        wastePileScript = wastePile.GetComponent<WastepileScript>();
         buttonImage = gameObject.GetComponent<Image>();
 
         this.suitSprites = suitSprites;
@@ -53,19 +46,19 @@ public class DeckScript : MonoBehaviour
             Debug.Log("deck start loading tutorial");
             InstantiateCards(addToLoadPile: true);
             StateLoader.saveSystem.UnpackState(StateLoader.saveSystem.gameState, true);
-            utils.UpdateScore(0);
+            UtilsScript.Instance.UpdateScore(0);
         }
         else if (Application.isEditor && File.Exists("Assets/Resources/GameStates/testState.json"))
         {
             Debug.Log("editor: deck start loading saved game");
             StateLoader.saveSystem.UnpackState(StateLoader.saveSystem.gameState, false);
-            utils.UpdateScore(0);
+            UtilsScript.Instance.UpdateScore(0);
         }
         else if (!Application.isEditor && File.Exists(Application.persistentDataPath + "/testState.json"))
         {
             Debug.Log("application: deck start loading saved game");
             StateLoader.saveSystem.UnpackState(StateLoader.saveSystem.gameState, false);
-            utils.UpdateScore(0);
+            UtilsScript.Instance.UpdateScore(0);
         }
         else
         {
@@ -73,15 +66,13 @@ public class DeckScript : MonoBehaviour
             Shuffle();
             SetUpFoundations();
             Deal(false);
-            utils.UpdateActions(0, startingGame: true);
+            UtilsScript.Instance.UpdateActions(0, startingGame: true);
         }
     }
 
     // sets up card list
     public void InstantiateCards(bool addToLoadPile = false)
     {
-        LoadPileScript lps = Config.config.loadPile.GetComponent<LoadPileScript>();
-
         string[] suitStrings = new string[] { "spades", "clubs", "diamonds", "hearts" };
 
         GameObject newCard;
@@ -172,8 +163,8 @@ public class DeckScript : MonoBehaviour
                 }
                 else
                 {
-                    newCardScript.container = Config.config.loadPile;
-                    lps.AddCard(newCard);
+                    newCardScript.container = LoadPileScript.Instance.gameObject;
+                    LoadPileScript.Instance.AddCard(newCard);
                 }
                 
                 cardIndex += 1;
@@ -231,18 +222,18 @@ public class DeckScript : MonoBehaviour
         // user wants to deal cards, other things might need to be done before that
 
         // don't allow dealing when other stuff is happening
-        if (utils.IsInputStopped())
+        if (UtilsScript.Instance.IsInputStopped())
             return;
 
         if (cardList.Count != 0) // can the deck can be drawn from
         {
-            soundController.DeckDeal();
+            SoundEffectsController.Instance.DeckDeal();
             Deal();
 
             StartCoroutine(ButtonDown());
         }
         // if it is possible to repopulate the deck
-        else if (wastePileScript.cardList.Count > Config.config.cardsToDeal) 
+        else if (WastepileScript.Instance.cardList.Count > Config.config.cardsToDeal) 
         {
             DeckReset();
             StartCoroutine(ButtonDown());
@@ -261,15 +252,15 @@ public class DeckScript : MonoBehaviour
         }
 
         if (toMoveList.Count != 0)
-            wastePileScript.AddCards(toMoveList, doLog);
+            WastepileScript.Instance.AddCards(toMoveList, doLog);
     }
 
     public void DeckReset()
     {
         // moves all wastePile cards into the deck
 
-        wastePileScript.StartDeckReset();
-        soundController.DeckReshuffle();
+        WastepileScript.Instance.StartDeckReset();
+        SoundEffectsController.Instance.DeckReshuffle();
     }
 
     IEnumerator ButtonDown()
@@ -298,16 +289,16 @@ public class DeckScript : MonoBehaviour
     // moves all of the top foundation cards into their appropriate reactors
     public void StartNextCycle(bool manuallyTriggered = false)
     {
-        if (!(manuallyTriggered && utils.IsInputStopped())) // stops 2 NextCycles from happening at once
+        if (!(manuallyTriggered && UtilsScript.Instance.IsInputStopped())) // stops 2 NextCycles from happening at once
         {
-            utils.SetInputStopped(true, nextCycle: true);
+            UtilsScript.Instance.SetInputStopped(true, nextCycle: true);
             StartCoroutine(NextCycle());
         }
     }
 
     IEnumerator NextCycle()
     {
-        utils.baby.GetComponent<SpaceBabyController>().BabyActionCounterSound();
+        UtilsScript.Instance.baby.GetComponent<SpaceBabyController>().BabyActionCounterSound();
 
         FoundationScript currentFoundation;
         GameObject topFoundationCard;
@@ -360,7 +351,7 @@ public class DeckScript : MonoBehaviour
                         topCardScript.suitObject.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
                         topCardScript.rankObject.GetComponent<MeshRenderer>().sortingLayerName = "Gameplay";
 
-                        soundController.CardToReactorSound();
+                        SoundEffectsController.Instance.CardToReactorSound();
                         topCardScript.MoveCard(reactor, isCycle: true);
 
                         if (Config.config.gameOver)
@@ -375,12 +366,12 @@ public class DeckScript : MonoBehaviour
             }
         }
 
-        utils.SetInputStopped(false, nextCycle: true);
-        utils.UpdateActions(0, setAsValue: true);
+        UtilsScript.Instance.SetInputStopped(false, nextCycle: true);
+        UtilsScript.Instance.UpdateActions(0, setAsValue: true);
     }
 
     //Shuffles cardList using Knuth shuffle aka Fisher-Yates shuffle
-    public void Shuffle()
+    private void Shuffle()
     {
         System.Random rand = new System.Random();
 
@@ -402,15 +393,15 @@ public class DeckScript : MonoBehaviour
         }
         else
         {
-            if (wastePileScript.cardList.Count > Config.config.cardsToDeal)
+            if (WastepileScript.Instance.cardList.Count > Config.config.cardsToDeal)
             {
-                deckScript.deckCounter.fontSize = 45;
-                deckScript.deckCounter.text = "FLIP";
+                deckCounter.fontSize = 45;
+                deckCounter.text = "FLIP";
             }
             else
             {
-                deckScript.deckCounter.fontSize = 40;
-                deckScript.deckCounter.text = "EMPTY";
+                deckCounter.fontSize = 40;
+                deckCounter.text = "EMPTY";
             }
         }
     }

@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,56 +21,91 @@ public class ResultsScript : MonoBehaviour
     {
         // state
         if (Config.config.gameWin)
-            state.text = Config.config.gameStateTxtEnglish[0].ToUpper();
+            state.text = Config.config.gameStateTxtEnglish[0];
         else
-            state.text = Config.config.gameStateTxtEnglish[1].ToUpper();
+            state.text = Config.config.gameStateTxtEnglish[1];
 
         // score
         scoreStat.text = Config.config.score.ToString();
 
         // high score
-        highScore.text = Config.config.difficulty + " HIGH SCORE";
-
-        int last = PlayerPrefs.GetInt(Config.config.difficulty + "HighScore");
-        if (Config.config.score > last)
-        {
-            highScore.color = Color.cyan;
-            highScoreStat.color = Color.cyan;
-            highScoreStat.text = Config.config.score.ToString();
-        }
-        else
-            highScoreStat.text = last.ToString();
-
-
-        // least moves
-        last = PlayerPrefs.GetInt(Config.config.difficulty + "Moves");
-        if (Config.config.gameWin && Config.config.moveCounter < last)
-        {
-            leastMoves.color = Color.cyan;
-            leastMovesStat.color = Color.cyan;
-            leastMovesStat.text = Config.config.moveCounter.ToString();
-        }
-        else
-            leastMovesStat.text = last.ToString();
-
+        highScore.text = Config.config.currentDifficulty + " HIGH SCORE";
 
         // moves
         movesStat.text = Config.config.moveCounter.ToString();
 
-
         // spacebaby
         if (Config.config.gameWin)
+        {
             spaceBaby.BabyWin(Config.config.matchCounter);
+        }
         else
         {
             spaceBaby.BabyLose();
             SpaceShipExplode();
         }
 
-        UtilsScript.global.SetHighScores();
+        SetHighScore();
+        SetLeastMoves();
+    }
+
+    /// <summary>
+    /// Checks to see if the current score is better than the recorded best for the current difficulty.
+    /// If so, saves it and indicates in game that it is new.
+    /// </summary>
+    private void SetHighScore()
+    {
+        string highScoreKey = PlayerPrefKeys.GetHighScoreKey(Config.config.currentDifficulty);
+        int currentScore = Config.config.score;
+        if (!PlayerPrefs.HasKey(highScoreKey) || currentScore > PlayerPrefs.GetInt(highScoreKey))
+        {
+            PlayerPrefs.SetInt(highScoreKey, currentScore);
+            highScore.color = Color.cyan;
+            highScoreStat.color = Color.cyan;
+            highScoreStat.text = currentScore.ToString();
+        }
+        else
+        {
+            highScoreStat.text = PlayerPrefs.GetInt(highScoreKey).ToString();
+        }
+    }
+
+    /// <summary>
+    /// Checks to see if the game was won and the current move count is less than the recorded best for the current difficulty.
+    /// If so, saves it and indicates in game that it is new.
+    /// </summary>
+    private void SetLeastMoves()
+    {
+        string leastMovesKey = PlayerPrefKeys.GetLeastMovesKey(Config.config.currentDifficulty);
+        if (Config.config.gameWin)
+        {
+            int currentMoves = Config.config.moveCounter;
+            if (!PlayerPrefs.HasKey(leastMovesKey) || currentMoves < PlayerPrefs.GetInt(leastMovesKey))
+            {
+                PlayerPrefs.SetInt(leastMovesKey, currentMoves);
+                leastMoves.color = Color.cyan;
+                leastMovesStat.color = Color.cyan;
+                leastMovesStat.text = currentMoves.ToString();
+            }
+            else
+            {
+                leastMovesStat.text = PlayerPrefs.GetInt(leastMovesKey).ToString();
+            }
+        }
+        else if (PlayerPrefs.HasKey(leastMovesKey))
+        {
+            leastMovesStat.text = PlayerPrefs.GetInt(leastMovesKey).ToString();
+        }
+        else
+        {
+            leastMovesStat.text = "NULL";
+        }
     }
 
     private bool exploded = false;
+    /// <summary>
+    /// Starts the Explode Coroutine if the space ship has already not been exploded.
+    /// </summary>
     public void SpaceShipExplode()
     {
         if (exploded)
@@ -81,10 +115,14 @@ public class ResultsScript : MonoBehaviour
         StartCoroutine(Explode());
     }
 
+    /// <summary>
+    /// Waits for a few seconds before playing an explosion sound and changing the space ship's sprite to debris.
+    /// </summary>
+    /// <returns></returns>
     IEnumerator Explode()
     {
         yield return new WaitForSeconds(2);
-        Config.config.GetComponent<SoundController>().ExplosionSound();
+        SoundEffectsController.Instance.ExplosionSound();
         spaceShip.GetComponent<Image>().sprite = spaceShipDebris;
         spaceShip.transform.localScale = new Vector3(2, 2, 1);
     }

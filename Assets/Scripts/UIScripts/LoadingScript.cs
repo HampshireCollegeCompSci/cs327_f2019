@@ -7,6 +7,6 @@ public class LoadingScript : MonoBehaviour
     void Start()
     {
         SceneManager.LoadSceneAsync("GameplayScene", LoadSceneMode.Additive);
-        Config.config.GetComponent<MusicController>().GameMusic(force: true);
+        MusicController.Instance.GameMusic(force: true);
     }
 }

@@ -14,6 +14,7 @@ public class Config : MonoBehaviour
     public bool gameOver;
     public bool gameWin;
     public int score;
+
     public float relativeCardScale;
     public int turnsTillReset;
     public int delayToShowGameSummary;
@@ -25,22 +26,15 @@ public class Config : MonoBehaviour
     public Color cardMatchHighlightColor;
     public Color pointColor;
 
-    //Suits
-    public byte suitsToUseStartIndex;
-
     //score
     public int matchPoints;
     public int emptyReactorPoints;
     public int perfectGamePoints;
 
-    //card scale
-    public Vector3 cardScale;
-
     //baby
     private GameObject baby;
 
     //foundations
-    public float foundationStackDensity;
     public int foundationStartSize;
 
     public GameObject foundation1;
@@ -50,12 +44,11 @@ public class Config : MonoBehaviour
     public GameObject[] foundations;
 
     //wastepile
-    public GameObject wastePile;
     public byte wastepileAnimationSpeedSlow;
     public byte wastepileAnimationSpeedFast;
 
     //reactor
-    public int maxReactorVal = 18;
+    public int maxReactorVal;
 
     public GameObject reactor1;
     public GameObject reactor2;
@@ -64,37 +57,24 @@ public class Config : MonoBehaviour
     public GameObject[] reactors;
 
     //deck
-    public GameObject deck;
     public byte cardsToDeal;
     public byte cardsToReactorspeed;
 
     //tutorial
     public bool tutorialOn;
 
-    //matches
-    public GameObject matches;
-
-    //LoadPile
-    public GameObject loadPile;
-
     //UI
     public bool gamePaused;
 
     //internal variables
-    GameInfo gameInfo;
-    GameObject fadeOutImage;
-    public GameObject SplashScreen;
-    private Coroutine splashScreenFade;
+    private GameInfo gameInfo;
+    private GameObject fadeOutImage;
 
-    public string difficulty;
+    public string[] difficulties;
+    public int[] reactorLimits;
+    public int[] moveLimits;
 
-    public int easy;
-    public int medium;
-    public int hard;
-
-    public int easyMoveCount;
-    public int mediumMoveCount;
-    public int hardMoveCount;
+    public string currentDifficulty;
 
     public int actionMax;
     public int actions;
@@ -113,9 +93,9 @@ public class Config : MonoBehaviour
     public string[] summarySceneButtonsTxtEnglish;
 
     //vibration
-    public byte vibrationButton;
-    public byte vibrationCard;
-    public byte vibrationMatch;
+    public int vibrationButton;
+    public int vibrationCard;
+    public int vibrationMatch;
     public int vibrationExplosion;
 
     //long term tracking
@@ -134,65 +114,15 @@ public class Config : MonoBehaviour
         {
             Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
         }
+
+        PlayerPrefKeys.CheckKeys();
     }
 
     private void Start()
     {
-        scoreMultiplier = 50;
-        SplashScreen.SetActive(true);
-        splashScreenFade = StartCoroutine(DisplayLogo());
-
         string path = "GameConfigurations/gameValues";
         gameInfo = CreateFromJSON(path);
         ConfigFromJSON();
-        //SetCards();
-
-    }
-
-    IEnumerator DisplayLogo()
-    {
-        Image[] logos = SplashScreen.GetComponentsInChildren<Image>(true);
-
-        float fade = 1;
-        Color splashScreenColor = new Color(0, 0, 0, 1);
-        Color logosColor = new Color(1, 1, 1, 1);
-        /*while (fade < 1)
-        {
-            yield return null;
-
-            fade += Time.deltaTime *0.5f;
-            splashScreenColor.a = fade;
-            logosColor.a = fade;
-
-            logos[0].color = splashScreenColor;
-            logos[1].color = logosColor;
-            logos[2].color = logosColor;
-        }*/
-
-        yield return new WaitForSeconds(2);
-        gameObject.GetComponent<MusicController>().MainMenuMusic();
-
-        while (fade > 0)
-        {
-            yield return null;
-
-            fade -= Time.deltaTime * 0.5f;
-            splashScreenColor.a = fade;
-            logosColor.a = fade;
-
-            logos[0].color = splashScreenColor;
-            logos[1].color = logosColor;
-            logos[2].color = logosColor;
-        }
-
-        SplashScreen.SetActive(false);
-    }
-
-    public void SkipSplashScreen()
-    {
-        StopCoroutine(splashScreenFade);
-        SplashScreen.SetActive(false);
-        gameObject.GetComponent<MusicController>().MainMenuMusic();
     }
 
     public void GameOver(bool didWin, bool manualWin = false)
@@ -201,14 +131,13 @@ public class Config : MonoBehaviour
         gameWin = didWin;
         
         if (!manualWin)
-            matchCounter = (byte) (matches.GetComponent<MatchedPileScript>().cardList.Count / 2);
+            matchCounter = (byte) (MatchedPileScript.Instance.cardList.Count / 2);
         
         fadeOutImage.SetActive(true);
         baby = GameObject.Find("SpaceBaby");
 
         //delay to show summary
         StartCoroutine(EndGame());
-
     }
 
     IEnumerator EndGame()
@@ -218,7 +147,7 @@ public class Config : MonoBehaviour
         if (gameWin)
         {
             baby.GetComponent<SpaceBabyController>().BabyHappyAnim();
-            gameObject.GetComponent<SoundController>().WinSound();
+            SoundEffectsController.Instance.WinSound();
 
             while (countdown > 0)
             {
@@ -231,9 +160,9 @@ public class Config : MonoBehaviour
         else
         {
             //baby.GetComponent<SpaceBabyController>().BabyLoseSound();
-            gameObject.GetComponent<SoundController>().LoseSound();
+            SoundEffectsController.Instance.LoseSound();
 
-            UtilsScript.global.errorImage.SetActive(true);
+            UtilsScript.Instance.errorImage.SetActive(true);
             while (countdown > 0)
             {
                 yield return new WaitForSeconds(0.01f);
@@ -246,18 +175,17 @@ public class Config : MonoBehaviour
 
         if (gameWin)
         {
-            gameObject.GetComponent<MusicController>().WinMusic();
+            MusicController.Instance.WinMusic();
         }
         else
         {
-            gameObject.GetComponent<MusicController>().LoseMusic();
+            MusicController.Instance.LoseMusic();
         }
         DeleteSave();
     }
 
     public void ConfigFromJSON()
     {
-        suitsToUseStartIndex = gameInfo.suitsToUseStartIndex;
         foundationStartSize = gameInfo.foundationStartingSize;
         wastepileAnimationSpeedSlow = gameInfo.wastepileAnimationSpeedSlow;
         wastepileAnimationSpeedFast = gameInfo.wastepileAnimationSpeedFast;
@@ -269,12 +197,9 @@ public class Config : MonoBehaviour
         emptyReactorPoints = gameInfo.emptyReactorPoints;
         perfectGamePoints = gameInfo.perfectGamePoints;
         delayToShowGameSummary = gameInfo.delayToShowGameSummary;
-        easy = gameInfo.easyReactorLimit;
-        medium = gameInfo.mediumReactorLimit;
-        hard = gameInfo.hardReactorLimit;
-        easyMoveCount = gameInfo.easyMoveCount;
-        mediumMoveCount = gameInfo.mediumMoveCount;
-        hardMoveCount = gameInfo.hardMoveCount;
+        difficulties = gameInfo.difficulties;
+        reactorLimits = gameInfo.reactorLimits;
+        moveLimits = gameInfo.moveLimits;
         draggedTokenOffset = gameInfo.draggedTokenOffset;
         selectedCardOpacity = gameInfo.selectedCardOpacity;
         gameStateTxtEnglish = gameInfo.gameStateTxtEnglish;
@@ -307,7 +232,7 @@ public class Config : MonoBehaviour
         vibrationCard = gameInfo.vibrationCard;
         vibrationMatch = gameInfo.vibrationMatch;
         vibrationExplosion = gameInfo.vibrationExplosion;
-        //scoreMultiplier = gameInfo.scoreMultiplyer;
+        scoreMultiplier = gameInfo.scoreMultiplier;
 }
 
     public void StartupFindObjects()
@@ -323,10 +248,6 @@ public class Config : MonoBehaviour
         reactor3 = GameObject.Find("ReactorPile (2)");
         reactor4 = GameObject.Find("ReactorPile (3)");
         reactors = new GameObject[] { reactor1, reactor2, reactor3, reactor4 };
-
-        wastePile = GameObject.Find("Scroll View");
-
-        deck = GameObject.Find("DeckButton");
 
         fadeOutImage = GameObject.Find("FadeOutImage");
         if (fadeOutImage != null)
@@ -383,25 +304,25 @@ public class Config : MonoBehaviour
         return width;
 
     }
+
     public void SetDifficulty(string dif)
     {
-        if (dif.Equals("EASY"))
+        currentDifficulty = dif;
+
+        if (dif == difficulties[0])
         {
-            maxReactorVal = easy;
-            actionMax = easyMoveCount;
-            difficulty = "EASY";
+            maxReactorVal = reactorLimits[0];
+            actionMax = moveLimits[0];
         }
-        if (dif.Equals("MEDIUM"))
+        if (dif == difficulties[1])
         {
-            maxReactorVal = medium;
-            actionMax = mediumMoveCount;
-            difficulty = "MEDIUM";
+            maxReactorVal = reactorLimits[1];
+            actionMax = moveLimits[1];
         }
-        if (dif.Equals("HARD"))
+        if (dif == difficulties[2])
         {
-            maxReactorVal = hard;
-            actionMax = hardMoveCount;
-            difficulty = "HARD";
+            maxReactorVal = reactorLimits[2];
+            actionMax = moveLimits[2];
         }
     }
 

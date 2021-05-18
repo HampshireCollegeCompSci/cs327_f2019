@@ -20,17 +20,30 @@ public class StartScript : MonoBehaviour
         config.GetComponent<Config>().gamePaused = false;
 
         // assigning sprites to the reactor suits
-        byte suitSpritesIndex = Config.config.suitsToUseStartIndex;
+        bool isOn;
+        if (System.Boolean.TryParse(PlayerPrefs.GetString(PlayerPrefKeys.foodSuitsEnabledKey), out isOn))
+        { }
+        else
+        {
+            // unable to parse
+            isOn = false;
+        }
+
+        // the food sprites start at index 0, classic at 4
+        int suitSpritesIndex;
+        suitSpritesIndex = isOn ? 0 : 4;
+
+        // getting a subset list of suit sprites to use for the token/cards
+        Sprite[] suitSpritesSubset = new Sprite[4];
+        Array.Copy(suitSprites, suitSpritesIndex, suitSpritesSubset, 0, 4);
+
+        // setting up the reactor suit images
         for (int i = 0; i < 4; i++)
         {
             topSuitObjects[i].GetComponent<SpriteRenderer>().sprite = suitSprites[suitSpritesIndex];
             bottomSuitObjects[i].GetComponent<SpriteRenderer>().sprite = suitSprites[suitSpritesIndex];
             suitSpritesIndex++;
         }
-
-        // getting the suit sprites to use for the token/cards
-        Sprite[] suitSpritesSubset = new Sprite[4];
-        Array.Copy(suitSprites, Config.config.suitsToUseStartIndex, suitSpritesSubset, 0, 4);
 
         // starting the game
         deckButton.GetComponent<DeckScript>().DeckStart(suitSpritesSubset);
