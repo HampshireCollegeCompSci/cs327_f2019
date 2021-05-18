@@ -207,7 +207,7 @@ public class WastepileScript : MonoBehaviour
 
         // disable scrolling
         scrollRect.horizontal = false;
-        scrollRect.horizontalScrollbar.interactable = false;
+        //scrollRect.horizontalScrollbar.interactable = false;
 
         // we need unrestricted scroll for later shenanigans
         scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
@@ -220,7 +220,7 @@ public class WastepileScript : MonoBehaviour
         scrollRect.movementType = ScrollRect.MovementType.Clamped;
 
         scrollRect.horizontal = true;
-        scrollRect.horizontalScrollbar.interactable = true;
+        //scrollRect.horizontalScrollbar.interactable = true;
 
         UtilsScript.Instance.SetInputStopped(false);
         scrollingDisabled = false;
@@ -232,13 +232,13 @@ public class WastepileScript : MonoBehaviour
         {
             card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.None);
             scrollRect.horizontal = false;
-            scrollRect.horizontalScrollbar.interactable = false;
+            //scrollRect.horizontalScrollbar.interactable = false;
         }
         else if (card.GetComponent<CardScript>().container == this.gameObject)
         {
             card.GetComponent<CardScript>().UpdateMaskInteraction(SpriteMaskInteraction.VisibleInsideMask);
             scrollRect.horizontal = true;
-            scrollRect.horizontalScrollbar.interactable = true;
+            //scrollRect.horizontalScrollbar.interactable = true;
         }
     }
 
