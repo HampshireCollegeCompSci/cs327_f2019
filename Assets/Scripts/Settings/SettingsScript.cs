@@ -26,12 +26,12 @@ public class SettingsScript : MonoBehaviour
         // music volume
         int volume = (int)(PlayerPrefs.GetFloat(PlayerPrefKeys.musicVolumeKey) * 10);
         musicSlider.GetComponent<Slider>().value = volume;
-        musicVolumeText.text = (volume * 10).ToString() + '%';
+        musicVolumeText.text = volume.ToString() + "0%";
 
         // sound effects volume
         volume = (int)(PlayerPrefs.GetFloat(PlayerPrefKeys.soundEffectsVolumeKey) * 10);
         soundEffectsSlider.GetComponent<Slider>().value = volume;
-        soundEffectsVolumeText.text = (volume * 10).ToString() + '%';
+        soundEffectsVolumeText.text = volume.ToString() + "0%";
 
         bool isOn;
         // vibration enabled
@@ -64,7 +64,7 @@ public class SettingsScript : MonoBehaviour
         if (lockout)
             return;
 
-        musicVolumeText.text = (update * 10).ToString() + '%';
+        musicVolumeText.text = update.ToString() + "0%";
         update /= 10;
         PlayerPrefs.SetFloat(PlayerPrefKeys.musicVolumeKey, update);
         MusicController.Instance.UpdateMaxVolume(update);
@@ -73,11 +73,9 @@ public class SettingsScript : MonoBehaviour
     public void SoundEffectsVolumeChange(float update)
     {
         if (lockout)
-        {
             return;
-        }
 
-        soundEffectsVolumeText.text = (update * 10).ToString() + '%';
+        soundEffectsVolumeText.text = update.ToString() + "0%";
         update /= 10;
         PlayerPrefs.SetFloat(PlayerPrefKeys.soundEffectsVolumeKey, update);
         SoundEffectsController.Instance.UpdateMaxVolume(update);
