@@ -108,7 +108,7 @@ public class ReactorScript : MonoBehaviour
             if (currentFoundationScript.cardList.Count != 0)
             {
                 CardScript topCardScript = currentFoundationScript.cardList[0].GetComponent<CardScript>();
-                if (topCardScript.cardSuit == suit)
+                if (topCardScript.suit == suit)
                     output += topCardScript.cardVal;
             }
         }

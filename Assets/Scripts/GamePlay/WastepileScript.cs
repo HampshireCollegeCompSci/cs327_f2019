@@ -261,7 +261,7 @@ public class WastepileScript : MonoBehaviour
             }
             else if (inputCardScript.container.CompareTag("Reactor"))
             {
-                if (!CardTools.IsSameSuit(input, selectedCard))
+                if (!CardTools.CompareSameSuitObjects(input, selectedCard))
                     return;
 
                 SoundEffectsController.Instance.CardToReactorSound();
@@ -281,7 +281,7 @@ public class WastepileScript : MonoBehaviour
         }
         else if (input.CompareTag("Reactor"))
         {
-            if (!CardTools.IsSameSuit(input, selectedCard))
+            if (!CardTools.CompareSameSuitObjects(input, selectedCard))
                 return;
 
             SoundEffectsController.Instance.CardToReactorSound();

@@ -1,33 +1,35 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ShowPossibleMoves : MonoBehaviour
 {
-    public static ShowPossibleMoves showPossibleMoves;
-
     public GameObject reactorMove;
     public List<GameObject> foundationMoves;
     public List<GameObject> cardMoves;
     public List<GameObject> cardMatches;
 
+    // Singleton instance.
+    public static ShowPossibleMoves Instance = null;
+
+    // Initialize the singleton instance.
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            DontDestroyOnLoad(gameObject); //makes instance persist across scenes
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
+            //throw new System.ArgumentException("there should not already be an instance of this");
+        }
+    }
+
     private void Start()
     {
         cardMoves = new List<GameObject>();
         cardMatches = new List<GameObject>();
-    }
-
-    private void Awake()
-    {
-        if (showPossibleMoves == null)
-        {
-            DontDestroyOnLoad(gameObject); //makes instance persist across scenes
-            showPossibleMoves = this;
-        }
-        else if (showPossibleMoves != this)
-        {
-            Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
-        }
     }
 
     public void ShowMoves(GameObject selectedCard)
@@ -45,8 +47,8 @@ public class ShowPossibleMoves : MonoBehaviour
         foreach (GameObject card in cardMatches)
             card.GetComponent<CardScript>().GlowOn(true);
 
-        foreach (GameObject card in foundationMoves)
-            card.GetComponent<FoundationScript>().GlowOn();
+        foreach (GameObject foundation in foundationMoves)
+            foundation.GetComponent<FoundationScript>().GlowOn();
 
         if (reactorMove != null)
         {
@@ -74,8 +76,6 @@ public class ShowPossibleMoves : MonoBehaviour
     {
         CardScript selectedCardScript = selectedCard.GetComponent<CardScript>();
 
-        int selectedCardNum = selectedCardScript.cardNum;
-
         bool cardIsFromFoundation = selectedCardScript.container.CompareTag("Foundation");
         bool cardIsFromWastepile = selectedCardScript.container.CompareTag("Wastepile");
 
@@ -87,44 +87,65 @@ public class ShowPossibleMoves : MonoBehaviour
             cardCanBeMatched = false;
         }
 
+        // find moves that can only occur when dragging only one token/card
         if (cardCanBeMatched)
         {
+            // find the one complimentary reactor and check if a top card exists and can then match
+            ReactorScript reactorScriptRef;
             foreach (GameObject reactor in Config.config.reactors)
             {
-                // if the card matches the card in the top of the reactor
-                if (reactor.GetComponent<ReactorScript>().cardList.Count != 0 &&
-                    CardTools.CanMatch(reactor.GetComponent<ReactorScript>().cardList[0].GetComponent<CardScript>(),
-                                                selectedCardScript, checkIsTop: false))
-                    cardMatches.Add(reactor.GetComponent<ReactorScript>().cardList[0]);
+                reactorScriptRef = reactor.GetComponent<ReactorScript>();
+                if (CardTools.CompareComplimentarySuits(selectedCardScript.suit, reactorScriptRef.suit))
+                {
+                    if (reactorScriptRef.cardList.Count != 0 &&
+                        reactorScriptRef.cardList[0].GetComponent<CardScript>().cardNum == selectedCardScript.cardNum)
+                    {
+                        cardMatches.Add(reactor.GetComponent<ReactorScript>().cardList[0]);
+                    }
+
+                    break;
+                }
             }
 
-            // if the card is not in the reactor
-            if (!selectedCard.GetComponent<CardScript>().container.CompareTag("Reactor"))
-                // get the reactor that we can match into
+            // if the card is not in the reactor, get the reactor that we can move into
+            if (!selectedCardScript.container.CompareTag("Reactor"))
+            {                
                 foreach (GameObject reactor in Config.config.reactors)
-                    if (CardTools.IsSameSuit(selectedCard, reactor))
+                {
+                    if (selectedCardScript.suit == reactor.GetComponent<ReactorScript>().suit)
                     {
                         reactorMove = reactor;
                         break;
                     }
+                }
+            }
         }
 
+        FoundationScript foundationScriptRef;
+        CardScript topFoundationCardScript;
         foreach (GameObject foundation in Config.config.foundations)
         {
-            if (foundation.GetComponent<FoundationScript>().cardList.Count != 0)
+            foundationScriptRef = foundation.GetComponent<FoundationScript>();
+            if (foundationScriptRef.cardList.Count != 0)
             {
-                CardScript topFoundationCardScript = foundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>();
+                topFoundationCardScript = foundationScriptRef.cardList[0].GetComponent<CardScript>();
 
                 // if the card can match and matches with the foundation top
                 if (cardCanBeMatched && CardTools.CanMatch(selectedCardScript, topFoundationCardScript, checkIsTop: false))
-                    cardMatches.Add(foundation.GetComponent<FoundationScript>().cardList[0]);
+                {
+                    cardMatches.Add(foundationScriptRef.cardList[0]);
+                }
                 // if the card is not from a reactor can it stack?
                 else if ((cardIsFromFoundation || cardIsFromWastepile) &&
-                    topFoundationCardScript.cardNum == selectedCardNum + 1)
-                    cardMoves.Add(foundation.GetComponent<FoundationScript>().cardList[0]);
+                    topFoundationCardScript.cardNum == selectedCardScript.cardNum + 1)
+                {
+                    cardMoves.Add(foundationScriptRef.cardList[0]);
+                }
             }
             else if (cardIsFromFoundation || cardIsFromWastepile)
+            {
                 foundationMoves.Add(foundation);
+            }
         }
 
         // if the card can match and matches with the wastepile top
@@ -132,7 +153,9 @@ public class ShowPossibleMoves : MonoBehaviour
         {
             GameObject topWastepileCard = WastepileScript.Instance.cardList[0];
             if (CardTools.CanMatch(topWastepileCard.GetComponent<CardScript>(), selectedCardScript, checkIsTop: false))
+            {
                 cardMatches.Add(topWastepileCard);
+            }
         }
     }
 

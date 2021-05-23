@@ -62,7 +62,7 @@ public class StateLoader : MonoBehaviour
             cardScriptRef = move.card.GetComponent<CardScript>();
 
             saveMoveLog.Add(new AltMove() {
-                cardName = $"{cardScriptRef.cardSuit}_{cardScriptRef.cardNum}",
+                cardName = $"{cardScriptRef.suit}_{cardScriptRef.cardNum}",
                 originName = move.origin.name,
                 moveType = move.moveType,
                 nextCardWasHidden = move.nextCardWasHidden,
@@ -107,7 +107,7 @@ public class StateLoader : MonoBehaviour
         for (int i = cardList.Count - 1; i != -1; i--)
         {
             cardScriptRef = cardList[i].GetComponent<CardScript>();
-            stringList.Add($"{cardScriptRef.cardSuit}_{cardScriptRef.cardNum}_{cardScriptRef.IsHidden}");
+            stringList.Add($"{cardScriptRef.suit}_{cardScriptRef.cardNum}_{cardScriptRef.IsHidden}");
         }
 
         return stringList;
@@ -239,7 +239,7 @@ public class StateLoader : MonoBehaviour
             foreach (GameObject card in cardList)
             {
                 cardScriptRef = card.GetComponent<CardScript>();
-                if (cardScriptRef.cardNum == number && cardScriptRef.cardSuit == suite)
+                if (cardScriptRef.cardNum == number && cardScriptRef.suit == suite)
                 {
                     tempMove.card = card;
                     break;
@@ -304,7 +304,7 @@ public class StateLoader : MonoBehaviour
             foreach (GameObject card in cardList)
             {
                 cardScriptRef = card.GetComponent<CardScript>();
-                if (cardScriptRef.cardNum == number && cardScriptRef.cardSuit == suite)
+                if (cardScriptRef.cardNum == number && cardScriptRef.suit == suite)
                 {
                     cardScriptRef.MoveCard(newLocation, false, false, false);
                     if (hiddenState)

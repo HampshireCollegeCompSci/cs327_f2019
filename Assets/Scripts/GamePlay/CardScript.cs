@@ -9,7 +9,7 @@ public class CardScript : MonoBehaviour
     
     public int cardVal; //cardVal is what the card is worth to the reactor jack, queen, king are all 10
     public int cardNum; //cardNum is the number on the card, ace is 1 jack is 11 queen is 12 king is 13
-    public string cardSuit;
+    public string suit;
 
     public GameObject suitObject, rankObject;
     public GameObject hologramFood, hologram;

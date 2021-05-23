@@ -143,7 +143,7 @@ public class DeckScript : MonoBehaviour
 
                 // setting up the cards internal rank and suit
                 newCardScript.cardNum = rank;
-                newCardScript.cardSuit = suitStrings[suit];
+                newCardScript.suit = suitStrings[suit];
 
                 // setting up the text renderer's sorting layer and order because you can't do it via Unity's Inspector
                 newCardScript.rankObject.GetComponent<MeshRenderer>().sortingLayerName = "Gameplay";
@@ -314,7 +314,7 @@ public class DeckScript : MonoBehaviour
 
                 foreach (GameObject reactor in Config.config.reactors)
                 {
-                    if (topCardScript.cardSuit == reactor.GetComponent<ReactorScript>().suit)
+                    if (topCardScript.suit == reactor.GetComponent<ReactorScript>().suit)
                     {
                         topCardScript.HideHologram();
                         topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";

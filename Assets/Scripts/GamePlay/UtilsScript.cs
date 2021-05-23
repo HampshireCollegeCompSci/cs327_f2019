@@ -73,7 +73,7 @@ public class UtilsScript : MonoBehaviour
                 if (Input.GetMouseButtonUp(0))
                 {
                     TryToPlaceCards(GetClick());
-                    ShowPossibleMoves.showPossibleMoves.HideMoves();
+                    ShowPossibleMoves.Instance.HideMoves();
                     UnselectCards();
                 }
                 else
@@ -210,42 +210,41 @@ public class UtilsScript : MonoBehaviour
         SetInputStopped(true);
 
         // make a copy of the selected cards to move around
-        GameObject newGameObject;
-        int cardsCount = selectedCards.Count;
-        for (int i = 0; i < cardsCount; i++)
+        GameObject cardCopy;
+        foreach (GameObject card in selectedCards)
         {
-            newGameObject = Instantiate(selectedCards[i], selectedCards[i].transform.position, Quaternion.identity);
-            newGameObject.GetComponent<CardScript>().MakeVisualOnly();
-            selectedCardsCopy.Add(newGameObject);
+            cardCopy = Instantiate(card, card.transform.position, Quaternion.identity);
+            cardCopy.GetComponent<CardScript>().MakeVisualOnly();
+            selectedCardsCopy.Add(cardCopy);
         }
 
         // enable dragged reactor tokens holograms
-        if (cardsCount == 1 && selectedCards[0].GetComponent<CardScript>().container.CompareTag("Reactor"))
+        if (selectedCards.Count == 1 && selectedCards[0].GetComponent<CardScript>().container.CompareTag("Reactor"))
             selectedCardsCopy[0].GetComponent<CardScript>().ShowHologram();
 
         // show any tokens (and reactors) that we can interact with
-        ShowPossibleMoves.showPossibleMoves.ShowMoves(selectedCards[0]);
+        ShowPossibleMoves.Instance.ShowMoves(selectedCards[0]);
 
         changedHologramColor = false;
         changedSuitGlowColor = false;
         hidFoodHologram = false;
 
-        if (ShowPossibleMoves.showPossibleMoves.cardMatches.Count != 0)
+        if (ShowPossibleMoves.Instance.cardMatches.Count != 0)
             matchTokensAreGlowing = true;
         else
             matchTokensAreGlowing = false;
 
-        if (ShowPossibleMoves.showPossibleMoves.cardMoves.Count != 0)
+        if (ShowPossibleMoves.Instance.cardMoves.Count != 0)
             moveTokensAreGlowing = true;
         else
             moveTokensAreGlowing = false;
 
-        if (ShowPossibleMoves.showPossibleMoves.reactorMove != null)
+        if (ShowPossibleMoves.Instance.reactorMove != null)
             reactorIsGlowing = true;
         else
             reactorIsGlowing = false;
 
-        if (ShowPossibleMoves.showPossibleMoves.foundationMoves.Count != 0)
+        if (ShowPossibleMoves.Instance.foundationMoves.Count != 0)
             foundationIsGlowing = true;
         else
             foundationIsGlowing = false;
@@ -371,7 +370,7 @@ public class UtilsScript : MonoBehaviour
         UpdateScore(points);
         UpdateActions(0, isMatch: true);
 
-        SoundEffectsController.Instance.FoodMatch(card1Script.cardSuit);
+        SoundEffectsController.Instance.FoodMatch(card1Script.suit);
         baby.GetComponent<SpaceBabyController>().BabyEatAnim();
 
         StartCoroutine(FoodComboMove(comboHologram, matchExplosion));
