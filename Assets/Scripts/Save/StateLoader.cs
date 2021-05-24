@@ -4,17 +4,20 @@ using UnityEngine;
 
 public class StateLoader : MonoBehaviour
 {
-    public static StateLoader saveSystem;
     public GameState gameState;
 
+    // Singleton instance.
+    public static StateLoader Instance;
+
+    // Initialize the singleton instance.
     private void Awake()
     {
-        if (saveSystem == null)
+        if (Instance == null)
         {
             DontDestroyOnLoad(gameObject); //makes instance persist across scenes
-            saveSystem = this;
+            Instance = this;
         }
-        else if (saveSystem != this)
+        else if (Instance != this)
         {
             Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
         }

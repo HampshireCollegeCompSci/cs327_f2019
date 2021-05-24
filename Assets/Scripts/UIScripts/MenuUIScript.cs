@@ -207,8 +207,8 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI starting tutorial");
 
-        StateLoader.saveSystem.LoadTutorialState("tutorialState_start");
-        Config.config.SetDifficulty(StateLoader.saveSystem.gameState.difficulty);
+        StateLoader.Instance.LoadTutorialState("tutorialState_start");
+        Config.config.SetDifficulty(StateLoader.Instance.gameState.difficulty);
         Config.config.tutorialOn = true;
         //Config.config.DeleteSave();
         NewGame();
@@ -252,8 +252,8 @@ public class MenuUIScript : MonoBehaviour
                 #endif
 
 
-                StateLoader.saveSystem.LoadState();
-                Config.config.SetDifficulty(StateLoader.saveSystem.gameState.difficulty);
+                StateLoader.Instance.LoadState();
+                Config.config.SetDifficulty(StateLoader.Instance.gameState.difficulty);
                 Config.config.tutorialOn = false;
                 NewGame(true);
             }
@@ -262,8 +262,8 @@ public class MenuUIScript : MonoBehaviour
         {
             if (File.Exists(Application.persistentDataPath + "/testState.json"))
             {
-                StateLoader.saveSystem.LoadState();
-                Config.config.SetDifficulty(StateLoader.saveSystem.gameState.difficulty);
+                StateLoader.Instance.LoadState();
+                Config.config.SetDifficulty(StateLoader.Instance.gameState.difficulty);
                 Config.config.tutorialOn = false;
                 NewGame(true);
             }

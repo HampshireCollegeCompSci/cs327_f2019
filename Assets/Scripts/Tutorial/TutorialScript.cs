@@ -178,8 +178,8 @@ public class TutorialScript : MonoBehaviour
         MoveCardsToLoadPile(WastepileScript.Instance.cardList);
         MoveCardsToLoadPile(MatchedPileScript.Instance.cardList);
 
-        StateLoader.saveSystem.LoadTutorialState(fileName);
-        StateLoader.saveSystem.UnpackState(state: StateLoader.saveSystem.gameState, isTutorial: true);
+        StateLoader.Instance.LoadTutorialState(fileName);
+        StateLoader.Instance.UnpackState(state: StateLoader.Instance.gameState, isTutorial: true);
     }
 
     private static void MoveCardsToLoadPile(List<GameObject> cards)

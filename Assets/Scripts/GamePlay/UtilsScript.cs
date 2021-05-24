@@ -515,14 +515,14 @@ public class UtilsScript : MonoBehaviour
                 Alert(false, true, true);
 
             if (!CheckGameOver()) // if a match didn't win the game
-                StateLoader.saveSystem.WriteState();
+                StateLoader.Instance.WriteState();
             return;
         }
         else if (actionUpdate == -1) // a match undo
         {
             if (wasInAlertThreshold)
                 Alert(false, true, true);
-            StateLoader.saveSystem.WriteState();
+            StateLoader.Instance.WriteState();
             return;
         }
         else
@@ -541,7 +541,7 @@ public class UtilsScript : MonoBehaviour
             return;
 
         if (doSaveState)
-            StateLoader.saveSystem.WriteState();
+            StateLoader.Instance.WriteState();
 
         // time to determine if the alert should be turned on
         bool isInAlertThreshold = Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold;

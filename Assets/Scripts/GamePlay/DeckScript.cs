@@ -45,19 +45,19 @@ public class DeckScript : MonoBehaviour
         {
             Debug.Log("deck start loading tutorial");
             InstantiateCards(addToLoadPile: true);
-            StateLoader.saveSystem.UnpackState(StateLoader.saveSystem.gameState, true);
+            StateLoader.Instance.UnpackState(StateLoader.Instance.gameState, true);
             UtilsScript.Instance.UpdateScore(0);
         }
         else if (Application.isEditor && File.Exists("Assets/Resources/GameStates/testState.json"))
         {
             Debug.Log("editor: deck start loading saved game");
-            StateLoader.saveSystem.UnpackState(StateLoader.saveSystem.gameState, false);
+            StateLoader.Instance.UnpackState(StateLoader.Instance.gameState, false);
             UtilsScript.Instance.UpdateScore(0);
         }
         else if (!Application.isEditor && File.Exists(Application.persistentDataPath + "/testState.json"))
         {
             Debug.Log("application: deck start loading saved game");
-            StateLoader.saveSystem.UnpackState(StateLoader.saveSystem.gameState, false);
+            StateLoader.Instance.UnpackState(StateLoader.Instance.gameState, false);
             UtilsScript.Instance.UpdateScore(0);
         }
         else
