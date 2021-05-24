@@ -6,10 +6,9 @@ using UnityEngine.UI;
 
 public class SpaceBabyController : MonoBehaviour
 {
-    bool idling;
     public AudioSource audioSource;
     public Animator animator;
-    public AudioClip happySound, angrySound, loseSound, counterSound, eatSound;
+    public AudioClip happySound, angrySound, counterSound, eatSound;
 
     // game over win condition
     public Sprite[] foodObjects;
@@ -17,67 +16,116 @@ public class SpaceBabyController : MonoBehaviour
     public GameObject babyPlanet;
     public GameObject panel;
 
+    private bool idling, angry;
+
+    // Singleton instance.
+    public static SpaceBabyController Instance = null;
+
+    // Initialize the singleton instance.
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            // since the pause scene creates a duplicate spacebby on top of the gameplay scene's this will happen
+            Debug.LogWarning("There really shouldn't be two of these but oh well.");
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         audioSource.volume = PlayerPrefs.GetFloat(PlayerPrefKeys.soundEffectsVolumeKey, 0.5f);
         idling = true;
+        angry = false;
         animator.Play("IdlingAnim");
     }
 
-    public void BabyHappyAnim()
+    // the 2D collider on the spacebby calls this
+    void OnMouseDown()
     {
+        Debug.Log("SpaceBaby Clicked");
+        BabyHappy();
+    }
+
+    public void BabyHappy()
+    {
+        Debug.Log("SpaceBaby Happy");
+
         if (idling)
         {
             audioSource.PlayOneShot(happySound, 0.4f);
-
-            animator.Play("HappyAnim");
             idling = false;
+            animator.Play("HappyAnim");
             StartCoroutine(BabyAnimTrans());
         }
-
     }
 
-    public void BabyEatAnim()
+    public void BabyEat()
     {
+        Debug.Log("SpaceBaby Eat");
+
         idling = false;
         animator.Play("EatingAnim");
         StartCoroutine(BabyAnimTrans());
     }
 
-    public void BabyAngryAnim()
+    public void BabyAngry()
     {
-        idling = false;
+        Debug.Log("SpaceBaby Angry");
+
         audioSource.PlayOneShot(angrySound, 0.2f);
-
-        animator.Play("AngryAnim");
-        StartCoroutine(BabyAnimTrans());
+        AngryAnimation();
     }
 
-    public void BabyLoseSound()
+    public void BabyLoseTransition()
     {
-        audioSource.PlayOneShot(loseSound, 0.5f);
+        Debug.Log("SpaceBaby Lose Transition");
+
+        AngryAnimation();
     }
 
-    public void BabyActionCounterSound()
+    public void BabyActionCounter()
     {
+        Debug.Log("SpaceBaby ActionCounter");
+
         audioSource.PlayOneShot(counterSound, 0.5f);
+        AngryAnimation();
+    }
+
+    private void AngryAnimation()
+    {
+        if (!angry)
+        {
+            idling = false;
+            angry = true;
+            animator.Play("AngryAnim");
+            StartCoroutine(BabyAnimTrans());
+        }
     }
 
     IEnumerator BabyAnimTrans()
     {
         yield return new WaitForSeconds(2);
         idling = true;
+        angry = false;
         animator.Play("IdlingAnim");
     }
 
-    public void BabyLose()
+    public void BabyLoseSummary()
     {
+        Debug.Log("SpaceBaby Lose Summary");
+
         animator.Play("Lose");
     }
 
-    public void BabyWin(byte matchNumber)
+    public void BabyWinSummary(byte matchNumber)
     {
+        Debug.Log("SpaceBaby Win");
+
         animator.Play("WinStart");
         StartCoroutine(BabyWinAnimation());
         StartCoroutine(EatAnimation(matchNumber));
@@ -136,7 +184,7 @@ public class SpaceBabyController : MonoBehaviour
                     if (matchNumber == 26)
                         StartCoroutine(WinTransition());
                     else
-                        BabyHappyAnim();
+                        BabyHappy();
 
                     yield break;
                 }
@@ -148,7 +196,7 @@ public class SpaceBabyController : MonoBehaviour
 
     IEnumerator WinTransition()
     {
-        BabyHappyAnim();
+        BabyHappy();
 
         Image panelImage = panel.GetComponent<Image>();
         Color panelColor = new Color(1, 1, 1, 0);

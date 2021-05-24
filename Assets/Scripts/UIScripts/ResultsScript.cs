@@ -12,7 +12,6 @@ public class ResultsScript : MonoBehaviour
     public Text leastMoves, leastMovesStat;
     public Text movesStat;
 
-    public SpaceBabyController spaceBaby;
     public Sprite spaceShipDebris;
     public GameObject spaceShip;
 
@@ -37,11 +36,11 @@ public class ResultsScript : MonoBehaviour
         // spacebaby
         if (Config.config.gameWin)
         {
-            spaceBaby.BabyWin(Config.config.matchCounter);
+            SpaceBabyController.Instance.BabyWinSummary(Config.config.matchCounter);
         }
         else
         {
-            spaceBaby.BabyLose();
+            SpaceBabyController.Instance.BabyLoseSummary();
             SpaceShipExplode();
         }
 

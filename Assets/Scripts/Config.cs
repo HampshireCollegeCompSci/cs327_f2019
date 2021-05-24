@@ -31,9 +31,6 @@ public class Config : MonoBehaviour
     public int emptyReactorPoints;
     public int perfectGamePoints;
 
-    //baby
-    private GameObject baby;
-
     //foundations
     public int foundationStartSize;
 
@@ -134,7 +131,6 @@ public class Config : MonoBehaviour
             matchCounter = (byte) (MatchedPileScript.Instance.cardList.Count / 2);
         
         fadeOutImage.SetActive(true);
-        baby = GameObject.Find("SpaceBaby");
 
         //delay to show summary
         StartCoroutine(EndGame());
@@ -146,7 +142,7 @@ public class Config : MonoBehaviour
 
         if (gameWin)
         {
-            baby.GetComponent<SpaceBabyController>().BabyHappyAnim();
+            SpaceBabyController.Instance.BabyHappy();
             SoundEffectsController.Instance.WinSound();
 
             while (countdown > 0)
@@ -159,7 +155,7 @@ public class Config : MonoBehaviour
 
         else
         {
-            //baby.GetComponent<SpaceBabyController>().BabyLoseSound();
+            SpaceBabyController.Instance.BabyLoseTransition();
             SoundEffectsController.Instance.LoseSound();
 
             UtilsScript.Instance.errorImage.SetActive(true);

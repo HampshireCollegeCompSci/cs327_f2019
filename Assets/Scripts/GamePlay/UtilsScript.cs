@@ -23,7 +23,6 @@ public class UtilsScript : MonoBehaviour
     private bool inputStopped = false;
     private bool isNextCycle;
 
-    public GameObject baby;
     public int matchPoints;
     public int emptyReactorPoints;
     public int perfectGamePoints;
@@ -107,11 +106,7 @@ public class UtilsScript : MonoBehaviour
 
         GameObject hitGameObject = hit.collider.gameObject;
         if (!hitGameObject.CompareTag("Card"))
-        {
-            if (hitGameObject.CompareTag("Baby"))
-                baby.GetComponent<SpaceBabyController>().BabyHappyAnim();
             return;
-        }
 
         CardScript hitCardScript = hitGameObject.GetComponent<CardScript>();
 
@@ -371,7 +366,7 @@ public class UtilsScript : MonoBehaviour
         UpdateActions(0, isMatch: true);
 
         SoundEffectsController.Instance.FoodMatch(card1Script.suit);
-        baby.GetComponent<SpaceBabyController>().BabyEatAnim();
+        SpaceBabyController.Instance.BabyEat();
 
         StartCoroutine(FoodComboMove(comboHologram, matchExplosion));
         StartCoroutine(PointFade(points, p));
@@ -613,7 +608,7 @@ public class UtilsScript : MonoBehaviour
             if (moveCounter.GetComponent<ActionCountScript>().TurnSirenOn(2) ||
                 (!matchRelated && Config.config.actionMax - Config.config.actions == 1))
             {
-                baby.GetComponent<SpaceBabyController>().BabyAngryAnim();
+                SpaceBabyController.Instance.BabyAngry();
             }
         }
         else if (turnOnAlert || checkAgain)
