@@ -11,6 +11,12 @@ public class SpaceBabyController : MonoBehaviour
     public Animator animator;
     public AudioClip happySound, angrySound, loseSound, counterSound, eatSound;
 
+    // game over win condition
+    public Sprite[] foodObjects;
+    public GameObject foodPrefab;
+    public GameObject babyPlanet;
+    public GameObject panel;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -83,8 +89,6 @@ public class SpaceBabyController : MonoBehaviour
         animator.Play("WinEat");
     }
 
-    public Sprite[] foodObjects;
-    public GameObject foodPrefab;
     IEnumerator EatAnimation(byte matchNumber)
     {
         List<GameObject> foods = new List<GameObject>();
@@ -142,8 +146,6 @@ public class SpaceBabyController : MonoBehaviour
         }
     }
 
-    public GameObject babyPlanet;
-    public GameObject panel;
     IEnumerator WinTransition()
     {
         BabyHappyAnim();
@@ -153,9 +155,9 @@ public class SpaceBabyController : MonoBehaviour
 
         while (panelColor.a < 1)
         {
-            panelColor.a += 0.05f;
+            panelColor.a += Time.deltaTime * 0.75f;
             panelImage.color = panelColor;
-            yield return new WaitForSeconds(0.05f);
+            yield return null;
         }
 
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
@@ -163,9 +165,9 @@ public class SpaceBabyController : MonoBehaviour
 
         while (panelColor.a > 0)
         {
-            panelColor.a -= 0.05f;
+            panelColor.a -= Time.deltaTime * 0.75f;
             panelImage.color = panelColor;
-            yield return new WaitForSeconds(0.05f);
+            yield return null;
         }
     }
 }
