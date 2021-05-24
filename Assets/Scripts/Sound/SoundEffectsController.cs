@@ -38,7 +38,7 @@ public class SoundEffectsController : MonoBehaviour
 
     private void Start()
     {
-        UpdateMaxVolume(PlayerPrefs.GetFloat(PlayerPrefKeys.soundEffectsVolumeKey));
+        UpdateMaxVolume(PlayerPrefs.GetFloat(PlayerPrefKeys.soundEffectsVolumeKey, 0.5f));
     }
 
     public void UpdateMaxVolume(float newVolume)
