@@ -16,13 +16,11 @@ public class ShowPossibleMoves : MonoBehaviour
     {
         if (Instance == null)
         {
-            DontDestroyOnLoad(gameObject); //makes instance persist across scenes
             Instance = this;
         }
         else if (Instance != this)
         {
-            Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
-            //throw new System.ArgumentException("there should not already be an instance of this");
+            throw new System.ArgumentException("there should not already be an instance of this");
         }
     }
 
