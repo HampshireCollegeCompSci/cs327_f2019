@@ -19,6 +19,17 @@
 		},
 		{
 			"argumentList": [
+				"ShowText",
+				"This is an example of what the game can look like after playing for a short time.\nGameplay will be explained from this perspective."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
 				"HighlightAllInteractableTokens"
 			]
 		},
@@ -129,7 +140,7 @@
 		{
 			"argumentList": [
 				"ShowText",
-				"These are the foundations. Tokens can be stacked here in order of their rank, with ace counting as one."
+				"These are the foundations.\nTokens can be stacked here in order of their rank, with ace counting as one."
 			]
 		},
 		{
@@ -187,7 +198,7 @@
 		{
 			"argumentList": [
 				"ShowText",
-				"Here is an example of a move you could make to be able to match the two red 3s."
+				"Here is an example of a move you could make, highlighted yellow, that would allow you to match the two red 3s, highlighted green, on the next move."
 			]
 		},
 		{
@@ -233,7 +244,7 @@
 		{
 			"argumentList": [
 				"ShowText",
-				"These are the reactors. Individual tokens can be moved to their respective reactors, but you can't move them back out unless it's for a match."
+				"These are the reactors.\nIndividual tokens can be moved to their respective reactors, but you can't move them back out unless it's for a match."
 			]
 		},
 		{
@@ -308,6 +319,13 @@
 		},
 		{
 			"argumentList": [
+				"HighlightObject",
+				"MoveCounter",
+				"On"
+			]
+		},
+		{
+			"argumentList": [
 				"SetMoveCounterText",
 				"0"
 			]
@@ -339,6 +357,13 @@
 		},
 		{
 			"argumentList": [
+				"HighlightObject",
+				"MoveCounter",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
 				"LoadSave",
 				"tutorialState_reactors"
 
@@ -347,7 +372,7 @@
 		{
 			"argumentList": [
 				"ShowText",
-				"If the sum of tokens in a reactor goes above it's limit, you lose the game. Aces count as 1 and all face cards count as 10 towards these limits."
+				"If the sum of tokens in a reactor goes above it's limit (show directly below), you lose the game.\nAces count as 1 and all face cards count as 10 towards these limits."
 			]
 		},
 		{
@@ -435,7 +460,7 @@
 		{
 			"argumentList": [
 				"ShowText",
-				"The waste pile can be scrolled through using the conveyor belt or the scroll bar to view any tokens in it that might be hidden offscreen."
+				"The waste pile can be scrolled through using the conveyor belt to view any tokens in it that might be hidden offscreen."
 			]
 		},
 		{
