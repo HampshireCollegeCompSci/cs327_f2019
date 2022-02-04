@@ -186,6 +186,48 @@ public class TutorialScript : MonoBehaviour
         Debug.Log("ending tutorial");
 
         tutorial.SetActive(false);
+        Config.config.tutorialOn = false;
+        Config.config.gamePaused = false;
+        Config.config.gameOver = false;
+        Config.config.gameWin = false;
+        Config.config.score = 0;
+        Config.config.actions = 0;
+        Config.config.moveCounter = 0;
+
+        Config.config.DeleteSave();
+        UndoScript.Instance.moveLog.Clear();
+
+        // move all tokens to the deck
+        foreach (GameObject foundation in Config.config.foundations)
+            MoveCardsToDeck(foundation.GetComponent<FoundationScript>().cardList);
+        foreach (GameObject reactor in Config.config.reactors)
+            MoveCardsToDeck(reactor.GetComponent<ReactorScript>().cardList);
+        MoveCardsToDeck(WastepileScript.Instance.cardList);
+        MoveCardsToDeck(MatchedPileScript.Instance.cardList);
+
+        Config.config.SetDifficulty(Config.config.difficulties[0]);
+        ReactorScoreSetScript.Instance.SetReactorScore();
+        DeckScript.Instance.StartGame();
+    }
+
+    private void MoveCardsToDeck(List<GameObject> cards)
+    {
+        int cardCount = cards.Count;
+        while (cardCount != 0)
+        {
+            cards[0].GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, doLog: false, isAction: false);
+            cardCount--;
+        }
+    }
+
+    /// <summary>
+    /// Ends the tutorial by request from the tutorial exit button.
+    /// </summary>
+    public void ExitButton()
+    {
+        Debug.Log("exit tutorial requested");
+
+        tutorial.SetActive(false);
 
         // just in case
         if (Config.config != null)
@@ -198,15 +240,6 @@ public class TutorialScript : MonoBehaviour
 
         SceneManager.LoadScene("MainMenuScene");
         MusicController.Instance.MainMenuMusic();
-    }
-
-    /// <summary>
-    /// Ends the tutorial by request from the tutorial exit button.
-    /// </summary>
-    public void ExitButton()
-    {
-        Debug.Log("exit tutorial requested");
-        EndTutorial();
     }
 
     /// <summary>

@@ -63,11 +63,16 @@ public class DeckScript : MonoBehaviour
         else
         {
             InstantiateCards();
-            Shuffle();
-            SetUpFoundations();
-            Deal(false);
-            UtilsScript.Instance.UpdateActions(0, startingGame: true);
+            StartGame();
         }
+    }
+
+    public void StartGame()
+    {
+        Shuffle();
+        SetUpFoundations();
+        Deal(false);
+        UtilsScript.Instance.UpdateActions(0, startingGame: true);
     }
 
     // sets up card list

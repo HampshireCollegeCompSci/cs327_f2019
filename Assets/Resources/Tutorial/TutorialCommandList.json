@@ -556,12 +556,17 @@
 		{
 			"argumentList": [
 				"ShowText",
-				"That's the end of the tutorial!"
+				"That's the end of the tutorial!\nContinue to begin playing an easy difficulty game or exit to the main menu now."
 			]
 		},
 		{
 			"argumentList": [
 				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"endtutorial"
 			]
 		}
 	]
