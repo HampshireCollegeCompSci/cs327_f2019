@@ -3,6 +3,22 @@ using UnityEngine.UI;
 
 public class ReactorScoreSetScript : MonoBehaviour
 {
+    // Singleton instance.
+    public static ReactorScoreSetScript Instance = null;
+
+    // Initialize the singleton instance.
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            throw new System.ArgumentException("there should not already be an instance of this");
+        }
+    }
+
     private void Start()
     {
         SetReactorScore();
@@ -19,6 +35,7 @@ public class ReactorScoreSetScript : MonoBehaviour
 
     public GameObject reactor3;
     public Text reactorScore3;
+
 
     public void SetReactorScore()
     {

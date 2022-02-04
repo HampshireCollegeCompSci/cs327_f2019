@@ -5,7 +5,6 @@ using UnityEngine;
 public class ReactorScript : MonoBehaviour
 {
     public GameObject gameUI;
-    private ReactorScoreSetScript rsss;
 
     public List<GameObject> cardList;
     public string suit;
@@ -20,7 +19,6 @@ public class ReactorScript : MonoBehaviour
 
     void Start()
     {
-        rsss = gameUI.GetComponent<ReactorScoreSetScript>();
         suitGlowSR = suitGlow.GetComponent<SpriteRenderer>();
     }
 
@@ -46,7 +44,7 @@ public class ReactorScript : MonoBehaviour
         card.GetComponent<CardScript>().HideHologram();
 
         SetCardPositions();
-        rsss.SetReactorScore();
+        ReactorScoreSetScript.Instance.SetReactorScore();
         CheckGameOver();
     }
 
@@ -62,7 +60,7 @@ public class ReactorScript : MonoBehaviour
         }
 
         SetCardPositions();
-        rsss.SetReactorScore();
+        ReactorScoreSetScript.Instance.SetReactorScore();
     }
 
     public void SetCardPositions()
@@ -160,7 +158,7 @@ public class ReactorScript : MonoBehaviour
         if (alertOn)
             return;
         alertOn = true;
-        rsss.ChangeTextColor(gameObject, true);
+        ReactorScoreSetScript.Instance.ChangeTextColor(gameObject, true);
     }
 
     public void AlertOff()
@@ -168,7 +166,7 @@ public class ReactorScript : MonoBehaviour
         if (!alertOn)
             return;
         alertOn = false;
-        rsss.ChangeTextColor(gameObject, false);
+        ReactorScoreSetScript.Instance.ChangeTextColor(gameObject, false);
     }
 
     public void ChangeSuitGlow(Color newColor)
