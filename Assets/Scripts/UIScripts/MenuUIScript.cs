@@ -166,6 +166,8 @@ public class MenuUIScript : MonoBehaviour
 
         SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.LoadScene("CreditScene");
+
+        MusicController.Instance.CreditMusic();
     }
 
     public void PauseGame()
@@ -201,6 +203,8 @@ public class MenuUIScript : MonoBehaviour
             SceneManager.UnloadSceneAsync("SoundScene");
         else
             SceneManager.LoadScene("MainMenuScene");
+
+        MusicController.Instance.MainMenuMusic();
     }
 
     public void Tutorial()
