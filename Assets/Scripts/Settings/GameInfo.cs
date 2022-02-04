@@ -30,9 +30,5 @@ public class GameInfo
     public string[] summarySceneButtonsTxtEnglish;
     public int turnAlertSmallThreshold;
     public int turnAlertThreshold;
-    public int vibrationButton;
-    public int vibrationCard;
-    public int vibrationMatch;
-    public int vibrationExplosion;
     public int scoreMultiplier;
 }

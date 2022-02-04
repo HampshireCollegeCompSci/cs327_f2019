@@ -1863,10 +1863,6 @@ MonoBehaviour:
   levelSceneButtonsTxtEnglish: []
   pauseSceneButtonsTxtEnglish: []
   summarySceneButtonsTxtEnglish: []
-  vibrationButton: 0
-  vibrationCard: 0
-  vibrationMatch: 0
-  vibrationExplosion: 0
   moveCounter: 0
   matchCounter: 0
   json: 

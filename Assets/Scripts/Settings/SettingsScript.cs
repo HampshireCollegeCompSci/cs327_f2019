@@ -88,6 +88,7 @@ public class SettingsScript : MonoBehaviour
             return;
 
         PlayerPrefs.SetString(PlayerPrefKeys.vibrationEnabledKey, update.ToString());
+        SoundEffectsController.Instance.UpdateVibration(update);
         SoundEffectsController.Instance.ButtonPressSound();
     }
 

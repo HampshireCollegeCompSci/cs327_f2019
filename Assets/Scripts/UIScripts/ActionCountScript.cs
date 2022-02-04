@@ -44,7 +44,7 @@ public class ActionCountScript : MonoBehaviour
 
     public void PressKnob()
     {
-        Vibration.Vibrate(Config.config.vibrationButton);
+        SoundEffectsController.Instance.VibrateMedium();
         buttonImage.sprite = buttonDown;
         StartCoroutine(ButtonAnimTrans());
     }

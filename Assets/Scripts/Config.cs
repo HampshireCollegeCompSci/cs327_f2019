@@ -89,12 +89,6 @@ public class Config : MonoBehaviour
     public string[] pauseSceneButtonsTxtEnglish;
     public string[] summarySceneButtonsTxtEnglish;
 
-    //vibration
-    public int vibrationButton;
-    public int vibrationCard;
-    public int vibrationMatch;
-    public int vibrationExplosion;
-
     //long term tracking
     //public int moves;
     public int moveCounter;
@@ -224,10 +218,6 @@ public class Config : MonoBehaviour
         turnAlertSmallThreshold = gameInfo.turnAlertSmallThreshold;
         turnAlertThreshold = gameInfo.turnAlertThreshold;
 
-        vibrationButton = gameInfo.vibrationButton;
-        vibrationCard = gameInfo.vibrationCard;
-        vibrationMatch = gameInfo.vibrationMatch;
-        vibrationExplosion = gameInfo.vibrationExplosion;
         scoreMultiplier = gameInfo.scoreMultiplier;
 }
 
