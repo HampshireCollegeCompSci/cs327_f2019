@@ -3,19 +3,23 @@ using UnityEngine;
 
 public class UndoScript : MonoBehaviour
 {
-    public static UndoScript undoScript;
+    // Singleton instance.
+    public static UndoScript Instance = null;
     public Stack<Move> moveLog;
 
+    // Initialize the singleton instance.
     private void Awake()
     {
-        if (undoScript == null)
+        if (Instance == null)
         {
             DontDestroyOnLoad(gameObject); //makes instance persist across scenes
-            undoScript = this;
+            Instance = this;
         }
-        else if (undoScript != this)
+        else if (Instance != this)
+        {
             //deletes copies of global which do not need to exist, so right version is used to get info from
             Destroy(gameObject);
+        }
     }
 
     private void Start()

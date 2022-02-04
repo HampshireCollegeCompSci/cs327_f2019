@@ -92,7 +92,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI new game");
 
-        UndoScript.undoScript.moveLog.Clear();
+        UndoScript.Instance.moveLog.Clear();
         if (!isContinue)
         {
             Config.config.score = 0;
@@ -114,7 +114,7 @@ public class MenuUIScript : MonoBehaviour
         if (UtilsScript.Instance.IsInputStopped())
             return;
 
-        UndoScript.undoScript.Undo();
+        UndoScript.Instance.Undo();
         SoundEffectsController.Instance.UndoPressSound();
     }
 

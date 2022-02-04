@@ -60,7 +60,7 @@ public class StateLoader : MonoBehaviour
         //save undo
         CardScript cardScriptRef;
         List<AltMove> saveMoveLog = new List<AltMove>();
-        foreach (Move move in UndoScript.undoScript.moveLog)
+        foreach (Move move in UndoScript.Instance.moveLog)
         {
             cardScriptRef = move.card.GetComponent<CardScript>();
 
@@ -277,7 +277,7 @@ public class StateLoader : MonoBehaviour
             tempMove.moveNum = moves[i].moveNum;
 
             // making the move official
-            UndoScript.undoScript.moveLog.Push(tempMove);
+            UndoScript.Instance.moveLog.Push(tempMove);
         }
     }
 
