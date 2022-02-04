@@ -526,17 +526,6 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
-				"If you match all tokens by the end of the game, you get bonus points."
-			]
-		},
-		{
-			"argumentList": [
-				"WaitForTouch"
-			]
-		},
-		{
-			"argumentList": [
 				"HighlightObject",
 				"Scoreboard",
 				"Off"

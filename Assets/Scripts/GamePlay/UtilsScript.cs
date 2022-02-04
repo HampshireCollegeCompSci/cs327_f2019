@@ -625,14 +625,14 @@ public class UtilsScript : MonoBehaviour
     {
         if (!Config.config.gameOver && Config.config.CountFoundationCards() == 0)
         {
-            SetEndGameScore();
+            //AddExtraEndGameScore();
             Config.config.GameOver(true);
             return true;
         }
         return false;
     }
 
-    public void SetEndGameScore()
+    public void AddExtraEndGameScore()
     {
         int extraScore = 0;
         if (MatchedPileScript.Instance.cardList.Count == 52)
