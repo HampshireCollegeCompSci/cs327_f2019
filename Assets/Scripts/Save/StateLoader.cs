@@ -33,7 +33,7 @@ public class StateLoader : MonoBehaviour
         };
 
         //save foundations
-        foreach (GameObject foundation in Config.config.foundations)
+        foreach (GameObject foundation in Config.Instance.foundations)
         {
             gameState.foundations.Add(new StringListWrapper() {
                 stringList = ConvertCardListToStringList(foundation.GetComponent<FoundationScript>().cardList)
@@ -41,7 +41,7 @@ public class StateLoader : MonoBehaviour
         }
 
         //save reactors
-        foreach (GameObject reactor in Config.config.reactors)
+        foreach (GameObject reactor in Config.Instance.reactors)
         {
             gameState.reactors.Add(new StringListWrapper() {
                 stringList = ConvertCardListToStringList(reactor.GetComponent<ReactorScript>().cardList)
@@ -79,11 +79,11 @@ public class StateLoader : MonoBehaviour
         gameState.moveLog = saveMoveLog;
 
         //save other data
-        gameState.score = Config.config.score;
-        gameState.consecutiveMatches = Config.config.consecutiveMatches;
-        gameState.moveCounter = Config.config.moveCounter;
-        gameState.actions = Config.config.actions;
-        gameState.difficulty = Config.config.currentDifficulty;
+        gameState.score = Config.Instance.score;
+        gameState.consecutiveMatches = Config.Instance.consecutiveMatches;
+        gameState.moveCounter = Config.Instance.moveCounter;
+        gameState.actions = Config.Instance.actions;
+        gameState.difficulty = Config.Instance.currentDifficulty;
 
         //saving to json
         string json;
@@ -164,7 +164,7 @@ public class StateLoader : MonoBehaviour
         index = 0;
         foreach (StringListWrapper lw in state.foundations)
         {
-            SetUpLocationWithCards(lw.stringList, LoadPileScript.Instance.cardList, Config.config.foundations[index]);
+            SetUpLocationWithCards(lw.stringList, LoadPileScript.Instance.cardList, Config.Instance.foundations[index]);
             index++;
         }
 
@@ -172,7 +172,7 @@ public class StateLoader : MonoBehaviour
         index = 0;
         foreach (StringListWrapper lw in state.reactors)
         {
-            SetUpLocationWithCards(lw.stringList, LoadPileScript.Instance.cardList, Config.config.reactors[index]);
+            SetUpLocationWithCards(lw.stringList, LoadPileScript.Instance.cardList, Config.Instance.reactors[index]);
             index++;
         }
 
@@ -199,10 +199,10 @@ public class StateLoader : MonoBehaviour
         }
 
         //set up simple variables
-        Config.config.currentDifficulty = state.difficulty;
-        Config.config.score = state.score;
-        Config.config.consecutiveMatches = state.consecutiveMatches;
-        Config.config.moveCounter = state.moveCounter;
+        Config.Instance.currentDifficulty = state.difficulty;
+        Config.Instance.score = state.score;
+        Config.Instance.consecutiveMatches = state.consecutiveMatches;
+        Config.Instance.moveCounter = state.moveCounter;
         UtilsScript.Instance.UpdateActions(state.actions, startingGame: true);
     }
 
@@ -217,8 +217,8 @@ public class StateLoader : MonoBehaviour
             WastepileScript.Instance.gameObject,
             MatchedPileScript.Instance.gameObject
         };
-        origins.AddRange(Config.config.foundations);
-        origins.AddRange(Config.config.reactors);
+        origins.AddRange(Config.Instance.foundations);
+        origins.AddRange(Config.Instance.reactors);
 
         // variables that will be used repeatedly when setting up the move log
         Move tempMove;

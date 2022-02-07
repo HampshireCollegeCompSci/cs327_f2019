@@ -17,7 +17,7 @@ public class TutorialScript : MonoBehaviour
     private void Awake()
     {
         // this is the gateway to turn the tutorial on
-        if (!Config.config.tutorialOn)
+        if (!Config.Instance.tutorialOn)
             return;
 
         Debug.Log("starting tutorialScript");
@@ -186,26 +186,26 @@ public class TutorialScript : MonoBehaviour
         Debug.Log("ending tutorial");
 
         tutorial.SetActive(false);
-        Config.config.tutorialOn = false;
-        Config.config.gamePaused = false;
-        Config.config.gameOver = false;
-        Config.config.gameWin = false;
-        Config.config.score = 0;
-        Config.config.actions = 0;
-        Config.config.moveCounter = 0;
+        Config.Instance.tutorialOn = false;
+        Config.Instance.gamePaused = false;
+        Config.Instance.gameOver = false;
+        Config.Instance.gameWin = false;
+        Config.Instance.score = 0;
+        Config.Instance.actions = 0;
+        Config.Instance.moveCounter = 0;
 
-        Config.config.DeleteSave();
+        Config.Instance.DeleteSave();
         UndoScript.Instance.moveLog.Clear();
 
         // move all tokens to the deck
-        foreach (GameObject foundation in Config.config.foundations)
+        foreach (GameObject foundation in Config.Instance.foundations)
             MoveCardsToDeck(foundation.GetComponent<FoundationScript>().cardList);
-        foreach (GameObject reactor in Config.config.reactors)
+        foreach (GameObject reactor in Config.Instance.reactors)
             MoveCardsToDeck(reactor.GetComponent<ReactorScript>().cardList);
         MoveCardsToDeck(WastepileScript.Instance.cardList);
         MoveCardsToDeck(MatchedPileScript.Instance.cardList);
 
-        Config.config.SetDifficulty(Config.config.difficulties[0]);
+        Config.Instance.SetDifficulty(Config.Instance.difficulties[0]);
         ReactorScoreSetScript.Instance.SetReactorScore();
         DeckScript.Instance.StartGame();
     }
@@ -230,12 +230,12 @@ public class TutorialScript : MonoBehaviour
         tutorial.SetActive(false);
 
         // just in case
-        if (Config.config != null)
+        if (Config.Instance != null)
         {
             // setting things to normal
-            Config.config.gamePaused = false;
-            Config.config.gameOver = false;
-            Config.config.gameWin = false;
+            Config.Instance.gamePaused = false;
+            Config.Instance.gameOver = false;
+            Config.Instance.gameWin = false;
         }
 
         SceneManager.LoadScene("MainMenuScene");
@@ -264,9 +264,9 @@ public class TutorialScript : MonoBehaviour
         Debug.Log("loading save: " + fileName);
 
         // move all tokens back to load pile
-        foreach (GameObject foundation in Config.config.foundations)
+        foreach (GameObject foundation in Config.Instance.foundations)
             MoveCardsToLoadPile(foundation.GetComponent<FoundationScript>().cardList);
-        foreach (GameObject reactor in Config.config.reactors)
+        foreach (GameObject reactor in Config.Instance.reactors)
             MoveCardsToLoadPile(reactor.GetComponent<ReactorScript>().cardList);
         MoveCardsToLoadPile(DeckScript.Instance.cardList);
         MoveCardsToLoadPile(WastepileScript.Instance.cardList);
@@ -377,11 +377,11 @@ public class TutorialScript : MonoBehaviour
                         throw new FormatException("does not contain an alert level");
 
                     byte alertLevel = ParseAlertLevel(command, 4);
-                    foreach (GameObject reactor in Config.config.reactors)
+                    foreach (GameObject reactor in Config.Instance.reactors)
                         reactor.GetComponent<ReactorScript>().GlowOn(alertLevel);
                 }
                 else
-                    foreach (GameObject reactor in Config.config.reactors)
+                    foreach (GameObject reactor in Config.Instance.reactors)
                         reactor.GetComponent<ReactorScript>().GlowOff();
                 break;
 
@@ -392,26 +392,26 @@ public class TutorialScript : MonoBehaviour
                     if (command.Count != 5)
                         throw new FormatException("does not contain an alert level");
 
-                    Config.config.reactors[ParseContainerIndex(command, 3)].GetComponent<ReactorScript>().GlowOn(ParseAlertLevel(command, 4));
+                    Config.Instance.reactors[ParseContainerIndex(command, 3)].GetComponent<ReactorScript>().GlowOn(ParseAlertLevel(command, 4));
                 }
                 else
-                    Config.config.reactors[ParseContainerIndex(command, 3)].GetComponent<ReactorScript>().GlowOff();
+                    Config.Instance.reactors[ParseContainerIndex(command, 3)].GetComponent<ReactorScript>().GlowOff();
                 break;
 
             case "foundations":
                 if (highlightOn)
-                    foreach (GameObject foundation in Config.config.foundations)
+                    foreach (GameObject foundation in Config.Instance.foundations)
                         foundation.GetComponent<FoundationScript>().GlowOn();
                 else
-                    foreach (GameObject foundation in Config.config.foundations)
+                    foreach (GameObject foundation in Config.Instance.foundations)
                         foundation.GetComponent<FoundationScript>().GlowOff();
                 break;
 
             case "foundation":
                 if (highlightOn)
-                    Config.config.foundations[ParseContainerIndex(command, 3)].GetComponent<FoundationScript>().GlowOn();
+                    Config.Instance.foundations[ParseContainerIndex(command, 3)].GetComponent<FoundationScript>().GlowOn();
                 else
-                    Config.config.foundations[ParseContainerIndex(command, 3)].GetComponent<FoundationScript>().GlowOff();
+                    Config.Instance.foundations[ParseContainerIndex(command, 3)].GetComponent<FoundationScript>().GlowOff();
                 break;
 
             case "deck":
@@ -478,7 +478,7 @@ public class TutorialScript : MonoBehaviour
         switch (command[1].ToLower())
         {
             case "reactor":
-                List<GameObject> reactorCardList = Config.config.reactors[containerIndex].GetComponent<ReactorScript>().cardList;
+                List<GameObject> reactorCardList = Config.Instance.reactors[containerIndex].GetComponent<ReactorScript>().cardList;
                 if (reactorCardList.Count < tokenIndex)
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
                         $"there are only {reactorCardList.Count} token(s) to choose from in reactor {containerIndex}");
@@ -490,7 +490,7 @@ public class TutorialScript : MonoBehaviour
                 break;
 
             case "foundation":
-                List<GameObject> foundationCardList = Config.config.foundations[containerIndex].GetComponent<FoundationScript>().cardList;
+                List<GameObject> foundationCardList = Config.Instance.foundations[containerIndex].GetComponent<FoundationScript>().cardList;
                 if (foundationCardList.Count < tokenIndex)
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
                         $"there are only {foundationCardList.Count} token(s) to choose from in foundation {containerIndex}");
@@ -528,7 +528,7 @@ public class TutorialScript : MonoBehaviour
         List<GameObject> cardListRef;
 
         // each token/card on the top of every reactor can be interacted with
-        foreach (GameObject reactor in Config.config.reactors)
+        foreach (GameObject reactor in Config.Instance.reactors)
         {
             cardListRef = reactor.GetComponent<ReactorScript>().cardList;
             if (cardListRef.Count != 0)
@@ -539,7 +539,7 @@ public class TutorialScript : MonoBehaviour
 
         // all tokens/cards that are not hidden in the foundations can be interacted with
         CardScript cardScriptRef;
-        foreach (GameObject foundation in Config.config.foundations)
+        foreach (GameObject foundation in Config.Instance.foundations)
         {
             cardListRef = foundation.GetComponent<FoundationScript>().cardList;
             if (cardListRef.Count != 0)
@@ -573,9 +573,9 @@ public class TutorialScript : MonoBehaviour
     {
         Debug.Log("unhighlighting all tokens");
 
-        foreach (GameObject reactor in Config.config.reactors)
+        foreach (GameObject reactor in Config.Instance.reactors)
             CardListGlowOff(reactor.GetComponent<ReactorScript>().cardList);
-        foreach (GameObject foundation in Config.config.foundations)
+        foreach (GameObject foundation in Config.Instance.foundations)
             CardListGlowOff(foundation.GetComponent<FoundationScript>().cardList);
         CardListGlowOff(WastepileScript.Instance.cardList);
     }

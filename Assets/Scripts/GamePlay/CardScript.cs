@@ -22,7 +22,7 @@ public class CardScript : MonoBehaviour
     {
         hologramFood.GetComponent<SpriteRenderer>().sprite = hologramFoodSprite;
 
-        if (Config.config.prettyColors)
+        if (Config.Instance.prettyColors)
         {
             originalColor = new Color(Random.Range(0.4f, 1), Random.Range(0.4f, 1f), Random.Range(0.4f, 1f), 1);
         }
@@ -99,12 +99,12 @@ public class CardScript : MonoBehaviour
         if (selected)
         {
             newColor = gameObject.GetComponent<SpriteRenderer>().material.color;
-            newColor.a = Config.config.selectedCardOpacity;
+            newColor.a = Config.Instance.selectedCardOpacity;
             gameObject.GetComponent<SpriteRenderer>().material.color = newColor;
             suitObject.GetComponent<SpriteRenderer>().material.color = newColor;
 
             Color rankColor = rankObject.GetComponent<TextMesh>().color;
-            rankColor.a = Config.config.selectedCardOpacity;
+            rankColor.a = Config.Instance.selectedCardOpacity;
             rankObject.GetComponent<TextMesh>().color = rankColor;
 
             hologram.GetComponent<SpriteRenderer>().color = newColor;
@@ -164,7 +164,7 @@ public class CardScript : MonoBehaviour
         hologram.GetComponent<SpriteRenderer>().color = newColor;
         hologramFoodSP.color = newColor;
 
-        if (newColor == Config.config.cardMatchHighlightColor)
+        if (newColor == Config.Instance.cardMatchHighlightColor)
         {
             hologramFoodSP.sprite = hologramComboSprite;
             hologramFood.transform.localScale = new Vector3(0.6f, 0.6f, 1);
@@ -244,11 +244,11 @@ public class CardScript : MonoBehaviour
             glow.SetActive(true);
             if (match)
             {
-                glow.GetComponent<SpriteRenderer>().color = Config.config.cardMatchHighlightColor;
+                glow.GetComponent<SpriteRenderer>().color = Config.Instance.cardMatchHighlightColor;
             }
             else
             {
-                glow.GetComponent<SpriteRenderer>().color = Config.config.cardMoveHighlightColor;
+                glow.GetComponent<SpriteRenderer>().color = Config.Instance.cardMoveHighlightColor;
             }
 
             glowing = true;

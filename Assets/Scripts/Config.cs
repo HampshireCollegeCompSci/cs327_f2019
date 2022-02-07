@@ -7,8 +7,6 @@ using UnityEngine.UI;
 
 public class Config : MonoBehaviour
 {
-    public static Config config; //Creates a new instance if one does not yet exist
-
     //Variables go here
     public List<Move> moveLog = new List<Move>();
     public bool gameOver;
@@ -94,14 +92,18 @@ public class Config : MonoBehaviour
     public int moveCounter;
     public byte matchCounter;
 
+    // Singleton instance.
+    public static Config Instance = null;
+
+    // Initialize the singleton instance.
     private void Awake()
     {
-        if (config == null)
+        if (Instance == null)
         {
             DontDestroyOnLoad(gameObject); //makes instance persist across scenes
-            config = this;
+            Instance = this;
         }
-        else if (config != this)
+        else if (Instance != this)
         {
             Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
         }

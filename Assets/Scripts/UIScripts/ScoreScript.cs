@@ -7,6 +7,6 @@ public class ScoreScript : MonoBehaviour
 
     public void Start()
     {
-        gameScore.text = Config.config.score.ToString();
+        gameScore.text = Config.Instance.score.ToString();
     }
 }

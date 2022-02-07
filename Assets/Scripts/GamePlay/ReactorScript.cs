@@ -24,11 +24,11 @@ public class ReactorScript : MonoBehaviour
 
     private void CheckGameOver()
     {
-        if (Config.config.tutorialOn)
+        if (Config.Instance.tutorialOn)
             return;
 
-        if (CountReactorCard() >= Config.config.maxReactorVal && !Config.config.gameOver)
-            Config.config.GameOver(false);
+        if (CountReactorCard() >= Config.Instance.maxReactorVal && !Config.Instance.gameOver)
+            Config.Instance.GameOver(false);
     }
 
     public void AddCard(GameObject card)
@@ -36,7 +36,7 @@ public class ReactorScript : MonoBehaviour
         if (cardList.Count != 0)
         {
             cardList[0].GetComponent<BoxCollider2D>().enabled = false;
-            cardList[0].GetComponent<SpriteRenderer>().color = Config.config.cardObstructedColor;
+            cardList[0].GetComponent<SpriteRenderer>().color = Config.Instance.cardObstructedColor;
         }
 
         cardList.Insert(0, card);
@@ -100,7 +100,7 @@ public class ReactorScript : MonoBehaviour
     public int GetIncreaseOnNextCycle()
     {
         int output = 0;
-        foreach (GameObject foundation in Config.config.foundations)
+        foreach (GameObject foundation in Config.Instance.foundations)
         {
             FoundationScript currentFoundationScript = foundation.GetComponent<FoundationScript>();
             if (currentFoundationScript.cardList.Count != 0)

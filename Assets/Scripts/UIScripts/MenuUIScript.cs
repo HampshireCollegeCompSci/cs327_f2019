@@ -32,40 +32,40 @@ public class MenuUIScript : MonoBehaviour
         if (activeSceneName == "MainMenuScene")
         {
             Debug.Log("updating main menu buttons");
-            UpdateButtonText(playButton, Config.config.menuSceneButtonsTxtEnglish[0]);
-            UpdateButtonText(tutorialButton, Config.config.menuSceneButtonsTxtEnglish[1]);
-            UpdateButtonText(creditsButton, Config.config.menuSceneButtonsTxtEnglish[2]);
+            UpdateButtonText(playButton, Config.Instance.menuSceneButtonsTxtEnglish[0]);
+            UpdateButtonText(tutorialButton, Config.Instance.menuSceneButtonsTxtEnglish[1]);
+            UpdateButtonText(creditsButton, Config.Instance.menuSceneButtonsTxtEnglish[2]);
         }
         else if (activeSceneName == "LevelSelectScene")
         {
             Debug.Log("updating level select buttons");
-            UpdateButtonText(continueButton, Config.config.levelSceneButtonsTxtEnglish[0]);
-            UpdateButtonText(easyButton, Config.config.levelSceneButtonsTxtEnglish[1]);
-            UpdateButtonText(normalButton, Config.config.levelSceneButtonsTxtEnglish[2]);
-            UpdateButtonText(hardButton, Config.config.levelSceneButtonsTxtEnglish[3]);
-            UpdateButtonText(returnButton, Config.config.levelSceneButtonsTxtEnglish[4]);
+            UpdateButtonText(continueButton, Config.Instance.levelSceneButtonsTxtEnglish[0]);
+            UpdateButtonText(easyButton, Config.Instance.levelSceneButtonsTxtEnglish[1]);
+            UpdateButtonText(normalButton, Config.Instance.levelSceneButtonsTxtEnglish[2]);
+            UpdateButtonText(hardButton, Config.Instance.levelSceneButtonsTxtEnglish[3]);
+            UpdateButtonText(returnButton, Config.Instance.levelSceneButtonsTxtEnglish[4]);
         }
         else if (activeSceneName == "LoadingScene")
         {
             if (loadingText != null)
             {
                 Debug.Log("updating loading text");
-                loadingText.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish;
+                loadingText.GetComponent<Text>().text = Config.Instance.loadingSceneTxtEnglish;
             }
         }
         else if (SceneManager.GetSceneByName("PauseScene").isLoaded)
         {
             Debug.Log("updating pause scene buttons");
-            UpdateButtonText(resumeButton, Config.config.pauseSceneButtonsTxtEnglish[0]);
-            UpdateButtonText(restartButton, Config.config.pauseSceneButtonsTxtEnglish[1]);
+            UpdateButtonText(resumeButton, Config.Instance.pauseSceneButtonsTxtEnglish[0]);
+            UpdateButtonText(restartButton, Config.Instance.pauseSceneButtonsTxtEnglish[1]);
             //UpdateButtonText(settingsButton, Config.config.pauseSceneButtonsTxtEnglish[2]);
-            UpdateButtonText(mainMenuButton, Config.config.pauseSceneButtonsTxtEnglish[3]);
+            UpdateButtonText(mainMenuButton, Config.Instance.pauseSceneButtonsTxtEnglish[3]);
         }
         else if (activeSceneName == "SummaryScene")
         {
             Debug.Log("updating summary scene buttons");
-            UpdateButtonText(mainMenuButton, Config.config.summarySceneButtonsTxtEnglish[0]);
-            UpdateButtonText(playAgainButton, Config.config.summarySceneButtonsTxtEnglish[1]);
+            UpdateButtonText(mainMenuButton, Config.Instance.summarySceneButtonsTxtEnglish[0]);
+            UpdateButtonText(playAgainButton, Config.Instance.summarySceneButtonsTxtEnglish[1]);
         }
 
     }
@@ -95,13 +95,13 @@ public class MenuUIScript : MonoBehaviour
         UndoScript.Instance.moveLog.Clear();
         if (!isContinue)
         {
-            Config.config.score = 0;
-            Config.config.actions = 0;
-            Config.config.moveCounter = 0;
+            Config.Instance.score = 0;
+            Config.Instance.actions = 0;
+            Config.Instance.moveCounter = 0;
         }
-        Config.config.gameOver = false;
-        Config.config.gameWin = false;
-        Config.config.gamePaused = false;
+        Config.Instance.gameOver = false;
+        Config.Instance.gameWin = false;
+        Config.Instance.gamePaused = false;
         SoundEffectsController.Instance.ButtonPressSound();
 
         SceneManager.LoadScene("LoadingScene");
@@ -122,7 +122,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI play again");
 
-        Config.config.DeleteSave();
+        Config.Instance.DeleteSave();
         NewGame();
     }
 
@@ -130,7 +130,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI restart");
 
-        Config.config.DeleteSave();
+        Config.Instance.DeleteSave();
         NewGame();
     }
 
@@ -138,11 +138,11 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI main menu");
 
-        Config.config.gamePaused = false;
-        if (Config.config != null)
+        Config.Instance.gamePaused = false;
+        if (Config.Instance != null)
         {
-            Config.config.gameOver = false;
-            Config.config.gameWin = false;
+            Config.Instance.gameOver = false;
+            Config.Instance.gameWin = false;
         }
 
         SoundEffectsController.Instance.ButtonPressSound();
@@ -179,7 +179,7 @@ public class MenuUIScript : MonoBehaviour
 
         SoundEffectsController.Instance.PauseMenuButtonSound();
         //TODO save the game scene
-        Config.config.gamePaused = true;
+        Config.Instance.gamePaused = true;
         SceneManager.LoadScene("PauseScene", LoadSceneMode.Additive);
 
     }
@@ -188,7 +188,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI resume game");
 
-        Config.config.gamePaused = false;
+        Config.Instance.gamePaused = false;
         //TODO load the saved game scene then uncomment the above code
         SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.UnloadSceneAsync("PauseScene");
@@ -199,7 +199,7 @@ public class MenuUIScript : MonoBehaviour
         Debug.Log("MenuUI return");
 
         SoundEffectsController.Instance.ButtonPressSound();
-        if (Config.config.gamePaused)
+        if (Config.Instance.gamePaused)
             SceneManager.UnloadSceneAsync("SoundScene");
         else
             SceneManager.LoadScene("MainMenuScene");
@@ -212,33 +212,33 @@ public class MenuUIScript : MonoBehaviour
         Debug.Log("MenuUI starting tutorial");
 
         StateLoader.Instance.LoadTutorialState("tutorialState_start");
-        Config.config.SetDifficulty(StateLoader.Instance.gameState.difficulty);
-        Config.config.tutorialOn = true;
+        Config.Instance.SetDifficulty(StateLoader.Instance.gameState.difficulty);
+        Config.Instance.tutorialOn = true;
         //Config.config.DeleteSave();
         NewGame();
     }
 
     public void HardDifficulty()
     {
-        Config.config.SetDifficulty(Config.config.difficulties[2]);
-        Config.config.tutorialOn = false;
-        Config.config.DeleteSave();
+        Config.Instance.SetDifficulty(Config.Instance.difficulties[2]);
+        Config.Instance.tutorialOn = false;
+        Config.Instance.DeleteSave();
         NewGame();
     }
 
     public void MediumDifficulty()
     {
-        Config.config.SetDifficulty(Config.config.difficulties[1]);
-        Config.config.tutorialOn = false;
-        Config.config.DeleteSave();
+        Config.Instance.SetDifficulty(Config.Instance.difficulties[1]);
+        Config.Instance.tutorialOn = false;
+        Config.Instance.DeleteSave();
         NewGame();
     }
 
     public void EasyDifficulty()
     {
-        Config.config.SetDifficulty(Config.config.difficulties[0]);
-        Config.config.tutorialOn = false;
-        Config.config.DeleteSave();
+        Config.Instance.SetDifficulty(Config.Instance.difficulties[0]);
+        Config.Instance.tutorialOn = false;
+        Config.Instance.DeleteSave();
         NewGame();
     }
 
@@ -257,8 +257,8 @@ public class MenuUIScript : MonoBehaviour
 
 
                 StateLoader.Instance.LoadState();
-                Config.config.SetDifficulty(StateLoader.Instance.gameState.difficulty);
-                Config.config.tutorialOn = false;
+                Config.Instance.SetDifficulty(StateLoader.Instance.gameState.difficulty);
+                Config.Instance.tutorialOn = false;
                 NewGame(true);
             }
         } 
@@ -267,8 +267,8 @@ public class MenuUIScript : MonoBehaviour
             if (File.Exists(Application.persistentDataPath + "/testState.json"))
             {
                 StateLoader.Instance.LoadState();
-                Config.config.SetDifficulty(StateLoader.Instance.gameState.difficulty);
-                Config.config.tutorialOn = false;
+                Config.Instance.SetDifficulty(StateLoader.Instance.gameState.difficulty);
+                Config.Instance.tutorialOn = false;
                 NewGame(true);
             }
         }

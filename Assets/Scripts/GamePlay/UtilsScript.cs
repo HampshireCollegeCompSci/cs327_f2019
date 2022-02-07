@@ -55,9 +55,9 @@ public class UtilsScript : MonoBehaviour
     void Start()
     {
         selectedCardsCopy = new List<GameObject>();
-        matchPoints = Config.config.matchPoints;
-        emptyReactorPoints = Config.config.emptyReactorPoints;
-        perfectGamePoints = Config.config.perfectGamePoints;
+        matchPoints = Config.Instance.matchPoints;
+        emptyReactorPoints = Config.Instance.emptyReactorPoints;
+        perfectGamePoints = Config.Instance.perfectGamePoints;
     }
 
     void Update()
@@ -65,7 +65,7 @@ public class UtilsScript : MonoBehaviour
         if (SceneManager.GetActiveScene().buildIndex != 1)
             return;
 
-        if (!Config.config.gameOver && !Config.config.gamePaused && !Config.config.tutorialOn)
+        if (!Config.Instance.gameOver && !Config.Instance.gamePaused && !Config.Instance.tutorialOn)
         {
             if (dragOn)
             {
@@ -257,7 +257,7 @@ public class UtilsScript : MonoBehaviour
         for (int i = 1; i < selectedCardsCopy.Count; i++)
         {
             selectedCardsCopy[i].transform.position = new Vector3(selectedCardsCopy[i - 1].transform.position.x,
-                                                                  selectedCardsCopy[i - 1].transform.position.y + Config.config.draggedTokenOffset,
+                                                                  selectedCardsCopy[i - 1].transform.position.y + Config.Instance.draggedTokenOffset,
                                                                   selectedCardsCopy[i - 1].transform.position.z - 0.05f);
         }
 
@@ -361,7 +361,7 @@ public class UtilsScript : MonoBehaviour
         card2Script.MoveCard(MatchedPileScript.Instance.gameObject);
         card1Script.MoveCard(MatchedPileScript.Instance.gameObject);
 
-        int points = matchPoints + (Config.config.consecutiveMatches * Config.config.scoreMultiplier);
+        int points = matchPoints + (Config.Instance.consecutiveMatches * Config.Instance.scoreMultiplier);
         UpdateScore(points);
         UpdateActions(0, isMatch: true);
 
@@ -397,7 +397,7 @@ public class UtilsScript : MonoBehaviour
             comboHologram.transform.localScale = initialScale * scale;
             fadeColor.a -= 0.01f;
             comboSR.color = fadeColor;
-            if (Config.config.gamePaused)
+            if (Config.Instance.gamePaused)
             {
                 Destroy(matchExplosion);
                 Destroy(comboHologram);
@@ -419,11 +419,11 @@ public class UtilsScript : MonoBehaviour
         pointText.text = "+" + points.ToString();
 
         Text comboText = matchPointsEffect.transform.GetChild(0).GetComponent<Text>();
-        if (Config.config.consecutiveMatches > 1)
-            comboText.text = "X" + Config.config.consecutiveMatches.ToString() + " COMBO";
+        if (Config.Instance.consecutiveMatches > 1)
+            comboText.text = "X" + Config.Instance.consecutiveMatches.ToString() + " COMBO";
 
-        comboText.color = Config.config.pointColor;
-        pointText.color = Config.config.pointColor;
+        comboText.color = Config.Instance.pointColor;
+        pointText.color = Config.Instance.pointColor;
 
         float scale = 1;
         while (scale < 1.5)
@@ -432,7 +432,7 @@ public class UtilsScript : MonoBehaviour
             scale += 0.01f;
             matchPointsEffect.transform.localScale = Vector3.one * scale;
 
-            if (Config.config.gamePaused)
+            if (Config.Instance.gamePaused)
             {
                 Destroy(matchPointsEffect);
                 yield break;
@@ -449,7 +449,7 @@ public class UtilsScript : MonoBehaviour
             pointText.color = fadeColor;
             comboText.color = fadeColor;
 
-            if (Config.config.gamePaused)
+            if (Config.Instance.gamePaused)
             {
                 Destroy(matchPointsEffect);
                 yield break;
@@ -462,11 +462,11 @@ public class UtilsScript : MonoBehaviour
     public void UpdateScore(int addScore, bool setAsValue = false)
     {
         if (setAsValue)
-            Config.config.score = addScore;
+            Config.Instance.score = addScore;
         else
-            Config.config.score += addScore;
+            Config.Instance.score += addScore;
 
-        score.text = Config.config.score.ToString();
+        score.text = Config.Instance.score.ToString();
     }
 
     public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false, bool startingGame = false, bool isMatch = false)
@@ -474,26 +474,26 @@ public class UtilsScript : MonoBehaviour
         if (!startingGame)
         {
             if (isMatch)
-                Config.config.consecutiveMatches++;
+                Config.Instance.consecutiveMatches++;
             else
-                Config.config.consecutiveMatches = 0;
+                Config.Instance.consecutiveMatches = 0;
         }
 
         // so that a nextcycle trigger doesn't save the state before and after, we only need the after
         bool doSaveState = true;
 
         // detecting if a nextcycle will be triggered
-        if (startingGame || (!setAsValue && ((Config.config.actions + actionUpdate) >= Config.config.actionMax)))
+        if (startingGame || (!setAsValue && ((Config.Instance.actions + actionUpdate) >= Config.Instance.actionMax)))
             doSaveState = false;
         else
-            Config.config.moveCounter++;
+            Config.Instance.moveCounter++;
 
-        bool wasInAlertThreshold = Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold;
+        bool wasInAlertThreshold = Config.Instance.actionMax - Config.Instance.actions <= Config.Instance.turnAlertThreshold;
 
         // loading a saved game triggers this
         if (startingGame)
         {
-            Config.config.actions = actionUpdate;
+            Config.Instance.actions = actionUpdate;
         }
         // a nextcycle after it's done triggers this
         else if (setAsValue)
@@ -501,7 +501,7 @@ public class UtilsScript : MonoBehaviour
             if (CheckGameOver()) // if nextcycle caused a Game Over
                 return;
 
-            Config.config.actions = actionUpdate;
+            Config.Instance.actions = actionUpdate;
         }
         else if (actionUpdate == 0) // a match was made
         {
@@ -522,7 +522,7 @@ public class UtilsScript : MonoBehaviour
         }
         else
         {
-            Config.config.actions += actionUpdate;
+            Config.Instance.actions += actionUpdate;
         }
 
         moveCounter.GetComponent<ActionCountScript>().UpdateActionText();
@@ -539,7 +539,7 @@ public class UtilsScript : MonoBehaviour
             StateLoader.Instance.WriteState();
 
         // time to determine if the alert should be turned on
-        bool isInAlertThreshold = Config.config.actionMax - Config.config.actions <= Config.config.turnAlertThreshold;
+        bool isInAlertThreshold = Config.Instance.actionMax - Config.Instance.actions <= Config.Instance.turnAlertThreshold;
         if (!wasInAlertThreshold && !isInAlertThreshold)
         {
             // do nothing
@@ -554,7 +554,7 @@ public class UtilsScript : MonoBehaviour
 
     private bool CheckNextCycle()
     {
-        if (Config.config.actions >= Config.config.actionMax)
+        if (Config.Instance.actions >= Config.Instance.actionMax)
         {
            DeckScript.Instance.StartNextCycle();
             return true;
@@ -571,11 +571,11 @@ public class UtilsScript : MonoBehaviour
         // or checking again if the previous move changed something
         if (turnOnAlert || checkAgain)
         {
-            foreach (GameObject reactor in Config.config.reactors)
+            foreach (GameObject reactor in Config.Instance.reactors)
             {
                 // if a nextcyle will overload the reactor
                 if (reactor.GetComponent<ReactorScript>().CountReactorCard() +
-                    reactor.GetComponent<ReactorScript>().GetIncreaseOnNextCycle() >= Config.config.maxReactorVal)
+                    reactor.GetComponent<ReactorScript>().GetIncreaseOnNextCycle() >= Config.Instance.maxReactorVal)
                 {
                     reactor.GetComponent<ReactorScript>().AlertOn();
                     highAlertTurnedOn = true;
@@ -588,7 +588,7 @@ public class UtilsScript : MonoBehaviour
         {
             MusicController.Instance.GameMusic();
 
-            foreach (GameObject reactor in Config.config.reactors)
+            foreach (GameObject reactor in Config.Instance.reactors)
                 reactor.GetComponent<ReactorScript>().AlertOff();
         }
 
@@ -596,7 +596,7 @@ public class UtilsScript : MonoBehaviour
             MusicController.Instance.AlertMusic();
 
         // if there is one move left
-        if (turnOnAlert || (checkAgain && !matchRelated && Config.config.actionMax - Config.config.actions == 1))
+        if (turnOnAlert || (checkAgain && !matchRelated && Config.Instance.actionMax - Config.Instance.actions == 1))
             SoundEffectsController.Instance.AlertSound();
 
 
@@ -606,7 +606,7 @@ public class UtilsScript : MonoBehaviour
             // or if the alert is already on and there is only 1 move left,
             // have the baby be angry and play the alert sound
             if (moveCounter.GetComponent<ActionCountScript>().TurnSirenOn(2) ||
-                (!matchRelated && Config.config.actionMax - Config.config.actions == 1))
+                (!matchRelated && Config.Instance.actionMax - Config.Instance.actions == 1))
             {
                 SpaceBabyController.Instance.BabyAngry();
             }
@@ -623,10 +623,10 @@ public class UtilsScript : MonoBehaviour
 
     private bool CheckGameOver()
     {
-        if (!Config.config.gameOver && Config.config.CountFoundationCards() == 0)
+        if (!Config.Instance.gameOver && Config.Instance.CountFoundationCards() == 0)
         {
             //AddExtraEndGameScore();
-            Config.config.GameOver(true);
+            Config.Instance.GameOver(true);
             return true;
         }
         return false;
@@ -638,16 +638,16 @@ public class UtilsScript : MonoBehaviour
         if (MatchedPileScript.Instance.cardList.Count == 52)
             extraScore += perfectGamePoints;
 
-        if (Config.config.reactor1.GetComponent<ReactorScript>().cardList.Count == 0)
+        if (Config.Instance.reactor1.GetComponent<ReactorScript>().cardList.Count == 0)
             extraScore += emptyReactorPoints;
 
-        if (Config.config.reactor2.GetComponent<ReactorScript>().cardList.Count == 0)
+        if (Config.Instance.reactor2.GetComponent<ReactorScript>().cardList.Count == 0)
             extraScore += emptyReactorPoints;
 
-        if (Config.config.reactor3.GetComponent<ReactorScript>().cardList.Count == 0)
+        if (Config.Instance.reactor3.GetComponent<ReactorScript>().cardList.Count == 0)
             extraScore += emptyReactorPoints;
 
-        if (Config.config.reactor4.GetComponent<ReactorScript>().cardList.Count == 0)
+        if (Config.Instance.reactor4.GetComponent<ReactorScript>().cardList.Count == 0)
             extraScore += emptyReactorPoints;
 
         UpdateScore(extraScore);
@@ -678,12 +678,12 @@ public class UtilsScript : MonoBehaviour
 
     public void ManualGameOver()
     {
-        Config.config.GameOver(true);
+        Config.Instance.GameOver(true);
     }
 
     public void ManualGameWin()
     {
-        Config.config.matchCounter = 26;
-        Config.config.GameOver(true, manualWin: true);
+        Config.Instance.matchCounter = 26;
+        Config.Instance.GameOver(true, manualWin: true);
     }
 }

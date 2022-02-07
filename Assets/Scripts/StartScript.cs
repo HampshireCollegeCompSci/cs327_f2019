@@ -15,8 +15,8 @@ public class StartScript : MonoBehaviour
             SceneManager.UnloadSceneAsync("LoadingScene");
 
         // setting stuff up for the game
-        Config.config.StartupFindObjects();
-        Config.config.gamePaused = false;
+        Config.Instance.StartupFindObjects();
+        Config.Instance.gamePaused = false;
 
         // assigning sprites to the reactor suits
         bool isOn;

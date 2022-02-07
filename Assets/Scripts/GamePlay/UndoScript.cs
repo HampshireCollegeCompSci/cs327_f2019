@@ -42,9 +42,9 @@ public class UndoScript : MonoBehaviour
             origin = origin,
             nextCardWasHidden = nextCardWasHidden,
             isAction = isAction,
-            remainingActions = Config.config.actions,
-            score = Config.config.score,
-            moveNum = Config.config.moveCounter,
+            remainingActions = Config.Instance.actions,
+            score = Config.Instance.score,
+            moveNum = Config.Instance.moveCounter,
         };
         moveLog.Push(move); //push the log to the undo stack
         return;

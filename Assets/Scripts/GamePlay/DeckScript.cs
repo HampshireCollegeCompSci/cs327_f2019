@@ -41,7 +41,7 @@ public class DeckScript : MonoBehaviour
         this.suitSprites = suitSprites;
         cardList = new List<GameObject>();
 
-        if (Config.config.tutorialOn)
+        if (Config.Instance.tutorialOn)
         {
             Debug.Log("deck start loading tutorial");
             InstantiateCards(addToLoadPile: true);
@@ -181,9 +181,9 @@ public class DeckScript : MonoBehaviour
     public void SetUpFoundations()
     {
         CardScript currentCardScript;
-        foreach (GameObject foundation in Config.config.foundations)
+        foreach (GameObject foundation in Config.Instance.foundations)
         {
-            for (int n = 0; n < Config.config.foundationStartSize - 1; n++)
+            for (int n = 0; n < Config.Instance.foundationStartSize - 1; n++)
             {
                 currentCardScript = cardList[0].GetComponent<CardScript>();
                 currentCardScript.MoveCard(foundation, doLog: false, showHolo: false);
@@ -238,7 +238,7 @@ public class DeckScript : MonoBehaviour
             StartCoroutine(ButtonDown());
         }
         // if it is possible to repopulate the deck
-        else if (WastepileScript.Instance.cardList.Count > Config.config.cardsToDeal) 
+        else if (WastepileScript.Instance.cardList.Count > Config.Instance.cardsToDeal) 
         {
             DeckReset();
             StartCoroutine(ButtonDown());
@@ -248,7 +248,7 @@ public class DeckScript : MonoBehaviour
     public void Deal(bool doLog = true)
     {
         List<GameObject> toMoveList = new List<GameObject>();
-        for (int i = 0; i < Config.config.cardsToDeal; i++) // try to deal set number of cards
+        for (int i = 0; i < Config.Instance.cardsToDeal; i++) // try to deal set number of cards
         {
             if (cardList.Count <= i) // are there no more cards in the deck?
                 break;
@@ -309,7 +309,7 @@ public class DeckScript : MonoBehaviour
         GameObject topFoundationCard;
         CardScript topCardScript;
 
-        foreach (GameObject foundation in Config.config.foundations)
+        foreach (GameObject foundation in Config.Instance.foundations)
         {
             currentFoundation = foundation.GetComponent<FoundationScript>();
             if (currentFoundation.cardList.Count != 0)
@@ -317,7 +317,7 @@ public class DeckScript : MonoBehaviour
                 topFoundationCard = currentFoundation.cardList[0];
                 topCardScript = topFoundationCard.GetComponent<CardScript>();
 
-                foreach (GameObject reactor in Config.config.reactors)
+                foreach (GameObject reactor in Config.Instance.reactors)
                 {
                     if (topCardScript.suit == reactor.GetComponent<ReactorScript>().suit)
                     {
@@ -348,7 +348,7 @@ public class DeckScript : MonoBehaviour
                         while (topFoundationCard.transform.position != target)
                         {   
                             topFoundationCard.transform.position = Vector3.MoveTowards(topFoundationCard.transform.position, target,
-                                Time.deltaTime * Config.config.cardsToReactorspeed);
+                                Time.deltaTime * Config.Instance.cardsToReactorspeed);
                             yield return null;
                         }
 
@@ -359,9 +359,9 @@ public class DeckScript : MonoBehaviour
                         SoundEffectsController.Instance.CardToReactorSound();
                         topCardScript.MoveCard(reactor, isCycle: true);
 
-                        if (Config.config.gameOver)
+                        if (Config.Instance.gameOver)
                         {
-                            Config.config.moveCounter += 1;
+                            Config.Instance.moveCounter += 1;
                             yield break;
                         }
 
@@ -398,7 +398,7 @@ public class DeckScript : MonoBehaviour
         }
         else
         {
-            if (WastepileScript.Instance.cardList.Count > Config.config.cardsToDeal)
+            if (WastepileScript.Instance.cardList.Count > Config.Instance.cardsToDeal)
             {
                 deckCounter.fontSize = 45;
                 deckCounter.text = "FLIP";

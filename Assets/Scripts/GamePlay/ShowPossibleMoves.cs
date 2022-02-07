@@ -59,7 +59,7 @@ public class ShowPossibleMoves : MonoBehaviour
 
             // if moving the card into the reactor will lose us the game
             if (reactorMoveScript.CountReactorCard() +
-                selectedCard.GetComponent<CardScript>().cardVal >= Config.config.maxReactorVal)
+                selectedCard.GetComponent<CardScript>().cardVal >= Config.Instance.maxReactorVal)
             {
                 reactorMoveScript.GlowOn(2);
             }
@@ -90,7 +90,7 @@ public class ShowPossibleMoves : MonoBehaviour
         {
             // find the one complimentary reactor and check if a top card exists and can then match
             ReactorScript reactorScriptRef;
-            foreach (GameObject reactor in Config.config.reactors)
+            foreach (GameObject reactor in Config.Instance.reactors)
             {
                 reactorScriptRef = reactor.GetComponent<ReactorScript>();
                 if (CardTools.CompareComplimentarySuits(selectedCardScript.suit, reactorScriptRef.suit))
@@ -108,7 +108,7 @@ public class ShowPossibleMoves : MonoBehaviour
             // if the card is not in the reactor, get the reactor that we can move into
             if (!selectedCardScript.container.CompareTag("Reactor"))
             {                
-                foreach (GameObject reactor in Config.config.reactors)
+                foreach (GameObject reactor in Config.Instance.reactors)
                 {
                     if (selectedCardScript.suit == reactor.GetComponent<ReactorScript>().suit)
                     {
@@ -121,7 +121,7 @@ public class ShowPossibleMoves : MonoBehaviour
 
         FoundationScript foundationScriptRef;
         CardScript topFoundationCardScript;
-        foreach (GameObject foundation in Config.config.foundations)
+        foreach (GameObject foundation in Config.Instance.foundations)
         {
             foundationScriptRef = foundation.GetComponent<FoundationScript>();
             if (foundationScriptRef.cardList.Count != 0)

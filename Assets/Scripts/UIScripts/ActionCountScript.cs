@@ -34,7 +34,7 @@ public class ActionCountScript : MonoBehaviour
     {
         if (setTo == null)
         {
-            actionText.text = (Config.config.actionMax - Config.config.actions).ToString();
+            actionText.text = (Config.Instance.actionMax - Config.Instance.actions).ToString();
         }
         else
         {

@@ -19,24 +19,24 @@ public class ResultsScript : MonoBehaviour
     void Start()
     {
         // state
-        if (Config.config.gameWin)
-            state.text = Config.config.gameStateTxtEnglish[0];
+        if (Config.Instance.gameWin)
+            state.text = Config.Instance.gameStateTxtEnglish[0];
         else
-            state.text = Config.config.gameStateTxtEnglish[1];
+            state.text = Config.Instance.gameStateTxtEnglish[1];
 
         // score
-        scoreStat.text = Config.config.score.ToString();
+        scoreStat.text = Config.Instance.score.ToString();
 
         // high score
-        highScore.text = Config.config.currentDifficulty + " HIGH SCORE";
+        highScore.text = Config.Instance.currentDifficulty + " HIGH SCORE";
 
         // moves
-        movesStat.text = Config.config.moveCounter.ToString();
+        movesStat.text = Config.Instance.moveCounter.ToString();
 
         // spacebaby
-        if (Config.config.gameWin)
+        if (Config.Instance.gameWin)
         {
-            SpaceBabyController.Instance.BabyWinSummary(Config.config.matchCounter);
+            SpaceBabyController.Instance.BabyWinSummary(Config.Instance.matchCounter);
         }
         else
         {
@@ -54,8 +54,8 @@ public class ResultsScript : MonoBehaviour
     /// </summary>
     private void SetHighScore()
     {
-        string highScoreKey = PlayerPrefKeys.GetHighScoreKey(Config.config.currentDifficulty);
-        int currentScore = Config.config.score;
+        string highScoreKey = PlayerPrefKeys.GetHighScoreKey(Config.Instance.currentDifficulty);
+        int currentScore = Config.Instance.score;
         if (!PlayerPrefs.HasKey(highScoreKey) || currentScore > PlayerPrefs.GetInt(highScoreKey))
         {
             PlayerPrefs.SetInt(highScoreKey, currentScore);
@@ -75,10 +75,10 @@ public class ResultsScript : MonoBehaviour
     /// </summary>
     private void SetLeastMoves()
     {
-        string leastMovesKey = PlayerPrefKeys.GetLeastMovesKey(Config.config.currentDifficulty);
-        if (Config.config.gameWin)
+        string leastMovesKey = PlayerPrefKeys.GetLeastMovesKey(Config.Instance.currentDifficulty);
+        if (Config.Instance.gameWin)
         {
-            int currentMoves = Config.config.moveCounter;
+            int currentMoves = Config.Instance.moveCounter;
             if (!PlayerPrefs.HasKey(leastMovesKey) || currentMoves < PlayerPrefs.GetInt(leastMovesKey))
             {
                 PlayerPrefs.SetInt(leastMovesKey, currentMoves);
