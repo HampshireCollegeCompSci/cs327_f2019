@@ -1,9 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 using UnityEngine.UI;
-using System.IO;
 
 public class DeckScript : MonoBehaviour
 {
@@ -48,15 +46,9 @@ public class DeckScript : MonoBehaviour
             StateLoader.Instance.UnpackState(StateLoader.Instance.gameState, true);
             UtilsScript.Instance.UpdateScore(0);
         }
-        else if (Application.isEditor && File.Exists("Assets/Resources/GameStates/testState.json"))
+        else if (SaveState.Exists())
         {
             Debug.Log("editor: deck start loading saved game");
-            StateLoader.Instance.UnpackState(StateLoader.Instance.gameState, false);
-            UtilsScript.Instance.UpdateScore(0);
-        }
-        else if (!Application.isEditor && File.Exists(Application.persistentDataPath + "/testState.json"))
-        {
-            Debug.Log("application: deck start loading saved game");
             StateLoader.Instance.UnpackState(StateLoader.Instance.gameState, false);
             UtilsScript.Instance.UpdateScore(0);
         }

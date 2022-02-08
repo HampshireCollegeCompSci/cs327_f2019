@@ -34,6 +34,6 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
-Assets/Resources/GameStates/testState.json
-Assets/Resources/GameStates/testState.json.meta
+Assets/Resources/GameStates/saveState.json
+Assets/Resources/GameStates/saveState.json.meta
 .vsconfig

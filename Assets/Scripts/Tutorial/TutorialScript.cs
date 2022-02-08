@@ -194,7 +194,7 @@ public class TutorialScript : MonoBehaviour
         Config.Instance.actions = 0;
         Config.Instance.moveCounter = 0;
 
-        Config.Instance.DeleteSave();
+        SaveState.Delete();
         UndoScript.Instance.moveLog.Clear();
 
         // move all tokens to the deck

@@ -85,18 +85,8 @@ public class StateLoader : MonoBehaviour
         gameState.actions = Config.Instance.actions;
         gameState.difficulty = Config.Instance.currentDifficulty;
 
-        //saving to json
-        string json;
-        if (Application.isEditor)
-        {
-            json = JsonUtility.ToJson(gameState, true);
-            File.WriteAllText("Assets/Resources/GameStates/testState.json", json);
-        }
-        else
-        {
-            json = JsonUtility.ToJson(gameState);
-            File.WriteAllText(Application.persistentDataPath + "/testState.json", json);
-        }
+        //saving to json, when in editor save it in human readable format
+        File.WriteAllText(SaveState.GetFilePath(), JsonUtility.ToJson(gameState, Constants.inEditor));
 
         //UnityEditor.AssetDatabase.Refresh();
     }
@@ -116,34 +106,32 @@ public class StateLoader : MonoBehaviour
         return stringList;
     }
 
-    public void LoadState()
+    public void LoadSaveState()
     {
-        Debug.Log("loading state");
+        Debug.Log("loading save state");
 
-        string path;
-        if (Application.isEditor)
-        {
-            path = "GameStates/testState";
-        }
-        else
-        {
-            path = Application.persistentDataPath + "/testState.json";
-        }
         //load the json into a GameState
-        gameState = CreateFromJSON(path);
+        gameState = CreateFromJSON(SaveState.GetFilePath());
     }
 
     public void LoadTutorialState(string fileName)
     {
         Debug.Log("loading tutorial state");
+        string filePath = $"{Constants.tutorialStateLocation}/{fileName}.json";
 
-        if (!File.Exists($"Assets/Resources/Tutorial/{fileName}.json"))
+        if (!File.Exists(filePath))
         {
-            throw new System.IO.FileNotFoundException($"Assets/Resources/Tutorial/{fileName}.json");
+            throw new System.IO.FileNotFoundException(filePath);
         }
 
         //load the json into a GameState
-        gameState = CreateFromJSON($"Tutorial/{fileName}", true);
+        gameState = CreateFromJSON(filePath);
+    }
+
+    private GameState CreateFromJSON(string path)
+    {
+        Debug.Log("creating gamestate from path: " + path);
+        return JsonUtility.FromJson<GameState>(File.ReadAllText(path));
     }
 
     public void UnpackState(GameState state, bool isTutorial)
@@ -324,27 +312,6 @@ public class StateLoader : MonoBehaviour
             {
                 throw new System.NullReferenceException($"card \"{s}\" was not found");
             }
-        }
-    }
-       
-    private GameState CreateFromJSON(string path, bool tutorial = false)
-    {
-        Debug.Log("creating gamestate from path: " + path);
-
-        if (tutorial)
-        {
-            var jsonTextFile = Resources.Load<TextAsset>(path);
-            return JsonUtility.FromJson<GameState>(jsonTextFile.ToString());
-        }
-        else if (Application.isEditor)
-        {
-            var jsonTextFile = Resources.Load<TextAsset>(path);
-            return JsonUtility.FromJson<GameState>(jsonTextFile.ToString());
-        }
-        else
-        {
-            var jsonTextFile = File.ReadAllText(path);
-            return JsonUtility.FromJson<GameState>(jsonTextFile);
         }
     }
 }

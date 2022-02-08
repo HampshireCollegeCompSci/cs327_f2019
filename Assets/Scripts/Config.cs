@@ -173,7 +173,7 @@ public class Config : MonoBehaviour
         {
             MusicController.Instance.LoseMusic();
         }
-        DeleteSave();
+        SaveState.Delete();
     }
 
     public void ConfigFromJSON()
@@ -311,20 +311,6 @@ public class Config : MonoBehaviour
         {
             maxReactorVal = reactorLimits[2];
             actionMax = moveLimits[2];
-        }
-    }
-
-    public void DeleteSave()
-    {
-        if (File.Exists(Application.persistentDataPath + "/testState.json"))
-        {
-            File.Delete(Application.persistentDataPath + "/testState.json");
-            File.Delete(Application.persistentDataPath + "/testState.meta");
-        }
-        if (Application.isEditor && File.Exists("Assets/Resources/GameStates/testState.json"))
-        {
-            File.Delete("Assets/Resources/GameStates/testState.json");
-            File.Delete("Assets/Resources/GameStates/testState.json.meta");
         }
     }
 }

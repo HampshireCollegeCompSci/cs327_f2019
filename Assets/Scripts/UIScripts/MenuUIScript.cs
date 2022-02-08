@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.IO;
 
 public class MenuUIScript : MonoBehaviour
 {
@@ -122,7 +121,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI play again");
 
-        Config.Instance.DeleteSave();
+        SaveState.Delete();
         NewGame();
     }
 
@@ -130,7 +129,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI restart");
 
-        Config.Instance.DeleteSave();
+        SaveState.Delete();
         NewGame();
     }
 
@@ -211,10 +210,9 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI starting tutorial");
 
-        StateLoader.Instance.LoadTutorialState("tutorialState_start");
+        StateLoader.Instance.LoadTutorialState(Constants.tutorialStateStartFileName);
         Config.Instance.SetDifficulty(StateLoader.Instance.gameState.difficulty);
         Config.Instance.tutorialOn = true;
-        //Config.config.DeleteSave();
         NewGame();
     }
 
@@ -222,7 +220,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Config.Instance.SetDifficulty(Config.Instance.difficulties[2]);
         Config.Instance.tutorialOn = false;
-        Config.Instance.DeleteSave();
+        SaveState.Delete();
         NewGame();
     }
 
@@ -230,7 +228,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Config.Instance.SetDifficulty(Config.Instance.difficulties[1]);
         Config.Instance.tutorialOn = false;
-        Config.Instance.DeleteSave();
+        SaveState.Delete();
         NewGame();
     }
 
@@ -238,7 +236,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Config.Instance.SetDifficulty(Config.Instance.difficulties[0]);
         Config.Instance.tutorialOn = false;
-        Config.Instance.DeleteSave();
+        SaveState.Delete();
         NewGame();
     }
 
@@ -246,33 +244,21 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI continue");
 
-        if (Application.isEditor)
+        if (SaveState.Exists())
         {
-            if (File.Exists("Assets/Resources/GameStates/testState.json"))
+            if (Constants.inEditor)
             {
                 //Preprocessor Directive to make builds work
                 #if (UNITY_EDITOR)
-                    UnityEditor.AssetDatabase.Refresh();
+                   UnityEditor.AssetDatabase.Refresh();
                 #endif
-
-
-                StateLoader.Instance.LoadState();
-                Config.Instance.SetDifficulty(StateLoader.Instance.gameState.difficulty);
-                Config.Instance.tutorialOn = false;
-                NewGame(true);
             }
-        } 
-        else
-        {
-            if (File.Exists(Application.persistentDataPath + "/testState.json"))
-            {
-                StateLoader.Instance.LoadState();
-                Config.Instance.SetDifficulty(StateLoader.Instance.gameState.difficulty);
-                Config.Instance.tutorialOn = false;
-                NewGame(true);
-            }
+
+            StateLoader.Instance.LoadSaveState();
+            Config.Instance.SetDifficulty(StateLoader.Instance.gameState.difficulty);
+            Config.Instance.tutorialOn = false;
+            NewGame(true);
         }
-        
     }
 
     public void MakeActionsMax()
