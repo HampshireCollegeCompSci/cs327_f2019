@@ -24,7 +24,7 @@
 	"scoreMultiplier": 50,
 
 	"gameStateTxtEnglish": [ "YOU WON", "YOU LOST" ],
-	"menuSceneButtonsTxtEnglish": [ "PLAY", "TUTORIAL", "CREDITS" ],
+	"menuSceneButtonsTxtEnglish": [ "PLAY", "TUTORIAL", "ABOUT" ],
 	"loadingSceneTxtEnglish": "LOADING...",
 	"levelSceneButtonsTxtEnglish": [ "CONTINUE", "EASY", "MEDIUM", "HARD", "RETURN" ],
 	"pauseSceneButtonsTxtEnglish": [ "RESUME", "RESTART", "SETTINGS", "MAIN MENU" ],

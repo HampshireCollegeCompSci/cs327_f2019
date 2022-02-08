@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class MenuUIScript : MonoBehaviour
 {
     // MainMenuScene buttons
-    public GameObject playButton, tutorialButton, creditsButton;
+    public GameObject playButton, tutorialButton, aboutButton;
 
     // LevelSelectScene buttons
     public GameObject continueButton, easyButton, normalButton, hardButton, returnButton;
@@ -33,7 +33,7 @@ public class MenuUIScript : MonoBehaviour
             Debug.Log("updating main menu buttons");
             UpdateButtonText(playButton, Config.Instance.menuSceneButtonsTxtEnglish[0]);
             UpdateButtonText(tutorialButton, Config.Instance.menuSceneButtonsTxtEnglish[1]);
-            UpdateButtonText(creditsButton, Config.Instance.menuSceneButtonsTxtEnglish[2]);
+            UpdateButtonText(aboutButton, Config.Instance.menuSceneButtonsTxtEnglish[2]);
         }
         else if (activeSceneName == "LevelSelectScene")
         {
@@ -159,14 +159,14 @@ public class MenuUIScript : MonoBehaviour
         SceneManager.LoadScene("SettingsScene");
     }
 
-    public void Credits()
+    public void About()
     {
-        Debug.Log("MenuUI credits");
+        Debug.Log("MenuUI about");
 
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.LoadScene("CreditScene");
+        SceneManager.LoadScene("AboutScene");
 
-        MusicController.Instance.CreditMusic();
+        MusicController.Instance.AboutMusic();
     }
 
     public void PauseGame()

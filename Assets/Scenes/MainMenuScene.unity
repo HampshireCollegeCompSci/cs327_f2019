@@ -632,7 +632,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playButton: {fileID: 7084158332501743150}
   tutorialButton: {fileID: 1676171831}
-  creditsButton: {fileID: 2132402028}
+  aboutButton: {fileID: 2132402028}
   continueButton: {fileID: 0}
   easyButton: {fileID: 0}
   normalButton: {fileID: 0}
@@ -1726,7 +1726,7 @@ MonoBehaviour:
   transitionMusic: {fileID: 8300000, guid: cbbd6d8c640bead4eb7f1c77f051eaac, type: 3}
   loseMusic: {fileID: 8300000, guid: 7702a9393c6844ea8a05ba1a76a0bb77, type: 3}
   winMusic: {fileID: 8300000, guid: 926f37829830840e68d2b4f9f683fe85, type: 3}
-  creditMusic: {fileID: 8300000, guid: e5f1e427424a04ce980aa075a920c590, type: 3}
+  aboutMusic: {fileID: 8300000, guid: e5f1e427424a04ce980aa075a920c590, type: 3}
 --- !u!1 &1857838901
 GameObject:
   m_ObjectHideFlags: 0
@@ -2011,12 +2011,12 @@ PrefabInstance:
     - target: {fileID: 7084158332299253294, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Credits
+      value: About
       objectReference: {fileID: 0}
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_Text
-      value: CREDITS
+      value: ABOUT
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f9e4f3524d2da456180c2be002c8dfd4, type: 3}
