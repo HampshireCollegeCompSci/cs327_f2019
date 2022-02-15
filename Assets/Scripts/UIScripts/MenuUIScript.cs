@@ -26,47 +26,46 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("starting MenuUIScript");
 
-        string activeSceneName = SceneManager.GetActiveScene().name;
-
-        if (activeSceneName == "MainMenuScene")
+        string activeScene = SceneManager.GetActiveScene().name;
+        // Update Button text from gameValues
+        switch (activeScene)
         {
-            Debug.Log("updating main menu buttons");
-            UpdateButtonText(playButton, Config.Instance.menuSceneButtonsTxtEnglish[0]);
-            UpdateButtonText(tutorialButton, Config.Instance.menuSceneButtonsTxtEnglish[1]);
-            UpdateButtonText(aboutButton, Config.Instance.menuSceneButtonsTxtEnglish[2]);
-        }
-        else if (activeSceneName == "LevelSelectScene")
-        {
-            Debug.Log("updating level select buttons");
-            UpdateButtonText(continueButton, Config.Instance.levelSceneButtonsTxtEnglish[0]);
-            UpdateButtonText(easyButton, Config.Instance.levelSceneButtonsTxtEnglish[1]);
-            UpdateButtonText(normalButton, Config.Instance.levelSceneButtonsTxtEnglish[2]);
-            UpdateButtonText(hardButton, Config.Instance.levelSceneButtonsTxtEnglish[3]);
-            UpdateButtonText(returnButton, Config.Instance.levelSceneButtonsTxtEnglish[4]);
-        }
-        else if (activeSceneName == "LoadingScene")
-        {
-            if (loadingText != null)
-            {
+            case Constants.mainMenuScene:
+                Debug.Log("updating main menu buttons");
+                // Main buttons
+                UpdateButtonText(playButton, Config.Instance.menuSceneButtonsTxtEnglish[0]);
+                UpdateButtonText(tutorialButton, Config.Instance.menuSceneButtonsTxtEnglish[1]);
+                UpdateButtonText(aboutButton, Config.Instance.menuSceneButtonsTxtEnglish[2]);
+                // Play buttons
+                UpdateButtonText(continueButton, Config.Instance.levelSceneButtonsTxtEnglish[0]);
+                UpdateButtonText(easyButton, Config.Instance.levelSceneButtonsTxtEnglish[1]);
+                UpdateButtonText(normalButton, Config.Instance.levelSceneButtonsTxtEnglish[2]);
+                UpdateButtonText(hardButton, Config.Instance.levelSceneButtonsTxtEnglish[3]);
+                UpdateButtonText(returnButton, Config.Instance.levelSceneButtonsTxtEnglish[4]);
+                break;
+            case Constants.loadingScene:
                 Debug.Log("updating loading text");
                 loadingText.GetComponent<Text>().text = Config.Instance.loadingSceneTxtEnglish;
-            }
+                break;
+            case Constants.summaryScene:
+                Debug.Log("updating summary scene buttons");
+                UpdateButtonText(mainMenuButton, Config.Instance.summarySceneButtonsTxtEnglish[0]);
+                UpdateButtonText(playAgainButton, Config.Instance.summarySceneButtonsTxtEnglish[1]);
+                break;
+            case Constants.gameplayScene:
+                if (SceneManager.GetSceneByName("PauseScene").isLoaded)
+                {
+                    Debug.Log("updating pause scene buttons");
+                    UpdateButtonText(resumeButton, Config.Instance.pauseSceneButtonsTxtEnglish[0]);
+                    UpdateButtonText(restartButton, Config.Instance.pauseSceneButtonsTxtEnglish[1]);
+                    //UpdateButtonText(settingsButton, Config.config.pauseSceneButtonsTxtEnglish[2]);
+                    UpdateButtonText(mainMenuButton, Config.Instance.pauseSceneButtonsTxtEnglish[3]);
+                }
+                break;
+            default:
+                Debug.Log($"no buttons updated for scene: {activeScene}");
+                break;
         }
-        else if (SceneManager.GetSceneByName("PauseScene").isLoaded)
-        {
-            Debug.Log("updating pause scene buttons");
-            UpdateButtonText(resumeButton, Config.Instance.pauseSceneButtonsTxtEnglish[0]);
-            UpdateButtonText(restartButton, Config.Instance.pauseSceneButtonsTxtEnglish[1]);
-            //UpdateButtonText(settingsButton, Config.config.pauseSceneButtonsTxtEnglish[2]);
-            UpdateButtonText(mainMenuButton, Config.Instance.pauseSceneButtonsTxtEnglish[3]);
-        }
-        else if (activeSceneName == "SummaryScene")
-        {
-            Debug.Log("updating summary scene buttons");
-            UpdateButtonText(mainMenuButton, Config.Instance.summarySceneButtonsTxtEnglish[0]);
-            UpdateButtonText(playAgainButton, Config.Instance.summarySceneButtonsTxtEnglish[1]);
-        }
-
     }
 
     private void UpdateButtonText(GameObject button, string text)
@@ -78,20 +77,50 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI play");
 
+        SoundEffectsController.Instance.ButtonPressSound();
+
         //Preprocessor Directive to make builds work
         #if (UNITY_EDITOR)
             UnityEditor.AssetDatabase.Refresh();
         #endif
 
-        SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.LoadScene("LevelSelectScene");
+        ToggleMainMenuButtons(false);
+    }
+
+    private void ToggleMainMenuButtons(bool showMain)
+    {
+        Debug.Log($"toggling main menu buttons: {showMain}");
+
+        // Main buttons
+        playButton.SetActive(showMain);
+        tutorialButton.SetActive(showMain);
+        aboutButton.SetActive(showMain);
+
+        // Play buttons
+        easyButton.SetActive(!showMain);
+        normalButton.SetActive(!showMain); 
+        hardButton.SetActive(!showMain); 
+        returnButton.SetActive(!showMain);
+
+        // Continue button requires a save to exist
+        if (showMain)
+        {
+            continueButton.SetActive(false);
+        }
+        else if (SaveState.Exists())
+        {  
+            continueButton.SetActive(true);
+        }
     }
 
     public void NewGame(bool isContinue = false)
     {
         Debug.Log("MenuUI new game");
 
+        SoundEffectsController.Instance.ButtonPressSound();
+
         UndoScript.Instance.moveLog.Clear();
+
         if (!isContinue)
         {
             Config.Instance.score = 0;
@@ -101,20 +130,18 @@ public class MenuUIScript : MonoBehaviour
         Config.Instance.gameOver = false;
         Config.Instance.gameWin = false;
         Config.Instance.gamePaused = false;
-        SoundEffectsController.Instance.ButtonPressSound();
 
-        SceneManager.LoadScene("LoadingScene");
+        SceneManager.LoadScene(Constants.loadingScene);
     }
 
     public void UndoButton()
     {
         Debug.Log("MenuUI undo button");
 
-        if (UtilsScript.Instance.IsInputStopped())
-            return;
+        if (UtilsScript.Instance.IsInputStopped()) return;
 
-        UndoScript.Instance.Undo();
         SoundEffectsController.Instance.UndoPressSound();
+        UndoScript.Instance.Undo();
     }
 
     public void PlayAgain()
@@ -145,8 +172,7 @@ public class MenuUIScript : MonoBehaviour
         }
 
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.LoadScene("MainMenuScene");
-
+        SceneManager.LoadScene(Constants.mainMenuScene);
         MusicController.Instance.MainMenuMusic();
     }
 
@@ -156,7 +182,7 @@ public class MenuUIScript : MonoBehaviour
         Debug.Log("MenuUI settings");
 
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.LoadScene("SettingsScene");
+        SceneManager.LoadScene(Constants.settingsScene);
     }
 
     public void About()
@@ -164,8 +190,7 @@ public class MenuUIScript : MonoBehaviour
         Debug.Log("MenuUI about");
 
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.LoadScene("AboutScene");
-
+        SceneManager.LoadScene(Constants.aboutScene);
         MusicController.Instance.AboutMusic();
     }
 
@@ -173,14 +198,12 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI pause game");
 
-        if (UtilsScript.Instance.IsInputStopped())
-            return;
+        if (UtilsScript.Instance.IsInputStopped()) return;
 
         SoundEffectsController.Instance.PauseMenuButtonSound();
         //TODO save the game scene
         Config.Instance.gamePaused = true;
-        SceneManager.LoadScene("PauseScene", LoadSceneMode.Additive);
-
+        SceneManager.LoadScene(Constants.pauseScene, LoadSceneMode.Additive);
     }
 
     public void ResumeGame()
@@ -190,20 +213,23 @@ public class MenuUIScript : MonoBehaviour
         Config.Instance.gamePaused = false;
         //TODO load the saved game scene then uncomment the above code
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.UnloadSceneAsync("PauseScene");
+        SceneManager.UnloadSceneAsync(Constants.pauseScene);
     }
 
     public void Return()
     {
         Debug.Log("MenuUI return");
 
-        SoundEffectsController.Instance.ButtonPressSound();
-        if (Config.Instance.gamePaused)
-            SceneManager.UnloadSceneAsync("SoundScene");
+        // The main menu scene has two sets of buttons that get swapped on/off
+        if (SceneManager.GetActiveScene().name == Constants.mainMenuScene)
+        {
+            ToggleMainMenuButtons(true);
+        }
         else
-            SceneManager.LoadScene("MainMenuScene");
-
-        MusicController.Instance.MainMenuMusic();
+        {
+            SceneManager.LoadScene(Constants.mainMenuScene);
+            MusicController.Instance.MainMenuMusic();
+        }
     }
 
     public void Tutorial()

@@ -17,4 +17,26 @@ public static class Constants
 
     // Other
     public static bool inEditor = Application.isEditor;
+
+    // Scenes
+    public const string mainMenuScene = "MainMenuScene";
+    public const string aboutScene = "AboutScene";
+    public const string settingsScene = "SettingsScene";
+    public const string loadingScene = "LoadingScene";
+    public const string gameplayScene = "GameplayScene";
+    public const string pauseScene = "PauseScene";
+    public const string summaryScene = "SummaryScene";
+
+
+    // Keys
+
+    // Summary stats
+    public const string highScoreKey = "HighScore";
+    public const string leastMovesKey = "LeastMoves";
+
+    // Settings
+    public const string soundEffectsVolumeKey = "SoundEffectsVolume";
+    public const string musicVolumeKey = "MusicVolume";
+    public const string vibrationEnabledKey = "VibrationEnabled";
+    public const string foodSuitsEnabledKey = "FoodSuitsEnabled";
 }

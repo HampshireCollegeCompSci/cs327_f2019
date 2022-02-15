@@ -6,7 +6,7 @@ public class LoadingScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SceneManager.LoadSceneAsync("GameplayScene", LoadSceneMode.Additive);
+        SceneManager.LoadSceneAsync(Constants.gameplayScene, LoadSceneMode.Additive);
         MusicController.Instance.GameMusic();
     }
 }

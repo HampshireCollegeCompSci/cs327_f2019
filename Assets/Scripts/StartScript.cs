@@ -11,8 +11,8 @@ public class StartScript : MonoBehaviour
     void Start()
     {
         // unloading the loading scene if it's still active
-        if (SceneManager.GetActiveScene().name == "LoadingScene")
-            SceneManager.UnloadSceneAsync("LoadingScene");
+        if (SceneManager.GetActiveScene().name == Constants.loadingScene)
+            SceneManager.UnloadSceneAsync(Constants.loadingScene);
 
         // setting stuff up for the game
         Config.Instance.StartupFindObjects();
@@ -20,7 +20,7 @@ public class StartScript : MonoBehaviour
 
         // assigning sprites to the reactor suits
         bool isOn;
-        if (System.Boolean.TryParse(PlayerPrefs.GetString(PlayerPrefKeys.foodSuitsEnabledKey), out isOn))
+        if (System.Boolean.TryParse(PlayerPrefs.GetString(Constants.foodSuitsEnabledKey), out isOn))
         { }
         else
         {

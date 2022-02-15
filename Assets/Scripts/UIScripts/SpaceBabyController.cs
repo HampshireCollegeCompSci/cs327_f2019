@@ -38,7 +38,7 @@ public class SpaceBabyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        audioSource.volume = PlayerPrefs.GetFloat(PlayerPrefKeys.soundEffectsVolumeKey, 0.5f);
+        audioSource.volume = PlayerPrefs.GetFloat(Constants.soundEffectsVolumeKey, 0.5f);
         idling = true;
         angry = false;
         animator.Play("IdlingAnim");

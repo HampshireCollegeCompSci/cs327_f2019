@@ -40,10 +40,10 @@ public class SoundEffectsController : MonoBehaviour
 
     private void Start()
     {
-        UpdateMaxVolume(PlayerPrefs.GetFloat(PlayerPrefKeys.soundEffectsVolumeKey, 0.5f));
+        UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.soundEffectsVolumeKey, 0.5f));
 
         Vibration.Init();
-        System.Boolean.TryParse(PlayerPrefs.GetString(PlayerPrefKeys.vibrationEnabledKey), out vibrationEnabled);
+        System.Boolean.TryParse(PlayerPrefs.GetString(Constants.vibrationEnabledKey), out vibrationEnabled);
     }
 
     public void UpdateMaxVolume(float newVolume)

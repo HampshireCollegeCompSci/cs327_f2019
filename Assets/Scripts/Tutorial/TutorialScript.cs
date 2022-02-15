@@ -238,7 +238,7 @@ public class TutorialScript : MonoBehaviour
             Config.Instance.gameWin = false;
         }
 
-        SceneManager.LoadScene("MainMenuScene");
+        SceneManager.LoadScene(Constants.mainMenuScene);
         MusicController.Instance.MainMenuMusic();
     }
 

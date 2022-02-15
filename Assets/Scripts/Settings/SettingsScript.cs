@@ -24,18 +24,18 @@ public class SettingsScript : MonoBehaviour
         PlayerPrefKeys.CheckKeys();
 
         // music volume
-        int volume = (int)(PlayerPrefs.GetFloat(PlayerPrefKeys.musicVolumeKey) * 10);
+        int volume = (int)(PlayerPrefs.GetFloat(Constants.musicVolumeKey) * 10);
         musicSlider.GetComponent<Slider>().value = volume;
         musicVolumeText.text = volume.ToString() + "0%";
 
         // sound effects volume
-        volume = (int)(PlayerPrefs.GetFloat(PlayerPrefKeys.soundEffectsVolumeKey) * 10);
+        volume = (int)(PlayerPrefs.GetFloat(Constants.soundEffectsVolumeKey) * 10);
         soundEffectsSlider.GetComponent<Slider>().value = volume;
         soundEffectsVolumeText.text = volume.ToString() + "0%";
 
         bool isOn;
         // vibration enabled
-        if (System.Boolean.TryParse(PlayerPrefs.GetString(PlayerPrefKeys.vibrationEnabledKey), out isOn))
+        if (System.Boolean.TryParse(PlayerPrefs.GetString(Constants.vibrationEnabledKey), out isOn))
         {
             vibrationToggle.GetComponent<Toggle>().isOn = isOn;
         }
@@ -46,7 +46,7 @@ public class SettingsScript : MonoBehaviour
         }
 
         // food suits enabled
-        if (System.Boolean.TryParse(PlayerPrefs.GetString(PlayerPrefKeys.foodSuitsEnabledKey), out isOn))
+        if (System.Boolean.TryParse(PlayerPrefs.GetString(Constants.foodSuitsEnabledKey), out isOn))
         {
             foodSuitsToggle.GetComponent<Toggle>().isOn = isOn;
         }
@@ -66,7 +66,7 @@ public class SettingsScript : MonoBehaviour
 
         musicVolumeText.text = update.ToString() + "0%";
         update /= 10;
-        PlayerPrefs.SetFloat(PlayerPrefKeys.musicVolumeKey, update);
+        PlayerPrefs.SetFloat(Constants.musicVolumeKey, update);
         MusicController.Instance.UpdateMaxVolume(update);
     }
 
@@ -77,7 +77,7 @@ public class SettingsScript : MonoBehaviour
 
         soundEffectsVolumeText.text = update.ToString() + "0%";
         update /= 10;
-        PlayerPrefs.SetFloat(PlayerPrefKeys.soundEffectsVolumeKey, update);
+        PlayerPrefs.SetFloat(Constants.soundEffectsVolumeKey, update);
         SoundEffectsController.Instance.UpdateMaxVolume(update);
         SoundEffectsController.Instance.ButtonPressSound();
     }
@@ -87,7 +87,7 @@ public class SettingsScript : MonoBehaviour
         if (lockout)
             return;
 
-        PlayerPrefs.SetString(PlayerPrefKeys.vibrationEnabledKey, update.ToString());
+        PlayerPrefs.SetString(Constants.vibrationEnabledKey, update.ToString());
         SoundEffectsController.Instance.UpdateVibration(update);
         SoundEffectsController.Instance.ButtonPressSound();
     }
@@ -97,7 +97,7 @@ public class SettingsScript : MonoBehaviour
         if (lockout)
             return;
 
-        PlayerPrefs.SetString(PlayerPrefKeys.foodSuitsEnabledKey, update.ToString());
+        PlayerPrefs.SetString(Constants.foodSuitsEnabledKey, update.ToString());
         SoundEffectsController.Instance.ButtonPressSound();
     }
 

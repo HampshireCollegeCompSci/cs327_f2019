@@ -163,7 +163,7 @@ public class Config : MonoBehaviour
             }
         }
 
-        SceneManager.LoadScene("SummaryScene");
+        SceneManager.LoadScene(Constants.summaryScene);
 
         if (gameWin)
         {
