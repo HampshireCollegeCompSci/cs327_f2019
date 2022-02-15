@@ -12,7 +12,7 @@ public class SettingsScript : MonoBehaviour
     public GameObject vibrationToggle;
     public GameObject foodSuitsToggle;
 
-    public GameObject confirmButton;
+    public GameObject confirmObject;
 
     private bool lockout;
 
@@ -106,14 +106,16 @@ public class SettingsScript : MonoBehaviour
         if (lockout)
             return;
 
-        confirmButton.SetActive(true);
         SoundEffectsController.Instance.ButtonPressSound();
+        confirmObject.SetActive(true);
     }
 
     public void ClearRecordsConfirmationButton(bool confirm)
     {
         if (confirm)
         {
+            Debug.Log("clearing saved records");
+
             // since ResultsScript.cs detects and auto fills the very first records this is how it must be done
             foreach (string difficulty in Config.Instance.difficulties)
             {
@@ -122,6 +124,7 @@ public class SettingsScript : MonoBehaviour
             }
         }
 
-        confirmButton.SetActive(false);
+        SoundEffectsController.Instance.ButtonPressSound();
+        confirmObject.SetActive(false);
     }
 }
