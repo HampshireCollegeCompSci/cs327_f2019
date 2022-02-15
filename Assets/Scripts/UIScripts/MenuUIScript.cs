@@ -4,10 +4,10 @@ using UnityEngine.UI;
 
 public class MenuUIScript : MonoBehaviour
 {
-    // MainMenuScene buttons
+    // MainMenuScene Main buttons
     public GameObject playButton, tutorialButton, aboutButton;
 
-    // LevelSelectScene buttons
+    // MainMenuScene Play buttons
     public GameObject continueButton, easyButton, normalButton, hardButton, returnButton;
 
     // LoadingScene text
