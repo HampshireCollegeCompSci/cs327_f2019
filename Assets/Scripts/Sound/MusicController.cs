@@ -50,27 +50,32 @@ public class MusicController : MonoBehaviour
         maxVolume = newVolume;
 
         if (playing1)
-        {
             soundTrack1.volume = maxVolume;
-        }
         else
-        {
             soundTrack2.volume = maxVolume;
-        }
     }
 
-    /*public void LoadGap()
+    public void PauseMusic()
     {
-        soundTrack1.Stop();
-        soundTrack1.clip = null;
-        soundTrack2.Stop();
-        soundTrack2.clip = null;
-    }*/
+        if (playing1)
+            soundTrack1.Pause();
+        else
+            soundTrack2.Pause();
+    }
+
+    public void PlayMusic()
+    {
+        if (playing1 && !soundTrack1.isPlaying)
+            soundTrack1.Play();
+        else if (!soundTrack2.isPlaying)
+            soundTrack2.Play();
+    }
 
     public void MainMenuMusic()
     {
         if (playingTrack == 1)
         {
+            PlayMusic();
             return;
         }
 
@@ -78,28 +83,11 @@ public class MusicController : MonoBehaviour
         Transition(menuMusic);
     }
 
-    public void GameMusic(bool force = false)
+    public void GameMusic()
     {
-        Debug.Log($"GameMusic force: {force}");
-
-        if (force)
-        {
-            if ((soundTrack1.isPlaying && soundTrack1.clip != themeMusic) ||
-                (soundTrack2.isPlaying && soundTrack2.clip != themeMusic))
-            {
-                StopAllCoroutines();
-                soundTrack1.Stop();
-                soundTrack2.Stop();
-                soundTrack1.clip = themeMusic;
-                playing1 = true;
-                playingTrack = 2;
-                StartCoroutine(FadeIn(soundTrack1));
-            }
-            return;
-        }
-
         if (playingTrack == 2)
         {
+            PlayMusic();
             return;
         }
 
@@ -109,8 +97,10 @@ public class MusicController : MonoBehaviour
 
     public void AlertMusic()
     {
-        if (playingTrack == 3 || playingTrack != 2) // will play over win/lose music without
+        // will play over win/lose music without
+        if (playingTrack == 3 || playingTrack != 2)
         {
+            PlayMusic();
             return;
         }
 
@@ -122,6 +112,7 @@ public class MusicController : MonoBehaviour
     {
         if (playingTrack == 4)
         {
+            PlayMusic();
             return;
         }
 
@@ -133,6 +124,7 @@ public class MusicController : MonoBehaviour
     {
         if (playingTrack == 5)
         {
+            PlayMusic();
             return;
         }
 
@@ -144,6 +136,7 @@ public class MusicController : MonoBehaviour
     {
         if (playingTrack == 6)
         {
+            PlayMusic();
             return;
         }
 
@@ -172,12 +165,9 @@ public class MusicController : MonoBehaviour
     }
 
     // https://medium.com/@wyattferguson/how-to-fade-out-in-audio-in-unity-8fce422ab1a8
-    public IEnumerator FadeOut(AudioSource audioSource, float FadeTime = 2f)
+    public IEnumerator FadeOut(AudioSource audioSource, float FadeTime = 1.5f)
     {
-        if (!audioSource.isPlaying)
-        {
-            yield break;
-        }
+        if (!audioSource.isPlaying) yield break;
 
         while (audioSource.volume > 0)
         {
