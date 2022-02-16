@@ -5,13 +5,13 @@ using UnityEngine.UI;
 public class MenuUIScript : MonoBehaviour
 {
     // MainMenuScene Main buttons
-    public GameObject playButton, tutorialButton, aboutButton;
+    public GameObject playButton, tutorialButton, settingsButton, aboutButton;
 
     // MainMenuScene Play buttons
-    public GameObject continueButton, easyButton, normalButton, hardButton, returnButton;
+    public GameObject continueButton, easyButton, normalButton, hardButton, backButton;
 
     // LoadingScene text
-    public GameObject loadingText;
+    public Text loadingText;
 
     // PauseScene buttons
     public GameObject resumeButton, restartButton;
@@ -26,41 +26,44 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("starting MenuUIScript");
 
-        string activeScene = SceneManager.GetActiveScene().name;
+        string activeScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1).name;
+        Debug.Log($"activeScene {activeScene}");
         // Update Button text from gameValues
         switch (activeScene)
         {
             case Constants.mainMenuScene:
                 Debug.Log("updating main menu buttons");
                 // Main buttons
-                UpdateButtonText(playButton, Config.Instance.menuSceneButtonsTxtEnglish[0]);
-                UpdateButtonText(tutorialButton, Config.Instance.menuSceneButtonsTxtEnglish[1]);
-                UpdateButtonText(aboutButton, Config.Instance.menuSceneButtonsTxtEnglish[2]);
+                UpdateButtonText(playButton, Config.Instance.menuButtonsTxtEnglish[0]);
+                UpdateButtonText(tutorialButton, Config.Instance.menuButtonsTxtEnglish[1]);
+                UpdateButtonText(settingsButton, Config.Instance.menuButtonsTxtEnglish[2]);
+                UpdateButtonText(aboutButton, Config.Instance.menuButtonsTxtEnglish[3]);
                 // Play buttons
-                UpdateButtonText(continueButton, Config.Instance.levelSceneButtonsTxtEnglish[0]);
-                UpdateButtonText(easyButton, Config.Instance.levelSceneButtonsTxtEnglish[1]);
-                UpdateButtonText(normalButton, Config.Instance.levelSceneButtonsTxtEnglish[2]);
-                UpdateButtonText(hardButton, Config.Instance.levelSceneButtonsTxtEnglish[3]);
-                UpdateButtonText(returnButton, Config.Instance.levelSceneButtonsTxtEnglish[4]);
+                UpdateButtonText(continueButton, Config.Instance.levelButtonsTxtEnglish[0]);
+                UpdateButtonText(easyButton, Config.Instance.levelButtonsTxtEnglish[1]);
+                UpdateButtonText(normalButton, Config.Instance.levelButtonsTxtEnglish[2]);
+                UpdateButtonText(hardButton, Config.Instance.levelButtonsTxtEnglish[3]);
+                UpdateButtonText(backButton, Config.Instance.backButtonTxtEnglish);
                 break;
             case Constants.loadingScene:
                 Debug.Log("updating loading text");
-                loadingText.GetComponent<Text>().text = Config.Instance.loadingSceneTxtEnglish;
+                loadingText.text = Config.Instance.backButtonTxtEnglish;
                 break;
             case Constants.summaryScene:
                 Debug.Log("updating summary scene buttons");
-                UpdateButtonText(mainMenuButton, Config.Instance.summarySceneButtonsTxtEnglish[0]);
-                UpdateButtonText(playAgainButton, Config.Instance.summarySceneButtonsTxtEnglish[1]);
+                UpdateButtonText(mainMenuButton, Config.Instance.summaryButtonsTxtEnglish[0]);
+                UpdateButtonText(playAgainButton, Config.Instance.summaryButtonsTxtEnglish[1]);
                 break;
-            case Constants.gameplayScene:
-                if (SceneManager.GetSceneByName("PauseScene").isLoaded)
-                {
-                    Debug.Log("updating pause scene buttons");
-                    UpdateButtonText(resumeButton, Config.Instance.pauseSceneButtonsTxtEnglish[0]);
-                    UpdateButtonText(restartButton, Config.Instance.pauseSceneButtonsTxtEnglish[1]);
-                    //UpdateButtonText(settingsButton, Config.config.pauseSceneButtonsTxtEnglish[2]);
-                    UpdateButtonText(mainMenuButton, Config.Instance.pauseSceneButtonsTxtEnglish[3]);
-                }
+            case Constants.pauseScene:
+                Debug.Log("updating pause scene buttons");
+                UpdateButtonText(resumeButton, Config.Instance.pauseButtonsTxtEnglish[0]);
+                UpdateButtonText(restartButton, Config.Instance.pauseButtonsTxtEnglish[1]);
+                UpdateButtonText(settingsButton, Config.Instance.pauseButtonsTxtEnglish[2]);
+                UpdateButtonText(mainMenuButton, Config.Instance.pauseButtonsTxtEnglish[3]);
+                break;
+            case Constants.settingsScene:
+                Debug.Log("updating settings scene buttons");
+                UpdateButtonText(backButton, Config.Instance.backButtonTxtEnglish);
                 break;
             default:
                 Debug.Log($"no buttons updated for scene: {activeScene}");
@@ -100,7 +103,7 @@ public class MenuUIScript : MonoBehaviour
         easyButton.SetActive(!showMain);
         normalButton.SetActive(!showMain); 
         hardButton.SetActive(!showMain); 
-        returnButton.SetActive(!showMain);
+        backButton.SetActive(!showMain);
 
         // Continue button requires a save to exist
         if (showMain)
@@ -182,7 +185,7 @@ public class MenuUIScript : MonoBehaviour
         Debug.Log("MenuUI settings");
 
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.LoadScene(Constants.settingsScene);
+        SceneManager.LoadScene(Constants.settingsScene, LoadSceneMode.Additive);
     }
 
     public void About()
@@ -216,20 +219,19 @@ public class MenuUIScript : MonoBehaviour
         SceneManager.UnloadSceneAsync(Constants.pauseScene);
     }
 
-    public void Return()
+    public void SettingsBackButton()
     {
-        Debug.Log("MenuUI return");
+        Debug.Log("MenuUI Settings Back");
+        SoundEffectsController.Instance.ButtonPressSound();
+        SceneManager.UnloadSceneAsync(Constants.settingsScene);
+    }
 
+    public void MainMenuBackButton()
+    {
+        Debug.Log("MenuUI Main Menu Back");
+        SoundEffectsController.Instance.ButtonPressSound();
         // The main menu scene has two sets of buttons that get swapped on/off
-        if (SceneManager.GetActiveScene().name == Constants.mainMenuScene)
-        {
-            ToggleMainMenuButtons(true);
-        }
-        else
-        {
-            SceneManager.LoadScene(Constants.mainMenuScene);
-            MusicController.Instance.MainMenuMusic();
-        }
+        ToggleMainMenuButtons(true);
     }
 
     public void Tutorial()

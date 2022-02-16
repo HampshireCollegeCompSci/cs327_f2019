@@ -136,7 +136,7 @@ PrefabInstance:
     - target: {fileID: 7084158332299253292, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_Name
-      value: Return
+      value: Back
       objectReference: {fileID: 0}
     - target: {fileID: 7084158332299253295, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
@@ -221,12 +221,12 @@ PrefabInstance:
     - target: {fileID: 7084158332299253294, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Return
+      value: SettingsBackButton
       objectReference: {fileID: 0}
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_Text
-      value: RETURN
+      value: BACK
       objectReference: {fileID: 0}
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
@@ -257,7 +257,6 @@ GameObject:
   m_Component:
   - component: {fileID: 379246476}
   - component: {fileID: 379246475}
-  - component: {fileID: 379246474}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -265,14 +264,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &379246474
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 379246473}
-  m_Enabled: 1
 --- !u!20 &379246475
 Camera:
   m_ObjectHideFlags: 0
@@ -1709,7 +1700,7 @@ MonoBehaviour:
   easyButton: {fileID: 0}
   normalButton: {fileID: 0}
   hardButton: {fileID: 0}
-  returnButton: {fileID: 135964457}
+  backButton: {fileID: 135964457}
   loadingText: {fileID: 0}
   resumeButton: {fileID: 0}
   restartButton: {fileID: 0}

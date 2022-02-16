@@ -48,6 +48,7 @@ public class SpaceBabyController : MonoBehaviour
     void OnMouseDown()
     {
         Debug.Log("SpaceBaby Clicked");
+        if (Config.Instance.gamePaused) return;
         BabyHappy();
     }
 

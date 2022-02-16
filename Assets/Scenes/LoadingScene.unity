@@ -392,13 +392,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playButton: {fileID: 0}
   tutorialButton: {fileID: 0}
-  creditsButton: {fileID: 0}
+  aboutButton: {fileID: 0}
   continueButton: {fileID: 0}
   easyButton: {fileID: 0}
   normalButton: {fileID: 0}
   hardButton: {fileID: 0}
-  returnButton: {fileID: 0}
-  loadingText: {fileID: 183317130}
+  backButton: {fileID: 0}
+  loadingText: {fileID: 183317132}
   resumeButton: {fileID: 0}
   restartButton: {fileID: 0}
   mainMenuButton: {fileID: 0}

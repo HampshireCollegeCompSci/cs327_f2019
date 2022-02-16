@@ -80,12 +80,14 @@ public class Config : MonoBehaviour
     public int scoreMultiplier;
 
     //button txt
+    public string[] menuButtonsTxtEnglish;
+    public string[] levelButtonsTxtEnglish;
+    public string backButtonTxtEnglish;
+    public string loadingTxtEnglish;
+    public string[] pauseButtonsTxtEnglish;
+    public string[] summaryButtonsTxtEnglish;
+    public string[] scoreActionLabelsTxtEnglish;
     public string[] gameStateTxtEnglish;
-    public string[] menuSceneButtonsTxtEnglish;
-    public string loadingSceneTxtEnglish;
-    public string[] levelSceneButtonsTxtEnglish;
-    public string[] pauseSceneButtonsTxtEnglish;
-    public string[] summarySceneButtonsTxtEnglish;
 
     //long term tracking
     //public int moves;
@@ -194,12 +196,16 @@ public class Config : MonoBehaviour
         moveLimits = gameInfo.moveLimits;
         draggedTokenOffset = gameInfo.draggedTokenOffset;
         selectedCardOpacity = gameInfo.selectedCardOpacity;
+
+        menuButtonsTxtEnglish = gameInfo.menuButtonsTxtEnglish;
+        levelButtonsTxtEnglish = gameInfo.levelButtonsTxtEnglish;
+        backButtonTxtEnglish = gameInfo.backButtonTxtEnglish;
+        loadingTxtEnglish = gameInfo.loadingTxtEnglish;
+        pauseButtonsTxtEnglish = gameInfo.pauseButtonsTxtEnglish;
+        summaryButtonsTxtEnglish = gameInfo.summaryButtonsTxtEnglish;
+        scoreActionLabelsTxtEnglish = gameInfo.scoreActionLabelsTxtEnglish;
         gameStateTxtEnglish = gameInfo.gameStateTxtEnglish;
-        menuSceneButtonsTxtEnglish = gameInfo.menuSceneButtonsTxtEnglish;
-        loadingSceneTxtEnglish = gameInfo.loadingSceneTxtEnglish;
-        levelSceneButtonsTxtEnglish = gameInfo.levelSceneButtonsTxtEnglish;
-        pauseSceneButtonsTxtEnglish = gameInfo.pauseSceneButtonsTxtEnglish;
-        summarySceneButtonsTxtEnglish = gameInfo.summarySceneButtonsTxtEnglish;
+
         cardObstructedColor = new Color(gameInfo.cardObstructedColor[0],
                                         gameInfo.cardObstructedColor[1],
                                         gameInfo.cardObstructedColor[2],

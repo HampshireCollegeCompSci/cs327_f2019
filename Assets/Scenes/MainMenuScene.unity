@@ -301,7 +301,7 @@ PrefabInstance:
     - target: {fileID: 7084158332299253292, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_Name
-      value: Return
+      value: Back
       objectReference: {fileID: 0}
     - target: {fileID: 7084158332299253292, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
@@ -346,12 +346,12 @@ PrefabInstance:
     - target: {fileID: 7084158332299253294, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Return
+      value: MainMenuBackButton
       objectReference: {fileID: 0}
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_Text
-      value: RETURN
+      value: BACK
       objectReference: {fileID: 0}
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
@@ -923,12 +923,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playButton: {fileID: 7084158332501743150}
   tutorialButton: {fileID: 1676171831}
+  settingsButton: {fileID: 1942484655}
   aboutButton: {fileID: 2132402028}
   continueButton: {fileID: 2125820082}
   easyButton: {fileID: 601247333}
   normalButton: {fileID: 671287920}
   hardButton: {fileID: 868568040}
-  returnButton: {fileID: 367847799}
+  backButton: {fileID: 367847799}
   loadingText: {fileID: 0}
   resumeButton: {fileID: 0}
   restartButton: {fileID: 0}
@@ -2290,15 +2291,23 @@ MonoBehaviour:
   turnAlertThreshold: 0
   consecutiveMatches: 0
   scoreMultiplier: 0
+  menuButtonsTxtEnglish: []
+  levelButtonsTxtEnglish: []
+  backButtonTxtEnglish: 
+  loadingTxtEnglish: 
+  pauseButtonsTxtEnglish: []
+  summaryButtonsTxtEnglish: []
+  scoreActionLabelsTxtEnglish: []
   gameStateTxtEnglish: []
-  menuSceneButtonsTxtEnglish: []
-  loadingSceneTxtEnglish: 
-  levelSceneButtonsTxtEnglish: []
-  pauseSceneButtonsTxtEnglish: []
-  summarySceneButtonsTxtEnglish: []
   moveCounter: 0
   matchCounter: 0
   json: 
+--- !u!1 &1942484655 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7084158332299253292, guid: f9e4f3524d2da456180c2be002c8dfd4,
+    type: 3}
+  m_PrefabInstance: {fileID: 549142539}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2125820080
 PrefabInstance:
   m_ObjectHideFlags: 0

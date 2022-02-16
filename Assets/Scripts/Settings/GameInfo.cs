@@ -1,5 +1,4 @@
-﻿
-[System.Serializable]
+﻿[System.Serializable]
 public class GameInfo
 {
     public int foundationStartingSize;
@@ -22,13 +21,16 @@ public class GameInfo
     public float[] cardMoveHighlightColor;
     public float[] cardMatchHighlightColor;
     public float[] pointColor;
-    public string[] gameStateTxtEnglish;
-    public string[] menuSceneButtonsTxtEnglish;
-    public string loadingSceneTxtEnglish;
-    public string[] levelSceneButtonsTxtEnglish;
-    public string[] pauseSceneButtonsTxtEnglish;
-    public string[] summarySceneButtonsTxtEnglish;
     public int turnAlertSmallThreshold;
     public int turnAlertThreshold;
     public int scoreMultiplier;
+
+    public string[] menuButtonsTxtEnglish;
+    public string[] levelButtonsTxtEnglish;
+    public string backButtonTxtEnglish;
+    public string loadingTxtEnglish;
+    public string[] pauseButtonsTxtEnglish;
+    public string[] summaryButtonsTxtEnglish;
+    public string[] scoreActionLabelsTxtEnglish;
+    public string[] gameStateTxtEnglish;
 }
