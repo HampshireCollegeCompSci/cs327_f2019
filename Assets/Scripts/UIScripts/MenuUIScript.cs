@@ -34,36 +34,36 @@ public class MenuUIScript : MonoBehaviour
             case Constants.mainMenuScene:
                 Debug.Log("updating main menu buttons");
                 // Main buttons
-                UpdateButtonText(playButton, Config.Instance.menuButtonsTxtEnglish[0]);
-                UpdateButtonText(tutorialButton, Config.Instance.menuButtonsTxtEnglish[1]);
-                UpdateButtonText(settingsButton, Config.Instance.menuButtonsTxtEnglish[2]);
-                UpdateButtonText(aboutButton, Config.Instance.menuButtonsTxtEnglish[3]);
+                UpdateButtonText(playButton, Config.GameValues.menuButtonsTxtEnglish[0]);
+                UpdateButtonText(tutorialButton, Config.GameValues.menuButtonsTxtEnglish[1]);
+                UpdateButtonText(settingsButton, Config.GameValues.menuButtonsTxtEnglish[2]);
+                UpdateButtonText(aboutButton, Config.GameValues.menuButtonsTxtEnglish[3]);
                 // Play buttons
-                UpdateButtonText(continueButton, Config.Instance.levelButtonsTxtEnglish[0]);
-                UpdateButtonText(easyButton, Config.Instance.levelButtonsTxtEnglish[1]);
-                UpdateButtonText(normalButton, Config.Instance.levelButtonsTxtEnglish[2]);
-                UpdateButtonText(hardButton, Config.Instance.levelButtonsTxtEnglish[3]);
-                UpdateButtonText(backButton, Config.Instance.backButtonTxtEnglish);
+                UpdateButtonText(continueButton, Config.GameValues.levelButtonsTxtEnglish[0]);
+                UpdateButtonText(easyButton, Config.GameValues.levelButtonsTxtEnglish[1]);
+                UpdateButtonText(normalButton, Config.GameValues.levelButtonsTxtEnglish[2]);
+                UpdateButtonText(hardButton, Config.GameValues.levelButtonsTxtEnglish[3]);
+                UpdateButtonText(backButton, Config.GameValues.backButtonTxtEnglish);
                 break;
             case Constants.loadingScene:
                 Debug.Log("updating loading text");
-                loadingText.text = Config.Instance.backButtonTxtEnglish;
+                loadingText.text = Config.GameValues.backButtonTxtEnglish;
                 break;
             case Constants.summaryScene:
                 Debug.Log("updating summary scene buttons");
-                UpdateButtonText(mainMenuButton, Config.Instance.summaryButtonsTxtEnglish[0]);
-                UpdateButtonText(playAgainButton, Config.Instance.summaryButtonsTxtEnglish[1]);
+                UpdateButtonText(mainMenuButton, Config.GameValues.summaryButtonsTxtEnglish[0]);
+                UpdateButtonText(playAgainButton, Config.GameValues.summaryButtonsTxtEnglish[1]);
                 break;
             case Constants.pauseScene:
                 Debug.Log("updating pause scene buttons");
-                UpdateButtonText(resumeButton, Config.Instance.pauseButtonsTxtEnglish[0]);
-                UpdateButtonText(restartButton, Config.Instance.pauseButtonsTxtEnglish[1]);
-                UpdateButtonText(settingsButton, Config.Instance.pauseButtonsTxtEnglish[2]);
-                UpdateButtonText(mainMenuButton, Config.Instance.pauseButtonsTxtEnglish[3]);
+                UpdateButtonText(resumeButton, Config.GameValues.pauseButtonsTxtEnglish[0]);
+                UpdateButtonText(restartButton, Config.GameValues.pauseButtonsTxtEnglish[1]);
+                UpdateButtonText(settingsButton, Config.GameValues.pauseButtonsTxtEnglish[2]);
+                UpdateButtonText(mainMenuButton, Config.GameValues.pauseButtonsTxtEnglish[3]);
                 break;
             case Constants.settingsScene:
                 Debug.Log("updating settings scene buttons");
-                UpdateButtonText(backButton, Config.Instance.backButtonTxtEnglish);
+                UpdateButtonText(backButton, Config.GameValues.backButtonTxtEnglish);
                 break;
             default:
                 Debug.Log($"no buttons updated for scene: {activeScene}");
@@ -246,7 +246,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void HardDifficulty()
     {
-        Config.Instance.SetDifficulty(Config.Instance.difficulties[2]);
+        Config.Instance.SetDifficulty(2);
         Config.Instance.tutorialOn = false;
         SaveState.Delete();
         NewGame();
@@ -254,7 +254,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void MediumDifficulty()
     {
-        Config.Instance.SetDifficulty(Config.Instance.difficulties[1]);
+        Config.Instance.SetDifficulty(1);
         Config.Instance.tutorialOn = false;
         SaveState.Delete();
         NewGame();
@@ -262,7 +262,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void EasyDifficulty()
     {
-        Config.Instance.SetDifficulty(Config.Instance.difficulties[0]);
+        Config.Instance.SetDifficulty(0);
         Config.Instance.tutorialOn = false;
         SaveState.Delete();
         NewGame();

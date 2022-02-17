@@ -1,5 +1,6 @@
-﻿[System.Serializable]
-public class GameInfo
+﻿using UnityEngine;
+[System.Serializable]
+public class GameValues
 {
     public int foundationStartingSize;
     public byte wastepileAnimationSpeedSlow;
@@ -17,14 +18,23 @@ public class GameInfo
     public int[] reactorLimits;
     public int[] moveLimits;
     public float selectedCardOpacity;
-    public float[] cardObstructedColor;
-    public float[] cardMoveHighlightColor;
-    public float[] cardMatchHighlightColor;
-    public float[] pointColor;
+
+    public float[] cardObstructedColorValues;
+    public Color cardObstructedColor;
+
+    public float[] cardMoveHighlightColorValues;
+    public Color cardMoveHighlightColor;
+
+    public float[] cardMatchHighlightColorValues;
+    public Color cardMatchHighlightColor;
+
+    public float[] pointColorValues;
+    public Color pointColor;
+
     public int turnAlertSmallThreshold;
     public int turnAlertThreshold;
     public int scoreMultiplier;
-
+           
     public string[] menuButtonsTxtEnglish;
     public string[] levelButtonsTxtEnglish;
     public string backButtonTxtEnglish;

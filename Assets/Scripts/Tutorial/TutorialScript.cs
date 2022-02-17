@@ -205,7 +205,7 @@ public class TutorialScript : MonoBehaviour
         MoveCardsToDeck(WastepileScript.Instance.cardList);
         MoveCardsToDeck(MatchedPileScript.Instance.cardList);
 
-        Config.Instance.SetDifficulty(Config.Instance.difficulties[0]);
+        Config.Instance.SetDifficulty(0);
         ReactorScoreSetScript.Instance.SetReactorScore();
         DeckScript.Instance.StartGame();
     }

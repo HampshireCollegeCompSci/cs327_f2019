@@ -26,11 +26,11 @@ public class ResultsScript : MonoBehaviour
         // game won or lost text
         if (Config.Instance.gameWin)
         {
-            stateText.text = Config.Instance.gameStateTxtEnglish[0];
+            stateText.text = Config.GameValues.gameStateTxtEnglish[0];
         }
         else
         {
-            stateText.text = Config.Instance.gameStateTxtEnglish[1];
+            stateText.text = Config.GameValues.gameStateTxtEnglish[1];
         }
 
         difficultyText.text = Config.Instance.currentDifficulty.ToUpper();

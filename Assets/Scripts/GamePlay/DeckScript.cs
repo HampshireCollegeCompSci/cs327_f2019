@@ -175,7 +175,7 @@ public class DeckScript : MonoBehaviour
         CardScript currentCardScript;
         foreach (GameObject foundation in Config.Instance.foundations)
         {
-            for (int n = 0; n < Config.Instance.foundationStartSize - 1; n++)
+            for (int n = 0; n < Config.GameValues.foundationStartingSize - 1; n++)
             {
                 currentCardScript = cardList[0].GetComponent<CardScript>();
                 currentCardScript.MoveCard(foundation, doLog: false, showHolo: false);
@@ -230,7 +230,7 @@ public class DeckScript : MonoBehaviour
             StartCoroutine(ButtonDown());
         }
         // if it is possible to repopulate the deck
-        else if (WastepileScript.Instance.cardList.Count > Config.Instance.cardsToDeal) 
+        else if (WastepileScript.Instance.cardList.Count > Config.GameValues.cardsToDeal) 
         {
             DeckReset();
             StartCoroutine(ButtonDown());
@@ -240,7 +240,7 @@ public class DeckScript : MonoBehaviour
     public void Deal(bool doLog = true)
     {
         List<GameObject> toMoveList = new List<GameObject>();
-        for (int i = 0; i < Config.Instance.cardsToDeal; i++) // try to deal set number of cards
+        for (int i = 0; i < Config.GameValues.cardsToDeal; i++) // try to deal set number of cards
         {
             if (cardList.Count <= i) // are there no more cards in the deck?
                 break;
@@ -340,7 +340,7 @@ public class DeckScript : MonoBehaviour
                         while (topFoundationCard.transform.position != target)
                         {   
                             topFoundationCard.transform.position = Vector3.MoveTowards(topFoundationCard.transform.position, target,
-                                Time.deltaTime * Config.Instance.cardsToReactorspeed);
+                                Time.deltaTime * Config.GameValues.cardsToReactorspeed);
                             yield return null;
                         }
 
@@ -390,7 +390,7 @@ public class DeckScript : MonoBehaviour
         }
         else
         {
-            if (WastepileScript.Instance.cardList.Count > Config.Instance.cardsToDeal)
+            if (WastepileScript.Instance.cardList.Count > Config.GameValues.cardsToDeal)
             {
                 deckCounter.fontSize = 45;
                 deckCounter.text = "FLIP";

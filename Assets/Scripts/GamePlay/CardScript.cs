@@ -1,6 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using JetBrains.Annotations;
 using UnityEngine;
 
 public class CardScript : MonoBehaviour
@@ -99,12 +97,12 @@ public class CardScript : MonoBehaviour
         if (selected)
         {
             newColor = gameObject.GetComponent<SpriteRenderer>().material.color;
-            newColor.a = Config.Instance.selectedCardOpacity;
+            newColor.a = Config.GameValues.selectedCardOpacity;
             gameObject.GetComponent<SpriteRenderer>().material.color = newColor;
             suitObject.GetComponent<SpriteRenderer>().material.color = newColor;
 
             Color rankColor = rankObject.GetComponent<TextMesh>().color;
-            rankColor.a = Config.Instance.selectedCardOpacity;
+            rankColor.a = Config.GameValues.selectedCardOpacity;
             rankObject.GetComponent<TextMesh>().color = rankColor;
 
             hologram.GetComponent<SpriteRenderer>().color = newColor;
@@ -164,7 +162,7 @@ public class CardScript : MonoBehaviour
         hologram.GetComponent<SpriteRenderer>().color = newColor;
         hologramFoodSP.color = newColor;
 
-        if (newColor == Config.Instance.cardMatchHighlightColor)
+        if (newColor == Config.GameValues.cardMatchHighlightColor)
         {
             hologramFoodSP.sprite = hologramComboSprite;
             hologramFood.transform.localScale = new Vector3(0.6f, 0.6f, 1);
@@ -244,11 +242,11 @@ public class CardScript : MonoBehaviour
             glow.SetActive(true);
             if (match)
             {
-                glow.GetComponent<SpriteRenderer>().color = Config.Instance.cardMatchHighlightColor;
+                glow.GetComponent<SpriteRenderer>().color = Config.GameValues.cardMatchHighlightColor;
             }
             else
             {
-                glow.GetComponent<SpriteRenderer>().color = Config.Instance.cardMoveHighlightColor;
+                glow.GetComponent<SpriteRenderer>().color = Config.GameValues.cardMoveHighlightColor;
             }
 
             glowing = true;

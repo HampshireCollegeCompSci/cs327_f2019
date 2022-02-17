@@ -53,7 +53,7 @@ public class WastepileScript : MonoBehaviour
         if (cardList.Count != 0) // hide the current top tokens hologram now
         {
             cardList[0].GetComponent<CardScript>().HideHologram();
-            cardList[0].GetComponent<SpriteRenderer>().color = Config.Instance.cardObstructedColor;
+            cardList[0].GetComponent<SpriteRenderer>().color = Config.GameValues.cardObstructedColor;
         }
 
         Vector3 temp = contentRectTransform.anchoredPosition;
@@ -62,7 +62,7 @@ public class WastepileScript : MonoBehaviour
         while (temp.x > 0)
         {
             yield return null;
-            temp.x -= Time.deltaTime * Config.Instance.wastepileAnimationSpeedFast;
+            temp.x -= Time.deltaTime * Config.GameValues.wastepileAnimationSpeedFast;
             contentRectTransform.anchoredPosition = temp;
         }
 
@@ -70,7 +70,7 @@ public class WastepileScript : MonoBehaviour
         for (int i = 0; i < cards.Count - 1; i++)
         {
             cards[i].GetComponent<CardScript>().MoveCard(gameObject, doLog, showHolo: false);
-            cards[i].GetComponent<SpriteRenderer>().color = Config.Instance.cardObstructedColor;
+            cards[i].GetComponent<SpriteRenderer>().color = Config.GameValues.cardObstructedColor;
         }
 
         cards[cards.Count - 1].GetComponent<CardScript>().MoveCard(gameObject, doLog);
@@ -83,7 +83,7 @@ public class WastepileScript : MonoBehaviour
         while (temp.x > 0)
         {
             yield return null;
-            temp.x -= Time.deltaTime * Config.Instance.wastepileAnimationSpeedSlow;
+            temp.x -= Time.deltaTime * Config.GameValues.wastepileAnimationSpeedSlow;
             contentRectTransform.anchoredPosition = temp;
         }
 
@@ -101,7 +101,7 @@ public class WastepileScript : MonoBehaviour
         if (cardList.Count != 0)
         {
             cardList[0].GetComponent<CardScript>().HideHologram();
-            cardList[0].GetComponent<SpriteRenderer>().color = Config.Instance.cardObstructedColor;
+            cardList[0].GetComponent<SpriteRenderer>().color = Config.GameValues.cardObstructedColor;
             cardList[0].GetComponent<BoxCollider2D>().enabled = false;
         }
 
@@ -164,7 +164,7 @@ public class WastepileScript : MonoBehaviour
         Vector3 temp = contentRectTransform.anchoredPosition;
         while (temp.x < 1)
         {
-            temp.x += Time.deltaTime * Config.Instance.wastepileAnimationSpeedSlow;
+            temp.x += Time.deltaTime * Config.GameValues.wastepileAnimationSpeedSlow;
             contentRectTransform.anchoredPosition = temp;
             yield return null;
         }
@@ -187,7 +187,7 @@ public class WastepileScript : MonoBehaviour
         while (temp.x < cardList.Count + 1)
         {
             yield return null;
-            temp.x += Time.deltaTime * Config.Instance.wastepileAnimationSpeedFast;
+            temp.x += Time.deltaTime * Config.GameValues.wastepileAnimationSpeedFast;
             contentRectTransform.anchoredPosition = temp;
         }
 

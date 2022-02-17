@@ -13,34 +13,14 @@ public class Config : MonoBehaviour
     public bool gameWin;
     public int score;
 
-    public float relativeCardScale;
-    public int turnsTillReset;
-    public int delayToShowGameSummary;
-    public float draggedTokenOffset;
-    public float selectedCardOpacity;
     public bool prettyColors;
-    public Color cardObstructedColor;
-    public Color cardMoveHighlightColor;
-    public Color cardMatchHighlightColor;
-    public Color pointColor;
-
-    //score
-    public int matchPoints;
-    public int emptyReactorPoints;
-    public int perfectGamePoints;
 
     //foundations
-    public int foundationStartSize;
-
     public GameObject foundation1;
     public GameObject foundation2;
     public GameObject foundation3;
     public GameObject foundation4;
     public GameObject[] foundations;
-
-    //wastepile
-    public byte wastepileAnimationSpeedSlow;
-    public byte wastepileAnimationSpeedFast;
 
     //reactor
     public int maxReactorVal;
@@ -51,10 +31,6 @@ public class Config : MonoBehaviour
     public GameObject reactor4;
     public GameObject[] reactors;
 
-    //deck
-    public byte cardsToDeal;
-    public byte cardsToReactorspeed;
-
     //tutorial
     public bool tutorialOn;
 
@@ -62,32 +38,14 @@ public class Config : MonoBehaviour
     public bool gamePaused;
 
     //internal variables
-    private GameInfo gameInfo;
     private GameObject fadeOutImage;
-
-    public string[] difficulties;
-    public int[] reactorLimits;
-    public int[] moveLimits;
 
     public string currentDifficulty;
 
     public int actionMax;
     public int actions;
-    public int turnAlertSmallThreshold;
-    public int turnAlertThreshold;
 
     public byte consecutiveMatches;
-    public int scoreMultiplier;
-
-    //button txt
-    public string[] menuButtonsTxtEnglish;
-    public string[] levelButtonsTxtEnglish;
-    public string backButtonTxtEnglish;
-    public string loadingTxtEnglish;
-    public string[] pauseButtonsTxtEnglish;
-    public string[] summaryButtonsTxtEnglish;
-    public string[] scoreActionLabelsTxtEnglish;
-    public string[] gameStateTxtEnglish;
 
     //long term tracking
     //public int moves;
@@ -96,6 +54,7 @@ public class Config : MonoBehaviour
 
     // Singleton instance.
     public static Config Instance = null;
+    public static GameValues GameValues = null;
 
     // Initialize the singleton instance.
     private void Awake()
@@ -104,6 +63,7 @@ public class Config : MonoBehaviour
         {
             DontDestroyOnLoad(gameObject); //makes instance persist across scenes
             Instance = this;
+            LoadGameValues();
         }
         else if (Instance != this)
         {
@@ -113,11 +73,22 @@ public class Config : MonoBehaviour
         PlayerPrefKeys.CheckKeys();
     }
 
-    private void Start()
+    private void LoadGameValues()
     {
-        string path = "GameConfigurations/gameValues";
-        gameInfo = CreateFromJSON(path);
-        ConfigFromJSON();
+        Debug.Log("loading gamevalues from json");
+        TextAsset jsonTextFile = Resources.Load<TextAsset>(Constants.gameValuesPath);
+        GameValues = JsonUtility.FromJson<GameValues>(jsonTextFile.ToString());
+
+        // Colors need to be reconstructed
+        GameValues.cardObstructedColor = CreateColor(GameValues.cardObstructedColorValues);
+        GameValues.cardMoveHighlightColor = CreateColor(GameValues.cardMoveHighlightColorValues);
+        GameValues.cardMatchHighlightColor = CreateColor(GameValues.cardMatchHighlightColorValues);
+        GameValues.pointColor = CreateColor(GameValues.pointColorValues);
+    }
+
+    private Color CreateColor(float [] colorV)
+    {
+        return new Color(colorV[0], colorV[1], colorV[2], colorV[3]);
     }
 
     public void GameOver(bool didWin, bool manualWin = false)
@@ -136,7 +107,7 @@ public class Config : MonoBehaviour
 
     IEnumerator EndGame()
     {
-        float countdown = delayToShowGameSummary;
+        float countdown = GameValues.delayToShowGameSummary;
 
         if (gameWin)
         {
@@ -146,7 +117,7 @@ public class Config : MonoBehaviour
             while (countdown > 0)
             {
                 yield return new WaitForSeconds(0.01f);
-                fadeOutImage.GetComponent<Image>().color = new Color(1, 1, 1, 1 - (countdown / delayToShowGameSummary));
+                fadeOutImage.GetComponent<Image>().color = new Color(1, 1, 1, 1 - (countdown / GameValues.delayToShowGameSummary));
                 countdown -= 0.02f;
             }
         }
@@ -160,7 +131,7 @@ public class Config : MonoBehaviour
             while (countdown > 0)
             {
                 yield return new WaitForSeconds(0.01f);
-                fadeOutImage.GetComponent<Image>().color = new Color(0, 0, 0, 1 - (countdown / delayToShowGameSummary));
+                fadeOutImage.GetComponent<Image>().color = new Color(0, 0, 0, 1 - (countdown / GameValues.delayToShowGameSummary));
                 countdown -= 0.02f;
             }
         }
@@ -177,57 +148,6 @@ public class Config : MonoBehaviour
         }
         SaveState.Delete();
     }
-
-    public void ConfigFromJSON()
-    {
-        foundationStartSize = gameInfo.foundationStartingSize;
-        wastepileAnimationSpeedSlow = gameInfo.wastepileAnimationSpeedSlow;
-        wastepileAnimationSpeedFast = gameInfo.wastepileAnimationSpeedFast;
-        cardsToDeal = gameInfo.cardsToDeal;
-        cardsToReactorspeed = gameInfo.cardsToReactorspeed;
-        relativeCardScale = gameInfo.relativeCardScale;
-        turnsTillReset = gameInfo.turnsTillReset;
-        matchPoints = gameInfo.matchPoints;
-        emptyReactorPoints = gameInfo.emptyReactorPoints;
-        perfectGamePoints = gameInfo.perfectGamePoints;
-        delayToShowGameSummary = gameInfo.delayToShowGameSummary;
-        difficulties = gameInfo.difficulties;
-        reactorLimits = gameInfo.reactorLimits;
-        moveLimits = gameInfo.moveLimits;
-        draggedTokenOffset = gameInfo.draggedTokenOffset;
-        selectedCardOpacity = gameInfo.selectedCardOpacity;
-
-        menuButtonsTxtEnglish = gameInfo.menuButtonsTxtEnglish;
-        levelButtonsTxtEnglish = gameInfo.levelButtonsTxtEnglish;
-        backButtonTxtEnglish = gameInfo.backButtonTxtEnglish;
-        loadingTxtEnglish = gameInfo.loadingTxtEnglish;
-        pauseButtonsTxtEnglish = gameInfo.pauseButtonsTxtEnglish;
-        summaryButtonsTxtEnglish = gameInfo.summaryButtonsTxtEnglish;
-        scoreActionLabelsTxtEnglish = gameInfo.scoreActionLabelsTxtEnglish;
-        gameStateTxtEnglish = gameInfo.gameStateTxtEnglish;
-
-        cardObstructedColor = new Color(gameInfo.cardObstructedColor[0],
-                                        gameInfo.cardObstructedColor[1],
-                                        gameInfo.cardObstructedColor[2],
-                                        gameInfo.cardObstructedColor[3]);
-        cardMoveHighlightColor = new Color(gameInfo.cardMoveHighlightColor[0],
-                                           gameInfo.cardMoveHighlightColor[1],
-                                           gameInfo.cardMoveHighlightColor[2],
-                                           gameInfo.cardMoveHighlightColor[3]);
-        cardMatchHighlightColor = new Color(gameInfo.cardMatchHighlightColor[0],
-                                           gameInfo.cardMatchHighlightColor[1],
-                                           gameInfo.cardMatchHighlightColor[2],
-                                           gameInfo.cardMatchHighlightColor[3]);
-        pointColor = new Color(gameInfo.pointColor[0],
-                               gameInfo.pointColor[1],
-                               gameInfo.pointColor[2],
-                               gameInfo.pointColor[3]);
-
-        turnAlertSmallThreshold = gameInfo.turnAlertSmallThreshold;
-        turnAlertThreshold = gameInfo.turnAlertThreshold;
-
-        scoreMultiplier = gameInfo.scoreMultiplier;
-}
 
     public void StartupFindObjects()
     {
@@ -250,13 +170,6 @@ public class Config : MonoBehaviour
         }
 
         score = 0;
-    }
-
-
-    public static GameInfo CreateFromJSON(string path)
-    {
-        var jsonTextFile = Resources.Load<TextAsset>(path);
-        return JsonUtility.FromJson<GameInfo>(jsonTextFile.ToString());
     }
 
     [SerializeField]
@@ -299,24 +212,24 @@ public class Config : MonoBehaviour
 
     }
 
+    public void SetDifficulty(int dif)
+    {
+        currentDifficulty = GameValues.difficulties[dif];
+        maxReactorVal = GameValues.reactorLimits[dif];
+        actionMax = GameValues.moveLimits[dif];
+    }
+
     public void SetDifficulty(string dif)
     {
-        currentDifficulty = dif;
+        for (int i = 0; i < GameValues.difficulties.Length; i++)
+        {
+            if (dif.Equals(GameValues.difficulties[i]))
+            {
+                SetDifficulty(i);
+                return;
+            }
+        }
 
-        if (dif == difficulties[0])
-        {
-            maxReactorVal = reactorLimits[0];
-            actionMax = moveLimits[0];
-        }
-        if (dif == difficulties[1])
-        {
-            maxReactorVal = reactorLimits[1];
-            actionMax = moveLimits[1];
-        }
-        if (dif == difficulties[2])
-        {
-            maxReactorVal = reactorLimits[2];
-            actionMax = moveLimits[2];
-        }
+        throw new System.Exception($"The difficulty \"{dif}\" was not found.");
     }
 }

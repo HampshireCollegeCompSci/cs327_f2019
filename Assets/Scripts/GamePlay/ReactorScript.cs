@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ReactorScript : MonoBehaviour
@@ -36,7 +35,7 @@ public class ReactorScript : MonoBehaviour
         if (cardList.Count != 0)
         {
             cardList[0].GetComponent<BoxCollider2D>().enabled = false;
-            cardList[0].GetComponent<SpriteRenderer>().color = Config.Instance.cardObstructedColor;
+            cardList[0].GetComponent<SpriteRenderer>().color = Config.GameValues.cardObstructedColor;
         }
 
         cardList.Insert(0, card);

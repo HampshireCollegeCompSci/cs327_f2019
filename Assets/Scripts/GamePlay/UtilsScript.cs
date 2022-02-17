@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System.IO;
 
 public class UtilsScript : MonoBehaviour
 {
@@ -55,9 +54,9 @@ public class UtilsScript : MonoBehaviour
     void Start()
     {
         selectedCardsCopy = new List<GameObject>();
-        matchPoints = Config.Instance.matchPoints;
-        emptyReactorPoints = Config.Instance.emptyReactorPoints;
-        perfectGamePoints = Config.Instance.perfectGamePoints;
+        matchPoints = Config.GameValues.matchPoints;
+        emptyReactorPoints = Config.GameValues.emptyReactorPoints;
+        perfectGamePoints = Config.GameValues.perfectGamePoints;
     }
 
     void Update()
@@ -257,7 +256,7 @@ public class UtilsScript : MonoBehaviour
         for (int i = 1; i < selectedCardsCopy.Count; i++)
         {
             selectedCardsCopy[i].transform.position = new Vector3(selectedCardsCopy[i - 1].transform.position.x,
-                                                                  selectedCardsCopy[i - 1].transform.position.y + Config.Instance.draggedTokenOffset,
+                                                                  selectedCardsCopy[i - 1].transform.position.y + Config.GameValues.draggedTokenOffset,
                                                                   selectedCardsCopy[i - 1].transform.position.z - 0.05f);
         }
 
@@ -361,7 +360,7 @@ public class UtilsScript : MonoBehaviour
         card2Script.MoveCard(MatchedPileScript.Instance.gameObject);
         card1Script.MoveCard(MatchedPileScript.Instance.gameObject);
 
-        int points = matchPoints + (Config.Instance.consecutiveMatches * Config.Instance.scoreMultiplier);
+        int points = matchPoints + (Config.Instance.consecutiveMatches * Config.GameValues.scoreMultiplier);
         UpdateScore(points);
         UpdateActions(0, isMatch: true);
 
@@ -422,8 +421,8 @@ public class UtilsScript : MonoBehaviour
         if (Config.Instance.consecutiveMatches > 1)
             comboText.text = "X" + Config.Instance.consecutiveMatches.ToString() + " COMBO";
 
-        comboText.color = Config.Instance.pointColor;
-        pointText.color = Config.Instance.pointColor;
+        comboText.color = Config.GameValues.pointColor;
+        pointText.color = Config.GameValues.pointColor;
 
         float scale = 1;
         while (scale < 1.5)
@@ -488,7 +487,7 @@ public class UtilsScript : MonoBehaviour
         else
             Config.Instance.moveCounter++;
 
-        bool wasInAlertThreshold = Config.Instance.actionMax - Config.Instance.actions <= Config.Instance.turnAlertThreshold;
+        bool wasInAlertThreshold = Config.Instance.actionMax - Config.Instance.actions <= Config.GameValues.turnAlertThreshold;
 
         // loading a saved game triggers this
         if (startingGame)
@@ -539,7 +538,7 @@ public class UtilsScript : MonoBehaviour
             StateLoader.Instance.WriteState();
 
         // time to determine if the alert should be turned on
-        bool isInAlertThreshold = Config.Instance.actionMax - Config.Instance.actions <= Config.Instance.turnAlertThreshold;
+        bool isInAlertThreshold = Config.Instance.actionMax - Config.Instance.actions <= Config.GameValues.turnAlertThreshold;
         if (!wasInAlertThreshold && !isInAlertThreshold)
         {
             // do nothing

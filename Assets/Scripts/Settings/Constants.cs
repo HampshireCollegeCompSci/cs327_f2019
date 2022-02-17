@@ -2,6 +2,10 @@
 
 public static class Constants
 {
+    // Game Values
+    public const string gameValuesPath = "GameConfigurations/gameValues";
+
+
     // Save States
     public const string saveStateLocationEditor = "Assets/Resources/GameStates";
     public const string saveStateFileName = "/saveState";
@@ -16,7 +20,7 @@ public static class Constants
     public const string tutorialStateStartFileName = "tutorialState_start";
 
     // Other
-    public static bool inEditor = Application.isEditor;
+    public static readonly bool inEditor = Application.isEditor;
 
     // Scenes
     public const string mainMenuScene = "MainMenuScene";

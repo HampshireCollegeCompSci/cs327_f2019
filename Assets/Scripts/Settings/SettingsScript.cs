@@ -117,7 +117,7 @@ public class SettingsScript : MonoBehaviour
             Debug.Log("clearing saved records");
 
             // since ResultsScript.cs detects and auto fills the very first records this is how it must be done
-            foreach (string difficulty in Config.Instance.difficulties)
+            foreach (string difficulty in Config.GameValues.difficulties)
             {
                 PlayerPrefs.DeleteKey(PlayerPrefKeys.GetHighScoreKey(difficulty));
                 PlayerPrefs.DeleteKey(PlayerPrefKeys.GetLeastMovesKey(difficulty));
