@@ -2250,55 +2250,24 @@ MonoBehaviour:
   gameOver: 0
   gameWin: 0
   score: 0
-  relativeCardScale: 0
-  turnsTillReset: 0
-  delayToShowGameSummary: 0
-  draggedTokenOffset: 0
-  selectedCardOpacity: 0
   prettyColors: 0
-  cardObstructedColor: {r: 0, g: 0, b: 0, a: 0}
-  cardMoveHighlightColor: {r: 0, g: 0, b: 0, a: 0}
-  cardMatchHighlightColor: {r: 0, g: 0, b: 0, a: 0}
-  pointColor: {r: 0, g: 0, b: 0, a: 0}
-  matchPoints: 0
-  emptyReactorPoints: 0
-  perfectGamePoints: 0
-  foundationStartSize: 0
   foundation1: {fileID: 0}
   foundation2: {fileID: 0}
   foundation3: {fileID: 0}
   foundation4: {fileID: 0}
   foundations: []
-  wastepileAnimationSpeedSlow: 0
-  wastepileAnimationSpeedFast: 0
   maxReactorVal: 0
   reactor1: {fileID: 0}
   reactor2: {fileID: 0}
   reactor3: {fileID: 0}
   reactor4: {fileID: 0}
   reactors: []
-  cardsToDeal: 0
-  cardsToReactorspeed: 0
   tutorialOn: 0
   gamePaused: 0
-  difficulties: []
-  reactorLimits: 
-  moveLimits: 
   currentDifficulty: 
   actionMax: 0
   actions: 0
-  turnAlertSmallThreshold: 0
-  turnAlertThreshold: 0
   consecutiveMatches: 0
-  scoreMultiplier: 0
-  menuButtonsTxtEnglish: []
-  levelButtonsTxtEnglish: []
-  backButtonTxtEnglish: 
-  loadingTxtEnglish: 
-  pauseButtonsTxtEnglish: []
-  summaryButtonsTxtEnglish: []
-  scoreActionLabelsTxtEnglish: []
-  gameStateTxtEnglish: []
   moveCounter: 0
   matchCounter: 0
   json: 
