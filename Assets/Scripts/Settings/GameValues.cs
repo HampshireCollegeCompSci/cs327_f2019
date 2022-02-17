@@ -43,4 +43,7 @@ public class GameValues
     public string[] summaryButtonsTxtEnglish;
     public string[] scoreActionLabelsTxtEnglish;
     public string[] gameStateTxtEnglish;
+
+    public float musicFadeIn;
+    public float musicFadeOut;
 }

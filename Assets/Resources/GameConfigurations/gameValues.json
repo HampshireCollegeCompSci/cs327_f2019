@@ -23,6 +23,9 @@
 	"turnAlertThreshold": 5,
 	"scoreMultiplier": 50,
 
+	"musicFadeIn": 2,
+	"musicFadeOut": 1.5,
+
 	"menuButtonsTxtEnglish": [ "PLAY", "TUTORIAL", "SETTINGS", "ABOUT" ],
 	"levelButtonsTxtEnglish": [ "CONTINUE", "EASY", "MEDIUM", "HARD" ],
 	"backButtonTxtEnglish": "BACK",

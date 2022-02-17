@@ -204,7 +204,7 @@ public class MenuUIScript : MonoBehaviour
         if (UtilsScript.Instance.IsInputStopped()) return;
 
         SoundEffectsController.Instance.PauseMenuButtonSound();
-        //TODO save the game scene
+        MusicController.Instance.PauseMusic();
         Config.Instance.gamePaused = true;
         SceneManager.LoadScene(Constants.pauseScene, LoadSceneMode.Additive);
     }
@@ -213,10 +213,10 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI resume game");
 
-        Config.Instance.gamePaused = false;
-        //TODO load the saved game scene then uncomment the above code
         SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.UnloadSceneAsync(Constants.pauseScene);
+        Config.Instance.gamePaused = false;
+        MusicController.Instance.PlayMusic();
     }
 
     public void SettingsBackButton()

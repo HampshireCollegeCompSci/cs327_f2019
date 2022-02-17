@@ -2114,8 +2114,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b09e9f706e4944ff7a22f94080dcfb35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  soundTrack1: {fileID: 1692220249}
-  soundTrack2: {fileID: 1692220248}
+  audioSource_1: {fileID: 1692220249}
+  audioSource_2: {fileID: 1692220248}
   menuMusic: {fileID: 8300000, guid: 007ad2cfb6bbf42b8b8b0dd5ab102c14, type: 3}
   themeMusic: {fileID: 8300000, guid: c3adb86c560e247f89bda93a96e9aa1f, type: 3}
   transitionMusic: {fileID: 8300000, guid: cbbd6d8c640bead4eb7f1c77f051eaac, type: 3}
