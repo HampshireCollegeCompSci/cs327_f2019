@@ -40,7 +40,7 @@ public class MusicController : MonoBehaviour
     private void Start()
     {
         playingTrack = 0;
-        UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.musicVolumeKey, 0.5f));
+        UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.musicVolumeKey));
     }
 
     public void UpdateMaxVolume(float newVolume)
@@ -178,7 +178,7 @@ public class MusicController : MonoBehaviour
     }
 
     // https://medium.com/@wyattferguson/how-to-fade-out-in-audio-in-unity-8fce422ab1a8
-    public IEnumerator FadeOut(AudioSource audioSource)
+    private IEnumerator FadeOut(AudioSource audioSource)
     {
         if (!audioSource.isPlaying) yield break;
 
@@ -191,7 +191,7 @@ public class MusicController : MonoBehaviour
         //audioSource.clip.UnloadAudioData();
     }
 
-    public IEnumerator FadeIn(AudioSource audioSource)
+    private IEnumerator FadeIn(AudioSource audioSource)
     {
         audioSource.volume = 0;
         audioSource.Play();
@@ -201,5 +201,4 @@ public class MusicController : MonoBehaviour
             yield return null;
         }
     }
-
 }

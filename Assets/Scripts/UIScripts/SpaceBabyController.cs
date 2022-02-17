@@ -38,10 +38,16 @@ public class SpaceBabyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        audioSource.volume = PlayerPrefs.GetFloat(Constants.soundEffectsVolumeKey, 0.5f);
+        UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.soundEffectsVolumeKey));
         idling = true;
         angry = false;
         animator.Play("IdlingAnim");
+    }
+
+    public void UpdateMaxVolume(float newVolume)
+    {
+        Debug.Log($"updating space baby volume to: {newVolume}");
+        audioSource.volume = newVolume;
     }
 
     // the 2D collider on the spacebby calls this

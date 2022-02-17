@@ -40,7 +40,7 @@ public class SoundEffectsController : MonoBehaviour
 
     private void Start()
     {
-        UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.soundEffectsVolumeKey, 0.5f));
+        UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.soundEffectsVolumeKey));
 
         Vibration.Init();
         System.Boolean.TryParse(PlayerPrefs.GetString(Constants.vibrationEnabledKey), out vibrationEnabled);
@@ -169,7 +169,7 @@ public class SoundEffectsController : MonoBehaviour
         StartCoroutine(LoseVibration());
     }
 
-    IEnumerator LoseVibration()
+    private IEnumerator LoseVibration()
     {
         yield return new WaitForSeconds(0.9f);
         VibrateLarge();

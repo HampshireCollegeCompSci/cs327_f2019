@@ -14,9 +14,18 @@ public class GameValues
     public int emptyReactorPoints;
     public int perfectGamePoints;
     public int delayToShowGameSummary;
+
+    public float musicFadeIn;
+    public float musicFadeOut;
+    public float musicDefaultVolume;
+    public float soundEffectsDefaultVolume;
+    public bool vibrationEnabledDefault;
+    public bool foodSuitsEnabledDefault;
+
     public string[] difficulties;
     public int[] reactorLimits;
     public int[] moveLimits;
+
     public float selectedCardOpacity;
 
     public float[] cardObstructedColorValues;
@@ -44,6 +53,4 @@ public class GameValues
     public string[] scoreActionLabelsTxtEnglish;
     public string[] gameStateTxtEnglish;
 
-    public float musicFadeIn;
-    public float musicFadeOut;
 }

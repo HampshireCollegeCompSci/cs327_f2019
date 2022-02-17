@@ -80,6 +80,11 @@ public class SettingsScript : MonoBehaviour
         PlayerPrefs.SetFloat(Constants.soundEffectsVolumeKey, update);
         SoundEffectsController.Instance.UpdateMaxVolume(update);
         SoundEffectsController.Instance.ButtonPressSound();
+
+        if (SpaceBabyController.Instance != null)
+        {
+            SpaceBabyController.Instance.UpdateMaxVolume(update);
+        }
     }
 
     public void VibrationEnabledOnToggle(bool update)
