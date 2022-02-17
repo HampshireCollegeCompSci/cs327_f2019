@@ -40,7 +40,7 @@ public class MusicController : MonoBehaviour
     private void Start()
     {
         playingTrack = 0;
-        UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.musicVolumeKey, 0.5f));
+        UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.musicVolumeKey));
     }
 
     public void UpdateMaxVolume(float newVolume)

@@ -14,22 +14,22 @@ public static class PlayerPrefKeys
 
         if (!PlayerPrefs.HasKey(Constants.soundEffectsVolumeKey))
         {
-            PlayerPrefs.SetFloat(Constants.soundEffectsVolumeKey, 0.5f);
+            PlayerPrefs.SetFloat(Constants.soundEffectsVolumeKey, Config.GameValues.soundEffectsDefaultVolume);
         }
 
         if (!PlayerPrefs.HasKey(Constants.musicVolumeKey))
         {
-            PlayerPrefs.SetFloat(Constants.musicVolumeKey, 0.5f);
+            PlayerPrefs.SetFloat(Constants.musicVolumeKey, Config.GameValues.musicDefaultVolume);
         }
 
         if (!PlayerPrefs.HasKey(Constants.vibrationEnabledKey))
         {
-            PlayerPrefs.SetString(Constants.vibrationEnabledKey, true.ToString());
+            PlayerPrefs.SetString(Constants.vibrationEnabledKey, Config.GameValues.vibrationEnabledDefault.ToString());
         }
 
         if (!PlayerPrefs.HasKey(Constants.foodSuitsEnabledKey))
         {
-            PlayerPrefs.SetString(Constants.foodSuitsEnabledKey, true.ToString());
+            PlayerPrefs.SetString(Constants.foodSuitsEnabledKey, Config.GameValues.foodSuitsEnabledDefault.ToString());
         }
     }
 
