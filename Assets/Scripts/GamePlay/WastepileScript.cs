@@ -25,19 +25,16 @@ public class WastepileScript : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+
+            cardContainers = new List<GameObject>();
+
+            scrollRect = this.gameObject.GetComponent<ScrollRect>();
+            contentRectTransform = contentPanel.GetComponent<RectTransform>();
         }
         else if (Instance != this)
         {
             throw new System.ArgumentException("there should not already be an instance of this");
         }
-    }
-
-    private void Start()
-    {
-        cardContainers = new List<GameObject>();
-
-        scrollRect = gameObject.GetComponent<ScrollRect>();
-        contentRectTransform = contentPanel.GetComponent<RectTransform>();
     }
 
     public void AddCards(List<GameObject> cards, bool doLog = true)

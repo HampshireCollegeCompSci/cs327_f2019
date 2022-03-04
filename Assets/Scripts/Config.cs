@@ -7,50 +7,48 @@ using UnityEngine.UI;
 
 public class Config : MonoBehaviour
 {
-    //Variables go here
+    // the undo log
     public List<Move> moveLog = new List<Move>();
-    public bool gameOver;
-    public bool gameWin;
-    public int score;
+
+    // game settings
+    public bool tutorialOn;
+    public bool continuing;
 
     public bool prettyColors;
 
-    //foundations
+    public string currentDifficulty;
+    public int maxReactorVal;
+    public int actionMax;
+
+    // game values
+    public bool gamePaused;
+    public bool gameOver;
+    public bool gameWin;
+
+    public int actions;
+    public int score;
+    public byte consecutiveMatches;
+
+    //internal variables
+    private GameObject fadeOutImage;
+
+    // long term tracking
+    public int moveCounter;
+    public byte matchCounter;
+
+    // foundations
     public GameObject foundation1;
     public GameObject foundation2;
     public GameObject foundation3;
     public GameObject foundation4;
     public GameObject[] foundations;
 
-    //reactor
-    public int maxReactorVal;
-
+    // reactors
     public GameObject reactor1;
     public GameObject reactor2;
     public GameObject reactor3;
     public GameObject reactor4;
     public GameObject[] reactors;
-
-    //tutorial
-    public bool tutorialOn;
-
-    //UI
-    public bool gamePaused;
-
-    //internal variables
-    private GameObject fadeOutImage;
-
-    public string currentDifficulty;
-
-    public int actionMax;
-    public int actions;
-
-    public byte consecutiveMatches;
-
-    //long term tracking
-    //public int moves;
-    public int moveCounter;
-    public byte matchCounter;
 
     // Singleton instance.
     public static Config Instance = null;
@@ -91,13 +89,13 @@ public class Config : MonoBehaviour
         return new Color(colorV[0], colorV[1], colorV[2], colorV[3]);
     }
 
-    public void GameOver(bool didWin, bool manualWin = false)
+    public void GameOver(bool didWin)
     {
         gameOver = true;
         gameWin = didWin;
         
-        if (!manualWin)
-            matchCounter = (byte) (MatchedPileScript.Instance.cardList.Count / 2);
+        // overwritten when manually won (cheated)
+        matchCounter = (byte) (MatchedPileScript.Instance.cardList.Count / 2);
         
         fadeOutImage.SetActive(true);
 
@@ -168,8 +166,6 @@ public class Config : MonoBehaviour
         {
             fadeOutImage.SetActive(false);
         }
-
-        score = 0;
     }
 
     [SerializeField]

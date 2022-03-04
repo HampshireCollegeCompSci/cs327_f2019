@@ -61,10 +61,7 @@ public class UtilsScript : MonoBehaviour
 
     void Update()
     {
-        if (SceneManager.GetActiveScene().buildIndex != 1)
-            return;
-
-        if (!Config.Instance.gameOver && !Config.Instance.gamePaused && !Config.Instance.tutorialOn)
+        if (!Config.Instance.gamePaused && !Config.Instance.tutorialOn && !Config.Instance.gameOver)
         {
             if (dragOn)
             {
@@ -682,7 +679,7 @@ public class UtilsScript : MonoBehaviour
 
     public void ManualGameWin()
     {
+        Config.Instance.GameOver(true);
         Config.Instance.matchCounter = 26;
-        Config.Instance.GameOver(true, manualWin: true);
     }
 }

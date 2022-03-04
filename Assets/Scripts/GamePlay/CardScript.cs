@@ -274,38 +274,41 @@ public class CardScript : MonoBehaviour
     public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool showHolo = true)
     {
         bool nextCardWasHidden = false;
-        if (container.CompareTag("Foundation"))
+        if (container != null)
         {
-            if (doLog)
+            if (container.CompareTag("Foundation"))
             {
-                FoundationScript foundationScript = container.GetComponent<FoundationScript>();
-                if (foundationScript.cardList.Count > 1 && foundationScript.cardList[1].GetComponent<CardScript>().IsHidden)
-                    nextCardWasHidden = true;
+                if (doLog)
+                {
+                    FoundationScript foundationScript = container.GetComponent<FoundationScript>();
+                    if (foundationScript.cardList.Count > 1 && foundationScript.cardList[1].GetComponent<CardScript>().IsHidden)
+                        nextCardWasHidden = true;
+                }
+                container.GetComponent<FoundationScript>().RemoveCard(gameObject, showHolo: showHolo);
             }
-            container.GetComponent<FoundationScript>().RemoveCard(gameObject, showHolo: showHolo);
-        }
-        else if (container.CompareTag("Reactor"))
-        {
-            container.GetComponent<ReactorScript>().RemoveCard(gameObject);
-        }
-        else if (container.CompareTag("Wastepile"))
-        {
-            if (!doLog || destination.CompareTag("Deck"))
-                container.GetComponent<WastepileScript>().RemoveCard(gameObject, undoingOrDeck: true, showHolo: showHolo);
-            else
-                container.GetComponent<WastepileScript>().RemoveCard(gameObject, showHolo: showHolo);
-        }
-        else if (container.CompareTag("Deck"))
-        {
-            container.GetComponent<DeckScript>().RemoveCard(gameObject);
-        }
-        else if (container.CompareTag("MatchedPile"))
-        {
-            container.GetComponent<MatchedPileScript>().RemoveCard(gameObject);
-        }
-        else if (container.CompareTag("LoadPile"))
-        {
-            container.GetComponent<LoadPileScript>().RemoveCard(gameObject);
+            else if (container.CompareTag("Reactor"))
+            {
+                container.GetComponent<ReactorScript>().RemoveCard(gameObject);
+            }
+            else if (container.CompareTag("Wastepile"))
+            {
+                if (!doLog || destination.CompareTag("Deck"))
+                    container.GetComponent<WastepileScript>().RemoveCard(gameObject, undoingOrDeck: true, showHolo: showHolo);
+                else
+                    container.GetComponent<WastepileScript>().RemoveCard(gameObject, showHolo: showHolo);
+            }
+            else if (container.CompareTag("Deck"))
+            {
+                container.GetComponent<DeckScript>().RemoveCard(gameObject);
+            }
+            else if (container.CompareTag("MatchedPile"))
+            {
+                container.GetComponent<MatchedPileScript>().RemoveCard(gameObject);
+            }
+            else if (container.CompareTag("LoadPile"))
+            {
+                container.GetComponent<LoadPileScript>().RemoveCard(gameObject);
+            }
         }
 
         if (destination.CompareTag("Foundation"))

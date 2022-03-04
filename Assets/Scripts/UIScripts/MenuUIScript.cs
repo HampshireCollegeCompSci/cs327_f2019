@@ -97,6 +97,7 @@ public class MenuUIScript : MonoBehaviour
         // Main buttons
         playButton.SetActive(showMain);
         tutorialButton.SetActive(showMain);
+        settingsButton.SetActive(showMain);
         aboutButton.SetActive(showMain);
 
         // Play buttons
@@ -116,25 +117,24 @@ public class MenuUIScript : MonoBehaviour
         }
     }
 
-    public void NewGame(bool isContinue = false)
+    public void NewGame(bool isContinue = false, bool isTutorial = false)
     {
         Debug.Log("MenuUI new game");
 
         SoundEffectsController.Instance.ButtonPressSound();
 
-        UndoScript.Instance.moveLog.Clear();
+        Config.Instance.continuing = isContinue;
+        Config.Instance.tutorialOn = isTutorial;
 
-        if (!isContinue)
+
+        if (StartGameSequence.Instance != null)
         {
-            Config.Instance.score = 0;
-            Config.Instance.actions = 0;
-            Config.Instance.moveCounter = 0;
+            StartGameSequence.Instance.StartLoadingGame();
         }
-        Config.Instance.gameOver = false;
-        Config.Instance.gameWin = false;
-        Config.Instance.gamePaused = false;
-
-        SceneManager.LoadScene(Constants.loadingScene);
+        else
+        {
+            throw new System.NullReferenceException("A sequence Instance does not exist!");
+        }
     }
 
     public void UndoButton()
@@ -151,29 +151,28 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI play again");
 
-        SaveState.Delete();
-        NewGame();
+        if (PlayAgainSequence.Instance != null)
+        {
+            PlayAgainSequence.Instance.StartLoadingGame();
+        }
+        else
+        {
+            throw new System.NullReferenceException("A sequence Instance does not exist!");
+        }
     }
 
     public void Restart()
     {
         Debug.Log("MenuUI restart");
 
-        SaveState.Delete();
-        NewGame();
+        SceneManager.UnloadSceneAsync(Constants.pauseScene);
+        MusicController.Instance.GameMusic();
+        GameLoader.Instance.RestartGame();
     }
 
     public void MainMenu()
     {
         Debug.Log("MenuUI main menu");
-
-        Config.Instance.gamePaused = false;
-        if (Config.Instance != null)
-        {
-            Config.Instance.gameOver = false;
-            Config.Instance.gameWin = false;
-        }
-
         SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.LoadScene(Constants.mainMenuScene);
         MusicController.Instance.MainMenuMusic();
@@ -202,10 +201,10 @@ public class MenuUIScript : MonoBehaviour
         Debug.Log("MenuUI pause game");
 
         if (UtilsScript.Instance.IsInputStopped()) return;
-
+        
+        Config.Instance.gamePaused = true;
         SoundEffectsController.Instance.PauseMenuButtonSound();
         MusicController.Instance.PauseMusic();
-        Config.Instance.gamePaused = true;
         SceneManager.LoadScene(Constants.pauseScene, LoadSceneMode.Additive);
     }
 
@@ -236,42 +235,29 @@ public class MenuUIScript : MonoBehaviour
 
     public void Tutorial()
     {
-        Debug.Log("MenuUI starting tutorial");
-
-        StateLoader.Instance.LoadTutorialState(Constants.tutorialStateStartFileName);
-        Config.Instance.SetDifficulty(StateLoader.Instance.gameState.difficulty);
-        Config.Instance.tutorialOn = true;
-        NewGame();
+        NewGame(isTutorial: true);
     }
 
     public void HardDifficulty()
     {
         Config.Instance.SetDifficulty(2);
-        Config.Instance.tutorialOn = false;
-        SaveState.Delete();
         NewGame();
     }
 
     public void MediumDifficulty()
     {
         Config.Instance.SetDifficulty(1);
-        Config.Instance.tutorialOn = false;
-        SaveState.Delete();
         NewGame();
     }
 
     public void EasyDifficulty()
     {
         Config.Instance.SetDifficulty(0);
-        Config.Instance.tutorialOn = false;
-        SaveState.Delete();
         NewGame();
     }
 
     public void Continue()
     {
-        Debug.Log("MenuUI continue");
-
         if (SaveState.Exists())
         {
             if (Constants.inEditor)
@@ -282,10 +268,7 @@ public class MenuUIScript : MonoBehaviour
                 #endif
             }
 
-            StateLoader.Instance.LoadSaveState();
-            Config.Instance.SetDifficulty(StateLoader.Instance.gameState.difficulty);
-            Config.Instance.tutorialOn = false;
-            NewGame(true);
+            NewGame(isContinue: true);
         }
     }
 

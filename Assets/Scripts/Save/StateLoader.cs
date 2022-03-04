@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class StateLoader : MonoBehaviour
 {
-    public GameState gameState;
-
     // Singleton instance.
     public static StateLoader Instance;
 
@@ -14,12 +12,11 @@ public class StateLoader : MonoBehaviour
     {
         if (Instance == null)
         {
-            DontDestroyOnLoad(gameObject); //makes instance persist across scenes
             Instance = this;
         }
         else if (Instance != this)
         {
-            Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
+            throw new System.Exception("two of these scripts should not exist at the same time");
         }
     }
 
@@ -27,7 +24,7 @@ public class StateLoader : MonoBehaviour
     {
         Debug.Log("writing state");
 
-        gameState = new GameState() {
+        GameState gameState = new GameState() {
             foundations = new List<StringListWrapper>(),
             reactors = new List<StringListWrapper>()
         };
@@ -111,7 +108,7 @@ public class StateLoader : MonoBehaviour
         Debug.Log("loading save state");
 
         //load the json into a GameState
-        gameState = CreateFromJSON(SaveState.GetFilePath());
+        UnpackState(CreateFromJSON(SaveState.GetFilePath()));
     }
 
     public void LoadTutorialState(string fileName)
@@ -125,7 +122,7 @@ public class StateLoader : MonoBehaviour
         }
 
         //load the json into a GameState
-        gameState = CreateFromJSON(filePath);
+        UnpackState(CreateFromJSON(filePath), isTutorial: true);
     }
 
     private GameState CreateFromJSON(string path)
@@ -134,14 +131,27 @@ public class StateLoader : MonoBehaviour
         return JsonUtility.FromJson<GameState>(File.ReadAllText(path));
     }
 
-    public void UnpackState(GameState state, bool isTutorial)
+    public void UnpackState(GameState state, bool isTutorial = false)
     {
         Debug.Log($"unpacking state, isTutorial: {isTutorial}");
 
-        // if the tutorial isn't being loaded then we need to make new cards and setup the move log
+        //set up simple variables
+        Config.Instance.SetDifficulty(state.difficulty);
+        UtilsScript.Instance.UpdateScore(state.score, setAsValue: true);
+        Config.Instance.consecutiveMatches = state.consecutiveMatches;
+        Config.Instance.moveCounter = state.moveCounter;
+        Config.Instance.gameOver = false;
+        Config.Instance.gameWin = false;
+        // more is done at the end
+
+        // if the tutorial isn't being loaded then we need to setup the move log
         if (!isTutorial)
         {
-            DeckScript.Instance.InstantiateCards(addToLoadPile: true);
+            if (LoadPileScript.Instance.cardList.Count == 0)
+            {
+                throw new System.Exception("there are no cards in the load pile");
+            }
+
             SetUpMoveLog(state.moveLog, LoadPileScript.Instance.cardList);
         }
 
@@ -186,11 +196,7 @@ public class StateLoader : MonoBehaviour
             }
         }
 
-        //set up simple variables
-        Config.Instance.currentDifficulty = state.difficulty;
-        Config.Instance.score = state.score;
-        Config.Instance.consecutiveMatches = state.consecutiveMatches;
-        Config.Instance.moveCounter = state.moveCounter;
+        ReactorScoreSetScript.Instance.SetReactorScore();
         UtilsScript.Instance.UpdateActions(state.actions, startingGame: true);
     }
 
@@ -297,7 +303,7 @@ public class StateLoader : MonoBehaviour
                 cardScriptRef = card.GetComponent<CardScript>();
                 if (cardScriptRef.cardNum == number && cardScriptRef.suit == suite)
                 {
-                    cardScriptRef.MoveCard(newLocation, false, false, false);
+                    cardScriptRef.MoveCard(newLocation, doLog: false, isAction: false);
                     if (hiddenState)
                     {
                         cardScriptRef.SetFoundationVisibility(false);

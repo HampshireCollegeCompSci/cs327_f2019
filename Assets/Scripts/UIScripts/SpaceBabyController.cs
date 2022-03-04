@@ -14,7 +14,7 @@ public class SpaceBabyController : MonoBehaviour
     public Sprite[] foodObjects;
     public GameObject foodPrefab;
     public GameObject babyPlanet;
-    public GameObject panel;
+    public GameObject panelOverlay;
 
     private bool idling, angry;
 
@@ -147,7 +147,7 @@ public class SpaceBabyController : MonoBehaviour
     IEnumerator EatAnimation(byte matchNumber)
     {
         List<GameObject> foods = new List<GameObject>();
-        Vector3 outOfBounds = new Vector3(3.8f, 0, 0);
+        Vector3 outOfBounds = new Vector3(3.8f, -0.5f, 0);
         Vector3 babyScale = gameObject.transform.localScale;
 
         byte limit = (byte)(matchNumber/2);
@@ -205,8 +205,10 @@ public class SpaceBabyController : MonoBehaviour
     {
         BabyHappy();
 
-        Image panelImage = panel.GetComponent<Image>();
+        panelOverlay.SetActive(true);
+        Image panelImage = panelOverlay.GetComponent<Image>();
         Color panelColor = new Color(1, 1, 1, 0);
+        panelImage.color = panelColor;
 
         while (panelColor.a < 1)
         {

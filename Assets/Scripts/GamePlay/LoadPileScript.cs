@@ -23,7 +23,6 @@ public class LoadPileScript : MonoBehaviour
 
     public void AddCard(GameObject card)
     {
-        //card.GetComponent<CardScript>().HideHologram();
         cardList.Add(card);
     }
 

@@ -7,11 +7,6 @@ public class DeckScript : MonoBehaviour
 {
     public List<GameObject> cardList;
 
-    public GameObject cardPrefab;
-    private Sprite[] suitSprites;
-    public Sprite[] holograms;
-    public Sprite[] combinedHolograms;
-
     private Image buttonImage;
     public Sprite[] buttonAnimation;
     public Text deckCounter;
@@ -20,181 +15,18 @@ public class DeckScript : MonoBehaviour
     public static DeckScript Instance = null;
 
     // Initialize the singleton instance.
-    private void Awake()
+    void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+
+            buttonImage = this.gameObject.GetComponent<Image>();
         }
         else if (Instance != this)
         {
             throw new System.ArgumentException("there should not already be an instance of this");
         }
-    }
-
-    public void DeckStart(Sprite[] suitSprites)
-    {
-        buttonImage = gameObject.GetComponent<Image>();
-
-        this.suitSprites = suitSprites;
-        cardList = new List<GameObject>();
-
-        if (Config.Instance.tutorialOn)
-        {
-            Debug.Log("deck start loading tutorial");
-            InstantiateCards(addToLoadPile: true);
-            StateLoader.Instance.UnpackState(StateLoader.Instance.gameState, true);
-            UtilsScript.Instance.UpdateScore(0);
-        }
-        else if (SaveState.Exists())
-        {
-            Debug.Log("editor: deck start loading saved game");
-            StateLoader.Instance.UnpackState(StateLoader.Instance.gameState, false);
-            UtilsScript.Instance.UpdateScore(0);
-        }
-        else
-        {
-            InstantiateCards();
-            StartGame();
-        }
-    }
-
-    public void StartGame()
-    {
-        Shuffle();
-        SetUpFoundations();
-        Deal(false);
-        UtilsScript.Instance.UpdateActions(0, startingGame: true);
-    }
-
-    // sets up card list
-    public void InstantiateCards(bool addToLoadPile = false)
-    {
-        string[] suitStrings = new string[] { "spades", "clubs", "diamonds", "hearts" };
-
-        GameObject newCard;
-        CardScript newCardScript;
-
-        // order: spade ace, 2, 3... 10, jack, queen, king, clubs... diamonds... hearts
-        int cardIndex = 0; // 1 - 52
-        int hFSIndex; // used for assigning holograms
-        int rank;
-        Color rankColor = Color.black;
-        for (int suit = 0; suit < 4; suit++) // order: spades, clubs, diamonds, hearts
-        {
-            if (suit == 2)
-                rankColor = Color.red;
-
-            hFSIndex = suit * 5;
-
-            for (rank = 1; rank < 14; rank++) // card num: 1 - 13
-            {
-                newCard = Instantiate(cardPrefab);
-                newCardScript = newCard.GetComponent<CardScript>();
-
-                // setting up the cards reactor value, in-game appearance, and hologram sprites
-                if (rank < 10)
-                {
-                    // reactor value
-                    newCardScript.cardVal = rank;
-
-                    // in-game appearance of the card's rank
-                    if (rank == 1)
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = "A";
-                    else
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = rank.ToString();
-
-                    // basic hologram shown
-                    newCardScript.hologramFoodSprite = holograms[hFSIndex];
-
-                    // hologram shown during match
-                    if (suit < 2)
-                        newCardScript.hologramComboSprite = combinedHolograms[0];
-                    else
-                        newCardScript.hologramComboSprite = combinedHolograms[5];
-                }
-                else
-                {
-                    // reactor value, all face cards have a value of 10
-                    newCardScript.cardVal = 10;
-
-                    // in-game appearance of the card's rank
-                    if (rank == 10)
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = "10";
-                    else if (rank == 11)
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = "J";
-                    else if (rank == 12)
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = "Q";
-                    else
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = "K";
-
-                    // all cards >10 have fancy holograms, this is a complex way of assigning them
-                    newCardScript.hologramFoodSprite = holograms[rank - (9 - hFSIndex)];
-
-                    // cards >10 have fancy holograms for matching as well
-                    if (suit < 2)
-                        newCardScript.hologramComboSprite = combinedHolograms[rank - 9];
-                    else
-                        newCardScript.hologramComboSprite = combinedHolograms[rank - 4];
-                }
-
-                // setting up the cards internal rank and suit
-                newCardScript.cardNum = rank;
-                newCardScript.suit = suitStrings[suit];
-
-                // setting up the text renderer's sorting layer and order because you can't do it via Unity's Inspector
-                newCardScript.rankObject.GetComponent<MeshRenderer>().sortingLayerName = "Gameplay";
-                newCardScript.rankObject.GetComponent<MeshRenderer>().sortingOrder = 1;
-
-                // setting up the in-game appearance of the card's rank color
-                newCardScript.rankObject.GetComponent<TextMesh>().color = rankColor;
-
-                // setting up the in-game appearance of the card's suit
-                newCardScript.suitObject.GetComponent<SpriteRenderer>().sprite = suitSprites[suit];
-
-                // moving card to desired location
-                if (!addToLoadPile)
-                {
-                    newCardScript.container = this.gameObject;
-                    AddCard(newCard);
-                }
-                else
-                {
-                    newCardScript.container = LoadPileScript.Instance.gameObject;
-                    LoadPileScript.Instance.AddCard(newCard);
-                }
-                
-                cardIndex += 1;
-            }
-        }
-    }
-
-    // moves cards into foundations
-    public void SetUpFoundations()
-    {
-        CardScript currentCardScript;
-        foreach (GameObject foundation in Config.Instance.foundations)
-        {
-            for (int n = 0; n < Config.GameValues.foundationStartingSize - 1; n++)
-            {
-                currentCardScript = cardList[0].GetComponent<CardScript>();
-                currentCardScript.MoveCard(foundation, doLog: false, showHolo: false);
-                currentCardScript.SetFoundationVisibility(false);
-            }
-
-            // adding and revealing the top card of the foundation
-            currentCardScript = cardList[0].GetComponent<CardScript>();
-            currentCardScript.MoveCard(foundation, doLog: false);
-        }
-
-        // testing purposes: this makes foundation 0 contain the max number of cards a foundation can carry at one
-        /*GameObject foundation0 = Config.config.foundations[1];
-        for (int i = 0; i < 12; i++)
-        {
-            currentCardScript = cardList[0].GetComponent<CardScript>();
-            currentCardScript.MoveCard(foundation0, doLog: false);
-            currentCardScript.SetVisibility(true);
-        }*/
     }
 
     public void AddCard(GameObject card)
@@ -365,20 +197,6 @@ public class DeckScript : MonoBehaviour
 
         UtilsScript.Instance.SetInputStopped(false, nextCycle: true);
         UtilsScript.Instance.UpdateActions(0, setAsValue: true);
-    }
-
-    //Shuffles cardList using Knuth shuffle aka Fisher-Yates shuffle
-    private void Shuffle()
-    {
-        System.Random rand = new System.Random();
-
-        for (int i = 0; i < cardList.Count; i++)
-        {
-            int j = rand.Next(i, cardList.Count);
-            GameObject temp = cardList[i];
-            cardList[i] = cardList[j];
-            cardList[j] = temp;
-        }
     }
 
     public void UpdateDeckCounter()

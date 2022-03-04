@@ -58,6 +58,19 @@ public class MusicController : MonoBehaviour
         }
     }
 
+    public void FadeMusicOut()
+    {
+        StopAllCoroutines();
+        if (audioSource_1.isPlaying)
+        {
+            StartCoroutine(FadeOut(audioSource_1, 6f));
+        }
+        else if (audioSource_2.isPlaying)
+        {
+            StartCoroutine(FadeOut(audioSource_2, 6f));
+        }
+    }
+
     public void PauseMusic()
     {
         if (audioSource_1.isPlaying)
@@ -97,9 +110,11 @@ public class MusicController : MonoBehaviour
         Transition(menuMusic);
     }
 
-    public void GameMusic()
+    public void GameMusic(bool noOverrideAlert = false)
     {
-        if (playingTrack == 2)
+        // continuing a new game can trigger the alert music to play before
+        // gameplay begins so don't override its playback
+        if (playingTrack == 2 || (playingTrack == 3 && noOverrideAlert))
         {
             PlayMusic();
             return;
@@ -111,8 +126,7 @@ public class MusicController : MonoBehaviour
 
     public void AlertMusic()
     {
-        // will play over win/lose music without
-        if (playingTrack == 3 || playingTrack != 2)
+        if (playingTrack == 3)
         {
             PlayMusic();
             return;
@@ -178,13 +192,21 @@ public class MusicController : MonoBehaviour
     }
 
     // https://medium.com/@wyattferguson/how-to-fade-out-in-audio-in-unity-8fce422ab1a8
-    private IEnumerator FadeOut(AudioSource audioSource)
+    private IEnumerator FadeOut(AudioSource audioSource, float musicFadeOut = 0)
     {
-        if (!audioSource.isPlaying) yield break;
+        if (!audioSource.isPlaying)
+        {
+            yield break;
+        }
+
+        if (musicFadeOut == 0)
+        {
+            musicFadeOut = Config.GameValues.musicFadeOut;
+        }
 
         while (audioSource.volume > 0)
         {
-            audioSource.volume -= Time.deltaTime / Config.GameValues.musicFadeOut;
+            audioSource.volume -= Time.deltaTime / musicFadeOut;
             yield return null;
         }
         audioSource.Stop();
@@ -194,6 +216,7 @@ public class MusicController : MonoBehaviour
     private IEnumerator FadeIn(AudioSource audioSource)
     {
         audioSource.volume = 0;
+        audioSource.time = 0;
         audioSource.Play();
         while (audioSource.volume < maxVolume)
         {

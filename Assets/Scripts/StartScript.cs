@@ -1,51 +1,83 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class StartScript : MonoBehaviour
 {
-    public GameObject deckButton;
-    public GameObject[] topSuitObjects, bottomSuitObjects;
-    public Sprite[] suitSprites;
+    public Camera mainCamera;
+    public AudioListener audioListener;
 
-    void Start()
+    // Singleton instance.
+    public static StartScript Instance = null;
+
+    private void Awake()
     {
-        // unloading the loading scene if it's still active
-        if (SceneManager.GetActiveScene().name == Constants.loadingScene)
-            SceneManager.UnloadSceneAsync(Constants.loadingScene);
-
-        // setting stuff up for the game
-        Config.Instance.StartupFindObjects();
-        Config.Instance.gamePaused = false;
-
-        // assigning sprites to the reactor suits
-        bool isOn;
-        if (System.Boolean.TryParse(PlayerPrefs.GetString(Constants.foodSuitsEnabledKey), out isOn))
-        { }
-        else
+        // Initialize the singleton instance.
+        // If there is not already an instance, set it to this.
+        if (Instance == null)
         {
-            // unable to parse
-            isOn = false;
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            throw new Exception("two of these scripts should not exist at the same time");
         }
 
-        // the food sprites start at index 0, classic at 4
-        int suitSpritesIndex;
-        suitSpritesIndex = isOn ? 0 : 4;
-
-        // getting a subset list of suit sprites to use for the token/cards
-        Sprite[] suitSpritesSubset = new Sprite[4];
-        Array.Copy(suitSprites, suitSpritesIndex, suitSpritesSubset, 0, 4);
-
-        // setting up the reactor suit images
-        for (int i = 0; i < 4; i++)
-        {
-            topSuitObjects[i].GetComponent<SpriteRenderer>().sprite = suitSprites[suitSpritesIndex];
-            bottomSuitObjects[i].GetComponent<SpriteRenderer>().sprite = suitSprites[suitSpritesIndex];
-            suitSpritesIndex++;
-        }
-
-        // starting the game
-        deckButton.GetComponent<DeckScript>().DeckStart(suitSpritesSubset);
+        // disable the camera and audio listener because the previous scene is still loaded
+        // and there need to be only one of each
+        Debug.Log("disabling gameplay camera and audio listener");
+        mainCamera.enabled = false;
+        audioListener.enabled = false;
     }
 
+    private void Start()
+    {
+        // pause the game until the game is loaded and the transition is complete
+        Config.Instance.gamePaused = true;
+
+        // load the game to the point that it can be played
+        GameLoader.Instance.LoadGame();
+
+        // Inform that the gameplay scene is done loading
+        // and try to start the transition to gameplay
+        if (StartGameSequence.Instance != null)
+        {
+            StartGameSequence.Instance.GameplayLoaded();
+        }
+        else if (PlayAgainSequence.Instance != null)
+        {
+            PlayAgainSequence.Instance.GameplayLoaded();
+        }
+        else
+        {
+            throw new NullReferenceException("A sequence Instance does not exist!");
+        }
+    }
+
+    public void TransitionToGamePlay()
+    {
+        mainCamera.enabled = true;
+        audioListener.enabled = true;
+        // the alert music starts playing ASAP if triggered so make sure not to override it
+        MusicController.Instance.GameMusic(noOverrideAlert: true);
+        StartCoroutine(FadeGameplayIn());
+    }
+
+    private IEnumerator FadeGameplayIn()
+    {
+        Image fadeInScreen = this.gameObject.GetComponent<Image>();
+        fadeInScreen.enabled = true;
+        Color fadeColor = fadeInScreen.color;
+
+        while (fadeInScreen.color.a >= 0)
+        {
+            fadeInScreen.color = fadeColor;
+            fadeColor.a -= Time.deltaTime * 5;
+            yield return null;
+        }
+
+        fadeInScreen.enabled = false;
+        Config.Instance.gamePaused = false;
+    }
 }

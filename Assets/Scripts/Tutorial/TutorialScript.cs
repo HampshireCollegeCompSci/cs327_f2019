@@ -180,34 +180,13 @@ public class TutorialScript : MonoBehaviour
     /// </summary>
     private void EndTutorial()
     {
-        // not sure if most of this is needed,
-        // but it all works and is to be expected on a game end
-
         Debug.Log("ending tutorial");
 
         tutorial.SetActive(false);
         Config.Instance.tutorialOn = false;
-        Config.Instance.gamePaused = false;
-        Config.Instance.gameOver = false;
-        Config.Instance.gameWin = false;
-        Config.Instance.score = 0;
-        Config.Instance.actions = 0;
-        Config.Instance.moveCounter = 0;
-
-        SaveState.Delete();
-        UndoScript.Instance.moveLog.Clear();
-
-        // move all tokens to the deck
-        foreach (GameObject foundation in Config.Instance.foundations)
-            MoveCardsToDeck(foundation.GetComponent<FoundationScript>().cardList);
-        foreach (GameObject reactor in Config.Instance.reactors)
-            MoveCardsToDeck(reactor.GetComponent<ReactorScript>().cardList);
-        MoveCardsToDeck(WastepileScript.Instance.cardList);
-        MoveCardsToDeck(MatchedPileScript.Instance.cardList);
-
         Config.Instance.SetDifficulty(0);
-        ReactorScoreSetScript.Instance.SetReactorScore();
-        DeckScript.Instance.StartGame();
+
+        GameLoader.Instance.RestartGame();
     }
 
     private void MoveCardsToDeck(List<GameObject> cards)
@@ -226,18 +205,6 @@ public class TutorialScript : MonoBehaviour
     public void ExitButton()
     {
         Debug.Log("exit tutorial requested");
-
-        tutorial.SetActive(false);
-
-        // just in case
-        if (Config.Instance != null)
-        {
-            // setting things to normal
-            Config.Instance.gamePaused = false;
-            Config.Instance.gameOver = false;
-            Config.Instance.gameWin = false;
-        }
-
         SceneManager.LoadScene(Constants.mainMenuScene);
         MusicController.Instance.MainMenuMusic();
     }
@@ -262,32 +229,7 @@ public class TutorialScript : MonoBehaviour
         string fileName = command[1];
 
         Debug.Log("loading save: " + fileName);
-
-        // move all tokens back to load pile
-        foreach (GameObject foundation in Config.Instance.foundations)
-            MoveCardsToLoadPile(foundation.GetComponent<FoundationScript>().cardList);
-        foreach (GameObject reactor in Config.Instance.reactors)
-            MoveCardsToLoadPile(reactor.GetComponent<ReactorScript>().cardList);
-        MoveCardsToLoadPile(DeckScript.Instance.cardList);
-        MoveCardsToLoadPile(WastepileScript.Instance.cardList);
-        MoveCardsToLoadPile(MatchedPileScript.Instance.cardList);
-
-        // load the saved state and then set it up
-        StateLoader.Instance.LoadTutorialState(fileName);
-        StateLoader.Instance.UnpackState(state: StateLoader.Instance.gameState, isTutorial: true);
-    }
-
-    /// <summary>
-    /// Moves all cards/tokens in the list to the load pile.
-    /// </summary>
-    private void MoveCardsToLoadPile(List<GameObject> cards)
-    {
-        int cardCount = cards.Count;
-        while (cardCount != 0)
-        {
-            cards[0].GetComponent<CardScript>().MoveCard(LoadPileScript.Instance.gameObject, doLog: false, isAction: false);
-            cardCount--;
-        }
+        GameLoader.Instance.LoadTutorial(fileName);
     }
 
     /// <summary>

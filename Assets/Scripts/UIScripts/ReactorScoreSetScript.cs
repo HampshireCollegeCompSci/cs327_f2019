@@ -3,6 +3,18 @@ using UnityEngine.UI;
 
 public class ReactorScoreSetScript : MonoBehaviour
 {
+    public GameObject reactor0;
+    public Text reactorScore0;
+
+    public GameObject reactor1;
+    public Text reactorScore1;
+
+    public GameObject reactor2;
+    public Text reactorScore2;
+
+    public GameObject reactor3;
+    public Text reactorScore3;
+
     // Singleton instance.
     public static ReactorScoreSetScript Instance = null;
 
@@ -18,24 +30,6 @@ public class ReactorScoreSetScript : MonoBehaviour
             throw new System.ArgumentException("there should not already be an instance of this");
         }
     }
-
-    private void Start()
-    {
-        SetReactorScore();
-    }
-
-    public GameObject reactor0;
-    public Text reactorScore0;
-
-    public GameObject reactor1;
-    public Text reactorScore1;
-
-    public GameObject reactor2;
-    public Text reactorScore2;
-
-    public GameObject reactor3;
-    public Text reactorScore3;
-
 
     public void SetReactorScore()
     {
