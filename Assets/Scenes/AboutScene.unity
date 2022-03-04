@@ -1392,16 +1392,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playButton: {fileID: 0}
   tutorialButton: {fileID: 0}
-  creditsButton: {fileID: 0}
+  settingsButton: {fileID: 0}
+  aboutButton: {fileID: 0}
   continueButton: {fileID: 0}
   easyButton: {fileID: 0}
   normalButton: {fileID: 0}
   hardButton: {fileID: 0}
-  returnButton: {fileID: 0}
+  backButton: {fileID: 0}
   loadingText: {fileID: 0}
   resumeButton: {fileID: 0}
   restartButton: {fileID: 0}
-  mainMenuButton: {fileID: 0}
+  mainMenuButton: {fileID: 1047167449}
   playAgainButton: {fileID: 0}
 --- !u!114 &798955325
 MonoBehaviour:
@@ -1820,7 +1821,7 @@ PrefabInstance:
     - target: {fileID: 7084158332299253294, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Return
+      value: MainMenu
       objectReference: {fileID: 0}
     - target: {fileID: 7084158331729663616, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
@@ -1832,6 +1833,12 @@ PrefabInstance:
 --- !u!224 &1047167448 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7084158332299253295, guid: f9e4f3524d2da456180c2be002c8dfd4,
+    type: 3}
+  m_PrefabInstance: {fileID: 1047167447}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1047167449 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7084158332299253292, guid: f9e4f3524d2da456180c2be002c8dfd4,
     type: 3}
   m_PrefabInstance: {fileID: 1047167447}
   m_PrefabAsset: {fileID: 0}
@@ -2476,7 +2483,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0.0004272461, y: -2167.0479}
+  m_AnchoredPosition: {x: 0.00048828125, y: -2167.0479}
   m_SizeDelta: {x: 800, y: 4334.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1435519029

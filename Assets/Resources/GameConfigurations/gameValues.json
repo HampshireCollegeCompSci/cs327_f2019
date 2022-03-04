@@ -1,7 +1,7 @@
 {
 	"foundationStartingSize": 7,
 	"wastepileAnimationSpeedSlow": 7,
-	"wastepileAnimationSpeedFast": 15,
+	"wastepileAnimationSpeedFast": 20,
 	"draggedTokenOffset": 0.5,
 	"cardsToDeal": 3,
 	"cardsToReactorspeed": 15,
@@ -11,6 +11,9 @@
 	"emptyReactorPoint": 1000,
 	"perfectGamePoints": 2800,
 	"delayToShowGameSummary": 3,
+	"turnAlertSmallThreshold": 10,
+	"turnAlertThreshold": 5,
+	"scoreMultiplier": 50,
 
 	"musicFadeIn": 2,
 	"musicFadeOut": 1.5,
@@ -28,9 +31,6 @@
 	"cardMoveHighlightColorValues": [ 1, 1, 0, 1 ],
 	"cardMatchHighlightColorValues": [ 0, 1, 0, 1 ],
 	"pointColorValues": [ 0, 1, 0, 1 ],
-	"turnAlertSmallThreshold": 10,
-	"turnAlertThreshold": 5,
-	"scoreMultiplier": 50,
 
 	"menuButtonsTxtEnglish": [ "PLAY", "TUTORIAL", "SETTINGS", "ABOUT" ],
 	"levelButtonsTxtEnglish": [ "CONTINUE", "EASY", "MEDIUM", "HARD" ],

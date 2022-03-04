@@ -14,6 +14,9 @@ public class GameValues
     public int emptyReactorPoints;
     public int perfectGamePoints;
     public int delayToShowGameSummary;
+    public int turnAlertSmallThreshold;
+    public int turnAlertThreshold;
+    public int scoreMultiplier;
 
     public float musicFadeIn;
     public float musicFadeOut;
@@ -40,10 +43,6 @@ public class GameValues
     public float[] pointColorValues;
     public Color pointColor;
 
-    public int turnAlertSmallThreshold;
-    public int turnAlertThreshold;
-    public int scoreMultiplier;
-           
     public string[] menuButtonsTxtEnglish;
     public string[] levelButtonsTxtEnglish;
     public string backButtonTxtEnglish;
