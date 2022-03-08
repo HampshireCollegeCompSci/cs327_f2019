@@ -23,7 +23,6 @@ public class UndoScript : MonoBehaviour
 
     private void Start()
     {
-        //moveLog = Config.config.moveLog;
         moveLog = new Stack<Move>();
     }
     /*
@@ -49,14 +48,6 @@ public class UndoScript : MonoBehaviour
         return;
     }
 
-    private void MoveFoundationCard(Move toMove)
-    {
-        if (toMove.nextCardWasHidden)
-            toMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetFoundationVisibility(false);
-
-        toMove.card.GetComponent<CardScript>().MoveCard(toMove.origin, doLog: false);
-    }
-
     /*
      *undo is the function which reads from the moveLog and resets cards, score, moves, etc to their old state. 
      */
@@ -67,87 +58,115 @@ public class UndoScript : MonoBehaviour
 
         if (moveLog.Count != 0) //only run if there's something in the stack
         {
-            //Config.config.moves++;
             Move lastMove;
-            if (moveLog.Peek().moveType == "stack")
+            switch (moveLog.Peek().moveType)
             {
-                // list goes from bottom token to top in original stack
-                List<Move> undoList = new List<Move>
-                {
-                    moveLog.Pop() // this is the top token of the stack
-                };
-
-                int moveNumber = undoList[0].moveNum;
-                while (moveLog.Count != 0 && moveLog.Peek().moveNum == moveNumber)
-                    undoList.Insert(0, moveLog.Pop());
-
-                GameObject newFoundation = undoList[0].origin;
-
-                // cards are removed bottom to top when moving stacks and
-                // nextCardWasHidden expects that it's token was on the top (index 0) of the stack
-                // therefore, the top of the stack is the only card that will know if the stack sat on a hidden card
-                if (undoList[undoList.Count - 1].nextCardWasHidden)
-                    newFoundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetFoundationVisibility(false);
-
-                for (int i = 0; i < undoList.Count - 1; i++) // move the tokens back
-                    undoList[i].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false, showHolo: false);
-                undoList[undoList.Count - 1].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false);
-
-                UtilsScript.Instance.UpdateActions(undoList[0].remainingActions, setAsValue: true);
-                return;
-            }
-            else if (moveLog.Peek().moveType == "move") //standard behavior, move a single token back where it was
-            {
-                lastMove = moveLog.Pop();
-                MoveFoundationCard(lastMove);
-
-                if (lastMove.isAction)
-                    UtilsScript.Instance.UpdateActions(lastMove.remainingActions, setAsValue: true);
-
-                return;
-            }
-            else if (moveLog.Peek().moveType == "match") //undo a match, removing the score gained and moving both cards back to their original locations
-            {
-                MoveFoundationCard(moveLog.Pop());
-
-                lastMove = moveLog.Pop();
-                MoveFoundationCard(lastMove);
-
-                UtilsScript.Instance.UpdateScore(lastMove.score, setAsValue: true);
-                UtilsScript.Instance.UpdateActions(-1);
-                return;
-            }
-            else if (moveLog.Peek().moveType == "draw") //move the last three drawn cards back to the deck (assuming the last action was to draw from the deck)
-            {
-                while (true)
-                {
-                    lastMove = moveLog.Pop();
-
-                    if (moveLog.Count == 0 || moveLog.Peek().moveNum != lastMove.moveNum)
+                case "stack":
+                    // list goes from bottom token to top in original stack
+                    List<Move> undoList = new List<Move>
                     {
-                        lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
-                        UtilsScript.Instance.UpdateActions(lastMove.remainingActions, setAsValue: true);
-                        return;
+                        moveLog.Pop() // this is the top token of the stack
+                    };
+
+                    int moveNumber = undoList[0].moveNum;
+                    while (moveLog.Count != 0 && moveLog.Peek().moveNum == moveNumber)
+                    {
+                        undoList.Insert(0, moveLog.Pop());
                     }
 
-                    lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, showHolo: false);
-                }
-            }
-            else if (moveLog.Peek().moveType == "cycle") //undo a cycle turning over, resets all tokens moved up, along with the move counter
-            {
-                lastMove = moveLog.Pop();
-                MoveFoundationCard(lastMove);
+                    GameObject newFoundation = undoList[0].origin;
 
-                while (moveLog.Count != 0 && moveLog.Peek().moveNum == lastMove.moveNum)
-                {
+                    // cards are removed bottom to top when moving stacks and
+                    // nextCardWasHidden expects that it's token was on the top (index 0) of the stack
+                    // therefore, the top of the stack is the only card that will know if the stack sat on a hidden card
+                    if (undoList[undoList.Count - 1].nextCardWasHidden)
+                    {
+                        newFoundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetFoundationVisibility(false);
+                    }
+
+                    // move the tokens back
+                    for (int i = 0; i < undoList.Count - 1; i++)
+                    {
+                        undoList[i].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false, showHolo: false);
+                    }
+                    undoList[undoList.Count - 1].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false);
+
+                    UtilsScript.Instance.UpdateActions(undoList[0].remainingActions, setAsValue: true);
+                    break;
+                case "move":
+                    // standard behavior, move a single token back where it was
                     lastMove = moveLog.Pop();
                     MoveFoundationCard(lastMove);
-                }
 
-                UtilsScript.Instance.UpdateActions(lastMove.remainingActions, setAsValue: true);
+                    if (lastMove.isAction)
+                    {
+                        UtilsScript.Instance.UpdateActions(lastMove.remainingActions, setAsValue: true);
+                    }
+                    break;
+                case "match":
+                    // undo a match, removing the score gained and moving both cards back to their original locations
+                    MoveFoundationCard(moveLog.Pop());
 
-                return;
+                    lastMove = moveLog.Pop();
+                    MoveFoundationCard(lastMove);
+
+                    UtilsScript.Instance.UpdateScore(lastMove.score, setAsValue: true);
+                    UtilsScript.Instance.UpdateActions(-1);
+                    break;
+                case "draw":
+                    // move the drawn cards back to the deck (assuming the last action was to draw from the deck)
+                    while (true)
+                    {
+                        lastMove = moveLog.Pop();
+
+                        if (moveLog.Count == 0 || moveLog.Peek().moveNum != lastMove.moveNum)
+                        {
+                            lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
+                            UtilsScript.Instance.UpdateActions(lastMove.remainingActions, setAsValue: true);
+                            break;
+                        }
+
+                        lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, showHolo: false);
+                    }
+                    break;
+                case "cycle":
+                    // undo a cycle turning over, resets all tokens moved up, along with the move counter
+                    lastMove = moveLog.Pop();
+                    MoveFoundationCard(lastMove);
+
+                    while (moveLog.Count != 0 && moveLog.Peek().moveNum == lastMove.moveNum)
+                    {
+                        // undo the cycle moves until the move that triggered it is reached.
+                        // then trigger undo again so that the moveset is properly undone.
+                        // note that a undo of a manual trigger of a cycle will not cause undo to be called again.
+                        if (moveLog.Peek().moveType.Equals("cycle"))
+                        {
+                            lastMove = moveLog.Pop();
+                            MoveFoundationCard(lastMove);
+                        }
+                        else
+                        {
+                            Undo();
+                            return;
+                        }
+                    }
+
+                    UtilsScript.Instance.UpdateActions(lastMove.remainingActions, setAsValue: true);
+                    break;
+                default:
+                    throw new System.Exception("invalid move log move type");
+
             }
         }
+    }
+
+    private void MoveFoundationCard(Move toMove)
+    {
+        if (toMove.nextCardWasHidden)
+        {
+            toMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().SetFoundationVisibility(false);
+        }
+
+        toMove.card.GetComponent<CardScript>().MoveCard(toMove.origin, doLog: false);
     }
 }
