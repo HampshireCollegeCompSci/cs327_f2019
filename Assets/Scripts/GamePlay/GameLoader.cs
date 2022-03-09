@@ -258,6 +258,14 @@ public class GameLoader : MonoBehaviour
             cards.RemoveAt(0);
         }
 
+        // for testing out max foundation stack size
+        //for (int i = 0; i < 12; i++)
+        //{
+        //    currentCardScript = cards[0].GetComponent<CardScript>();
+        //    currentCardScript.MoveCard(Config.Instance.foundations[0], doLog: false);
+        //    cards.RemoveAt(0);
+        //}
+
         return cards;
     }
 
