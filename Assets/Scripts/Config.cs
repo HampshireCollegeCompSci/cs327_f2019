@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -168,17 +167,6 @@ public class Config : MonoBehaviour
         }
     }
 
-    [SerializeField]
-    string json;
-    public string WriteString(string path)
-    {
-        using (StreamReader stream = new StreamReader(path))
-        {
-            json = stream.ReadToEnd();
-        }
-        return json;
-    }
-
     public int CountFoundationCards()
     {
         if (foundation1 != null && foundation2 != null && foundation3 != null && foundation4 != null)
@@ -186,26 +174,6 @@ public class Config : MonoBehaviour
                 foundation3.GetComponent<FoundationScript>().cardList.Count + foundation4.GetComponent<FoundationScript>().cardList.Count;
         else
             return -1;
-    }
-
-
-    public float GetScreenToWorldHeight()
-    {
-        Vector2 topRightCorner = new Vector2(1, 1);
-        Vector2 edgeVector = Camera.main.ViewportToWorldPoint(topRightCorner);
-        var height = edgeVector.y * 2;
-        return height;
-
-    }
-
-    public float GetScreenToWorldWidth()
-    {
-
-        Vector2 topRightCorner = new Vector2(1, 1);
-        Vector2 edgeVector = Camera.main.ViewportToWorldPoint(topRightCorner);
-        var width = edgeVector.x * 2;
-        return width;
-
     }
 
     public void SetDifficulty(int dif)
