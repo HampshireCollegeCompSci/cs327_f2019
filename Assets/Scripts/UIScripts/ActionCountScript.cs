@@ -20,6 +20,22 @@ public class ActionCountScript : MonoBehaviour
     //private Coroutine fader;
     private Coroutine flasher;
 
+    // Singleton instance.
+    public static ActionCountScript Instance = null;
+
+    // Initialize the singleton instance.
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            throw new System.ArgumentException("there should not already be an instance of this");
+        }
+    }
+
     private void Start()
     {
         screenImage = screen.GetComponent<Image>();

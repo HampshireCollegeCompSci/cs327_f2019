@@ -31,6 +31,18 @@ public class ReactorScoreSetScript : MonoBehaviour
         }
     }
 
+    public void SetToDefault()
+    {
+        reactorScore0.text = "0/" + Config.Instance.maxReactorVal;
+        reactorScore1.text = "0/" + Config.Instance.maxReactorVal;
+        reactorScore2.text = "0/" + Config.Instance.maxReactorVal;
+        reactorScore3.text = "0/" + Config.Instance.maxReactorVal;
+        reactorScore0.color = Color.black;
+        reactorScore1.color = Color.black;
+        reactorScore2.color = Color.black;
+        reactorScore3.color = Color.black;
+    }
+
     public void SetReactorScore()
     {
         reactorScore0.text = reactor0.GetComponent<ReactorScript>().CountReactorCard() + "/" + Config.Instance.maxReactorVal;

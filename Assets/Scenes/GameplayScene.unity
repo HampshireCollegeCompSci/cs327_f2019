@@ -5517,10 +5517,8 @@ MonoBehaviour:
     type: 3}
   matchPointsPrefab: {fileID: 5801631464807042985, guid: 614ce32a7efa12342824cb70c9aacc46,
     type: 3}
-  errorImage: {fileID: 1890860393}
   gameUI: {fileID: 2058941297}
   score: {fileID: 533940917}
-  moveCounter: {fileID: 338821812}
   indexCounter: 0
 --- !u!4 &1574574479
 Transform:

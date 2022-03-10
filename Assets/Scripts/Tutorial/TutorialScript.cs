@@ -540,7 +540,7 @@ public class TutorialScript : MonoBehaviour
 
         CheckCommandCount(command, 2);
 
-        UtilsScript.Instance.moveCounter.GetComponent<ActionCountScript>().UpdateActionText(command[1]);
+        ActionCountScript.Instance.UpdateActionText(command[1]);
     }
 
     /// <summary>

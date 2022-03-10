@@ -11,10 +11,8 @@ public class UtilsScript : MonoBehaviour
     public GameObject matchPrefab;
     public GameObject matchPointsPrefab;
 
-    public GameObject errorImage;
     public GameObject gameUI;
     public Text score;
-    public GameObject moveCounter;
     public int indexCounter;
     private bool dragOn;
     private bool draggingWastepile = false;
@@ -514,7 +512,7 @@ public class UtilsScript : MonoBehaviour
             Config.Instance.actions += actionUpdate;
         }
 
-        moveCounter.GetComponent<ActionCountScript>().UpdateActionText();
+        ActionCountScript.Instance.UpdateActionText();
 
         if (CheckNextCycle())
             return;
@@ -594,7 +592,7 @@ public class UtilsScript : MonoBehaviour
             // if the alert was not already on turn it on
             // or if the alert is already on and there is only 1 move left,
             // have the baby be angry and play the alert sound
-            if (moveCounter.GetComponent<ActionCountScript>().TurnSirenOn(2) ||
+            if (ActionCountScript.Instance.TurnSirenOn(2) ||
                 (!matchRelated && Config.Instance.actionMax - Config.Instance.actions == 1))
             {
                 SpaceBabyController.Instance.BabyAngry();
@@ -602,11 +600,11 @@ public class UtilsScript : MonoBehaviour
         }
         else if (turnOnAlert || checkAgain)
         {
-            moveCounter.GetComponent<ActionCountScript>().TurnSirenOn(1);
+            ActionCountScript.Instance.TurnSirenOn(1);
         }
         else // the action counter is not low so turn stuff off
         {
-            moveCounter.GetComponent<ActionCountScript>().TurnSirenOff();
+            ActionCountScript.Instance.TurnSirenOff();
         }
     }
 
@@ -684,6 +682,8 @@ public class UtilsScript : MonoBehaviour
 
     public void ManualGameWin()
     {
+        if (Config.Instance.gamePaused) return;
+
         EndGame.Instance.GameOver(true);
         Config.Instance.matchCounter = 26;
     }

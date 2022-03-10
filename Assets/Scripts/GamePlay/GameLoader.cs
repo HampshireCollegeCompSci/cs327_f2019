@@ -213,7 +213,8 @@ public class GameLoader : MonoBehaviour
         Config.Instance.actions = 0;
         UtilsScript.Instance.UpdateActions(0, startingGame: true);
 
-        ReactorScoreSetScript.Instance.SetReactorScore();
+        ReactorScoreSetScript.Instance.SetToDefault();
+        ActionCountScript.Instance.TurnSirenOff();
 
         cards = ShuffleCards(cards);
         cards = SetUpFoundations(cards);

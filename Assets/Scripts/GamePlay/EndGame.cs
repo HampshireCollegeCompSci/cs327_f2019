@@ -29,6 +29,7 @@ public class EndGame : MonoBehaviour
 
         SaveState.Delete();
         Config.Instance.gameOver = true;
+        Config.Instance.gamePaused = true;
         Config.Instance.gameWin = didWin;
 
         // overwritten when manually won (cheated)

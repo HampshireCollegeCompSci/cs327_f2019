@@ -141,7 +141,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI undo button");
 
-        if (UtilsScript.Instance.IsInputStopped()) return;
+        if (UtilsScript.Instance.IsInputStopped() || Config.Instance.gamePaused) return;
 
         SoundEffectsController.Instance.UndoPressSound();
         UndoScript.Instance.Undo();
@@ -201,7 +201,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI pause game");
 
-        if (UtilsScript.Instance.IsInputStopped()) return;
+        if (UtilsScript.Instance.IsInputStopped() || Config.Instance.gamePaused) return;
         
         Config.Instance.gamePaused = true;
         SoundEffectsController.Instance.PauseMenuButtonSound();
@@ -277,8 +277,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI make actions max");
 
-        if (UtilsScript.Instance.IsInputStopped())
-            return;
+        if (UtilsScript.Instance.IsInputStopped() || Config.Instance.gamePaused) return;
 
         DeckScript.Instance.StartNextCycle(manuallyTriggered: true);
     }
