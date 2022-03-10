@@ -15,12 +15,21 @@
 	"turnAlertThreshold": 5,
 	"scoreMultiplier": 50,
 
-	"musicFadeIn": 2,
-	"musicFadeOut": 1.5,
+	"musicFadeIn": 0.5,
+	"musicFadeOutFast": 0.7,
+	"musicFadeOutSlow": 0.2,
+
 	"musicDefaultVolume": 0.5,
 	"soundEffectsDefaultVolume": 0.5,
 	"vibrationEnabledDefault": true,
 	"foodSuitsEnabledDefault": true,
+
+	"fadeOutButtonsSpeed": 2,
+	"zoomFactor": 20,
+	"panAndZoomSpeed": 30,
+	"startGameFadeInSpeed": 4,
+	"endGameFadeOutSpeed": 0.5,
+	"playAgainSpeed": 0.5,
 
 	"difficulties": [ "EASY", "MEDIUM", "HARD" ],
 	"reactorLimits": [ 24, 21, 18 ],

@@ -3,13 +3,13 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StartScript : MonoBehaviour
+public class StartGame : MonoBehaviour
 {
     public Camera mainCamera;
     public AudioListener audioListener;
 
     // Singleton instance.
-    public static StartScript Instance = null;
+    public static StartGame Instance = null;
 
     private void Awake()
     {
@@ -70,10 +70,10 @@ public class StartScript : MonoBehaviour
         fadeInScreen.enabled = true;
         Color fadeColor = fadeInScreen.color;
 
-        while (fadeInScreen.color.a >= 0)
+        while (fadeColor.a > 0)
         {
+            fadeColor.a -= Time.deltaTime * Config.GameValues.startGameFadeInSpeed;
             fadeInScreen.color = fadeColor;
-            fadeColor.a -= Time.deltaTime * 5;
             yield return null;
         }
 

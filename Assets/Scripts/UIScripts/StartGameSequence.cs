@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -17,8 +16,6 @@ public class StartGameSequence : MonoBehaviour
 
     private bool sequenceDone;
     private bool gameplayLoaded;
-
-    private float panAndZoomSpeed = 30;
 
     // Singleton instance.
     public static StartGameSequence Instance = null;
@@ -50,10 +47,10 @@ public class StartGameSequence : MonoBehaviour
     {
         while (playButtonsGroup.alpha != 0)
         {
-            playButtonsGroup.alpha -= Time.deltaTime * 2;
+            playButtonsGroup.alpha -= Time.deltaTime * Config.GameValues.fadeOutButtonsSpeed;
             yield return null;
         }
-        StartCoroutine(PanAndZoomTo(spaceShipWindowObject.transform.position, 20));
+        StartCoroutine(PanAndZoomTo(spaceShipWindowObject.transform.position, Config.GameValues.zoomFactor));
     }
 
     private IEnumerator PanAndZoomTo(Vector3 positionEnd, float zoomFactor)
@@ -68,8 +65,8 @@ public class StartGameSequence : MonoBehaviour
 
         float panDistance = Vector3.Distance(panelTransform.position, positionEnd);
         float zoomDistance = Vector3.Distance(panelTransform.localScale, zoomEnd);
-        float zoomSpeed = panDistance > zoomDistance ? panAndZoomSpeed * zoomDistance / panDistance : panAndZoomSpeed;
-        float panSpeed = zoomDistance > panDistance ? panAndZoomSpeed * panDistance / zoomDistance : panAndZoomSpeed;
+        float zoomSpeed = panDistance > zoomDistance ? Config.GameValues.panAndZoomSpeed * zoomDistance / panDistance : Config.GameValues.panAndZoomSpeed;
+        float panSpeed = zoomDistance > panDistance ? Config.GameValues.panAndZoomSpeed * panDistance / zoomDistance : Config.GameValues.panAndZoomSpeed;
 
         Debug.Log("starting p&z");
         float startDistance = Vector3.Distance(panelTransform.localScale, zoomEnd);
@@ -95,7 +92,7 @@ public class StartGameSequence : MonoBehaviour
 
     public void GameplayLoaded()
     {
-        Debug.Log("game is loaded");
+        Debug.Log("gameplay scene is loaded");
         gameplayLoaded = true;
         TryEndSequence();
     }
@@ -107,7 +104,7 @@ public class StartGameSequence : MonoBehaviour
             Debug.Log("unloading menu scene");
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.gameplayScene));
             audioListener.enabled = false;
-            StartScript.Instance.TransitionToGamePlay();
+            StartGame.Instance.TransitionToGamePlay();
             SceneManager.UnloadSceneAsync(Constants.mainMenuScene);
             return true;
         }

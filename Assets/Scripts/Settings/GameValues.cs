@@ -19,11 +19,20 @@ public class GameValues
     public int scoreMultiplier;
 
     public float musicFadeIn;
-    public float musicFadeOut;
+    public float musicFadeOutFast;
+    public float musicFadeOutSlow;
+
     public float musicDefaultVolume;
     public float soundEffectsDefaultVolume;
     public bool vibrationEnabledDefault;
     public bool foodSuitsEnabledDefault;
+
+    public float fadeOutButtonsSpeed;
+    public int zoomFactor;
+    public float panAndZoomSpeed;
+    public float startGameFadeInSpeed;
+    public float endGameFadeOutSpeed;
+    public float playAgainSpeed;
 
     public string[] difficulties;
     public int[] reactorLimits;

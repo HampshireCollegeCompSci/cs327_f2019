@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class Config : MonoBehaviour
 {
@@ -27,9 +24,6 @@ public class Config : MonoBehaviour
     public int actions;
     public int score;
     public byte consecutiveMatches;
-
-    //internal variables
-    private GameObject fadeOutImage;
 
     // long term tracking
     public int moveCounter;
@@ -58,6 +52,7 @@ public class Config : MonoBehaviour
     {
         if (Instance == null)
         {
+            PlayerPrefKeys.CheckKeys();
             DontDestroyOnLoad(gameObject); //makes instance persist across scenes
             Instance = this;
             LoadGameValues();
@@ -66,8 +61,6 @@ public class Config : MonoBehaviour
         {
             Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
         }
-
-        PlayerPrefKeys.CheckKeys();
     }
 
     private void LoadGameValues()
@@ -88,64 +81,6 @@ public class Config : MonoBehaviour
         return new Color(colorV[0], colorV[1], colorV[2], colorV[3]);
     }
 
-    public void GameOver(bool didWin)
-    {
-        gameOver = true;
-        gameWin = didWin;
-        
-        // overwritten when manually won (cheated)
-        matchCounter = (byte) (MatchedPileScript.Instance.cardList.Count / 2);
-        
-        fadeOutImage.SetActive(true);
-
-        //delay to show summary
-        StartCoroutine(EndGame());
-    }
-
-    IEnumerator EndGame()
-    {
-        float countdown = GameValues.delayToShowGameSummary;
-
-        if (gameWin)
-        {
-            SpaceBabyController.Instance.BabyHappy();
-            SoundEffectsController.Instance.WinSound();
-
-            while (countdown > 0)
-            {
-                yield return new WaitForSeconds(0.01f);
-                fadeOutImage.GetComponent<Image>().color = new Color(1, 1, 1, 1 - (countdown / GameValues.delayToShowGameSummary));
-                countdown -= 0.02f;
-            }
-        }
-
-        else
-        {
-            SpaceBabyController.Instance.BabyLoseTransition();
-            SoundEffectsController.Instance.LoseSound();
-
-            UtilsScript.Instance.errorImage.SetActive(true);
-            while (countdown > 0)
-            {
-                yield return new WaitForSeconds(0.01f);
-                fadeOutImage.GetComponent<Image>().color = new Color(0, 0, 0, 1 - (countdown / GameValues.delayToShowGameSummary));
-                countdown -= 0.02f;
-            }
-        }
-
-        SceneManager.LoadScene(Constants.summaryScene);
-
-        if (gameWin)
-        {
-            MusicController.Instance.WinMusic();
-        }
-        else
-        {
-            MusicController.Instance.LoseMusic();
-        }
-        SaveState.Delete();
-    }
-
     public void StartupFindObjects()
     {
         foundation1 = GameObject.Find("Foundation (0)");
@@ -159,21 +94,6 @@ public class Config : MonoBehaviour
         reactor3 = GameObject.Find("ReactorPile (2)");
         reactor4 = GameObject.Find("ReactorPile (3)");
         reactors = new GameObject[] { reactor1, reactor2, reactor3, reactor4 };
-
-        fadeOutImage = GameObject.Find("FadeOutImage");
-        if (fadeOutImage != null)
-        {
-            fadeOutImage.SetActive(false);
-        }
-    }
-
-    public int CountFoundationCards()
-    {
-        if (foundation1 != null && foundation2 != null && foundation3 != null && foundation4 != null)
-            return foundation1.GetComponent<FoundationScript>().cardList.Count + foundation2.GetComponent<FoundationScript>().cardList.Count +
-                foundation3.GetComponent<FoundationScript>().cardList.Count + foundation4.GetComponent<FoundationScript>().cardList.Count;
-        else
-            return -1;
     }
 
     public void SetDifficulty(int dif)

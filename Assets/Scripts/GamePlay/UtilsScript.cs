@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class UtilsScript : MonoBehaviour
 {
     public List<GameObject> selectedCards;
     private List<GameObject> selectedCardsCopy;
+
     public GameObject matchPrefab;
     public GameObject matchPointsPrefab;
 
@@ -21,10 +21,6 @@ public class UtilsScript : MonoBehaviour
 
     private bool inputStopped = false;
     private bool isNextCycle;
-
-    public int matchPoints;
-    public int emptyReactorPoints;
-    public int perfectGamePoints;
 
     private GameObject hoveringOver;
     private bool changedHologramColor;
@@ -54,9 +50,6 @@ public class UtilsScript : MonoBehaviour
     void Start()
     {
         selectedCardsCopy = new List<GameObject>();
-        matchPoints = Config.GameValues.matchPoints;
-        emptyReactorPoints = Config.GameValues.emptyReactorPoints;
-        perfectGamePoints = Config.GameValues.perfectGamePoints;
     }
 
     void Update()
@@ -87,7 +80,7 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    public RaycastHit2D GetClick()
+    private RaycastHit2D GetClick()
     {
         return Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
                                                                            Input.mousePosition.y,
@@ -357,7 +350,7 @@ public class UtilsScript : MonoBehaviour
         card2Script.MoveCard(MatchedPileScript.Instance.gameObject);
         card1Script.MoveCard(MatchedPileScript.Instance.gameObject);
 
-        int points = matchPoints + (Config.Instance.consecutiveMatches * Config.GameValues.scoreMultiplier);
+        int points = Config.GameValues.matchPoints + (Config.Instance.consecutiveMatches * Config.GameValues.scoreMultiplier);
         UpdateScore(points);
         UpdateActions(0, isMatch: true);
 
@@ -494,7 +487,7 @@ public class UtilsScript : MonoBehaviour
         // a nextcycle after it's done triggers this
         else if (setAsValue)
         {
-            if (CheckGameOver()) // if nextcycle caused a Game Over
+            if (TryGameOver()) // if nextcycle caused a Game Over
                 return;
 
             Config.Instance.actions = actionUpdate;
@@ -505,7 +498,7 @@ public class UtilsScript : MonoBehaviour
             if (wasInAlertThreshold)
                 Alert(false, true, true);
 
-            if (!CheckGameOver()) // if a match didn't win the game
+            if (!TryGameOver()) // if a match didn't win the game
                 StateLoader.Instance.WriteState();
             return;
         }
@@ -528,7 +521,7 @@ public class UtilsScript : MonoBehaviour
 
         // foundation moves trigger this as they are the only ones that can cause a gameover via winning
         // reactors trigger their own gameovers
-        if (checkGameOver && CheckGameOver())
+        if (checkGameOver && TryGameOver())
             return;
 
         if (doSaveState)
@@ -617,34 +610,46 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    private bool CheckGameOver()
+    private bool TryGameOver()
     {
-        if (!Config.Instance.gameOver && Config.Instance.CountFoundationCards() == 0)
+        if (!Config.Instance.gameOver && AreFoundationsEmpty())
         {
             //AddExtraEndGameScore();
-            Config.Instance.GameOver(true);
+            EndGame.Instance.GameOver(true);
             return true;
         }
         return false;
+    }
+
+    private bool AreFoundationsEmpty()
+    {
+        foreach (GameObject foundation in Config.Instance.foundations)
+        {
+            if (foundation.GetComponent<FoundationScript>().cardList.Count != 0)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void AddExtraEndGameScore()
     {
         int extraScore = 0;
         if (MatchedPileScript.Instance.cardList.Count == 52)
-            extraScore += perfectGamePoints;
+            extraScore += Config.GameValues.perfectGamePoints;
 
         if (Config.Instance.reactor1.GetComponent<ReactorScript>().cardList.Count == 0)
-            extraScore += emptyReactorPoints;
+            extraScore += Config.GameValues.emptyReactorPoints;
 
         if (Config.Instance.reactor2.GetComponent<ReactorScript>().cardList.Count == 0)
-            extraScore += emptyReactorPoints;
+            extraScore += Config.GameValues.emptyReactorPoints;
 
         if (Config.Instance.reactor3.GetComponent<ReactorScript>().cardList.Count == 0)
-            extraScore += emptyReactorPoints;
+            extraScore += Config.GameValues.emptyReactorPoints;
 
         if (Config.Instance.reactor4.GetComponent<ReactorScript>().cardList.Count == 0)
-            extraScore += emptyReactorPoints;
+            extraScore += Config.GameValues.emptyReactorPoints;
 
         UpdateScore(extraScore);
     }
@@ -674,12 +679,12 @@ public class UtilsScript : MonoBehaviour
 
     public void ManualGameOver()
     {
-        Config.Instance.GameOver(true);
+        EndGame.Instance.GameOver(true);
     }
 
     public void ManualGameWin()
     {
-        Config.Instance.GameOver(true);
+        EndGame.Instance.GameOver(true);
         Config.Instance.matchCounter = 26;
     }
 }

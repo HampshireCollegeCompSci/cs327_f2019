@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -57,7 +56,7 @@ public class PlayAgainSequence : MonoBehaviour
 
         while (panelColor.a < 1)
         {
-            panelColor.a += Time.deltaTime * 0.5f;
+            panelColor.a += Time.deltaTime * Config.GameValues.playAgainSpeed;
             panelImage.color = panelColor;
             yield return null;
         }
@@ -65,6 +64,7 @@ public class PlayAgainSequence : MonoBehaviour
         // they will flash on screen for one frame during the scene transition without this
         spaceBaby.SetActive(false);
         spaceBabyPlanet.SetActive(false);
+        //spaceBaby.GetComponent<SpaceBabyController>().StopAllCoroutines();
 
         Debug.Log("play again sequence done");
         sequenceDone = true;
@@ -88,7 +88,7 @@ public class PlayAgainSequence : MonoBehaviour
             Debug.Log("unloading summary scene");
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.gameplayScene));
             audioListener.enabled = false;
-            StartScript.Instance.TransitionToGamePlay();
+            StartGame.Instance.TransitionToGamePlay();
             SceneManager.UnloadSceneAsync(Constants.summaryScene);
             return true;
         }

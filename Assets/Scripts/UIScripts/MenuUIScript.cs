@@ -150,6 +150,7 @@ public class MenuUIScript : MonoBehaviour
     public void PlayAgain()
     {
         Debug.Log("MenuUI play again");
+        SoundEffectsController.Instance.ButtonPressSound();
 
         if (PlayAgainSequence.Instance != null)
         {

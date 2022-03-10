@@ -26,8 +26,8 @@ public class ReactorScript : MonoBehaviour
         if (Config.Instance.tutorialOn)
             return;
 
-        if (CountReactorCard() >= Config.Instance.maxReactorVal && !Config.Instance.gameOver)
-            Config.Instance.GameOver(false);
+        if (!Config.Instance.gameOver && CountReactorCard() >= Config.Instance.maxReactorVal)
+            EndGame.Instance.GameOver(false);
     }
 
     public void AddCard(GameObject card)

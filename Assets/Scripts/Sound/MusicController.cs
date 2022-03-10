@@ -14,6 +14,9 @@ public class MusicController : MonoBehaviour
     private byte playingTrack;
     private byte pausedAudioSource;
 
+    private float fadeInSpeed;
+    private float fadeOutSpeedFast;
+    private float fadeOutSpeedSlow;
     private float maxVolume;
 
     // Singleton instance.
@@ -26,15 +29,13 @@ public class MusicController : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         //If an instance already exists, destroy whatever this object is to enforce the singleton.
         else if (Instance != this)
         {
             Destroy(gameObject);
         }
-
-        //Set the GameObject to DontDestroyOnLoad so that it won't be destroyed when reloading our scene.
-        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
@@ -45,17 +46,33 @@ public class MusicController : MonoBehaviour
 
     public void UpdateMaxVolume(float newVolume)
     {
-        Debug.Log($"updating music volume to: {newVolume}");
+        Debug.Log($"setting music volume to: {newVolume}");
+        NormalizeFadeValues();
         maxVolume = newVolume;
 
-        if (audioSource_1.isPlaying)
+        Debug.Log($"1: {audioSource_1.isPlaying}, 2: {audioSource_2.isPlaying}");
+
+        if (audioSource_1.isPlaying || pausedAudioSource == 1)
         {
             audioSource_1.volume = maxVolume;
         }
-        else
+        else if (audioSource_2.isPlaying || pausedAudioSource == 2)
         {
             audioSource_2.volume = maxVolume;
         }
+        else
+        {
+            Debug.LogWarning("tried to update max volume on no music");
+        }
+    }
+
+    private void NormalizeFadeValues()
+    {
+        // changing the music volume requires that the fade timings be updated as well 
+        double audioDifference = PlayerPrefs.GetFloat(Constants.musicVolumeKey) / 0.5;
+        fadeInSpeed = (float)(Config.GameValues.musicFadeIn * audioDifference);
+        fadeOutSpeedFast = (float)(Config.GameValues.musicFadeOutFast * audioDifference);
+        fadeOutSpeedSlow = (float)(Config.GameValues.musicFadeOutSlow * audioDifference);
     }
 
     public void FadeMusicOut()
@@ -63,11 +80,11 @@ public class MusicController : MonoBehaviour
         StopAllCoroutines();
         if (audioSource_1.isPlaying)
         {
-            StartCoroutine(FadeOut(audioSource_1, 6f));
+            StartCoroutine(FadeOut(audioSource_1, fadeOutSpeedSlow));
         }
         else if (audioSource_2.isPlaying)
         {
-            StartCoroutine(FadeOut(audioSource_2, 6f));
+            StartCoroutine(FadeOut(audioSource_2, fadeOutSpeedSlow));
         }
     }
 
@@ -78,10 +95,14 @@ public class MusicController : MonoBehaviour
             pausedAudioSource = 1;
             audioSource_1.Pause();
         }
-        else
+        else if (audioSource_2.isPlaying)
         {
             pausedAudioSource = 2;
             audioSource_2.Pause();
+        }
+        else
+        {
+            Debug.LogWarning("tried to pause no music");
         }
     }
 
@@ -96,6 +117,7 @@ public class MusicController : MonoBehaviour
         {
             audioSource_2.Play();
         }
+        pausedAudioSource = 0;
     }
 
     public void MainMenuMusic()
@@ -191,22 +213,21 @@ public class MusicController : MonoBehaviour
         }
     }
 
-    // https://medium.com/@wyattferguson/how-to-fade-out-in-audio-in-unity-8fce422ab1a8
-    private IEnumerator FadeOut(AudioSource audioSource, float musicFadeOut = 0)
+    private IEnumerator FadeOut(AudioSource audioSource, float fadeOutSpeed = 0)
     {
         if (!audioSource.isPlaying)
         {
             yield break;
         }
 
-        if (musicFadeOut == 0)
+        if (fadeOutSpeed == 0)
         {
-            musicFadeOut = Config.GameValues.musicFadeOut;
+            fadeOutSpeed = fadeOutSpeedFast;
         }
 
         while (audioSource.volume > 0)
         {
-            audioSource.volume -= Time.deltaTime / musicFadeOut;
+            audioSource.volume -= Time.deltaTime * fadeOutSpeed;
             yield return null;
         }
         audioSource.Stop();
@@ -220,7 +241,7 @@ public class MusicController : MonoBehaviour
         audioSource.Play();
         while (audioSource.volume < maxVolume)
         {
-            audioSource.volume += Time.deltaTime / Config.GameValues.musicFadeIn;
+            audioSource.volume += Time.deltaTime * fadeInSpeed;
             yield return null;
         }
     }
