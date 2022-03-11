@@ -7,9 +7,9 @@ public class DeckScript : MonoBehaviour
 {
     public List<GameObject> cardList;
 
-    private Image buttonImage;
-    public Sprite[] buttonAnimation;
+    public Image buttonImage;
     public Text deckCounter;
+    public Sprite[] buttonAnimation;
 
     // Singleton instance.
     public static DeckScript Instance = null;
@@ -20,8 +20,6 @@ public class DeckScript : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-
-            buttonImage = this.gameObject.GetComponent<Image>();
         }
         else if (Instance != this)
         {
@@ -97,7 +95,7 @@ public class DeckScript : MonoBehaviour
         foreach (Sprite button in buttonAnimation)
         {
             buttonImage.sprite = button;
-            yield return new WaitForSeconds(0.08f);
+            yield return new WaitForSeconds(0.1f);
         }
     }
 
@@ -111,7 +109,7 @@ public class DeckScript : MonoBehaviour
         for (int i = buttonAnimation.Length - 2; i > 0; i--)
         {
             buttonImage.sprite = buttonAnimation[i];
-            yield return new WaitForSeconds(0.08f);
+            yield return new WaitForSeconds(0.1f);
         }
     }
 
@@ -203,21 +201,20 @@ public class DeckScript : MonoBehaviour
     {
         if (cardList.Count != 0)
         {
-            deckCounter.fontSize = 50;
+            deckCounter.fontSize = 25;
             deckCounter.text = cardList.Count.ToString();
         }
         else
         {
             if (WastepileScript.Instance.cardList.Count > Config.GameValues.cardsToDeal)
             {
-                deckCounter.fontSize = 45;
                 deckCounter.text = "FLIP";
             }
             else
             {
-                deckCounter.fontSize = 40;
                 deckCounter.text = "EMPTY";
             }
+            deckCounter.fontSize = 19;
         }
     }
 }

@@ -1,19 +1,22 @@
 {
 	"foundationStartingSize": 7,
-	"wastepileAnimationSpeedSlow": 7,
-	"wastepileAnimationSpeedFast": 20,
 	"draggedTokenOffset": 0.5,
 	"cardsToDeal": 3,
-	"cardsToReactorspeed": 15,
+
 	"relativeCardScale": 0.12,
-	"turnsTillReset": 18,
-	"matchPoints": 200,
-	"emptyReactorPoint": 1000,
-	"perfectGamePoints": 2800,
-	"delayToShowGameSummary": 3,
+
 	"turnAlertSmallThreshold": 10,
 	"turnAlertThreshold": 5,
+
+	"matchPoints": 200,
 	"scoreMultiplier": 50,
+	"enableBonusPoints": false,
+	"emptyReactorPoint": 1000,
+	"perfectGamePoints": 2800,
+
+	"wastepileAnimationSpeedSlow": 400,
+	"wastepileAnimationSpeedFast": 1000,
+	"cardsToReactorspeed": 15,
 
 	"musicFadeIn": 0.5,
 	"musicFadeOutFast": 0.7,

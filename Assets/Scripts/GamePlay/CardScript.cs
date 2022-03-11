@@ -122,17 +122,6 @@ public class CardScript : MonoBehaviour
         }
     }
 
-    public void UpdateMaskInteraction(SpriteMaskInteraction update)
-    {
-        gameObject.GetComponent<SpriteRenderer>().maskInteraction = update;
-        suitObject.GetComponent<SpriteRenderer>().maskInteraction = update;
-        if (hologram != null && hologramFood != null)
-        {
-            hologram.GetComponent<SpriteRenderer>().maskInteraction = update;
-            hologramFood.GetComponent<SpriteRenderer>().maskInteraction = update;
-        }
-    }
-
     private int selectedLayer;
     public void MakeVisualOnly()
     {
@@ -200,7 +189,6 @@ public class CardScript : MonoBehaviour
         hologram.SetActive(true);
         hologramFood.SetActive(true);
         hologram.GetComponent<Animator>().speed = Random.Range(0.6f, 1f);
-        UpdateMaskInteraction(gameObject.GetComponent<SpriteRenderer>().maskInteraction);
 
         SpriteRenderer holoSR = hologram.GetComponent<SpriteRenderer>();
         SpriteRenderer objectSR = hologramFood.GetComponent<SpriteRenderer>();

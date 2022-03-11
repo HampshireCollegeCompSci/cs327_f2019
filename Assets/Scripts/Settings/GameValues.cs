@@ -3,20 +3,23 @@
 public class GameValues
 {
     public int foundationStartingSize;
-    public byte wastepileAnimationSpeedSlow;
-    public byte wastepileAnimationSpeedFast;
     public float draggedTokenOffset;
     public byte cardsToDeal;
-    public byte cardsToReactorspeed;
+
     public float relativeCardScale;
-    public int turnsTillReset;
-    public int matchPoints;
-    public int emptyReactorPoints;
-    public int perfectGamePoints;
-    public int delayToShowGameSummary;
+
     public int turnAlertSmallThreshold;
     public int turnAlertThreshold;
+
+    public int matchPoints;
     public int scoreMultiplier;
+    public bool enableBonusPoints;
+    public int emptyReactorPoints;
+    public int perfectGamePoints;
+
+    public int wastepileAnimationSpeedSlow;
+    public int wastepileAnimationSpeedFast;
+    public int cardsToReactorspeed;
 
     public float musicFadeIn;
     public float musicFadeOutFast;
