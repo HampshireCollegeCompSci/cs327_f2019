@@ -279,6 +279,6 @@ public class MenuUIScript : MonoBehaviour
 
         if (UtilsScript.Instance.IsInputStopped() || Config.Instance.gamePaused) return;
 
-        DeckScript.Instance.StartNextCycle(manuallyTriggered: true);
+        UtilsScript.Instance.StartNextCycle(manuallyTriggered: true);
     }
 }

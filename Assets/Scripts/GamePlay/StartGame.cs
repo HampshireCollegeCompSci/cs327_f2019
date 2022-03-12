@@ -26,9 +26,12 @@ public class StartGame : MonoBehaviour
 
         // disable the camera and audio listener because the previous scene is still loaded
         // and there need to be only one of each
-        Debug.Log("disabling gameplay camera and audio listener");
-        mainCamera.enabled = false;
-        audioListener.enabled = false;
+        if (StartGameSequence.Instance != null || PlayAgainSequence.Instance != null)
+        {
+            Debug.Log("disabling gameplay camera and audio listener");
+            mainCamera.enabled = false;
+            audioListener.enabled = false;
+        }
     }
 
     private void Start()

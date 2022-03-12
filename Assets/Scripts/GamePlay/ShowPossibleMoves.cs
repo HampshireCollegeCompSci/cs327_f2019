@@ -3,10 +3,15 @@ using UnityEngine;
 
 public class ShowPossibleMoves : MonoBehaviour
 {
-    public GameObject reactorMove;
-    public List<GameObject> foundationMoves;
-    public List<GameObject> cardMoves;
-    public List<GameObject> cardMatches;
+    private GameObject reactorMove;
+    private List<GameObject> foundationMoves;
+    private List<GameObject> cardMoves;
+    private List<GameObject> cardMatches;
+
+    public bool reactorIsGlowing;
+    public bool foundationIsGlowing;
+    public bool moveTokensAreGlowing;
+    public bool matchTokensAreGlowing;
 
     // Singleton instance.
     public static ShowPossibleMoves Instance = null;
@@ -26,8 +31,19 @@ public class ShowPossibleMoves : MonoBehaviour
 
     private void Start()
     {
+        foundationMoves = new List<GameObject>();
         cardMoves = new List<GameObject>();
         cardMatches = new List<GameObject>();
+    }
+
+    public bool AreThingsGlowing()
+    {
+        return reactorIsGlowing || foundationIsGlowing || moveTokensAreGlowing || matchTokensAreGlowing;
+    }
+
+    public bool AreCardsGlowing()
+    {
+        return moveTokensAreGlowing || matchTokensAreGlowing;
     }
 
     public void ShowMoves(GameObject selectedCard)
@@ -40,16 +56,26 @@ public class ShowPossibleMoves : MonoBehaviour
         FindMoves(selectedCard);
 
         foreach (GameObject card in cardMoves)
+        {
             card.GetComponent<CardScript>().GlowOn(false);
+            moveTokensAreGlowing = true;
+        }
 
         foreach (GameObject card in cardMatches)
+        {
             card.GetComponent<CardScript>().GlowOn(true);
+            matchTokensAreGlowing = true;
+        }
 
         foreach (GameObject foundation in foundationMoves)
+        {
             foundation.GetComponent<FoundationScript>().GlowOn();
+            foundationIsGlowing = true;
+        }
 
         if (reactorMove != null)
         {
+            reactorIsGlowing = true;
             ReactorScript reactorMoveScript = reactorMove.GetComponent<ReactorScript>();
 
             // disable the top cards hitbox for the reactors hitbox to be on top
@@ -159,14 +185,25 @@ public class ShowPossibleMoves : MonoBehaviour
 
     public void HideMoves()
     {
+        reactorIsGlowing = false;
+        foundationIsGlowing = false;
+        moveTokensAreGlowing = false;
+        matchTokensAreGlowing = false;
+
         foreach (GameObject card in cardMoves)
+        {
             card.GetComponent<CardScript>().GlowOff();
+        }
 
         foreach (GameObject card in cardMatches)
+        {
             card.GetComponent<CardScript>().GlowOff();
+        }
 
         foreach (GameObject card in foundationMoves)
+        {
             card.GetComponent<FoundationScript>().GlowOff();
+        }
 
         if (reactorMove != null)
         {
@@ -175,7 +212,9 @@ public class ShowPossibleMoves : MonoBehaviour
             // re-enable the top cards hitbox because it was disabled for the reactors hitbox to be on top
             // the top card can normally be clicked and dragged to match with other cards
             if (reactorMoveScript.cardList.Count != 0)
+            {
                 reactorMoveScript.cardList[0].GetComponent<BoxCollider2D>().enabled = true;
+            }
 
             reactorMoveScript.GlowOff();
         }

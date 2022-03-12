@@ -32,6 +32,11 @@ public class EndGame : MonoBehaviour
         Config.Instance.gamePaused = true;
         Config.Instance.gameWin = didWin;
 
+        if (Config.GameValues.enableBonusPoints)
+        {
+            AddExtraEndGameScore();
+        }
+
         // overwritten when manually won (cheated)
         Config.Instance.matchCounter = (byte)(MatchedPileScript.Instance.cardList.Count / 2);
 
@@ -50,6 +55,25 @@ public class EndGame : MonoBehaviour
 
         MusicController.Instance.FadeMusicOut();
         StartCoroutine(FadeGameplayOut(didWin));
+    }
+
+    private void AddExtraEndGameScore()
+    {
+        int extraScore = 0;
+        if (MatchedPileScript.Instance.cardList.Count == 52)
+        {
+            extraScore += Config.GameValues.perfectGamePoints;
+        }
+
+        foreach (GameObject foundation in Config.Instance.foundations)
+        {
+            if (foundation.GetComponent<FoundationScript>().cardList.Count == 0)
+            {
+                extraScore += Config.GameValues.emptyReactorPoints;
+            }
+        }
+
+        UtilsScript.Instance.UpdateScore(extraScore);
     }
 
     private IEnumerator FadeGameplayOut(bool gameWin)
