@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class StartGameSequence : MonoBehaviour
 {
     public AudioListener audioListener;
-    public CanvasGroup playButtonsGroup;
+    public GameObject mainButtons;
+    public GameObject playButtons;
 
     public RectTransform panelTransform;
     public GameObject spaceShipWindowObject;
@@ -45,9 +46,25 @@ public class StartGameSequence : MonoBehaviour
 
     private IEnumerator FadeOutButtons()
     {
-        while (playButtonsGroup.alpha != 0)
+        CanvasGroup buttonGroup;
+        if (mainButtons.activeSelf)
         {
-            playButtonsGroup.alpha -= Time.deltaTime * Config.GameValues.fadeOutButtonsSpeed;
+            buttonGroup = mainButtons.GetComponent<CanvasGroup>();
+        }
+        else if (playButtons.activeSelf)
+        {
+            buttonGroup = playButtons.GetComponent<CanvasGroup>();
+        }
+        else
+        {
+            Debug.LogError("both button groups are inactive");
+            StartCoroutine(PanAndZoomTo(spaceShipWindowObject.transform.position, Config.GameValues.zoomFactor));
+            yield break;
+        }
+
+        while (buttonGroup.alpha != 0)
+        {
+            buttonGroup.alpha -= Time.deltaTime * Config.GameValues.fadeOutButtonsSpeed;
             yield return null;
         }
         StartCoroutine(PanAndZoomTo(spaceShipWindowObject.transform.position, Config.GameValues.zoomFactor));

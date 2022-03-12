@@ -635,12 +635,12 @@ PrefabInstance:
       propertyPath: angrySound
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 2517302419974091510, guid: a54631a2b84024c439c98513f1f28bda,
+    - target: {fileID: 6961252161525188821, guid: a54631a2b84024c439c98513f1f28bda,
         type: 3}
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6961252161525188821, guid: a54631a2b84024c439c98513f1f28bda,
+    - target: {fileID: 2517302419974091510, guid: a54631a2b84024c439c98513f1f28bda,
         type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -872,10 +872,10 @@ RectTransform:
   m_Father: {fileID: 166773067}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -14.2}
-  m_SizeDelta: {x: 160, y: 36}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 37.8}
+  m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &784864165
 MonoBehaviour:
@@ -899,7 +899,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 8229317429a3d4abdb1d85c7ea8d4a2c, type: 3}
-    m_FontSize: 42
+    m_FontSize: 50
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -1017,10 +1017,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 871aa0b01d410402f817ec623c1b35ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainButtons: {fileID: 0}
   playButton: {fileID: 0}
   tutorialButton: {fileID: 0}
   settingsButton: {fileID: 504786109}
   aboutButton: {fileID: 0}
+  playButtons: {fileID: 0}
   continueButton: {fileID: 0}
   easyButton: {fileID: 0}
   normalButton: {fileID: 0}
@@ -1031,6 +1033,7 @@ MonoBehaviour:
   restartButton: {fileID: 1704416470}
   mainMenuButton: {fileID: 1500166305}
   playAgainButton: {fileID: 0}
+  scoreboard: {fileID: 784864165}
 --- !u!114 &1211753117
 MonoBehaviour:
   m_ObjectHideFlags: 0

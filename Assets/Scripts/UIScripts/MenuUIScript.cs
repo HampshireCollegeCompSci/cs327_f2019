@@ -5,10 +5,10 @@ using UnityEngine.UI;
 public class MenuUIScript : MonoBehaviour
 {
     // MainMenuScene Main buttons
-    public GameObject playButton, tutorialButton, settingsButton, aboutButton;
+    public GameObject mainButtons, playButton, tutorialButton, settingsButton, aboutButton;
 
     // MainMenuScene Play buttons
-    public GameObject continueButton, easyButton, normalButton, hardButton, backButton;
+    public GameObject playButtons, continueButton, easyButton, normalButton, hardButton, backButton;
 
     // LoadingScene text
     public Text loadingText;
@@ -21,6 +21,8 @@ public class MenuUIScript : MonoBehaviour
 
     // SummaryScene buttons
     public GameObject playAgainButton;
+
+    public Text scoreboard;
 
     private void Start()
     {
@@ -60,6 +62,7 @@ public class MenuUIScript : MonoBehaviour
                 UpdateButtonText(restartButton, Config.GameValues.pauseButtonsTxtEnglish[1]);
                 UpdateButtonText(settingsButton, Config.GameValues.pauseButtonsTxtEnglish[2]);
                 UpdateButtonText(mainMenuButton, Config.GameValues.pauseButtonsTxtEnglish[3]);
+                scoreboard.text = Config.Instance.score.ToString();
                 break;
             case Constants.settingsScene:
                 Debug.Log("updating settings scene buttons");
@@ -95,16 +98,10 @@ public class MenuUIScript : MonoBehaviour
         Debug.Log($"toggling main menu buttons: {showMain}");
 
         // Main buttons
-        playButton.SetActive(showMain);
-        tutorialButton.SetActive(showMain);
-        settingsButton.SetActive(showMain);
-        aboutButton.SetActive(showMain);
+        mainButtons.SetActive(showMain);
 
         // Play buttons
-        easyButton.SetActive(!showMain);
-        normalButton.SetActive(!showMain); 
-        hardButton.SetActive(!showMain); 
-        backButton.SetActive(!showMain);
+        playButtons.SetActive(!showMain);
 
         // Continue button requires a save to exist
         if (showMain)

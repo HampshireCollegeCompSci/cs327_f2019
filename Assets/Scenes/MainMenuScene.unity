@@ -478,7 +478,7 @@ PrefabInstance:
     - target: {fileID: 7084158332299253292, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7084158332299253295, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
@@ -611,7 +611,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &489388908
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1027,7 +1027,7 @@ PrefabInstance:
     - target: {fileID: 7084158332299253292, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7084158332299253295, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
@@ -1115,10 +1115,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 871aa0b01d410402f817ec623c1b35ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainButtons: {fileID: 1745077753}
   playButton: {fileID: 7084158332501743150}
   tutorialButton: {fileID: 1676171831}
   settingsButton: {fileID: 1942484655}
   aboutButton: {fileID: 2132402028}
+  playButtons: {fileID: 489388907}
   continueButton: {fileID: 2125820082}
   easyButton: {fileID: 601247333}
   normalButton: {fileID: 671287920}
@@ -1219,7 +1221,7 @@ PrefabInstance:
     - target: {fileID: 7084158332299253292, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7084158332299253295, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
@@ -1310,7 +1312,7 @@ PrefabInstance:
     - target: {fileID: 7084158332299253292, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7084158332299253295, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
@@ -1430,7 +1432,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioListener: {fileID: 1287289443}
-  playButtonsGroup: {fileID: 489388909}
+  mainButtons: {fileID: 1745077753}
+  playButtons: {fileID: 489388907}
   panelTransform: {fileID: 1452091090}
   spaceShipWindowObject: {fileID: 267931884}
   startSequencePanel: {fileID: 1722967935}
@@ -2433,6 +2436,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1745077754}
+  - component: {fileID: 1745077755}
   m_Layer: 5
   m_Name: Main
   m_TagString: Untagged
@@ -2463,6 +2467,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &1745077755
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1745077753}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1916409455
 GameObject:
   m_ObjectHideFlags: 0
@@ -2508,29 +2524,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tutorialOn: 0
   continuing: 0
+  prettyColors: 0
+  currentDifficulty: 
+  maxReactorVal: 0
+  actionMax: 0
   gamePaused: 0
   gameOver: 0
   gameWin: 0
+  actions: 0
   score: 0
-  prettyColors: 0
+  consecutiveMatches: 0
+  moveCounter: 0
+  matchCounter: 0
   foundation1: {fileID: 0}
   foundation2: {fileID: 0}
   foundation3: {fileID: 0}
   foundation4: {fileID: 0}
   foundations: []
-  maxReactorVal: 0
   reactor1: {fileID: 0}
   reactor2: {fileID: 0}
   reactor3: {fileID: 0}
   reactor4: {fileID: 0}
   reactors: []
-  currentDifficulty: 
-  actionMax: 0
-  actions: 0
-  consecutiveMatches: 0
-  moveCounter: 0
-  matchCounter: 0
-  json: 
 --- !u!1 &1942484655 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7084158332299253292, guid: f9e4f3524d2da456180c2be002c8dfd4,
