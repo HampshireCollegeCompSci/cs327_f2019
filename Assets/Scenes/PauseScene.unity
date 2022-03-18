@@ -137,7 +137,6 @@ GameObject:
   - component: {fileID: 166773067}
   - component: {fileID: 166773070}
   - component: {fileID: 166773069}
-  - component: {fileID: 166773068}
   m_Layer: 5
   m_Name: Scoreboard
   m_TagString: Untagged
@@ -165,19 +164,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -189.30002}
   m_SizeDelta: {x: 324.96997, y: 120.359985}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &166773068
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 166773066}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 947135afa7ab8da4a81384e1fd077051, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameScore: {fileID: 784864165}
 --- !u!114 &166773069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -634,6 +620,11 @@ PrefabInstance:
         type: 3}
       propertyPath: angrySound
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6961252161525188822, guid: a54631a2b84024c439c98513f1f28bda,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6961252161525188821, guid: a54631a2b84024c439c98513f1f28bda,
         type: 3}

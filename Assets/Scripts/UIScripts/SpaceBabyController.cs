@@ -50,14 +50,6 @@ public class SpaceBabyController : MonoBehaviour
         audioSource.volume = newVolume;
     }
 
-    // the 2D collider on the spacebby calls this
-    void OnMouseDown()
-    {
-        Debug.Log("SpaceBaby Clicked");
-        if (Config.Instance.gamePaused) return;
-        BabyHappy();
-    }
-
     public void BabyHappy()
     {
         Debug.Log("SpaceBaby Happy");
