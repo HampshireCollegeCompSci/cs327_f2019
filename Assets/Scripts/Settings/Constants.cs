@@ -26,7 +26,6 @@ public static class Constants
     public const string mainMenuScene = "MainMenuScene";
     public const string aboutScene = "AboutScene";
     public const string settingsScene = "SettingsScene";
-    public const string loadingScene = "LoadingScene";
     public const string gameplayScene = "GameplayScene";
     public const string pauseScene = "PauseScene";
     public const string summaryScene = "SummaryScene";

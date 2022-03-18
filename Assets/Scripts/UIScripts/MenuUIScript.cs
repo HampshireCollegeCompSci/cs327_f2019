@@ -47,15 +47,6 @@ public class MenuUIScript : MonoBehaviour
                 UpdateButtonText(hardButton, Config.GameValues.levelButtonsTxtEnglish[3]);
                 UpdateButtonText(backButton, Config.GameValues.backButtonTxtEnglish);
                 break;
-            case Constants.loadingScene:
-                Debug.Log("updating loading text");
-                loadingText.text = Config.GameValues.backButtonTxtEnglish;
-                break;
-            case Constants.summaryScene:
-                Debug.Log("updating summary scene buttons");
-                UpdateButtonText(mainMenuButton, Config.GameValues.summaryButtonsTxtEnglish[0]);
-                UpdateButtonText(playAgainButton, Config.GameValues.summaryButtonsTxtEnglish[1]);
-                break;
             case Constants.pauseScene:
                 Debug.Log("updating pause scene buttons");
                 UpdateButtonText(resumeButton, Config.GameValues.pauseButtonsTxtEnglish[0]);
@@ -64,8 +55,17 @@ public class MenuUIScript : MonoBehaviour
                 UpdateButtonText(mainMenuButton, Config.GameValues.pauseButtonsTxtEnglish[3]);
                 scoreboard.text = Config.Instance.score.ToString();
                 break;
+            case Constants.summaryScene:
+                Debug.Log("updating summary scene buttons");
+                UpdateButtonText(mainMenuButton, Config.GameValues.summaryButtonsTxtEnglish[0]);
+                UpdateButtonText(playAgainButton, Config.GameValues.summaryButtonsTxtEnglish[1]);
+                break;
             case Constants.settingsScene:
                 Debug.Log("updating settings scene buttons");
+                UpdateButtonText(backButton, Config.GameValues.backButtonTxtEnglish);
+                break;
+            case Constants.aboutScene:
+                Debug.Log("updating about button text");
                 UpdateButtonText(backButton, Config.GameValues.backButtonTxtEnglish);
                 break;
             default:

@@ -1696,10 +1696,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 871aa0b01d410402f817ec623c1b35ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainButtons: {fileID: 0}
   playButton: {fileID: 0}
   tutorialButton: {fileID: 0}
   settingsButton: {fileID: 0}
   aboutButton: {fileID: 0}
+  playButtons: {fileID: 0}
   continueButton: {fileID: 0}
   easyButton: {fileID: 0}
   normalButton: {fileID: 0}
@@ -1710,6 +1712,7 @@ MonoBehaviour:
   restartButton: {fileID: 0}
   mainMenuButton: {fileID: 0}
   playAgainButton: {fileID: 0}
+  scoreboard: {fileID: 0}
 --- !u!114 &1978403784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1758,8 +1761,8 @@ Canvas:
   m_GameObject: {fileID: 1978403782}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 379246475}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
