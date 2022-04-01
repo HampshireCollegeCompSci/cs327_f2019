@@ -44,33 +44,45 @@ public class FoundationScript : MonoBehaviour
 
     public void SetCardPositions()
     {
-        int positionCounter = 0;
+        float zOffset = -0.1f;
         int hiddenCards = 0;
         float yOffset = 0;
 
         for (int i = cardList.Count - 1; i >= 0; i--) // go backwards through the list
         {
             // as we go through, place cards above and in-front the previous one
-            cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -1 - positionCounter * 0.1f);
+            cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, zOffset);
 
             if (cardList[i].GetComponent<CardScript>().IsHidden)  // don't show hidden cards as much
             {
                 hiddenCards++;
                 if (cardList.Count > 18)
-                    yOffset += 0.01f;
+                {
+                    yOffset += 0.03f;
+                }
                 else if (cardList.Count > 12)
+                {
                     yOffset += 0.05f;
+                }
                 else if (cardList.Count > 10)
+                {
                     yOffset += 0.1f;
+                }
                 else
+                {
                     yOffset += 0.2f;
+                }
             }
             else if (hiddenCards != 0 && cardList.Count > 17)
+            {
                 yOffset += 0.42f;
+            }
             else
+            {
                 yOffset += 0.45f;
+            }
 
-            positionCounter++;
+            zOffset -= 0.05f;
         }
     }
 

@@ -205,6 +205,7 @@ public class TutorialScript : MonoBehaviour
     public void ExitButton()
     {
         Debug.Log("exit tutorial requested");
+        SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.LoadScene(Constants.mainMenuScene);
         MusicController.Instance.MainMenuMusic();
     }

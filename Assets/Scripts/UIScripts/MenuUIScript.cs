@@ -119,10 +119,11 @@ public class MenuUIScript : MonoBehaviour
         Debug.Log("MenuUI new game");
 
         SoundEffectsController.Instance.ButtonPressSound();
+        mainButtons.GetComponent<CanvasGroup>().interactable = false;
+        playButtons.GetComponent<CanvasGroup>().interactable = false;
 
         Config.Instance.continuing = isContinue;
         Config.Instance.tutorialOn = isTutorial;
-
 
         if (StartGameSequence.Instance != null)
         {

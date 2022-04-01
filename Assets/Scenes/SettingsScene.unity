@@ -272,8 +272,8 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
+  near clip plane: 0
+  far clip plane: 1
   field of view: 60
   orthographic: 1
   orthographic size: 5
@@ -952,6 +952,16 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -300
       objectReference: {fileID: 0}
+    - target: {fileID: 8669265234044391580, guid: 0df75bcea6e07c84e844f44b7f1be377,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8669265234044391580, guid: 0df75bcea6e07c84e844f44b7f1be377,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8669265233116736845, guid: 0df75bcea6e07c84e844f44b7f1be377,
         type: 3}
       propertyPath: m_Text
@@ -986,16 +996,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 8669265234044391580, guid: 0df75bcea6e07c84e844f44b7f1be377,
-        type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8669265234044391580, guid: 0df75bcea6e07c84e844f44b7f1be377,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8669265234091294484, guid: 0df75bcea6e07c84e844f44b7f1be377,
         type: 3}
@@ -1737,15 +1737,15 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 379246475}
-  m_PlaneDistance: 100
+  m_PlaneDistance: 1
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 874189689
+  m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!224 &1978403787
 RectTransform:
@@ -1968,6 +1968,16 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -500
       objectReference: {fileID: 0}
+    - target: {fileID: 8669265234044391580, guid: 0df75bcea6e07c84e844f44b7f1be377,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8669265234044391580, guid: 0df75bcea6e07c84e844f44b7f1be377,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8669265233116736845, guid: 0df75bcea6e07c84e844f44b7f1be377,
         type: 3}
       propertyPath: m_Text
@@ -2002,16 +2012,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 8669265234044391580, guid: 0df75bcea6e07c84e844f44b7f1be377,
-        type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8669265234044391580, guid: 0df75bcea6e07c84e844f44b7f1be377,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8669265234091294484, guid: 0df75bcea6e07c84e844f44b7f1be377,
         type: 3}
