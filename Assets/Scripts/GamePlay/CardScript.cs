@@ -303,11 +303,11 @@ public class CardScript : MonoBehaviour
                 {
                     if (isStack)
                     {
-                        UndoScript.Instance.LogMove("stack", gameObject, isAction, nextCardWasHidden);
+                        UndoScript.Instance.LogMove(Constants.stackLogMove, gameObject, isAction, nextCardWasHidden);
                     }
                     else
                     {
-                        UndoScript.Instance.LogMove("move", gameObject, isAction, nextCardWasHidden);
+                        UndoScript.Instance.LogMove(Constants.moveLogMove, gameObject, isAction, nextCardWasHidden);
                     }
                 }
                 destination.GetComponent<FoundationScript>().AddCard(gameObject, showHolo: showHolo);
@@ -317,11 +317,11 @@ public class CardScript : MonoBehaviour
                 {
                     if (isCycle)
                     {
-                        UndoScript.Instance.LogMove("cycle", gameObject, true, nextCardWasHidden);
+                        UndoScript.Instance.LogMove(Constants.cycleLogMove, gameObject, true, nextCardWasHidden);
                     }
                     else
                     {
-                        UndoScript.Instance.LogMove("move", gameObject, isAction, nextCardWasHidden);
+                        UndoScript.Instance.LogMove(Constants.moveLogMove, gameObject, isAction, nextCardWasHidden);
                     }
                 }
                 destination.GetComponent<ReactorScript>().AddCard(gameObject);
@@ -332,11 +332,11 @@ public class CardScript : MonoBehaviour
                     // for undoing a match that goes into the wastepile
                     if (container.CompareTag(Constants.foundationTag))
                     {
-                        UndoScript.Instance.LogMove("move", gameObject, isAction, nextCardWasHidden);
+                        UndoScript.Instance.LogMove(Constants.moveLogMove, gameObject, isAction, nextCardWasHidden);
                     }
                     else
                     {
-                        UndoScript.Instance.LogMove("draw", gameObject, isAction);
+                        UndoScript.Instance.LogMove(Constants.drawLogMove, gameObject, isAction);
                     }
                 }
 
@@ -345,21 +345,21 @@ public class CardScript : MonoBehaviour
             case Constants.deckTag:
                 if (doLog)
                 {
-                    UndoScript.Instance.LogMove("deckreset", gameObject, isAction);
+                    UndoScript.Instance.LogMove(Constants.deckresetLogMove, gameObject, isAction);
                 }
                 DeckScript.Instance.AddCard(gameObject);
                 break;
             case Constants.matchedPileTag:
                 if (doLog)
                 {
-                    UndoScript.Instance.LogMove("match", gameObject, isAction, nextCardWasHidden);
+                    UndoScript.Instance.LogMove(Constants.matchLogMove, gameObject, isAction, nextCardWasHidden);
                 }
                 MatchedPileScript.Instance.AddCard(gameObject);
                 break;
             case Constants.loadPileTag:
                 if (doLog)
                 {
-                    UndoScript.Instance.LogMove("match", gameObject, isAction, nextCardWasHidden);
+                    UndoScript.Instance.LogMove(Constants.matchLogMove, gameObject, isAction, nextCardWasHidden);
                 }
                 LoadPileScript.Instance.AddCard(gameObject);
                 break;

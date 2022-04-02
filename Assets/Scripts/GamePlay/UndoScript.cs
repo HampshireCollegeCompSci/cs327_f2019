@@ -61,7 +61,7 @@ public class UndoScript : MonoBehaviour
             Move lastMove;
             switch (moveLog.Peek().moveType)
             {
-                case "stack":
+                case Constants.stackLogMove:
                     // list goes from bottom token to top in original stack
                     List<Move> undoList = new List<Move>
                     {
@@ -93,7 +93,7 @@ public class UndoScript : MonoBehaviour
 
                     UtilsScript.Instance.UpdateActions(undoList[0].remainingActions, setAsValue: true);
                     break;
-                case "move":
+                case Constants.moveLogMove:
                     // standard behavior, move a single token back where it was
                     lastMove = moveLog.Pop();
                     MoveFoundationCard(lastMove);
@@ -103,7 +103,7 @@ public class UndoScript : MonoBehaviour
                         UtilsScript.Instance.UpdateActions(lastMove.remainingActions, setAsValue: true);
                     }
                     break;
-                case "match":
+                case Constants.matchLogMove:
                     // undo a match, removing the score gained and moving both cards back to their original locations
                     MoveFoundationCard(moveLog.Pop());
 
@@ -113,7 +113,7 @@ public class UndoScript : MonoBehaviour
                     UtilsScript.Instance.UpdateScore(lastMove.score, setAsValue: true);
                     UtilsScript.Instance.UpdateActions(-1);
                     break;
-                case "draw":
+                case Constants.drawLogMove:
                     // move the drawn cards back to the deck (assuming the last action was to draw from the deck)
                     while (true)
                     {
@@ -129,7 +129,7 @@ public class UndoScript : MonoBehaviour
                         lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, showHolo: false);
                     }
                     break;
-                case "cycle":
+                case Constants.cycleLogMove:
                     // undo a cycle turning over, resets all tokens moved up, along with the move counter
                     lastMove = moveLog.Pop();
                     MoveFoundationCard(lastMove);
@@ -139,7 +139,7 @@ public class UndoScript : MonoBehaviour
                         // undo the cycle moves until the move that triggered it is reached.
                         // then trigger undo again so that the moveset is properly undone.
                         // note that a undo of a manual trigger of a cycle will not cause undo to be called again.
-                        if (moveLog.Peek().moveType.Equals("cycle"))
+                        if (moveLog.Peek().moveType.Equals(Constants.cycleLogMove))
                         {
                             lastMove = moveLog.Pop();
                             MoveFoundationCard(lastMove);
@@ -150,12 +150,10 @@ public class UndoScript : MonoBehaviour
                             return;
                         }
                     }
-
                     UtilsScript.Instance.UpdateActions(lastMove.remainingActions, setAsValue: true);
                     break;
                 default:
                     throw new System.Exception("invalid move log move type");
-
             }
         }
     }

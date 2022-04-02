@@ -44,6 +44,12 @@ public static class Constants
     public const string loadPileTag= "LoadPile";
 
     // Log moves
+    public const string stackLogMove = "stack";
+    public const string moveLogMove = "move";
+    public const string matchLogMove = "match";
+    public const string drawLogMove = "draw";
+    public const string cycleLogMove = "cycle";
+    public const string deckresetLogMove = "deckreset";
 
     // Keys
     // Summary stats
