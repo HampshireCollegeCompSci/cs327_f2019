@@ -1,9 +1,11 @@
 {
 	"foundationStartingSize": 7,
-	"draggedTokenOffset": 0.5,
 	"cardsToDeal": 3,
 
 	"relativeCardScale": 0.12,
+
+	"draggedCardScale": 0.15,
+	"draggedCardOffset": 0.4,
 
 	"turnAlertSmallThreshold": 10,
 	"turnAlertThreshold": 5,
@@ -16,7 +18,7 @@
 
 	"wastepileAnimationSpeedSlow": 400,
 	"wastepileAnimationSpeedFast": 1000,
-	"cardsToReactorspeed": 15,
+	"cardsToReactorspeed": 10,
 
 	"musicFadeIn": 0.5,
 	"musicFadeOutFast": 0.7,

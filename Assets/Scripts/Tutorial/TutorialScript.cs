@@ -42,12 +42,12 @@ public class TutorialScript : MonoBehaviour
     /// </summary>
     private void UpdateHighlightObjectsColor(Color newColor)
     {
-        tutorialReactors.GetComponent<Image>().color = newColor;
+        tutorialReactors.GetComponent<SpriteRenderer>().color = newColor;
         tutorialScore.GetComponent<Image>().color = newColor;
         tutorialMoveCounter.GetComponent<Image>().color = newColor;
         tutorialUndo.GetComponent<Image>().color = newColor;
         tutorialPause.GetComponent<Image>().color = newColor;
-        tutorialFoundations.GetComponent<Image>().color = newColor;
+        tutorialFoundations.GetComponent<SpriteRenderer>().color = newColor;
         tutorialDeck.GetComponent<Image>().color = newColor;
         tutorialWastePile.GetComponent<Image>().color = newColor;
     }
@@ -187,16 +187,6 @@ public class TutorialScript : MonoBehaviour
         Config.Instance.SetDifficulty(0);
 
         GameLoader.Instance.RestartGame();
-    }
-
-    private void MoveCardsToDeck(List<GameObject> cards)
-    {
-        int cardCount = cards.Count;
-        while (cardCount != 0)
-        {
-            cards[0].GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, doLog: false, isAction: false);
-            cardCount--;
-        }
     }
 
     /// <summary>

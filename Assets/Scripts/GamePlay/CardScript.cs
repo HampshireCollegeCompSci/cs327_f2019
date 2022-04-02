@@ -9,6 +9,7 @@ public class CardScript : MonoBehaviour
     public int cardNum; //cardNum is the number on the card, ace is 1 jack is 11 queen is 12 king is 13
     public string suit;
 
+    public GameObject values;
     public GameObject suitObject, rankObject;
     public GameObject hologramFood, hologram;
     public Sprite hologramFoodSprite, hologramComboSprite;
@@ -80,14 +81,12 @@ public class CardScript : MonoBehaviour
         if (show)
         {
             gameObject.GetComponent<BoxCollider2D>().enabled = true;
-            suitObject.SetActive(true);
-            rankObject.SetActive(true);
+            values.SetActive(true);
         }
         else
         {
             gameObject.GetComponent<BoxCollider2D>().enabled = false;
-            suitObject.SetActive(false);
-            rankObject.SetActive(false);
+            values.SetActive(false);
             HideHologram();
         }
     }
@@ -122,20 +121,15 @@ public class CardScript : MonoBehaviour
         }
     }
 
-    private int selectedLayer;
     public void MakeVisualOnly()
     {
-        gameObject.transform.localScale = new Vector3(0.2f, 0.2f, 1);
+        gameObject.transform.localScale = new Vector3(Config.GameValues.draggedCardScale, Config.GameValues.draggedCardScale, 1);
         container = null;
 
-        if (selectedLayer == 0)
-            selectedLayer = SortingLayer.NameToID("SelectedCards");
-
-        gameObject.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
-        suitObject.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
-        rankObject.GetComponent<MeshRenderer>().sortingLayerID = selectedLayer;
-        hologram.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
-        hologramFood.GetComponent<SpriteRenderer>().sortingLayerID = selectedLayer;
+        gameObject.GetComponent<SpriteRenderer>().sortingLayerID = UtilsScript.Instance.SelectedCardsLayer;
+        values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = UtilsScript.Instance.SelectedCardsLayer;
+        hologram.GetComponent<SpriteRenderer>().sortingLayerID = UtilsScript.Instance.SelectedCardsLayer;
+        hologramFood.GetComponent<SpriteRenderer>().sortingLayerID = UtilsScript.Instance.SelectedCardsLayer;
         gameObject.GetComponent<BoxCollider2D>().enabled = false;
 
         SetSelected(false);

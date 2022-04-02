@@ -155,16 +155,13 @@ public class GameLoader : MonoBehaviour
                 newCardScript.cardNum = rank;
                 newCardScript.suit = suitStrings[suit];
 
-                // setting up the text renderer's sorting layer and order because you can't do it via Unity's Inspector
-                newCardScript.rankObject.GetComponent<MeshRenderer>().sortingLayerName = "Gameplay";
-                newCardScript.rankObject.GetComponent<MeshRenderer>().sortingOrder = 1;
-
                 // setting up the in-game appearance of the card's rank color
                 newCardScript.rankObject.GetComponent<TextMesh>().color = rankColor;
 
                 // setting up the in-game appearance of the card's suit
                 newCardScript.suitObject.GetComponent<SpriteRenderer>().sprite = suitSpritesToUse[suit];
 
+                newCard.name = $"Card: {rank}, {suitStrings[suit]}";
                 newCards.Add(newCard);
                 cardIndex += 1;
             }

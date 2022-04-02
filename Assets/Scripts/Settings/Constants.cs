@@ -30,6 +30,11 @@ public static class Constants
     public const string pauseScene = "PauseScene";
     public const string summaryScene = "SummaryScene";
 
+    // Sorting Layers
+    public const string selectedCardsSortingLayer = "SelectedCards";
+    public const string gameplaySortingLayer = "Gameplay";
+
+    // Tags
 
     // Keys
 

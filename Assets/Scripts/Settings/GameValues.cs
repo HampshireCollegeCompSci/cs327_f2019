@@ -3,10 +3,12 @@
 public class GameValues
 {
     public int foundationStartingSize;
-    public float draggedTokenOffset;
     public byte cardsToDeal;
 
     public float relativeCardScale;
+
+    public float draggedCardScale;
+    public float draggedCardOffset;
 
     public int turnAlertSmallThreshold;
     public int turnAlertThreshold;

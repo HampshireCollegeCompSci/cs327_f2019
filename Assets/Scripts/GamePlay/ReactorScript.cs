@@ -10,6 +10,7 @@ public class ReactorScript : MonoBehaviour
 
     public GameObject suitGlow;
     private SpriteRenderer suitGlowSR;
+    private SpriteRenderer glowSR;
     private Color oldSuitGlow;
 
     public Sprite glow;
@@ -19,15 +20,17 @@ public class ReactorScript : MonoBehaviour
     void Start()
     {
         suitGlowSR = suitGlow.GetComponent<SpriteRenderer>();
+        glowSR = this.gameObject.GetComponent<SpriteRenderer>();
     }
 
     private void CheckGameOver()
     {
-        if (Config.Instance.tutorialOn)
-            return;
+        if (Config.Instance.tutorialOn) return;
 
         if (!Config.Instance.gameOver && CountReactorCard() >= Config.Instance.maxReactorVal)
+        {
             EndGame.Instance.GameOver(false);
+        }
     }
 
     public void AddCard(GameObject card)
@@ -62,42 +65,63 @@ public class ReactorScript : MonoBehaviour
         ReactorScoreSetScript.Instance.SetReactorScore();
     }
 
-    public void SetCardPositions()
+    public Vector3 GetNextCardPosition()
     {
-        float zOffset = -0.1f;
-        float yOffset = -0.8f;
+        return this.gameObject.transform.TransformPoint(GetCardPosition(0, cardList.Count + 1));
+    }
 
-        for (int i = cardList.Count - 1; i >= 0; i--)  // go backwards through the list
+    private void SetCardPositions()
+    {
+        int cardCount = cardList.Count;
+        for (int i = 0; i < cardCount; i++)
         {
-            // as we go through, place cards above and in-front the previous one
-            cardList[i].transform.position = gameObject.transform.position + new Vector3(-0.02f, yOffset, zOffset);
+            Vector3 newPos = GetCardPosition(i, cardCount);
+            cardList[i].transform.localPosition = newPos;
+        }
+    }
 
-            // 4 tokens can visibly fit in the container at once, so hide the bottom ones if over 4
-            if (!(cardList.Count > 5 && zOffset < cardList.Count - 5))
+    private const int maxFullReactorCards = 4;
+    private const float xOffset = -0.02f;
+    private const float startingYOffset = -0.34f;
+    private const float largeYOffset = 0.16f;
+    private const float smallYOffset = 0.03f;
+    private Vector3 GetCardPosition(int index, int cardListCount)
+    {
+        int reverseIndex = cardListCount - index - 1;
+        float zOffset = -0.05f * (reverseIndex + 1);
+
+        if (cardListCount > maxFullReactorCards)
+        {
+            if (index >= maxFullReactorCards)
             {
-                yOffset += 0.45f;
+                return new Vector3(xOffset, startingYOffset + smallYOffset * reverseIndex, zOffset);
             }
             else
             {
-                yOffset += 0.1f;
+                return new Vector3(xOffset, startingYOffset + smallYOffset * (cardListCount - 1 - maxFullReactorCards) + largeYOffset * (maxFullReactorCards - index), zOffset);
             }
-
-            zOffset -= 0.05f;
+        }
+        else
+        {
+            return new Vector3(xOffset, startingYOffset + largeYOffset * reverseIndex, zOffset);
         }
     }
 
     public void ProcessAction(GameObject input)
     {
-        if (!input.CompareTag("Card"))
-            return;
+        if (!input.CompareTag("Card")) return;
 
         if (UtilsScript.Instance.selectedCards.Count != 1)
+        {
             throw new System.ArgumentException("utils.selectedCards must be of size 1");
+        }
 
         GameObject selectedCard = UtilsScript.Instance.selectedCards[0];
 
         if (CardTools.CanMatch(input.GetComponent<CardScript>(), selectedCard.GetComponent<CardScript>()))
+        {
             UtilsScript.Instance.Match(input, selectedCard);
+        }
     }
 
     public int GetIncreaseOnNextCycle()
@@ -110,7 +134,9 @@ public class ReactorScript : MonoBehaviour
             {
                 CardScript topCardScript = currentFoundationScript.cardList[0].GetComponent<CardScript>();
                 if (topCardScript.suit == suit)
+                {
                     output += topCardScript.cardVal;
+                }
             }
         }
 
@@ -122,19 +148,22 @@ public class ReactorScript : MonoBehaviour
         int totalSum = 0;
         int cardListVal = cardList.Count;
         for (int i = 0; i < cardListVal; i++)
+        {
             totalSum += cardList[i].gameObject.GetComponent<CardScript>().cardVal;
+        }
 
         return totalSum;
     }
 
     public void GlowOn(byte alertLevel)
     {
-        if (isGlowing)
-            return;
+        if (isGlowing) return;
+
         isGlowing = true;
 
-        suitGlow.SetActive(true);
-        gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        suitGlowSR.enabled = true;
+        glowSR.enabled = true;
+
         if (alertLevel == 1) // just highlight
         {
             gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 0, 0.5f);
@@ -149,25 +178,26 @@ public class ReactorScript : MonoBehaviour
 
     public void GlowOff()
     {
-        if (!isGlowing)
-            return;
+        if (!isGlowing) return;
+
         isGlowing = false;
-        gameObject.GetComponent<SpriteRenderer>().enabled = false;
-        suitGlow.SetActive(false);
+
+        suitGlowSR.enabled = false;
+        glowSR.enabled = false;
     }
 
     public void AlertOn()
     {
-        if (alertOn)
-            return;
+        if (alertOn) return;
+
         alertOn = true;
         ReactorScoreSetScript.Instance.ChangeTextColor(gameObject, true);
     }
 
     public void AlertOff()
     {
-        if (!alertOn)
-            return;
+        if (!alertOn) return;
+
         alertOn = false;
         ReactorScoreSetScript.Instance.ChangeTextColor(gameObject, false);
     }

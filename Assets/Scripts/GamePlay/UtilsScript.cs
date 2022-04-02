@@ -7,6 +7,7 @@ public class UtilsScript : MonoBehaviour
 {
     public List<GameObject> selectedCards;
     private List<GameObject> selectedCardsCopy;
+    private int selectedCardsCopyCount;
 
     public GameObject matchPrefab;
     public GameObject matchPointsPrefab;
@@ -43,7 +44,23 @@ public class UtilsScript : MonoBehaviour
     void Start()
     {
         selectedCardsCopy = new List<GameObject>();
+        selectedCardsLayer = SortingLayer.NameToID(Constants.selectedCardsSortingLayer);
+        gameplayLayer = SortingLayer.NameToID(Constants.gameplaySortingLayer);
     }
+
+
+    private int selectedCardsLayer;
+    public int SelectedCardsLayer
+    {
+        get { return selectedCardsLayer; }
+    }
+
+    private int gameplayLayer;
+    public int GameplayLayer
+    {
+        get { return gameplayLayer; }
+    }
+
 
     void Update()
     {
@@ -97,7 +114,6 @@ public class UtilsScript : MonoBehaviour
         if (hitCardScript.container.CompareTag("Wastepile"))
         {
             // all non-top wastepile tokens have their hitboxes disabled
-            //if (hitCardScript.container.GetComponent<WastepileScript>().cardList[0] == hitGameObject)
             SelectCard(hitGameObject);
         }
         else if (hitCardScript.container.CompareTag("Reactor") &&
@@ -124,7 +140,7 @@ public class UtilsScript : MonoBehaviour
 
         if (inputCardScript.container.CompareTag("Wastepile"))
         {
-            inputCardScript.container.GetComponent<WastepileScript>().DraggingCard(inputCard, true);
+            WastepileScript.Instance.DraggingCard(inputCard, true);
             draggingWastepile = true;
         }
 
@@ -162,7 +178,7 @@ public class UtilsScript : MonoBehaviour
         switch (selectedContainer.tag)
         {
             case "Wastepile":
-                selectedContainer.GetComponent<WastepileScript>().ProcessAction(hit.collider.gameObject);
+                WastepileScript.Instance.ProcessAction(hit.collider.gameObject);
                 break;
             case "Foundation":
                 selectedContainer.GetComponent<FoundationScript>().ProcessAction(hit.collider.gameObject);
@@ -190,7 +206,7 @@ public class UtilsScript : MonoBehaviour
         }
         selectedCards.Clear();
 
-        for (int i = 0; i < selectedCardsCopy.Count; i++)
+        for (int i = 0; i < selectedCardsCopyCount; i++)
         {
             Destroy(selectedCardsCopy[i]);
         }
@@ -213,6 +229,7 @@ public class UtilsScript : MonoBehaviour
             cardCopy.GetComponent<CardScript>().MakeVisualOnly();
             selectedCardsCopy.Add(cardCopy);
         }
+        selectedCardsCopyCount = selectedCardsCopy.Count;
 
         // enable dragged reactor tokens holograms
         if (selectedCards.Count == 1 && selectedCards[0].GetComponent<CardScript>().container.CompareTag("Reactor"))
@@ -236,12 +253,14 @@ public class UtilsScript : MonoBehaviour
         selectedCardsCopy[0].transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
                                                                                  Input.mousePosition.y,
                                                                                  1));
+        Vector3 lastCardsPosition = selectedCardsCopy[0].transform.position;
         // have the rest of the tokens appear above it
-        for (int i = 1; i < selectedCardsCopy.Count; i++)
+        for (int i = 1; i < selectedCardsCopyCount; i++)
         {
-            selectedCardsCopy[i].transform.position = new Vector3(selectedCardsCopy[i - 1].transform.position.x,
-                                                                  selectedCardsCopy[i - 1].transform.position.y + Config.GameValues.draggedTokenOffset,
-                                                                  selectedCardsCopy[i - 1].transform.position.z - 0.05f);
+            selectedCardsCopy[i].transform.position = new Vector3(lastCardsPosition.x,
+                                                                  lastCardsPosition.y + Config.GameValues.draggedCardOffset,
+                                                                  lastCardsPosition.z - 0.05f);
+            lastCardsPosition = selectedCardsCopy[i].transform.position;
         }
 
         DragGlow(hit);
@@ -265,7 +284,7 @@ public class UtilsScript : MonoBehaviour
                 hoveringOver.GetComponent<CardScript>().IsGlowing())
             {
                 // change the dragged token hologram color to what it's hovering over and check if it was a match
-                if (selectedCardsCopy[selectedCardsCopy.Count - 1].GetComponent<CardScript>().ChangeHologram(hoveringOver.GetComponent<CardScript>().GetGlowColor()))
+                if (selectedCardsCopy[selectedCardsCopyCount - 1].GetComponent<CardScript>().ChangeHologram(hoveringOver.GetComponent<CardScript>().GetGlowColor()))
                 {
                     // if the hovering over token is not in the reactor
                     if (!hoveringOver.transform.parent.CompareTag("Reactor"))
@@ -291,7 +310,7 @@ public class UtilsScript : MonoBehaviour
             else if (ShowPossibleMoves.Instance.foundationIsGlowing && hoveringOver.CompareTag("Foundation") &&
                 hoveringOver.GetComponent<FoundationScript>().IsGlowing())
             {
-                selectedCardsCopy[selectedCardsCopy.Count - 1].GetComponent<CardScript>().ChangeHologram(hoveringOver.GetComponent<FoundationScript>().GetGlowColor());
+                selectedCardsCopy[selectedCardsCopyCount - 1].GetComponent<CardScript>().ChangeHologram(hoveringOver.GetComponent<FoundationScript>().GetGlowColor());
                 changedHologramColor = true;
             }
         }
@@ -314,7 +333,7 @@ public class UtilsScript : MonoBehaviour
         // if we where hovering over a glowing token
         if (changedHologramColor)
         {
-            selectedCardsCopy[selectedCardsCopy.Count - 1].GetComponent<CardScript>().ChangeHologram(Color.white);
+            selectedCardsCopy[selectedCardsCopyCount - 1].GetComponent<CardScript>().ChangeHologram(Color.white);
             changedHologramColor = false;
         }
 
@@ -662,17 +681,8 @@ public class UtilsScript : MonoBehaviour
                     if (topCardScript.suit == reactor.GetComponent<ReactorScript>().suit)
                     {
                         topCardScript.HideHologram();
-                        topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
-                        topCardScript.suitObject.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
-                        topCardScript.rankObject.GetComponent<MeshRenderer>().sortingLayerName = "SelectedCards";
-
-                        Vector3 target = reactor.transform.position;
-                        int cardCount = reactor.GetComponent<ReactorScript>().cardList.Count;
-                        if (cardCount > 4)
-                            cardCount = 4;
-
-                        target.y += -0.8f + cardCount * 0.45f;
-                        target.x -= 0.02f;
+                        topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = SelectedCardsLayer;
+                        topCardScript.values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = SelectedCardsLayer;
 
                         // immediately unhide the next possible top foundation card and start its hologram
                         if (currentFoundation.cardList.Count > 1)
@@ -685,6 +695,7 @@ public class UtilsScript : MonoBehaviour
                             }
                         }
 
+                        Vector3 target = reactor.GetComponent<ReactorScript>().GetNextCardPosition();
                         while (topFoundationCard.transform.position != target)
                         {
                             topFoundationCard.transform.position = Vector3.MoveTowards(topFoundationCard.transform.position, target,
@@ -692,9 +703,8 @@ public class UtilsScript : MonoBehaviour
                             yield return null;
                         }
 
-                        topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
-                        topCardScript.suitObject.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
-                        topCardScript.rankObject.GetComponent<MeshRenderer>().sortingLayerName = "Gameplay";
+                        topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = GameplayLayer;
+                        topCardScript.values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = GameplayLayer;
 
                         SoundEffectsController.Instance.CardToReactorSound();
                         topCardScript.MoveCard(reactor, isCycle: true);
