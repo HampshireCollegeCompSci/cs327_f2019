@@ -106,23 +106,23 @@ public class UtilsScript : MonoBehaviour
         if (hit.collider == null) return;
 
         GameObject hitGameObject = hit.collider.gameObject;
-        if (!hitGameObject.CompareTag("Card")) return;
+        if (!hitGameObject.CompareTag(Constants.cardTag)) return;
 
         CardScript hitCardScript = hitGameObject.GetComponent<CardScript>();
 
         //if we click a card in the wastepile select it
-        if (hitCardScript.container.CompareTag("Wastepile"))
+        if (hitCardScript.container.CompareTag(Constants.wastepileTag))
         {
             // all non-top wastepile tokens have their hitboxes disabled
             SelectCard(hitGameObject);
         }
-        else if (hitCardScript.container.CompareTag("Reactor") &&
+        else if (hitCardScript.container.CompareTag(Constants.reactorTag) &&
                  hitCardScript.container.GetComponent<ReactorScript>().cardList[0] == hitGameObject)
         {
             //if we click a card in a reactor
             SelectCard(hitGameObject);
         }
-        else if (hitCardScript.container.CompareTag("Foundation"))
+        else if (hitCardScript.container.CompareTag(Constants.foundationTag))
         {
             //if we click a card in a foundation
             //if (!hitCardScript.isHidden()) return; // hidden cards have their hitboxes disabled
@@ -138,7 +138,7 @@ public class UtilsScript : MonoBehaviour
             throw new System.ArgumentException("inputCard must be a gameObject that contains a CardScript");
         }
 
-        if (inputCardScript.container.CompareTag("Wastepile"))
+        if (inputCardScript.container.CompareTag(Constants.wastepileTag))
         {
             WastepileScript.Instance.DraggingCard(inputCard, true);
             draggingWastepile = true;
@@ -153,7 +153,7 @@ public class UtilsScript : MonoBehaviour
     private void SelectMultipleCards(GameObject inputCard)
     {
         CardScript inputCardScript = inputCard.GetComponent<CardScript>();
-        if (inputCardScript == null || !inputCardScript.container.CompareTag("Foundation"))
+        if (inputCardScript == null || !inputCardScript.container.CompareTag(Constants.foundationTag))
         {
             throw new System.ArgumentException("inputCard must be a gameObject that contains a CardScript that is from a foundation");
         }
@@ -177,13 +177,13 @@ public class UtilsScript : MonoBehaviour
 
         switch (selectedContainer.tag)
         {
-            case "Wastepile":
+            case Constants.wastepileTag:
                 WastepileScript.Instance.ProcessAction(hit.collider.gameObject);
                 break;
-            case "Foundation":
+            case Constants.foundationTag:
                 selectedContainer.GetComponent<FoundationScript>().ProcessAction(hit.collider.gameObject);
                 break;
-            case "Reactor":
+            case Constants.reactorTag:
                 selectedContainer.GetComponent<ReactorScript>().ProcessAction(hit.collider.gameObject);
                 break;
             default:
@@ -232,7 +232,7 @@ public class UtilsScript : MonoBehaviour
         selectedCardsCopyCount = selectedCardsCopy.Count;
 
         // enable dragged reactor tokens holograms
-        if (selectedCards.Count == 1 && selectedCards[0].GetComponent<CardScript>().container.CompareTag("Reactor"))
+        if (selectedCards.Count == 1 && selectedCards[0].GetComponent<CardScript>().container.CompareTag(Constants.reactorTag))
         {
             selectedCardsCopy[0].GetComponent<CardScript>().ShowHologram();
         }
@@ -280,14 +280,14 @@ public class UtilsScript : MonoBehaviour
             hoveringOver = hit.collider.gameObject;
 
             // if we are hovering over a glowing token
-            if (ShowPossibleMoves.Instance.AreCardsGlowing() && hoveringOver.CompareTag("Card") &&
+            if (ShowPossibleMoves.Instance.AreCardsGlowing() && hoveringOver.CompareTag(Constants.cardTag) &&
                 hoveringOver.GetComponent<CardScript>().IsGlowing())
             {
                 // change the dragged token hologram color to what it's hovering over and check if it was a match
                 if (selectedCardsCopy[selectedCardsCopyCount - 1].GetComponent<CardScript>().ChangeHologram(hoveringOver.GetComponent<CardScript>().GetGlowColor()))
                 {
                     // if the hovering over token is not in the reactor
-                    if (!hoveringOver.transform.parent.CompareTag("Reactor"))
+                    if (!hoveringOver.transform.parent.CompareTag(Constants.reactorTag))
                     {
                         // hide the hover over tokens food hologram
                         hoveringOver.GetComponent<CardScript>().HideHologram();
@@ -298,7 +298,7 @@ public class UtilsScript : MonoBehaviour
                 changedHologramColor = true;
             }
             // else if we are hovering over a glowing reactor
-            else if (ShowPossibleMoves.Instance.reactorIsGlowing && hoveringOver.CompareTag("Reactor") &&
+            else if (ShowPossibleMoves.Instance.reactorIsGlowing && hoveringOver.CompareTag(Constants.reactorTag) &&
                 hoveringOver.GetComponent<ReactorScript>().IsGlowing())
             {
                 selectedCardsCopy[0].GetComponent<CardScript>().ChangeHologram(hoveringOver.GetComponent<ReactorScript>().GetGlowColor());
@@ -307,7 +307,7 @@ public class UtilsScript : MonoBehaviour
                 hoveringOver.GetComponent<ReactorScript>().ChangeSuitGlow(new Color(0, 1, 0, 0.5f));
                 changedSuitGlowColor = true;
             }
-            else if (ShowPossibleMoves.Instance.foundationIsGlowing && hoveringOver.CompareTag("Foundation") &&
+            else if (ShowPossibleMoves.Instance.foundationIsGlowing && hoveringOver.CompareTag(Constants.foundationTag) &&
                 hoveringOver.GetComponent<FoundationScript>().IsGlowing())
             {
                 selectedCardsCopy[selectedCardsCopyCount - 1].GetComponent<CardScript>().ChangeHologram(hoveringOver.GetComponent<FoundationScript>().GetGlowColor());

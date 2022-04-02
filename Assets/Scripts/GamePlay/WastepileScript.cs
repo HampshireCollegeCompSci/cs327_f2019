@@ -258,7 +258,7 @@ public class WastepileScript : MonoBehaviour
         GameObject selectedCard = UtilsScript.Instance.selectedCards[0];
         CardScript selectedCardScript = selectedCard.GetComponent<CardScript>();
 
-        if (input.CompareTag("Card"))
+        if (input.CompareTag(Constants.cardTag))
         {
             CardScript inputCardScript = input.GetComponent<CardScript>();
 
@@ -267,7 +267,7 @@ public class WastepileScript : MonoBehaviour
                 UtilsScript.Instance.Match(input, selectedCard);
                 return;
             }
-            else if (inputCardScript.container.CompareTag("Reactor"))
+            else if (inputCardScript.container.CompareTag(Constants.reactorTag))
             {
                 if (!CardTools.CompareSameSuitObjects(input, selectedCard))
                     return;
@@ -275,7 +275,7 @@ public class WastepileScript : MonoBehaviour
                 SoundEffectsController.Instance.CardToReactorSound();
                 selectedCardScript.MoveCard(inputCardScript.container);
             }
-            else if (inputCardScript.container.CompareTag("Foundation"))
+            else if (inputCardScript.container.CompareTag(Constants.foundationTag))
             {
                 if (inputCardScript.container.GetComponent<FoundationScript>().cardList[0] != input ||
                     inputCardScript.cardNum != selectedCardScript.cardNum + 1)
@@ -287,7 +287,7 @@ public class WastepileScript : MonoBehaviour
             else
                 return;
         }
-        else if (input.CompareTag("Reactor"))
+        else if (input.CompareTag(Constants.reactorTag))
         {
             if (!CardTools.CompareSameSuitObjects(input, selectedCard))
                 return;
@@ -295,7 +295,7 @@ public class WastepileScript : MonoBehaviour
             SoundEffectsController.Instance.CardToReactorSound();
             selectedCardScript.MoveCard(input);
         }
-        else if (input.CompareTag("Foundation"))
+        else if (input.CompareTag(Constants.foundationTag))
         {
             if (input.GetComponent<FoundationScript>().cardList.Count != 0)
                 return;

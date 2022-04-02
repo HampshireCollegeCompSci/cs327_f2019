@@ -109,7 +109,7 @@ public class ReactorScript : MonoBehaviour
 
     public void ProcessAction(GameObject input)
     {
-        if (!input.CompareTag("Card")) return;
+        if (!input.CompareTag(Constants.cardTag)) return;
 
         if (UtilsScript.Instance.selectedCards.Count != 1)
         {

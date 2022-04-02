@@ -100,8 +100,8 @@ public class ShowPossibleMoves : MonoBehaviour
     {
         CardScript selectedCardScript = selectedCard.GetComponent<CardScript>();
 
-        bool cardIsFromFoundation = selectedCardScript.container.CompareTag("Foundation");
-        bool cardIsFromWastepile = selectedCardScript.container.CompareTag("Wastepile");
+        bool cardIsFromFoundation = selectedCardScript.container.CompareTag(Constants.foundationTag);
+        bool cardIsFromWastepile = selectedCardScript.container.CompareTag(Constants.wastepileTag);
 
         bool cardCanBeMatched = true;
         // if the card is in a foundation and not at the top of it
@@ -132,7 +132,7 @@ public class ShowPossibleMoves : MonoBehaviour
             }
 
             // if the card is not in the reactor, get the reactor that we can move into
-            if (!selectedCardScript.container.CompareTag("Reactor"))
+            if (!selectedCardScript.container.CompareTag(Constants.reactorTag))
             {                
                 foreach (GameObject reactor in Config.Instance.reactors)
                 {

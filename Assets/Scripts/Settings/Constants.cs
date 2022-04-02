@@ -35,9 +35,17 @@ public static class Constants
     public const string gameplaySortingLayer = "Gameplay";
 
     // Tags
+    public const string cardTag = "Card";
+    public const string reactorTag = "Reactor";
+    public const string foundationTag = "Foundation";
+    public const string deckTag = "Deck";
+    public const string wastepileTag = "Wastepile";
+    public const string matchedPileTag = "MatchedPile";
+    public const string loadPileTag= "LoadPile";
+
+    // Log moves
 
     // Keys
-
     // Summary stats
     public const string highScoreKey = "HighScore";
     public const string leastMovesKey = "LeastMoves";

@@ -258,100 +258,113 @@ public class CardScript : MonoBehaviour
         bool nextCardWasHidden = false;
         if (container != null)
         {
-            if (container.CompareTag("Foundation"))
+            switch (container.tag)
             {
+                case Constants.foundationTag:
+                    if (doLog)
+                    {
+                        FoundationScript foundationScript = container.GetComponent<FoundationScript>();
+                        if (foundationScript.cardList.Count > 1 && foundationScript.cardList[1].GetComponent<CardScript>().IsHidden)
+                        {
+                            nextCardWasHidden = true;
+                        }
+                    }
+                    container.GetComponent<FoundationScript>().RemoveCard(gameObject, showHolo: showHolo);
+                    break;
+                case Constants.reactorTag:
+                    container.GetComponent<ReactorScript>().RemoveCard(gameObject);
+                    break;
+                case Constants.wastepileTag:
+                    if (!doLog || destination.CompareTag(Constants.deckTag))
+                    {
+                        WastepileScript.Instance.RemoveCard(gameObject, undoingOrDeck: true, showHolo: showHolo);
+                    }
+                    else
+                    {
+                        WastepileScript.Instance.RemoveCard(gameObject, showHolo: showHolo);
+                    }
+                    break;
+                case Constants.deckTag:
+                    DeckScript.Instance.RemoveCard(gameObject);
+                    break;
+                case Constants.matchedPileTag:
+                    MatchedPileScript.Instance.RemoveCard(gameObject);
+                    break;
+                case Constants.loadPileTag:
+                    LoadPileScript.Instance.RemoveCard(gameObject);
+                    break;
+            }
+        }
+
+        switch (destination.tag)
+        {
+            case Constants.foundationTag:
                 if (doLog)
                 {
-                    FoundationScript foundationScript = container.GetComponent<FoundationScript>();
-                    if (foundationScript.cardList.Count > 1 && foundationScript.cardList[1].GetComponent<CardScript>().IsHidden)
-                        nextCardWasHidden = true;
+                    if (isStack)
+                    {
+                        UndoScript.Instance.LogMove("stack", gameObject, isAction, nextCardWasHidden);
+                    }
+                    else
+                    {
+                        UndoScript.Instance.LogMove("move", gameObject, isAction, nextCardWasHidden);
+                    }
                 }
-                container.GetComponent<FoundationScript>().RemoveCard(gameObject, showHolo: showHolo);
-            }
-            else if (container.CompareTag("Reactor"))
-            {
-                container.GetComponent<ReactorScript>().RemoveCard(gameObject);
-            }
-            else if (container.CompareTag("Wastepile"))
-            {
-                if (!doLog || destination.CompareTag("Deck"))
-                    container.GetComponent<WastepileScript>().RemoveCard(gameObject, undoingOrDeck: true, showHolo: showHolo);
-                else
-                    container.GetComponent<WastepileScript>().RemoveCard(gameObject, showHolo: showHolo);
-            }
-            else if (container.CompareTag("Deck"))
-            {
-                container.GetComponent<DeckScript>().RemoveCard(gameObject);
-            }
-            else if (container.CompareTag("MatchedPile"))
-            {
-                container.GetComponent<MatchedPileScript>().RemoveCard(gameObject);
-            }
-            else if (container.CompareTag("LoadPile"))
-            {
-                container.GetComponent<LoadPileScript>().RemoveCard(gameObject);
-            }
-        }
+                destination.GetComponent<FoundationScript>().AddCard(gameObject, showHolo: showHolo);
+                break;
+            case Constants.reactorTag:
+                if (doLog)
+                {
+                    if (isCycle)
+                    {
+                        UndoScript.Instance.LogMove("cycle", gameObject, true, nextCardWasHidden);
+                    }
+                    else
+                    {
+                        UndoScript.Instance.LogMove("move", gameObject, isAction, nextCardWasHidden);
+                    }
+                }
+                destination.GetComponent<ReactorScript>().AddCard(gameObject);
+                break;
+            case Constants.wastepileTag:
+                if (doLog)
+                {
+                    // for undoing a match that goes into the wastepile
+                    if (container.CompareTag(Constants.foundationTag))
+                    {
+                        UndoScript.Instance.LogMove("move", gameObject, isAction, nextCardWasHidden);
+                    }
+                    else
+                    {
+                        UndoScript.Instance.LogMove("draw", gameObject, isAction);
+                    }
+                }
 
-        if (destination.CompareTag("Foundation"))
-        {
-            if (doLog)
-            {
-                if (isStack)
-                    UndoScript.Instance.LogMove("stack", gameObject, isAction, nextCardWasHidden);
-                else
-                    UndoScript.Instance.LogMove("move", gameObject, isAction, nextCardWasHidden);
-            }
-
-            destination.GetComponent<FoundationScript>().AddCard(gameObject, showHolo: showHolo);
-        }
-        else if (destination.CompareTag("Reactor"))
-        {
-            if (doLog)
-            {
-                if (isCycle)
-                    UndoScript.Instance.LogMove("cycle", gameObject, true, nextCardWasHidden);
-                else
-                    UndoScript.Instance.LogMove("move", gameObject, isAction, nextCardWasHidden);
-            }
-
-            destination.GetComponent<ReactorScript>().AddCard(gameObject);
-        }
-        else if (destination.CompareTag("Wastepile"))
-        {
-            if (doLog)
-            {
-                if (container.CompareTag("Foundation")) // for undoing a match that goes into the wastepile
-                    UndoScript.Instance.LogMove("move", gameObject, isAction, nextCardWasHidden);
-                else
-                    UndoScript.Instance.LogMove("draw", gameObject, isAction);
-            }
-
-            destination.GetComponent<WastepileScript>().AddCard(gameObject, showHolo: showHolo);
-        }
-        else if (destination.CompareTag("Deck"))
-        {
-            if (doLog)
-                UndoScript.Instance.LogMove("deckreset", gameObject, isAction);
-
-            destination.GetComponent<DeckScript>().AddCard(gameObject);
-        }
-        else if (destination.CompareTag("MatchedPile"))
-        {
-            if (doLog)
-                UndoScript.Instance.LogMove("match", gameObject, isAction, nextCardWasHidden);
-
-            destination.GetComponent<MatchedPileScript>().AddCard(gameObject);
-        }
-        else if (destination.CompareTag("LoadPile"))
-        {
-            if (doLog)
-                UndoScript.Instance.LogMove("match", gameObject, isAction, nextCardWasHidden);
-
-            destination.GetComponent<LoadPileScript>().AddCard(gameObject);
+                WastepileScript.Instance.AddCard(gameObject, showHolo: showHolo);
+                break;
+            case Constants.deckTag:
+                if (doLog)
+                {
+                    UndoScript.Instance.LogMove("deckreset", gameObject, isAction);
+                }
+                DeckScript.Instance.AddCard(gameObject);
+                break;
+            case Constants.matchedPileTag:
+                if (doLog)
+                {
+                    UndoScript.Instance.LogMove("match", gameObject, isAction, nextCardWasHidden);
+                }
+                MatchedPileScript.Instance.AddCard(gameObject);
+                break;
+            case Constants.loadPileTag:
+                if (doLog)
+                {
+                    UndoScript.Instance.LogMove("match", gameObject, isAction, nextCardWasHidden);
+                }
+                LoadPileScript.Instance.AddCard(gameObject);
+                break;
         }
 
         container = destination;
     }
 }
-

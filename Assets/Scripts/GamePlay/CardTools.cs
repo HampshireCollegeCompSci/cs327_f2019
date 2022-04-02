@@ -27,26 +27,26 @@ public static class CardTools
         // hitboxes are disabled for all cards not on the top for the reactor, wastepile, and deck
         // since they can't be picked up, only foundation cards need to be checked
 
-        if (card.container.CompareTag("Foundation") &&
+        if (card.container.CompareTag(Constants.foundationTag) &&
             card.container.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>() != card)
         {
             return false;
         }
 
         /*
-        if (card.container.CompareTag("Reactor") &&
+        if (card.container.CompareTag(Constants.reactorTag) &&
             card.container.GetComponent<ReactorScript>().cardList[0].GetComponent<CardScript>() != card)
         {
             return false;
         }
 
-        if (card.container.CompareTag("Wastepile") &&
+        if (card.container.CompareTag(Constants.wastepileTag) &&
             card.container.GetComponent<WastepileScript>().cardList[0].GetComponent<CardScript>() != card)
         {
             return false;
         }
 
-        if (card.container.CompareTag("Deck") &&
+        if (card.container.CompareTag(Constants.deckTag) &&
             card.container.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>() != card)
         {
             return false;
@@ -92,9 +92,9 @@ public static class CardTools
 
     private static string GetSuit(GameObject suitObject)
     {
-        if (suitObject.CompareTag("Card"))
+        if (suitObject.CompareTag(Constants.cardTag))
             return suitObject.GetComponent<CardScript>().suit;
-        if (suitObject.CompareTag("Reactor"))
+        if (suitObject.CompareTag(Constants.reactorTag))
             return suitObject.GetComponent<ReactorScript>().suit;
 
         throw new System.ArgumentException("suitObject must have a suit variable");
