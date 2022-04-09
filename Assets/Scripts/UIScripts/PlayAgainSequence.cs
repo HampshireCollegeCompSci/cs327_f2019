@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 public class PlayAgainSequence : MonoBehaviour
 {
-    public GameObject camera;
+    public GameObject cameraObject;
 
     public GameObject sequencePanel;
     public GameObject LoadingTextObject;
@@ -38,7 +38,7 @@ public class PlayAgainSequence : MonoBehaviour
     public void StartLoadingGame()
     {
         sequenceDone = false;
-        camera.GetComponent<EventSystem>().enabled = false;
+        cameraObject.GetComponent<EventSystem>().enabled = false;
         SpaceBabyController.Instance = null;
 
         Config.Instance.tutorialOn = false;
@@ -53,7 +53,7 @@ public class PlayAgainSequence : MonoBehaviour
     {
         sequencePanel.SetActive(true);
         Image panelImage = sequencePanel.GetComponent<Image>();
-        Color panelColor = new Color(0, 0, 0, 0);
+        Color panelColor = new(0, 0, 0, 0);
         panelImage.color = panelColor;
 
         while (panelColor.a < 1)
@@ -89,7 +89,7 @@ public class PlayAgainSequence : MonoBehaviour
         {
             Debug.Log("unloading summary scene");
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.gameplayScene));
-            camera.GetComponent<AudioListener>().enabled = false;
+            cameraObject.GetComponent<AudioListener>().enabled = false;
             StartGame.Instance.TransitionToGamePlay();
             SceneManager.UnloadSceneAsync(Constants.summaryScene);
             return true;

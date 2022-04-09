@@ -52,10 +52,13 @@ public class Config : MonoBehaviour
     {
         if (Instance == null)
         {
-            PlayerPrefKeys.CheckKeys();
-            DontDestroyOnLoad(gameObject); //makes instance persist across scenes
+            // make instance persist across scenes
+            DontDestroyOnLoad(this.gameObject);
             Instance = this;
+
+            // Load the game values from the file and then check keys
             LoadGameValues();
+            PlayerPrefKeys.CheckKeys();
         }
         else if (Instance != this)
         {

@@ -241,7 +241,7 @@ public class CardScript : MonoBehaviour
     {
         if (glowing)
         {
-            glow.gameObject.SetActive(false);
+            glow.SetActive(false);
             glowing = false;
             return true;
         }

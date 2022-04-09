@@ -789,7 +789,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca22630ca0c8c4b438b639ced224ef9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 85880915}
+  cameraObject: {fileID: 85880915}
   sequencePanel: {fileID: 1490708313}
   LoadingTextObject: {fileID: 1093973098}
   spaceBaby: {fileID: 6961252161748064237}

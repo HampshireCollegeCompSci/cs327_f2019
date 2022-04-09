@@ -163,7 +163,7 @@ public class MenuUIScript : MonoBehaviour
     public void Restart()
     {
         Debug.Log("MenuUI restart");
-
+        SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.UnloadSceneAsync(Constants.pauseScene);
         MusicController.Instance.GameMusic();
         GameLoader.Instance.RestartGame();

@@ -1446,7 +1446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 681140569bdef064aa7ee601e60a8a86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 1287289442}
+  cameraObject: {fileID: 1287289442}
   mainButtons: {fileID: 1745077753}
   playButtons: {fileID: 489388907}
   panelTransform: {fileID: 1452091090}
