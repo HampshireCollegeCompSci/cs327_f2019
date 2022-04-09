@@ -2,10 +2,11 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class PlayAgainSequence : MonoBehaviour
 {
-    public AudioListener audioListener;
+    public GameObject camera;
 
     public GameObject sequencePanel;
     public GameObject LoadingTextObject;
@@ -37,6 +38,7 @@ public class PlayAgainSequence : MonoBehaviour
     public void StartLoadingGame()
     {
         sequenceDone = false;
+        camera.GetComponent<EventSystem>().enabled = false;
         SpaceBabyController.Instance = null;
 
         Config.Instance.tutorialOn = false;
@@ -87,7 +89,7 @@ public class PlayAgainSequence : MonoBehaviour
         {
             Debug.Log("unloading summary scene");
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.gameplayScene));
-            audioListener.enabled = false;
+            camera.GetComponent<AudioListener>().enabled = false;
             StartGame.Instance.TransitionToGamePlay();
             SceneManager.UnloadSceneAsync(Constants.summaryScene);
             return true;

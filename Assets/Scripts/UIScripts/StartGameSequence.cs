@@ -2,10 +2,12 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class StartGameSequence : MonoBehaviour
 {
-    public AudioListener audioListener;
+    public GameObject camera;
+
     public GameObject mainButtons;
     public GameObject playButtons;
 
@@ -39,6 +41,7 @@ public class StartGameSequence : MonoBehaviour
     public void StartLoadingGame()
     {
         sequenceDone = false;
+        camera.GetComponent<EventSystem>().enabled = false;
         SceneManager.LoadSceneAsync(Constants.gameplayScene, LoadSceneMode.Additive);
         MusicController.Instance.FadeMusicOut();
         StartCoroutine(FadeOutButtons());
@@ -120,7 +123,7 @@ public class StartGameSequence : MonoBehaviour
         {
             Debug.Log("unloading menu scene");
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.gameplayScene));
-            audioListener.enabled = false;
+            camera.GetComponent<AudioListener>().enabled = false;
             StartGame.Instance.TransitionToGamePlay();
             SceneManager.UnloadSceneAsync(Constants.mainMenuScene);
             return true;
