@@ -7,7 +7,7 @@ public static class SaveState
     {
         if (Constants.inEditor)
         {
-            return Constants.saveStateFilePathJsonEditor;
+            return Constants.saveStatePathInEditor + Constants.saveStateFileNameJson;
         }
         else
         {
@@ -22,10 +22,11 @@ public static class SaveState
 
     public static void Delete()
     {
+        Debug.Log("deleting save state");
         if (Constants.inEditor)
         {
-            File.Delete(Constants.saveStateFilePathJsonEditor);
-            File.Delete(Constants.saveStateFilePathMetaEditor);
+            File.Delete(Constants.saveStateFilePathJsonInEditor);
+            File.Delete(Constants.saveStateFilePathMetaInEditor);
         }
         else
         {

@@ -113,22 +113,27 @@ public class StateLoader : MonoBehaviour
 
     public void LoadTutorialState(string fileName)
     {
-        Debug.Log("loading tutorial state");
-        string filePath = $"{Constants.tutorialStateLocation}/{fileName}.json";
-
-        if (!File.Exists(filePath))
-        {
-            throw new System.IO.FileNotFoundException(filePath);
-        }
+        Debug.Log($"loading tutorial state: {fileName}");
+        string filePath = Constants.tutorialResourcePath + fileName;
 
         //load the json into a GameState
-        UnpackState(CreateFromJSON(filePath), isTutorial: true);
+        UnpackState(CreateFromJSON(filePath, isTutorial: true), isTutorial: true);
     }
 
-    private GameState CreateFromJSON(string path)
+    private GameState CreateFromJSON(string path, bool isTutorial = false)
     {
-        Debug.Log("creating gamestate from path: " + path);
-        return JsonUtility.FromJson<GameState>(File.ReadAllText(path));
+        Debug.Log($"creating gamestate from path: {path}");
+
+        if (isTutorial)
+        {
+            TextAsset jsonTextFile = Resources.Load<TextAsset>(path);
+            return JsonUtility.FromJson<GameState>(jsonTextFile.ToString());
+        }
+        else
+        {
+            string jsonTextFile = File.ReadAllText(path);
+            return JsonUtility.FromJson<GameState>(jsonTextFile);
+        }
     }
 
     public void UnpackState(GameState state, bool isTutorial = false)

@@ -59,7 +59,7 @@ public class TutorialScript : MonoBehaviour
     {
         Debug.Log("creating list from JSON");
 
-        var jsonTextFile = Resources.Load<TextAsset>("Tutorial/TutorialCommandList");
+        TextAsset jsonTextFile = Resources.Load<TextAsset>(Constants.tutorialCommandListFilePath);
         TutorialCommands commandFile = JsonUtility.FromJson<TutorialCommands>(jsonTextFile.ToString());
         return commandFile.commands;
     }
