@@ -2495,16 +2495,6 @@ MonoBehaviour:
   consecutiveMatches: 0
   moveCounter: 0
   matchCounter: 0
-  foundation1: {fileID: 0}
-  foundation2: {fileID: 0}
-  foundation3: {fileID: 0}
-  foundation4: {fileID: 0}
-  foundations: []
-  reactor1: {fileID: 0}
-  reactor2: {fileID: 0}
-  reactor3: {fileID: 0}
-  reactor4: {fileID: 0}
-  reactors: []
 --- !u!1 &1942484655 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7084158332299253292, guid: f9e4f3524d2da456180c2be002c8dfd4,

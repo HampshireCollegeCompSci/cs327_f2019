@@ -12,6 +12,9 @@ public class UtilsScript : MonoBehaviour
     public GameObject matchPrefab;
     public GameObject matchPointsPrefab;
 
+    public GameObject[] reactors;
+    public GameObject[] foundations;
+
     public GameObject gameUI;
     public Text score;
     private bool dragOn;
@@ -590,7 +593,7 @@ public class UtilsScript : MonoBehaviour
         // or checking again if the previous move changed something
         if (turnOnAlert || checkAgain)
         {
-            foreach (GameObject reactor in Config.Instance.reactors)
+            foreach (GameObject reactor in reactors)
             {
                 // if a nextcyle will overload the reactor
                 if (reactor.GetComponent<ReactorScript>().CountReactorCard() +
@@ -607,7 +610,7 @@ public class UtilsScript : MonoBehaviour
         {
             MusicController.Instance.GameMusic();
 
-            foreach (GameObject reactor in Config.Instance.reactors)
+            foreach (GameObject reactor in reactors)
                 reactor.GetComponent<ReactorScript>().AlertOff();
         }
 
@@ -669,7 +672,7 @@ public class UtilsScript : MonoBehaviour
         GameObject topFoundationCard;
         CardScript topCardScript;
 
-        foreach (GameObject foundation in Config.Instance.foundations)
+        foreach (GameObject foundation in foundations)
         {
             currentFoundation = foundation.GetComponent<FoundationScript>();
             if (currentFoundation.cardList.Count != 0)
@@ -677,7 +680,7 @@ public class UtilsScript : MonoBehaviour
                 topFoundationCard = currentFoundation.cardList[0];
                 topCardScript = topFoundationCard.GetComponent<CardScript>();
 
-                foreach (GameObject reactor in Config.Instance.reactors)
+                foreach (GameObject reactor in reactors)
                 {
                     if (topCardScript.suit == reactor.GetComponent<ReactorScript>().suit)
                     {
@@ -739,7 +742,7 @@ public class UtilsScript : MonoBehaviour
 
     private bool AreFoundationsEmpty()
     {
-        foreach (GameObject foundation in Config.Instance.foundations)
+        foreach (GameObject foundation in UtilsScript.Instance.foundations)
         {
             if (foundation.GetComponent<FoundationScript>().cardList.Count != 0)
             {

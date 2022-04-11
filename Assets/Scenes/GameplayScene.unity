@@ -1031,6 +1031,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 69181d72dc76a46519e11927d009c663, type: 3}
+--- !u!1 &326742633 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 862624160320751216, guid: 69181d72dc76a46519e11927d009c663,
+    type: 3}
+  m_PrefabInstance: {fileID: 326742632}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &338821812
 GameObject:
   m_ObjectHideFlags: 0
@@ -4580,6 +4586,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 69181d72dc76a46519e11927d009c663, type: 3}
+--- !u!1 &1204289924 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 862624160320751216, guid: 69181d72dc76a46519e11927d009c663,
+    type: 3}
+  m_PrefabInstance: {fileID: 1204289923}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1211482542 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3465283733490406803, guid: 52c162a0df0dc4f0c87ae9b064d1f022,
@@ -5121,6 +5133,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 69181d72dc76a46519e11927d009c663, type: 3}
+--- !u!1 &1469062642 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 862624160320751216, guid: 69181d72dc76a46519e11927d009c663,
+    type: 3}
+  m_PrefabInstance: {fileID: 1469062641}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1469716015
 GameObject:
   m_ObjectHideFlags: 0
@@ -5867,6 +5885,16 @@ MonoBehaviour:
     type: 3}
   matchPointsPrefab: {fileID: 5801631464807042985, guid: 614ce32a7efa12342824cb70c9aacc46,
     type: 3}
+  reactors:
+  - {fileID: 1048323403}
+  - {fileID: 283026417}
+  - {fileID: 1619051437}
+  - {fileID: 1211482542}
+  foundations:
+  - {fileID: 1469062642}
+  - {fileID: 1204289924}
+  - {fileID: 862624159679698548}
+  - {fileID: 326742633}
   gameUI: {fileID: 2058941297}
   score: {fileID: 533940917}
 --- !u!4 &1574574479
@@ -7136,6 +7164,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 69181d72dc76a46519e11927d009c663, type: 3}
+--- !u!1 &862624159679698548 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 862624160320751216, guid: 69181d72dc76a46519e11927d009c663,
+    type: 3}
+  m_PrefabInstance: {fileID: 862624159679698547}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2511467539001438842
 PrefabInstance:
   m_ObjectHideFlags: 0

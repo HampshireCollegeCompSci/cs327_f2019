@@ -116,7 +116,7 @@ public class ShowPossibleMoves : MonoBehaviour
         {
             // find the one complimentary reactor and check if a top card exists and can then match
             ReactorScript reactorScriptRef;
-            foreach (GameObject reactor in Config.Instance.reactors)
+            foreach (GameObject reactor in UtilsScript.Instance.reactors)
             {
                 reactorScriptRef = reactor.GetComponent<ReactorScript>();
                 if (CardTools.CompareComplimentarySuits(selectedCardScript.suit, reactorScriptRef.suit))
@@ -134,7 +134,7 @@ public class ShowPossibleMoves : MonoBehaviour
             // if the card is not in the reactor, get the reactor that we can move into
             if (!selectedCardScript.container.CompareTag(Constants.reactorTag))
             {                
-                foreach (GameObject reactor in Config.Instance.reactors)
+                foreach (GameObject reactor in UtilsScript.Instance.reactors)
                 {
                     if (selectedCardScript.suit == reactor.GetComponent<ReactorScript>().suit)
                     {
@@ -147,7 +147,7 @@ public class ShowPossibleMoves : MonoBehaviour
 
         FoundationScript foundationScriptRef;
         CardScript topFoundationCardScript;
-        foreach (GameObject foundation in Config.Instance.foundations)
+        foreach (GameObject foundation in UtilsScript.Instance.foundations)
         {
             foundationScriptRef = foundation.GetComponent<FoundationScript>();
             if (foundationScriptRef.cardList.Count != 0)

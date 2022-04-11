@@ -127,7 +127,7 @@ public class ReactorScript : MonoBehaviour
     public int GetIncreaseOnNextCycle()
     {
         int output = 0;
-        foreach (GameObject foundation in Config.Instance.foundations)
+        foreach (GameObject foundation in UtilsScript.Instance.foundations)
         {
             FoundationScript currentFoundationScript = foundation.GetComponent<FoundationScript>();
             if (currentFoundationScript.cardList.Count != 0)

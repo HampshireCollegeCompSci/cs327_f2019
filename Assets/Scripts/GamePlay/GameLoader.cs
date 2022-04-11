@@ -36,9 +36,6 @@ public class GameLoader : MonoBehaviour
 
     public void LoadGame()
     {
-        // setting stuff up for the game
-        Config.Instance.StartupFindObjects();
-
         // Figure out what kinda game to start
         if (Config.Instance.tutorialOn)
         {
@@ -174,11 +171,11 @@ public class GameLoader : MonoBehaviour
     {
         List<GameObject> cards = new List<GameObject>();
 
-        foreach (GameObject foundation in Config.Instance.foundations)
+        foreach (GameObject foundation in UtilsScript.Instance.foundations)
         {
             cards.AddRange(foundation.GetComponent<FoundationScript>().cardList);
         }
-        foreach (GameObject reactor in Config.Instance.reactors)
+        foreach (GameObject reactor in UtilsScript.Instance.reactors)
         {
             cards.AddRange(reactor.GetComponent<ReactorScript>().cardList);
         }
@@ -240,7 +237,7 @@ public class GameLoader : MonoBehaviour
     private List<GameObject> SetUpFoundations(List<GameObject> cards)
     {
         CardScript currentCardScript;
-        foreach (GameObject foundation in Config.Instance.foundations)
+        foreach (GameObject foundation in UtilsScript.Instance.foundations)
         {
             for (int i = 0; i < Config.GameValues.foundationStartingSize - 1; i++)
             {
@@ -260,7 +257,7 @@ public class GameLoader : MonoBehaviour
         //for (int i = 0; i < 12; i++)
         //{
         //    currentCardScript = cards[0].GetComponent<CardScript>();
-        //    currentCardScript.MoveCard(Config.Instance.foundations[0], doLog: false);
+        //    currentCardScript.MoveCard(UtilsScript.Instance.foundations[0], doLog: false);
         //    cards.RemoveAt(0);
         //}
 

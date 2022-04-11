@@ -310,11 +310,11 @@ public class TutorialScript : MonoBehaviour
                         throw new FormatException("does not contain an alert level");
 
                     byte alertLevel = ParseAlertLevel(command, 4);
-                    foreach (GameObject reactor in Config.Instance.reactors)
+                    foreach (GameObject reactor in UtilsScript.Instance.reactors)
                         reactor.GetComponent<ReactorScript>().GlowOn(alertLevel);
                 }
                 else
-                    foreach (GameObject reactor in Config.Instance.reactors)
+                    foreach (GameObject reactor in UtilsScript.Instance.reactors)
                         reactor.GetComponent<ReactorScript>().GlowOff();
                 break;
 
@@ -325,26 +325,26 @@ public class TutorialScript : MonoBehaviour
                     if (command.Count != 5)
                         throw new FormatException("does not contain an alert level");
 
-                    Config.Instance.reactors[ParseContainerIndex(command, 3)].GetComponent<ReactorScript>().GlowOn(ParseAlertLevel(command, 4));
+                    UtilsScript.Instance.reactors[ParseContainerIndex(command, 3)].GetComponent<ReactorScript>().GlowOn(ParseAlertLevel(command, 4));
                 }
                 else
-                    Config.Instance.reactors[ParseContainerIndex(command, 3)].GetComponent<ReactorScript>().GlowOff();
+                    UtilsScript.Instance.reactors[ParseContainerIndex(command, 3)].GetComponent<ReactorScript>().GlowOff();
                 break;
 
             case "foundations":
                 if (highlightOn)
-                    foreach (GameObject foundation in Config.Instance.foundations)
+                    foreach (GameObject foundation in UtilsScript.Instance.foundations)
                         foundation.GetComponent<FoundationScript>().GlowOn();
                 else
-                    foreach (GameObject foundation in Config.Instance.foundations)
+                    foreach (GameObject foundation in UtilsScript.Instance.foundations)
                         foundation.GetComponent<FoundationScript>().GlowOff();
                 break;
 
             case "foundation":
                 if (highlightOn)
-                    Config.Instance.foundations[ParseContainerIndex(command, 3)].GetComponent<FoundationScript>().GlowOn();
+                    UtilsScript.Instance.foundations[ParseContainerIndex(command, 3)].GetComponent<FoundationScript>().GlowOn();
                 else
-                    Config.Instance.foundations[ParseContainerIndex(command, 3)].GetComponent<FoundationScript>().GlowOff();
+                    UtilsScript.Instance.foundations[ParseContainerIndex(command, 3)].GetComponent<FoundationScript>().GlowOff();
                 break;
 
             case "deck":
@@ -411,7 +411,7 @@ public class TutorialScript : MonoBehaviour
         switch (command[1].ToLower())
         {
             case "reactor":
-                List<GameObject> reactorCardList = Config.Instance.reactors[containerIndex].GetComponent<ReactorScript>().cardList;
+                List<GameObject> reactorCardList = UtilsScript.Instance.reactors[containerIndex].GetComponent<ReactorScript>().cardList;
                 if (reactorCardList.Count < tokenIndex)
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
                         $"there are only {reactorCardList.Count} token(s) to choose from in reactor {containerIndex}");
@@ -423,7 +423,7 @@ public class TutorialScript : MonoBehaviour
                 break;
 
             case "foundation":
-                List<GameObject> foundationCardList = Config.Instance.foundations[containerIndex].GetComponent<FoundationScript>().cardList;
+                List<GameObject> foundationCardList = UtilsScript.Instance.foundations[containerIndex].GetComponent<FoundationScript>().cardList;
                 if (foundationCardList.Count < tokenIndex)
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
                         $"there are only {foundationCardList.Count} token(s) to choose from in foundation {containerIndex}");
@@ -461,7 +461,7 @@ public class TutorialScript : MonoBehaviour
         List<GameObject> cardListRef;
 
         // each token/card on the top of every reactor can be interacted with
-        foreach (GameObject reactor in Config.Instance.reactors)
+        foreach (GameObject reactor in UtilsScript.Instance.reactors)
         {
             cardListRef = reactor.GetComponent<ReactorScript>().cardList;
             if (cardListRef.Count != 0)
@@ -472,7 +472,7 @@ public class TutorialScript : MonoBehaviour
 
         // all tokens/cards that are not hidden in the foundations can be interacted with
         CardScript cardScriptRef;
-        foreach (GameObject foundation in Config.Instance.foundations)
+        foreach (GameObject foundation in UtilsScript.Instance.foundations)
         {
             cardListRef = foundation.GetComponent<FoundationScript>().cardList;
             if (cardListRef.Count != 0)
@@ -506,9 +506,9 @@ public class TutorialScript : MonoBehaviour
     {
         Debug.Log("unhighlighting all tokens");
 
-        foreach (GameObject reactor in Config.Instance.reactors)
+        foreach (GameObject reactor in UtilsScript.Instance.reactors)
             CardListGlowOff(reactor.GetComponent<ReactorScript>().cardList);
-        foreach (GameObject foundation in Config.Instance.foundations)
+        foreach (GameObject foundation in UtilsScript.Instance.foundations)
             CardListGlowOff(foundation.GetComponent<FoundationScript>().cardList);
         CardListGlowOff(WastepileScript.Instance.cardList);
     }

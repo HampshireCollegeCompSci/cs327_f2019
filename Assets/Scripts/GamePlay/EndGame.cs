@@ -65,7 +65,7 @@ public class EndGame : MonoBehaviour
             extraScore += Config.GameValues.perfectGamePoints;
         }
 
-        foreach (GameObject foundation in Config.Instance.foundations)
+        foreach (GameObject foundation in UtilsScript.Instance.foundations)
         {
             if (foundation.GetComponent<FoundationScript>().cardList.Count == 0)
             {

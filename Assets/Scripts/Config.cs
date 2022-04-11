@@ -29,20 +29,6 @@ public class Config : MonoBehaviour
     public int moveCounter;
     public byte matchCounter;
 
-    // foundations
-    public GameObject foundation1;
-    public GameObject foundation2;
-    public GameObject foundation3;
-    public GameObject foundation4;
-    public GameObject[] foundations;
-
-    // reactors
-    public GameObject reactor1;
-    public GameObject reactor2;
-    public GameObject reactor3;
-    public GameObject reactor4;
-    public GameObject[] reactors;
-
     // Singleton instance.
     public static Config Instance = null;
     public static GameValues GameValues = null;
@@ -82,21 +68,6 @@ public class Config : MonoBehaviour
     private Color CreateColor(float [] colorV)
     {
         return new Color(colorV[0], colorV[1], colorV[2], colorV[3]);
-    }
-
-    public void StartupFindObjects()
-    {
-        foundation1 = GameObject.Find("Foundation (0)");
-        foundation2 = GameObject.Find("Foundation (1)");
-        foundation3 = GameObject.Find("Foundation (2)");
-        foundation4 = GameObject.Find("Foundation (3)");
-        foundations = new GameObject[] { foundation1, foundation2, foundation3, foundation4 };
-
-        reactor1 = GameObject.Find("ReactorPile (0)");
-        reactor2 = GameObject.Find("ReactorPile (1)");
-        reactor3 = GameObject.Find("ReactorPile (2)");
-        reactor4 = GameObject.Find("ReactorPile (3)");
-        reactors = new GameObject[] { reactor1, reactor2, reactor3, reactor4 };
     }
 
     public void SetDifficulty(int dif)

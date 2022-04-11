@@ -30,7 +30,7 @@ public class StateLoader : MonoBehaviour
         };
 
         //save foundations
-        foreach (GameObject foundation in Config.Instance.foundations)
+        foreach (GameObject foundation in UtilsScript.Instance.foundations)
         {
             gameState.foundations.Add(new StringListWrapper() {
                 stringList = ConvertCardListToStringList(foundation.GetComponent<FoundationScript>().cardList)
@@ -38,7 +38,7 @@ public class StateLoader : MonoBehaviour
         }
 
         //save reactors
-        foreach (GameObject reactor in Config.Instance.reactors)
+        foreach (GameObject reactor in UtilsScript.Instance.reactors)
         {
             gameState.reactors.Add(new StringListWrapper() {
                 stringList = ConvertCardListToStringList(reactor.GetComponent<ReactorScript>().cardList)
@@ -167,7 +167,7 @@ public class StateLoader : MonoBehaviour
         index = 0;
         foreach (StringListWrapper lw in state.foundations)
         {
-            SetUpLocationWithCards(lw.stringList, LoadPileScript.Instance.cardList, Config.Instance.foundations[index]);
+            SetUpLocationWithCards(lw.stringList, LoadPileScript.Instance.cardList, UtilsScript.Instance.foundations[index]);
             index++;
         }
 
@@ -175,7 +175,7 @@ public class StateLoader : MonoBehaviour
         index = 0;
         foreach (StringListWrapper lw in state.reactors)
         {
-            SetUpLocationWithCards(lw.stringList, LoadPileScript.Instance.cardList, Config.Instance.reactors[index]);
+            SetUpLocationWithCards(lw.stringList, LoadPileScript.Instance.cardList, UtilsScript.Instance.reactors[index]);
             index++;
         }
 
@@ -216,8 +216,8 @@ public class StateLoader : MonoBehaviour
             WastepileScript.Instance.gameObject,
             MatchedPileScript.Instance.gameObject
         };
-        origins.AddRange(Config.Instance.foundations);
-        origins.AddRange(Config.Instance.reactors);
+        origins.AddRange(UtilsScript.Instance.foundations);
+        origins.AddRange(UtilsScript.Instance.reactors);
 
         // variables that will be used repeatedly when setting up the move log
         Move tempMove;
