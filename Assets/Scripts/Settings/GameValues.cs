@@ -6,6 +6,7 @@ public class GameValues
     public byte cardsToDeal;
 
     public float relativeCardScale;
+    public float matchExplosionScale;
 
     public float draggedCardScale;
     public float draggedCardOffset;

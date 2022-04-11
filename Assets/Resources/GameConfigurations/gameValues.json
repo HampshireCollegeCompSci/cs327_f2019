@@ -3,6 +3,7 @@
 	"cardsToDeal": 3,
 
 	"relativeCardScale": 0.12,
+	"matchExplosionScale": 0.3,
 
 	"draggedCardScale": 0.15,
 	"draggedCardOffset": 0.4,

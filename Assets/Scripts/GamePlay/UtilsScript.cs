@@ -357,6 +357,7 @@ public class UtilsScript : MonoBehaviour
         Vector3 p = selectedCardsCopy[0].transform.position;
         p.z += 2;
         GameObject matchExplosion = Instantiate(matchPrefab, p, Quaternion.identity);
+        matchExplosion.transform.localScale = new Vector3(Config.GameValues.matchExplosionScale, Config.GameValues.matchExplosionScale);
 
         card2Script.MoveCard(MatchedPileScript.Instance.gameObject);
         card1Script.MoveCard(MatchedPileScript.Instance.gameObject);
