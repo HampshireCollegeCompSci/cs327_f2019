@@ -79,7 +79,7 @@ public class StartGame : MonoBehaviour
     {
         Image fadeInScreen = this.gameObject.GetComponent<Image>();
         fadeInScreen.enabled = true;
-        Color fadeColor = fadeInScreen.color;
+        Color fadeColor = Color.black;
 
         while (fadeColor.a > 0)
         {

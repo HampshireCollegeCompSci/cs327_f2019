@@ -227,7 +227,7 @@ public class WastepileScript : MonoBehaviour
         contentRectTransform.anchoredPosition = Vector3.zero;
 
         scrollRect.movementType = ScrollRect.MovementType.Clamped;
-        scrollRect.inertia = false;
+        scrollRect.inertia = true;
 
         scrollRect.horizontal = true;
         //scrollRect.horizontalScrollbar.interactable = true;

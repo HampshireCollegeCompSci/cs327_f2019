@@ -786,7 +786,7 @@ public class UtilsScript : MonoBehaviour
 
     public void ManualGameWin()
     {
-        if (Config.Instance.gamePaused) return;
+        if (!Config.GameValues.enableCheat || Config.Instance.gamePaused) return;
 
         EndGame.Instance.GameOver(true);
         Config.Instance.matchCounter = 26;

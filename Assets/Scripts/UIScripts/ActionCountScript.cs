@@ -63,6 +63,7 @@ public class ActionCountScript : MonoBehaviour
         }
         else
         {
+            StopAllCoroutines();
             actionText.text = setTo;
         }
     }

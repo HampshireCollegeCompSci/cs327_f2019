@@ -90,9 +90,9 @@ public class SummaryTransition : MonoBehaviour
         yield return new WaitForSeconds(5);
         GameObject explosion3 = Instantiate(explosionPrefab, spaceShipObject.transform.position, Quaternion.identity);
         explosion3.GetComponent<SpriteRenderer>().sortingOrder = 2;
-        explosion3.transform.localScale = new Vector3(0.3f, 0.3f);
+        explosion3.transform.localScale = new Vector3(0.5f, 0.5f);
 
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.1f);
         Destroy(explosion0);
         Destroy(explosion1);
         Destroy(explosion2);

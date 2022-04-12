@@ -145,6 +145,7 @@ public class EndGame : MonoBehaviour
                 yield return new WaitForSeconds(0.2f);
                 card.SetActive(false);
                 SoundEffectsController.Instance.ExplosionSound();
+                yield return new WaitForSeconds(0.05f);
             }
 
             if (reactorExploded)

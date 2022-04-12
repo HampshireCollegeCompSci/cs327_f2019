@@ -1,4 +1,6 @@
 {
+	"enableCheat": false,
+
 	"foundationStartingSize": 7,
 	"cardsToDeal": 3,
 
