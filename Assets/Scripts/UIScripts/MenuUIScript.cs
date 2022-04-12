@@ -26,10 +26,10 @@ public class MenuUIScript : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("starting MenuUIScript");
-
+        // get the active scene that is on top
         string activeScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1).name;
-        Debug.Log($"activeScene {activeScene}");
+        Debug.Log($"the activeScene is: {activeScene}");
+
         // Update Button text from gameValues
         switch (activeScene)
         {

@@ -79,7 +79,7 @@ public class SettingsScript : MonoBehaviour
         update /= 10;
         PlayerPrefs.SetFloat(Constants.soundEffectsVolumeKey, update);
         SoundEffectsController.Instance.UpdateMaxVolume(update);
-        SoundEffectsController.Instance.ButtonPressSound();
+        SoundEffectsController.Instance.ButtonPressSound(vibrate: false);
 
         if (SpaceBabyController.Instance != null)
         {

@@ -55,12 +55,16 @@ public class SoundEffectsController : MonoBehaviour
         this.vibrationEnabled = vibrationEnabled;
     }
 
-    public void ButtonPressSound()
+    public void ButtonPressSound(bool vibrate = true)
     {
         soundController.clip = buttonPressSound;
         // doesn't like PlayOneShot
         soundController.Play();
-        VibrateMedium();
+
+        if (vibrate)
+        {
+            VibrateMedium();
+        }
     }
 
     public void UndoPressSound()
@@ -142,15 +146,17 @@ public class SoundEffectsController : MonoBehaviour
 
     public void AlertSound()
     {
-        soundController.PlayOneShot(alertSound, 0.2f);
         StartCoroutine(AlertVibration());
     }
 
     IEnumerator AlertVibration()
     {
-        VibrateSmall();
-        yield return new WaitForSeconds(0.1f);
-        VibrateSmall();
+        yield return new WaitForSeconds(0.5f);
+        soundController.PlayOneShot(alertSound, 0.2f);
+        yield return new WaitForSeconds(0.05f);
+        VibrateMedium();
+        yield return new WaitForSeconds(0.25f);
+        VibrateMedium();
     }
 
     public void WinSound()
