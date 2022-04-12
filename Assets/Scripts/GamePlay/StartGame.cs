@@ -63,7 +63,15 @@ public class StartGame : MonoBehaviour
         mainCamera.enabled = true;
         audioListener.enabled = true;
         // the alert music starts playing ASAP if triggered so make sure not to override it
-        MusicController.Instance.GameMusic(noOverrideAlert: true);
+        if (Config.Instance.tutorialOn)
+        {
+            MusicController.Instance.TutorialMusic();
+        }
+        else
+        {
+            MusicController.Instance.GameMusic(noOverrideAlert: true);
+        }
+
         StartCoroutine(FadeGameplayIn());
     }
 

@@ -8,7 +8,7 @@ public class MusicController : MonoBehaviour
     public AudioSource audioSource_2;
 
     // Music files
-    public AudioClip menuMusic, themeMusic, transitionMusic, loseMusic, winMusic, aboutMusic;
+    public AudioClip menuMusic, themeMusic, transitionMusic, loseMusic, winMusic, aboutMusic, tutorialMusic;
 
     // Variables to keep track of the current playing song
     private byte playingTrack;
@@ -192,6 +192,18 @@ public class MusicController : MonoBehaviour
 
         playingTrack = 6;
         Transition(aboutMusic);
+    }
+
+    public void TutorialMusic()
+    {
+        if (playingTrack == 7)
+        {
+            PlayMusic();
+            return;
+        }
+
+        playingTrack = 7;
+        Transition(tutorialMusic);
     }
 
     private void Transition(AudioClip newTrack)

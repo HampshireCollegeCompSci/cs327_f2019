@@ -185,7 +185,7 @@ public class TutorialScript : MonoBehaviour
         tutorial.SetActive(false);
         Config.Instance.tutorialOn = false;
         Config.Instance.SetDifficulty(0);
-
+        MusicController.Instance.GameMusic();
         GameLoader.Instance.RestartGame();
     }
 
