@@ -12,9 +12,6 @@ public class ResultsScript : MonoBehaviour
     public Text currentMovesText, currentMovesStatText;
     public Text oldLeastMovesText, oldLeastMovesStatText;
 
-    public Sprite spaceShipDebrisSprite;
-    public GameObject spaceShipObject;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -37,17 +34,6 @@ public class ResultsScript : MonoBehaviour
 
         SetScore();
         SetMoves();
-
-        // spacebaby
-        if (Config.Instance.gameWin)
-        {
-            SpaceBabyController.Instance.BabyWinSummary(Config.Instance.matchCounter);
-        }
-        else
-        {
-            SpaceBabyController.Instance.BabyLoseSummary();
-            SpaceShipExplode();
-        }
     }
 
     private void SetScore()
@@ -118,23 +104,5 @@ public class ResultsScript : MonoBehaviour
         title.color = Color.cyan;
         stat.color = Color.cyan;
         PlayerPrefs.SetInt(key, update);
-    }
-
-    private bool exploded = false;
-    public void SpaceShipExplode()
-    {
-        if (exploded)
-            return;
-
-        exploded = true;
-        StartCoroutine(Explode());
-    }
-
-    IEnumerator Explode()
-    {
-        yield return new WaitForSeconds(2);
-        SoundEffectsController.Instance.ExplosionSound();
-        spaceShipObject.GetComponent<Image>().sprite = spaceShipDebrisSprite;
-        spaceShipObject.transform.localScale = new Vector3(2, 2, 1);
     }
 }

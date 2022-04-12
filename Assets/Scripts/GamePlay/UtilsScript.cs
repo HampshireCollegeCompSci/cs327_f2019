@@ -630,7 +630,7 @@ public class UtilsScript : MonoBehaviour
             if (ActionCountScript.Instance.TurnSirenOn(2) ||
                 (!matchRelated && Config.Instance.actionMax - Config.Instance.actions == 1))
             {
-                SpaceBabyController.Instance.BabyAngry();
+                SpaceBabyController.Instance.BabyReactorHigh();
             }
         }
         else if (turnOnAlert || checkAgain)

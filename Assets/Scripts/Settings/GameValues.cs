@@ -38,7 +38,7 @@ public class GameValues
     public float panAndZoomSpeed;
     public float startGameFadeInSpeed;
     public float endGameFadeOutSpeed;
-    public float playAgainSpeed;
+    public float summaryTransitionSpeed;
 
     public string[] difficulties;
     public int[] reactorLimits;

@@ -55,10 +55,11 @@ public class PlayAgainSequence : MonoBehaviour
         Image panelImage = sequencePanel.GetComponent<Image>();
         Color panelColor = new(0, 0, 0, 0);
         panelImage.color = panelColor;
+        yield return null;
 
         while (panelColor.a < 1)
         {
-            panelColor.a += Time.deltaTime * Config.GameValues.playAgainSpeed;
+            panelColor.a += Time.deltaTime * Config.GameValues.summaryTransitionSpeed;
             panelImage.color = panelColor;
             yield return null;
         }

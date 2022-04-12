@@ -33,9 +33,9 @@
 	"fadeOutButtonsSpeed": 2,
 	"zoomFactor": 20,
 	"panAndZoomSpeed": 30,
-	"startGameFadeInSpeed": 4,
-	"endGameFadeOutSpeed": 0.5,
-	"playAgainSpeed": 0.5,
+	"startGameFadeInSpeed": 5,
+	"endGameFadeOutSpeed": 0.45,
+	"summaryTransitionSpeed": 0.7,
 
 	"difficulties": [ "EASY", "MEDIUM", "HARD" ],
 	"reactorLimits": [ 24, 21, 18 ],

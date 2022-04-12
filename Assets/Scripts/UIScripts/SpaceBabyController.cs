@@ -8,7 +8,7 @@ public class SpaceBabyController : MonoBehaviour
 {
     public AudioSource audioSource;
     public Animator animator;
-    public AudioClip happySound, angrySound, counterSound, eatSound;
+    public AudioClip happySound, reactorHighSound, counterSound, eatSound, loseSound;
 
     // game over win condition
     public Sprite[] foodObjects;
@@ -72,19 +72,27 @@ public class SpaceBabyController : MonoBehaviour
         StartCoroutine(BabyAnimTrans());
     }
 
-    public void BabyAngry()
+    public void BabyReactorHigh()
     {
-        Debug.Log("SpaceBaby Angry");
+        Debug.Log("SpaceBaby Reactor High");
 
-        audioSource.PlayOneShot(angrySound, 0.2f);
+        audioSource.PlayOneShot(reactorHighSound, 0.2f);
         AngryAnimation();
     }
 
     public void BabyLoseTransition()
     {
         Debug.Log("SpaceBaby Lose Transition");
+        audioSource.PlayOneShot(loseSound, 1);
+        StopAllCoroutines();
+        animator.Play("AngryAnim", -1, 0);
+        StartCoroutine(LoseAnimTrans());
+    }
 
-        AngryAnimation();
+    IEnumerator LoseAnimTrans()
+    {
+        yield return new WaitForSeconds(1.6f);
+        animator.Play("Lose");
     }
 
     public void BabyActionCounter()
@@ -109,9 +117,9 @@ public class SpaceBabyController : MonoBehaviour
     IEnumerator BabyAnimTrans()
     {
         yield return new WaitForSeconds(2);
+        animator.Play("IdlingAnim");
         idling = true;
         angry = false;
-        animator.Play("IdlingAnim");
     }
 
     public void BabyLoseSummary()

@@ -11,7 +11,7 @@ public class SoundEffectsController : MonoBehaviour
     public AudioClip tokenRevealSound, tokenSelectSoundA, tokenSelectSoundB, tokenSelectSoundC;
     public AudioClip tokenInReactorSound, tokenStackSoundA, tokenStackSoundB, tokenStackSoundC, tokenStackSoundD;
     public AudioClip deckDealSound, deckReshuffleSound;
-    public AudioClip winSound, loseSound, alertSound;
+    public AudioClip winSound, loseSound, alertSound, winTransition;
     public AudioClip mushroomSound, bugSound, fruitSound, rockSound;
     public AudioClip explosionSound;
 
@@ -157,27 +157,24 @@ public class SoundEffectsController : MonoBehaviour
     {
         soundController.clip = winSound;
         soundController.Play();
-        VibrateLarge();
     }
 
     public void LoseSound()
     {
         soundController.clip = loseSound;
         soundController.Play();
-        StartCoroutine(LoseVibration());
     }
 
-    private IEnumerator LoseVibration()
+    public void WinTransition()
     {
-        yield return new WaitForSeconds(0.9f);
-        VibrateLarge();
+        soundController.clip = winTransition;
+        soundController.Play();
     }
 
     public void ExplosionSound()
     {
-        soundController.clip = explosionSound;
-        soundController.Play();
-        VibrateLarge();
+        soundController.PlayOneShot(explosionSound);
+        VibrateSmall();
     }
 
     public void FoodMatch(string suit)
