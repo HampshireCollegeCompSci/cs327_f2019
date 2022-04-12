@@ -50,12 +50,34 @@ public class ActionCountScript : MonoBehaviour
     {
         if (setTo == null)
         {
-            actionText.text = (Config.Instance.actionMax - Config.Instance.actions).ToString();
+            int newValue = Config.Instance.actionMax - Config.Instance.actions;
+            int oldValue;
+            if (int.TryParse(actionText.text, out oldValue) &&
+                oldValue + 1 < newValue)
+            {
+                StartCoroutine(AddToActionText(oldValue, newValue));
+                return;
+            }
+
+            actionText.text = newValue.ToString();
         }
         else
         {
             actionText.text = setTo;
         }
+    }
+
+    IEnumerator AddToActionText(int currentValue, int newValue)
+    {
+        while (currentValue < newValue)
+        {
+            yield return new WaitForSeconds(0.05f);
+            currentValue++;
+            actionText.text = currentValue.ToString();
+        }
+
+        // just in case quick moves or undos occur
+        actionText.text = (Config.Instance.actionMax - Config.Instance.actions).ToString();
     }
 
     public void PressKnob()
