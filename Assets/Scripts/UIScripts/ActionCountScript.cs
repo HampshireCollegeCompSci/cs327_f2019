@@ -17,6 +17,8 @@ public class ActionCountScript : MonoBehaviour
     public Sprite screenOn, screenAlert;
     public Sprite buttonDown, buttonUp;
     private byte currentState;
+
+    private Coroutine actionCoroutine;
     //private Coroutine fader;
     private Coroutine flasher;
 
@@ -55,15 +57,21 @@ public class ActionCountScript : MonoBehaviour
             if (int.TryParse(actionText.text, out oldValue) &&
                 oldValue + 1 < newValue)
             {
-                StartCoroutine(AddToActionText(oldValue, newValue));
-                return;
+                actionCoroutine = StartCoroutine(AddToActionText(oldValue, newValue));
             }
+            else
+            {
+                if (actionCoroutine != null)
+                {
+                    StopCoroutine(actionCoroutine);
+                    actionCoroutine = null;
+                }
 
-            actionText.text = newValue.ToString();
+                actionText.text = newValue.ToString();
+            }
         }
         else
         {
-            StopAllCoroutines();
             actionText.text = setTo;
         }
     }
