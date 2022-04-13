@@ -44,33 +44,42 @@ public class FoundationScript : MonoBehaviour
 
     public void SetCardPositions()
     {
-        int positionCounter = 0;
+        float zOffset = -0.1f;
         int hiddenCards = 0;
         float yOffset = 0;
 
-        for (int i = cardList.Count - 1; i >= 0; i--) // go backwards through the list
+        int count = cardList.Count;
+        for (int i = count - 1; i >= 0; i--) // go backwards through the list
         {
             // as we go through, place cards above and in-front the previous one
-            cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, -1 - positionCounter * 0.1f);
+            cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, zOffset);
 
             if (cardList[i].GetComponent<CardScript>().IsHidden)  // don't show hidden cards as much
             {
                 hiddenCards++;
-                if (cardList.Count > 18)
-                    yOffset += 0.01f;
-                else if (cardList.Count > 12)
-                    yOffset += 0.05f;
-                else if (cardList.Count > 10)
-                    yOffset += 0.1f;
+                if (count > 16)
+                {
+                    yOffset += 0.02f;
+                }
+                else if (count > 12)
+                {
+                    yOffset += 0.07f;
+                }
                 else
-                    yOffset += 0.2f;
+                {
+                    yOffset += 0.15f;
+                }
             }
-            else if (hiddenCards != 0 && cardList.Count > 17)
-                yOffset += 0.42f;
+            else if (hiddenCards != 0 && count > 17)
+            {
+                yOffset += 0.30f;
+            }
             else
-                yOffset += 0.45f;
+            {
+                yOffset += 0.33f;
+            }
 
-            positionCounter++;
+            zOffset -= 0.05f;
         }
     }
 
@@ -105,7 +114,7 @@ public class FoundationScript : MonoBehaviour
         GameObject selectedCard = UtilsScript.Instance.selectedCards[0];
         CardScript selectedCardScript = selectedCard.GetComponent<CardScript>();
 
-        if (input.CompareTag("Card"))
+        if (input.CompareTag(Constants.cardTag))
         {
             CardScript inputCardScript = input.GetComponent<CardScript>();
 
@@ -116,9 +125,9 @@ public class FoundationScript : MonoBehaviour
                     UtilsScript.Instance.Match(input, selectedCard);
                     return;
                 }
-                else if (inputCardScript.container.CompareTag("Reactor"))
+                else if (inputCardScript.container.CompareTag(Constants.reactorTag))
                 {
-                    if (!CardTools.IsSameSuit(input, selectedCard))
+                    if (!CardTools.CompareSameSuitObjects(input, selectedCard))
                         return;
 
                     SoundEffectsController.Instance.CardToReactorSound();
@@ -126,7 +135,7 @@ public class FoundationScript : MonoBehaviour
                     UtilsScript.Instance.UpdateActions(1, checkGameOver: true);
                     return;
                 }
-                else if (inputCardScript.container.CompareTag("Foundation"))
+                else if (inputCardScript.container.CompareTag(Constants.foundationTag))
                 {
                     if (inputCardScript.container.GetComponent<FoundationScript>().cardList[0] != input ||
                         inputCardScript.cardNum != selectedCardScript.cardNum + 1)
@@ -138,7 +147,7 @@ public class FoundationScript : MonoBehaviour
                 else
                     return;
             }
-            else if (inputCardScript.container.CompareTag("Foundation"))
+            else if (inputCardScript.container.CompareTag(Constants.foundationTag))
             {
                 if (inputCardScript.container.GetComponent<FoundationScript>().cardList[0] != input ||
                     inputCardScript.cardNum != selectedCardScript.cardNum + 1)
@@ -154,9 +163,9 @@ public class FoundationScript : MonoBehaviour
             else
                 return;
         }
-        else if (input.CompareTag("Reactor"))
+        else if (input.CompareTag(Constants.reactorTag))
         {
-            if (UtilsScript.Instance.selectedCards.Count != 1 || !CardTools.IsSameSuit(input, selectedCard))
+            if (UtilsScript.Instance.selectedCards.Count != 1 || !CardTools.CompareSameSuitObjects(input, selectedCard))
                 return;
 
             SoundEffectsController.Instance.CardToReactorSound();
@@ -164,7 +173,7 @@ public class FoundationScript : MonoBehaviour
             UtilsScript.Instance.UpdateActions(1, checkGameOver: true);
             return;
         }
-        else if (input.CompareTag("Foundation"))
+        else if (input.CompareTag(Constants.foundationTag))
         {
             if (input.GetComponent<FoundationScript>().cardList.Count != 0)
                 return;

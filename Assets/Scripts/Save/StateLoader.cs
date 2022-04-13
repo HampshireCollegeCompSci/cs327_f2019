@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class StateLoader : MonoBehaviour
 {
-    public static StateLoader saveSystem;
-    public GameState gameState;
+    // Singleton instance.
+    public static StateLoader Instance;
 
+    // Initialize the singleton instance.
     private void Awake()
     {
-        if (saveSystem == null)
+        if (Instance == null)
         {
-            DontDestroyOnLoad(gameObject); //makes instance persist across scenes
-            saveSystem = this;
+            Instance = this;
         }
-        else if (saveSystem != this)
+        else if (Instance != this)
         {
-            Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
+            throw new System.Exception("two of these scripts should not exist at the same time");
         }
     }
 
@@ -24,13 +24,13 @@ public class StateLoader : MonoBehaviour
     {
         Debug.Log("writing state");
 
-        gameState = new GameState() {
+        GameState gameState = new GameState() {
             foundations = new List<StringListWrapper>(),
             reactors = new List<StringListWrapper>()
         };
 
         //save foundations
-        foreach (GameObject foundation in Config.config.foundations)
+        foreach (GameObject foundation in UtilsScript.Instance.foundations)
         {
             gameState.foundations.Add(new StringListWrapper() {
                 stringList = ConvertCardListToStringList(foundation.GetComponent<FoundationScript>().cardList)
@@ -38,7 +38,7 @@ public class StateLoader : MonoBehaviour
         }
 
         //save reactors
-        foreach (GameObject reactor in Config.config.reactors)
+        foreach (GameObject reactor in UtilsScript.Instance.reactors)
         {
             gameState.reactors.Add(new StringListWrapper() {
                 stringList = ConvertCardListToStringList(reactor.GetComponent<ReactorScript>().cardList)
@@ -57,12 +57,12 @@ public class StateLoader : MonoBehaviour
         //save undo
         CardScript cardScriptRef;
         List<AltMove> saveMoveLog = new List<AltMove>();
-        foreach (Move move in UndoScript.undoScript.moveLog)
+        foreach (Move move in UndoScript.Instance.moveLog)
         {
             cardScriptRef = move.card.GetComponent<CardScript>();
 
             saveMoveLog.Add(new AltMove() {
-                cardName = $"{cardScriptRef.cardSuit}_{cardScriptRef.cardNum}",
+                cardName = $"{cardScriptRef.suit}_{cardScriptRef.cardNum}",
                 originName = move.origin.name,
                 moveType = move.moveType,
                 nextCardWasHidden = move.nextCardWasHidden,
@@ -76,24 +76,14 @@ public class StateLoader : MonoBehaviour
         gameState.moveLog = saveMoveLog;
 
         //save other data
-        gameState.score = Config.config.score;
-        gameState.consecutiveMatches = Config.config.consecutiveMatches;
-        gameState.moveCounter = Config.config.moveCounter;
-        gameState.actions = Config.config.actions;
-        gameState.difficulty = Config.config.currentDifficulty;
+        gameState.score = Config.Instance.score;
+        gameState.consecutiveMatches = Config.Instance.consecutiveMatches;
+        gameState.moveCounter = Config.Instance.moveCounter;
+        gameState.actions = Config.Instance.actions;
+        gameState.difficulty = Config.Instance.currentDifficulty;
 
-        //saving to json
-        string json;
-        if (Application.isEditor)
-        {
-            json = JsonUtility.ToJson(gameState, true);
-            File.WriteAllText("Assets/Resources/GameStates/testState.json", json);
-        }
-        else
-        {
-            json = JsonUtility.ToJson(gameState);
-            File.WriteAllText(Application.persistentDataPath + "/testState.json", json);
-        }
+        //saving to json, when in editor save it in human readable format
+        File.WriteAllText(SaveState.GetFilePath(), JsonUtility.ToJson(gameState, Constants.inEditor));
 
         //UnityEditor.AssetDatabase.Refresh();
     }
@@ -107,50 +97,66 @@ public class StateLoader : MonoBehaviour
         for (int i = cardList.Count - 1; i != -1; i--)
         {
             cardScriptRef = cardList[i].GetComponent<CardScript>();
-            stringList.Add($"{cardScriptRef.cardSuit}_{cardScriptRef.cardNum}_{cardScriptRef.IsHidden}");
+            stringList.Add($"{cardScriptRef.suit}_{cardScriptRef.cardNum}_{cardScriptRef.IsHidden}");
         }
 
         return stringList;
     }
 
-    public void LoadState()
+    public void LoadSaveState()
     {
-        Debug.Log("loading state");
+        Debug.Log("loading save state");
 
-        string path;
-        if (Application.isEditor)
-        {
-            path = "GameStates/testState";
-        }
-        else
-        {
-            path = Application.persistentDataPath + "/testState.json";
-        }
         //load the json into a GameState
-        gameState = CreateFromJSON(path);
+        UnpackState(CreateFromJSON(SaveState.GetFilePath()));
     }
 
     public void LoadTutorialState(string fileName)
     {
-        Debug.Log("loading tutorial state");
-
-        if (!File.Exists($"Assets/Resources/Tutorial/{fileName}.json"))
-        {
-            throw new System.IO.FileNotFoundException($"Assets/Resources/Tutorial/{fileName}.json");
-        }
+        Debug.Log($"loading tutorial state: {fileName}");
+        string filePath = Constants.tutorialResourcePath + fileName;
 
         //load the json into a GameState
-        gameState = CreateFromJSON($"Tutorial/{fileName}", true);
+        UnpackState(CreateFromJSON(filePath, isTutorial: true), isTutorial: true);
     }
 
-    public void UnpackState(GameState state, bool isTutorial)
+    private GameState CreateFromJSON(string path, bool isTutorial = false)
+    {
+        Debug.Log($"creating gamestate from path: {path}");
+
+        if (isTutorial)
+        {
+            TextAsset jsonTextFile = Resources.Load<TextAsset>(path);
+            return JsonUtility.FromJson<GameState>(jsonTextFile.ToString());
+        }
+        else
+        {
+            string jsonTextFile = File.ReadAllText(path);
+            return JsonUtility.FromJson<GameState>(jsonTextFile);
+        }
+    }
+
+    public void UnpackState(GameState state, bool isTutorial = false)
     {
         Debug.Log($"unpacking state, isTutorial: {isTutorial}");
 
-        // if the tutorial isn't being loaded then we need to make new cards and setup the move log
+        //set up simple variables
+        Config.Instance.SetDifficulty(state.difficulty);
+        UtilsScript.Instance.UpdateScore(state.score, setAsValue: true);
+        Config.Instance.consecutiveMatches = state.consecutiveMatches;
+        Config.Instance.moveCounter = state.moveCounter;
+        Config.Instance.gameOver = false;
+        Config.Instance.gameWin = false;
+        // more is done at the end
+
+        // if the tutorial isn't being loaded then we need to setup the move log
         if (!isTutorial)
         {
-            DeckScript.Instance.InstantiateCards(addToLoadPile: true);
+            if (LoadPileScript.Instance.cardList.Count == 0)
+            {
+                throw new System.Exception("there are no cards in the load pile");
+            }
+
             SetUpMoveLog(state.moveLog, LoadPileScript.Instance.cardList);
         }
 
@@ -161,7 +167,7 @@ public class StateLoader : MonoBehaviour
         index = 0;
         foreach (StringListWrapper lw in state.foundations)
         {
-            SetUpLocationWithCards(lw.stringList, LoadPileScript.Instance.cardList, Config.config.foundations[index]);
+            SetUpLocationWithCards(lw.stringList, LoadPileScript.Instance.cardList, UtilsScript.Instance.foundations[index]);
             index++;
         }
 
@@ -169,7 +175,7 @@ public class StateLoader : MonoBehaviour
         index = 0;
         foreach (StringListWrapper lw in state.reactors)
         {
-            SetUpLocationWithCards(lw.stringList, LoadPileScript.Instance.cardList, Config.config.reactors[index]);
+            SetUpLocationWithCards(lw.stringList, LoadPileScript.Instance.cardList, UtilsScript.Instance.reactors[index]);
             index++;
         }
 
@@ -195,11 +201,7 @@ public class StateLoader : MonoBehaviour
             }
         }
 
-        //set up simple variables
-        Config.config.currentDifficulty = state.difficulty;
-        Config.config.score = state.score;
-        Config.config.consecutiveMatches = state.consecutiveMatches;
-        Config.config.moveCounter = state.moveCounter;
+        ReactorScoreSetScript.Instance.SetReactorScore();
         UtilsScript.Instance.UpdateActions(state.actions, startingGame: true);
     }
 
@@ -214,8 +216,8 @@ public class StateLoader : MonoBehaviour
             WastepileScript.Instance.gameObject,
             MatchedPileScript.Instance.gameObject
         };
-        origins.AddRange(Config.config.foundations);
-        origins.AddRange(Config.config.reactors);
+        origins.AddRange(UtilsScript.Instance.foundations);
+        origins.AddRange(UtilsScript.Instance.reactors);
 
         // variables that will be used repeatedly when setting up the move log
         Move tempMove;
@@ -239,7 +241,7 @@ public class StateLoader : MonoBehaviour
             foreach (GameObject card in cardList)
             {
                 cardScriptRef = card.GetComponent<CardScript>();
-                if (cardScriptRef.cardNum == number && cardScriptRef.cardSuit == suite)
+                if (cardScriptRef.cardNum == number && cardScriptRef.suit == suite)
                 {
                     tempMove.card = card;
                     break;
@@ -274,7 +276,7 @@ public class StateLoader : MonoBehaviour
             tempMove.moveNum = moves[i].moveNum;
 
             // making the move official
-            UndoScript.undoScript.moveLog.Push(tempMove);
+            UndoScript.Instance.moveLog.Push(tempMove);
         }
     }
 
@@ -304,9 +306,9 @@ public class StateLoader : MonoBehaviour
             foreach (GameObject card in cardList)
             {
                 cardScriptRef = card.GetComponent<CardScript>();
-                if (cardScriptRef.cardNum == number && cardScriptRef.cardSuit == suite)
+                if (cardScriptRef.cardNum == number && cardScriptRef.suit == suite)
                 {
-                    cardScriptRef.MoveCard(newLocation, false, false, false);
+                    cardScriptRef.MoveCard(newLocation, doLog: false, isAction: false);
                     if (hiddenState)
                     {
                         cardScriptRef.SetFoundationVisibility(false);
@@ -321,27 +323,6 @@ public class StateLoader : MonoBehaviour
             {
                 throw new System.NullReferenceException($"card \"{s}\" was not found");
             }
-        }
-    }
-       
-    private GameState CreateFromJSON(string path, bool tutorial = false)
-    {
-        Debug.Log("creating gamestate from path: " + path);
-
-        if (tutorial)
-        {
-            var jsonTextFile = Resources.Load<TextAsset>(path);
-            return JsonUtility.FromJson<GameState>(jsonTextFile.ToString());
-        }
-        else if (Application.isEditor)
-        {
-            var jsonTextFile = Resources.Load<TextAsset>(path);
-            return JsonUtility.FromJson<GameState>(jsonTextFile.ToString());
-        }
-        else
-        {
-            var jsonTextFile = File.ReadAllText(path);
-            return JsonUtility.FromJson<GameState>(jsonTextFile);
         }
     }
 }

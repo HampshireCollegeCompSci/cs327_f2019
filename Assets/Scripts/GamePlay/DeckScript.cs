@@ -1,28 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 using UnityEngine.UI;
-using System.IO;
 
 public class DeckScript : MonoBehaviour
 {
     public List<GameObject> cardList;
 
-    public GameObject cardPrefab;
-    private Sprite[] suitSprites;
-    public Sprite[] holograms;
-    public Sprite[] combinedHolograms;
-
-    private Image buttonImage;
-    public Sprite[] buttonAnimation;
+    public Image buttonImage;
     public Text deckCounter;
+    public Sprite[] buttonAnimation;
 
     // Singleton instance.
     public static DeckScript Instance = null;
 
     // Initialize the singleton instance.
-    private void Awake()
+    void Awake()
     {
         if (Instance == null)
         {
@@ -32,172 +25,6 @@ public class DeckScript : MonoBehaviour
         {
             throw new System.ArgumentException("there should not already be an instance of this");
         }
-    }
-
-    public void DeckStart(Sprite[] suitSprites)
-    {
-        buttonImage = gameObject.GetComponent<Image>();
-
-        this.suitSprites = suitSprites;
-        cardList = new List<GameObject>();
-
-        if (Config.config.tutorialOn)
-        {
-            Debug.Log("deck start loading tutorial");
-            InstantiateCards(addToLoadPile: true);
-            StateLoader.saveSystem.UnpackState(StateLoader.saveSystem.gameState, true);
-            UtilsScript.Instance.UpdateScore(0);
-        }
-        else if (Application.isEditor && File.Exists("Assets/Resources/GameStates/testState.json"))
-        {
-            Debug.Log("editor: deck start loading saved game");
-            StateLoader.saveSystem.UnpackState(StateLoader.saveSystem.gameState, false);
-            UtilsScript.Instance.UpdateScore(0);
-        }
-        else if (!Application.isEditor && File.Exists(Application.persistentDataPath + "/testState.json"))
-        {
-            Debug.Log("application: deck start loading saved game");
-            StateLoader.saveSystem.UnpackState(StateLoader.saveSystem.gameState, false);
-            UtilsScript.Instance.UpdateScore(0);
-        }
-        else
-        {
-            InstantiateCards();
-            Shuffle();
-            SetUpFoundations();
-            Deal(false);
-            UtilsScript.Instance.UpdateActions(0, startingGame: true);
-        }
-    }
-
-    // sets up card list
-    public void InstantiateCards(bool addToLoadPile = false)
-    {
-        string[] suitStrings = new string[] { "spades", "clubs", "diamonds", "hearts" };
-
-        GameObject newCard;
-        CardScript newCardScript;
-
-        // order: spade ace, 2, 3... 10, jack, queen, king, clubs... diamonds... hearts
-        int cardIndex = 0; // 1 - 52
-        int hFSIndex; // used for assigning holograms
-        int rank;
-        Color rankColor = Color.black;
-        for (int suit = 0; suit < 4; suit++) // order: spades, clubs, diamonds, hearts
-        {
-            if (suit == 2)
-                rankColor = Color.red;
-
-            hFSIndex = suit * 5;
-
-            for (rank = 1; rank < 14; rank++) // card num: 1 - 13
-            {
-                newCard = Instantiate(cardPrefab);
-                newCardScript = newCard.GetComponent<CardScript>();
-
-                // setting up the cards reactor value, in-game appearance, and hologram sprites
-                if (rank < 10)
-                {
-                    // reactor value
-                    newCardScript.cardVal = rank;
-
-                    // in-game appearance of the card's rank
-                    if (rank == 1)
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = "A";
-                    else
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = rank.ToString();
-
-                    // basic hologram shown
-                    newCardScript.hologramFoodSprite = holograms[hFSIndex];
-
-                    // hologram shown during match
-                    if (suit < 2)
-                        newCardScript.hologramComboSprite = combinedHolograms[0];
-                    else
-                        newCardScript.hologramComboSprite = combinedHolograms[5];
-                }
-                else
-                {
-                    // reactor value, all face cards have a value of 10
-                    newCardScript.cardVal = 10;
-
-                    // in-game appearance of the card's rank
-                    if (rank == 10)
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = "10";
-                    else if (rank == 11)
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = "J";
-                    else if (rank == 12)
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = "Q";
-                    else
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = "K";
-
-                    // all cards >10 have fancy holograms, this is a complex way of assigning them
-                    newCardScript.hologramFoodSprite = holograms[rank - (9 - hFSIndex)];
-
-                    // cards >10 have fancy holograms for matching as well
-                    if (suit < 2)
-                        newCardScript.hologramComboSprite = combinedHolograms[rank - 9];
-                    else
-                        newCardScript.hologramComboSprite = combinedHolograms[rank - 4];
-                }
-
-                // setting up the cards internal rank and suit
-                newCardScript.cardNum = rank;
-                newCardScript.cardSuit = suitStrings[suit];
-
-                // setting up the text renderer's sorting layer and order because you can't do it via Unity's Inspector
-                newCardScript.rankObject.GetComponent<MeshRenderer>().sortingLayerName = "Gameplay";
-                newCardScript.rankObject.GetComponent<MeshRenderer>().sortingOrder = 1;
-
-                // setting up the in-game appearance of the card's rank color
-                newCardScript.rankObject.GetComponent<TextMesh>().color = rankColor;
-
-                // setting up the in-game appearance of the card's suit
-                newCardScript.suitObject.GetComponent<SpriteRenderer>().sprite = suitSprites[suit];
-
-                // moving card to desired location
-                if (!addToLoadPile)
-                {
-                    newCardScript.container = this.gameObject;
-                    AddCard(newCard);
-                }
-                else
-                {
-                    newCardScript.container = LoadPileScript.Instance.gameObject;
-                    LoadPileScript.Instance.AddCard(newCard);
-                }
-                
-                cardIndex += 1;
-            }
-        }
-    }
-
-    // moves cards into foundations
-    public void SetUpFoundations()
-    {
-        CardScript currentCardScript;
-        foreach (GameObject foundation in Config.config.foundations)
-        {
-            for (int n = 0; n < Config.config.foundationStartSize - 1; n++)
-            {
-                currentCardScript = cardList[0].GetComponent<CardScript>();
-                currentCardScript.MoveCard(foundation, doLog: false, showHolo: false);
-                currentCardScript.SetFoundationVisibility(false);
-            }
-
-            // adding and revealing the top card of the foundation
-            currentCardScript = cardList[0].GetComponent<CardScript>();
-            currentCardScript.MoveCard(foundation, doLog: false);
-        }
-
-        // testing purposes: this makes foundation 0 contain the max number of cards a foundation can carry at one
-        /*GameObject foundation0 = Config.config.foundations[1];
-        for (int i = 0; i < 12; i++)
-        {
-            currentCardScript = cardList[0].GetComponent<CardScript>();
-            currentCardScript.MoveCard(foundation0, doLog: false);
-            currentCardScript.SetVisibility(true);
-        }*/
     }
 
     public void AddCard(GameObject card)
@@ -233,7 +60,7 @@ public class DeckScript : MonoBehaviour
             StartCoroutine(ButtonDown());
         }
         // if it is possible to repopulate the deck
-        else if (WastepileScript.Instance.cardList.Count > Config.config.cardsToDeal) 
+        else if (WastepileScript.Instance.cardList.Count > Config.GameValues.cardsToDeal) 
         {
             DeckReset();
             StartCoroutine(ButtonDown());
@@ -243,7 +70,7 @@ public class DeckScript : MonoBehaviour
     public void Deal(bool doLog = true)
     {
         List<GameObject> toMoveList = new List<GameObject>();
-        for (int i = 0; i < Config.config.cardsToDeal; i++) // try to deal set number of cards
+        for (int i = 0; i < Config.GameValues.cardsToDeal; i++) // try to deal set number of cards
         {
             if (cardList.Count <= i) // are there no more cards in the deck?
                 break;
@@ -268,7 +95,7 @@ public class DeckScript : MonoBehaviour
         foreach (Sprite button in buttonAnimation)
         {
             buttonImage.sprite = button;
-            yield return new WaitForSeconds(0.08f);
+            yield return new WaitForSeconds(0.1f);
         }
     }
 
@@ -282,105 +109,7 @@ public class DeckScript : MonoBehaviour
         for (int i = buttonAnimation.Length - 2; i > 0; i--)
         {
             buttonImage.sprite = buttonAnimation[i];
-            yield return new WaitForSeconds(0.08f);
-        }
-    }
-
-    // moves all of the top foundation cards into their appropriate reactors
-    public void StartNextCycle(bool manuallyTriggered = false)
-    {
-        if (!(manuallyTriggered && UtilsScript.Instance.IsInputStopped())) // stops 2 NextCycles from happening at once
-        {
-            UtilsScript.Instance.SetInputStopped(true, nextCycle: true);
-            StartCoroutine(NextCycle());
-        }
-    }
-
-    IEnumerator NextCycle()
-    {
-        UtilsScript.Instance.baby.GetComponent<SpaceBabyController>().BabyActionCounterSound();
-
-        FoundationScript currentFoundation;
-        GameObject topFoundationCard;
-        CardScript topCardScript;
-
-        foreach (GameObject foundation in Config.config.foundations)
-        {
-            currentFoundation = foundation.GetComponent<FoundationScript>();
-            if (currentFoundation.cardList.Count != 0)
-            {
-                topFoundationCard = currentFoundation.cardList[0];
-                topCardScript = topFoundationCard.GetComponent<CardScript>();
-
-                foreach (GameObject reactor in Config.config.reactors)
-                {
-                    if (topCardScript.cardSuit == reactor.GetComponent<ReactorScript>().suit)
-                    {
-                        topCardScript.HideHologram();
-                        topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
-                        topCardScript.suitObject.GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCards";
-                        topCardScript.rankObject.GetComponent<MeshRenderer>().sortingLayerName = "SelectedCards";
-
-                        Vector3 target = reactor.transform.position;
-                        int cardCount = reactor.GetComponent<ReactorScript>().cardList.Count;
-                        if (cardCount > 4)
-                            cardCount = 4;
-
-                        target.y += -0.8f + cardCount * 0.45f;
-                        target.x -= 0.02f;
-
-                        // immediately unhide the next possible top foundation card and start its hologram
-                        if (currentFoundation.cardList.Count > 1)
-                        {
-                            CardScript nextTopFoundationCard = currentFoundation.cardList[1].GetComponent<CardScript>();
-                            if (nextTopFoundationCard.IsHidden)
-                            {
-                                nextTopFoundationCard.SetFoundationVisibility(true, isNotForNextCycle: false);
-                                nextTopFoundationCard.ShowHologram();
-                            }
-                        }
-
-                        while (topFoundationCard.transform.position != target)
-                        {   
-                            topFoundationCard.transform.position = Vector3.MoveTowards(topFoundationCard.transform.position, target,
-                                Time.deltaTime * Config.config.cardsToReactorspeed);
-                            yield return null;
-                        }
-
-                        topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
-                        topCardScript.suitObject.GetComponent<SpriteRenderer>().sortingLayerName = "Gameplay";
-                        topCardScript.rankObject.GetComponent<MeshRenderer>().sortingLayerName = "Gameplay";
-
-                        SoundEffectsController.Instance.CardToReactorSound();
-                        topCardScript.MoveCard(reactor, isCycle: true);
-
-                        if (Config.config.gameOver)
-                        {
-                            Config.config.moveCounter += 1;
-                            yield break;
-                        }
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        UtilsScript.Instance.SetInputStopped(false, nextCycle: true);
-        UtilsScript.Instance.UpdateActions(0, setAsValue: true);
-    }
-
-    //Shuffles cardList using Knuth shuffle aka Fisher-Yates shuffle
-    private void Shuffle()
-    {
-        System.Random rand = new System.Random();
-
-        for (int i = 0; i < cardList.Count; i++)
-        {
-            int j = rand.Next(i, cardList.Count);
-            GameObject temp = cardList[i];
-            cardList[i] = cardList[j];
-            cardList[j] = temp;
+            yield return new WaitForSeconds(0.1f);
         }
     }
 
@@ -388,21 +117,20 @@ public class DeckScript : MonoBehaviour
     {
         if (cardList.Count != 0)
         {
-            deckCounter.fontSize = 50;
+            deckCounter.fontSize = 25;
             deckCounter.text = cardList.Count.ToString();
         }
         else
         {
-            if (WastepileScript.Instance.cardList.Count > Config.config.cardsToDeal)
+            if (WastepileScript.Instance.cardList.Count > Config.GameValues.cardsToDeal)
             {
-                deckCounter.fontSize = 45;
                 deckCounter.text = "FLIP";
             }
             else
             {
-                deckCounter.fontSize = 40;
                 deckCounter.text = "EMPTY";
             }
+            deckCounter.fontSize = 19;
         }
     }
 }

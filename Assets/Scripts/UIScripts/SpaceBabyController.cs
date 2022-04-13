@@ -6,71 +6,133 @@ using UnityEngine.UI;
 
 public class SpaceBabyController : MonoBehaviour
 {
-    bool idling;
     public AudioSource audioSource;
     public Animator animator;
-    public AudioClip happySound, angrySound, loseSound, counterSound, eatSound;
+    public AudioClip happySound, reactorHighSound, counterSound, eatSound, loseSound;
+
+    // game over win condition
+    public Sprite[] foodObjects;
+    public GameObject foodPrefab;
+    public GameObject babyPlanet;
+    public GameObject panelOverlay;
+
+    private bool idling, angry;
+
+    // Singleton instance.
+    public static SpaceBabyController Instance = null;
+
+    // Initialize the singleton instance.
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            // since the pause scene creates a duplicate spacebby on top of the gameplay scene's this will happen
+            Debug.LogWarning("There really shouldn't be two of these but oh well.");
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
+        UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.soundEffectsVolumeKey));
         idling = true;
+        angry = false;
         animator.Play("IdlingAnim");
     }
 
-    public void BabyHappyAnim()
+    public void UpdateMaxVolume(float newVolume)
     {
+        Debug.Log($"updating space baby volume to: {newVolume}");
+        audioSource.volume = newVolume;
+    }
+
+    public void BabyHappy()
+    {
+        Debug.Log("SpaceBaby Happy");
+
         if (idling)
         {
             audioSource.PlayOneShot(happySound, 0.4f);
-
-            animator.Play("HappyAnim");
             idling = false;
+            animator.Play("HappyAnim");
             StartCoroutine(BabyAnimTrans());
         }
-
     }
 
-    public void BabyEatAnim()
+    public void BabyEat()
     {
+        Debug.Log("SpaceBaby Eat");
+
         idling = false;
         animator.Play("EatingAnim");
         StartCoroutine(BabyAnimTrans());
     }
 
-    public void BabyAngryAnim()
+    public void BabyReactorHigh()
     {
-        idling = false;
-        audioSource.PlayOneShot(angrySound, 0.2f);
+        Debug.Log("SpaceBaby Reactor High");
 
-        animator.Play("AngryAnim");
-        StartCoroutine(BabyAnimTrans());
+        audioSource.PlayOneShot(reactorHighSound, 0.2f);
+        AngryAnimation();
     }
 
-    public void BabyLoseSound()
+    public void BabyLoseTransition()
     {
-        audioSource.PlayOneShot(loseSound, 0.5f);
+        Debug.Log("SpaceBaby Lose Transition");
+        audioSource.PlayOneShot(loseSound, 1);
+        StopAllCoroutines();
+        animator.Play("AngryAnim", -1, 0);
+        StartCoroutine(LoseAnimTrans());
     }
 
-    public void BabyActionCounterSound()
+    IEnumerator LoseAnimTrans()
     {
+        yield return new WaitForSeconds(1.6f);
+        animator.Play("Lose");
+    }
+
+    public void BabyActionCounter()
+    {
+        Debug.Log("SpaceBaby ActionCounter");
+
         audioSource.PlayOneShot(counterSound, 0.5f);
+        AngryAnimation();
+    }
+
+    private void AngryAnimation()
+    {
+        if (!angry)
+        {
+            idling = false;
+            angry = true;
+            animator.Play("AngryAnim");
+            StartCoroutine(BabyAnimTrans());
+        }
     }
 
     IEnumerator BabyAnimTrans()
     {
         yield return new WaitForSeconds(2);
-        idling = true;
         animator.Play("IdlingAnim");
+        idling = true;
+        angry = false;
     }
 
-    public void BabyLose()
+    public void BabyLoseSummary()
     {
+        Debug.Log("SpaceBaby Lose Summary");
+
         animator.Play("Lose");
     }
 
-    public void BabyWin(byte matchNumber)
+    public void BabyWinSummary(byte matchNumber)
     {
+        Debug.Log("SpaceBaby Win");
+
         animator.Play("WinStart");
         StartCoroutine(BabyWinAnimation());
         StartCoroutine(EatAnimation(matchNumber));
@@ -82,12 +144,10 @@ public class SpaceBabyController : MonoBehaviour
         animator.Play("WinEat");
     }
 
-    public Sprite[] foodObjects;
-    public GameObject foodPrefab;
     IEnumerator EatAnimation(byte matchNumber)
     {
         List<GameObject> foods = new List<GameObject>();
-        Vector3 outOfBounds = new Vector3(3.8f, 0, 0);
+        Vector3 outOfBounds = new Vector3(3.8f, -0.5f, 0);
         Vector3 babyScale = gameObject.transform.localScale;
 
         byte limit = (byte)(matchNumber/2);
@@ -123,7 +183,7 @@ public class SpaceBabyController : MonoBehaviour
             {
                 Destroy(foods[0]);
                 foods.RemoveAt(0);
-                audioSource.PlayOneShot(eatSound, 0.4f);
+                audioSource.PlayOneShot(eatSound);
                 babyScale.x += 0.02f;
                 gameObject.transform.localScale = babyScale;
                 if (foods.Count == 0)
@@ -131,7 +191,7 @@ public class SpaceBabyController : MonoBehaviour
                     if (matchNumber == 26)
                         StartCoroutine(WinTransition());
                     else
-                        BabyHappyAnim();
+                        BabyHappy();
 
                     yield break;
                 }
@@ -141,20 +201,20 @@ public class SpaceBabyController : MonoBehaviour
         }
     }
 
-    public GameObject babyPlanet;
-    public GameObject panel;
     IEnumerator WinTransition()
     {
-        BabyHappyAnim();
+        BabyHappy();
 
-        Image panelImage = panel.GetComponent<Image>();
+        panelOverlay.SetActive(true);
+        Image panelImage = panelOverlay.GetComponent<Image>();
         Color panelColor = new Color(1, 1, 1, 0);
+        panelImage.color = panelColor;
 
         while (panelColor.a < 1)
         {
-            panelColor.a += 0.05f;
+            panelColor.a += Time.deltaTime * 0.75f;
             panelImage.color = panelColor;
-            yield return new WaitForSeconds(0.05f);
+            yield return null;
         }
 
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
@@ -162,9 +222,9 @@ public class SpaceBabyController : MonoBehaviour
 
         while (panelColor.a > 0)
         {
-            panelColor.a -= 0.05f;
+            panelColor.a -= Time.deltaTime * 0.75f;
             panelImage.color = panelColor;
-            yield return new WaitForSeconds(0.05f);
+            yield return null;
         }
     }
 }

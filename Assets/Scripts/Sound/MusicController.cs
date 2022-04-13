@@ -4,16 +4,19 @@ using UnityEngine;
 public class MusicController : MonoBehaviour
 {
     // Audio players components
-    public AudioSource soundTrack1;
-    public AudioSource soundTrack2;
+    public AudioSource audioSource_1;
+    public AudioSource audioSource_2;
 
     // Music files
-    public AudioClip menuMusic, themeMusic, transitionMusic, loseMusic, winMusic;
+    public AudioClip menuMusic, themeMusic, transitionMusic, loseMusic, winMusic, aboutMusic, tutorialMusic;
 
     // Variables to keep track of the current playing song
-    private bool playing1;
     private byte playingTrack;
+    private byte pausedAudioSource;
 
+    private float fadeInSpeed;
+    private float fadeOutSpeedFast;
+    private float fadeOutSpeedSlow;
     private float maxVolume;
 
     // Singleton instance.
@@ -26,51 +29,102 @@ public class MusicController : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         //If an instance already exists, destroy whatever this object is to enforce the singleton.
         else if (Instance != this)
         {
             Destroy(gameObject);
         }
-
-        //Set the GameObject to DontDestroyOnLoad so that it won't be destroyed when reloading our scene.
-        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
     {
-        playing1 = false;
         playingTrack = 0;
-        UpdateMaxVolume(PlayerPrefs.GetFloat(PlayerPrefKeys.musicVolumeKey));
+        UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.musicVolumeKey));
     }
 
     public void UpdateMaxVolume(float newVolume)
     {
-        Debug.Log($"updating music volume to: {newVolume}");
+        Debug.Log($"setting music volume to: {newVolume}");
+        NormalizeFadeValues();
         maxVolume = newVolume;
 
-        if (playing1)
+        Debug.Log($"1: {audioSource_1.isPlaying}, 2: {audioSource_2.isPlaying}");
+
+        if (audioSource_1.isPlaying || pausedAudioSource == 1)
         {
-            soundTrack1.volume = maxVolume;
+            audioSource_1.volume = maxVolume;
+        }
+        else if (audioSource_2.isPlaying || pausedAudioSource == 2)
+        {
+            audioSource_2.volume = maxVolume;
         }
         else
         {
-            soundTrack2.volume = maxVolume;
+            Debug.LogWarning("tried to update max volume on no music");
         }
     }
 
-    public void LoadGap()
+    private void NormalizeFadeValues()
     {
-        soundTrack1.Stop();
-        soundTrack1.clip = null;
-        soundTrack2.Stop();
-        soundTrack2.clip = null;
+        // changing the music volume requires that the fade timings be updated as well 
+        double audioDifference = PlayerPrefs.GetFloat(Constants.musicVolumeKey) / 0.5;
+        fadeInSpeed = (float)(Config.GameValues.musicFadeIn * audioDifference);
+        fadeOutSpeedFast = (float)(Config.GameValues.musicFadeOutFast * audioDifference);
+        fadeOutSpeedSlow = (float)(Config.GameValues.musicFadeOutSlow * audioDifference);
+    }
+
+    public void FadeMusicOut()
+    {
+        StopAllCoroutines();
+        if (audioSource_1.isPlaying)
+        {
+            StartCoroutine(FadeOut(audioSource_1, fadeOutSpeedSlow));
+        }
+        else if (audioSource_2.isPlaying)
+        {
+            StartCoroutine(FadeOut(audioSource_2, fadeOutSpeedSlow));
+        }
+    }
+
+    public void PauseMusic()
+    {
+        if (audioSource_1.isPlaying)
+        {
+            pausedAudioSource = 1;
+            audioSource_1.Pause();
+        }
+        else if (audioSource_2.isPlaying)
+        {
+            pausedAudioSource = 2;
+            audioSource_2.Pause();
+        }
+        else
+        {
+            Debug.LogWarning("tried to pause no music");
+        }
+    }
+
+    public void PlayMusic()
+    {
+        // playing a track that is already playing starts it from the beginning
+        if (pausedAudioSource == 1 && !audioSource_1.isPlaying)
+        {
+            audioSource_1.Play();
+        }
+        else if (!audioSource_2.isPlaying)
+        {
+            audioSource_2.Play();
+        }
+        pausedAudioSource = 0;
     }
 
     public void MainMenuMusic()
     {
         if (playingTrack == 1)
         {
+            PlayMusic();
             return;
         }
 
@@ -78,26 +132,13 @@ public class MusicController : MonoBehaviour
         Transition(menuMusic);
     }
 
-    public void GameMusic(bool force = false)
+    public void GameMusic(bool noOverrideAlert = false)
     {
-        if (force)
+        // continuing a new game can trigger the alert music to play before
+        // gameplay begins so don't override its playback
+        if (playingTrack == 2 || (playingTrack == 3 && noOverrideAlert))
         {
-            if ((soundTrack1.isPlaying && soundTrack1.clip != themeMusic) ||
-                (soundTrack2.isPlaying && soundTrack2.clip != themeMusic))
-            {
-                StopAllCoroutines();
-                soundTrack1.Stop();
-                soundTrack2.Stop();
-                soundTrack1.clip = themeMusic;
-                playing1 = true;
-                playingTrack = 2;
-                StartCoroutine(FadeIn(soundTrack1));
-            }
-            return;
-        }
-
-        if (playingTrack == 2)
-        {
+            PlayMusic();
             return;
         }
 
@@ -107,8 +148,9 @@ public class MusicController : MonoBehaviour
 
     public void AlertMusic()
     {
-        if (playingTrack == 3 || playingTrack != 2) // will play over win/lose music without
+        if (playingTrack == 3)
         {
+            PlayMusic();
             return;
         }
 
@@ -120,6 +162,7 @@ public class MusicController : MonoBehaviour
     {
         if (playingTrack == 4)
         {
+            PlayMusic();
             return;
         }
 
@@ -131,6 +174,7 @@ public class MusicController : MonoBehaviour
     {
         if (playingTrack == 5)
         {
+            PlayMusic();
             return;
         }
 
@@ -138,51 +182,79 @@ public class MusicController : MonoBehaviour
         Transition(winMusic);
     }
 
+    public void AboutMusic()
+    {
+        if (playingTrack == 6)
+        {
+            PlayMusic();
+            return;
+        }
+
+        playingTrack = 6;
+        Transition(aboutMusic);
+    }
+
+    public void TutorialMusic()
+    {
+        if (playingTrack == 7)
+        {
+            PlayMusic();
+            return;
+        }
+
+        playingTrack = 7;
+        Transition(tutorialMusic);
+    }
+
     private void Transition(AudioClip newTrack)
     {
+        Debug.Log($"Music Transition to: {newTrack.name}");
+
         StopAllCoroutines();
-        if (playing1)
+        if (audioSource_1.isPlaying)
         {
-            soundTrack2.clip = newTrack;
-            StartCoroutine(FadeOut(soundTrack1));
-            StartCoroutine(FadeIn(soundTrack2));
+            audioSource_2.clip = newTrack;
+            StartCoroutine(FadeOut(audioSource_1));
+            StartCoroutine(FadeIn(audioSource_2));
         }
         else
         {
-            soundTrack1.clip = newTrack;
-            StartCoroutine(FadeOut(soundTrack2));
-            StartCoroutine(FadeIn(soundTrack1));
+            audioSource_1.clip = newTrack;
+            StartCoroutine(FadeOut(audioSource_2));
+            StartCoroutine(FadeIn(audioSource_1));
         }
-        playing1 = !playing1;
     }
 
-    // https://medium.com/@wyattferguson/how-to-fade-out-in-audio-in-unity-8fce422ab1a8
-    public IEnumerator FadeOut(AudioSource audioSource, float FadeTime = 2f)
+    private IEnumerator FadeOut(AudioSource audioSource, float fadeOutSpeed = 0)
     {
         if (!audioSource.isPlaying)
         {
             yield break;
         }
 
-        float startVolume = audioSource.volume;
+        if (fadeOutSpeed == 0)
+        {
+            fadeOutSpeed = fadeOutSpeedFast;
+        }
+
         while (audioSource.volume > 0)
         {
-            audioSource.volume -= startVolume * Time.deltaTime / FadeTime;
+            audioSource.volume -= Time.deltaTime * fadeOutSpeed;
             yield return null;
         }
         audioSource.Stop();
         //audioSource.clip.UnloadAudioData();
     }
 
-    public IEnumerator FadeIn(AudioSource audioSource, float FadeTime = 2f)
+    private IEnumerator FadeIn(AudioSource audioSource)
     {
         audioSource.volume = 0;
+        audioSource.time = 0;
         audioSource.Play();
         while (audioSource.volume < maxVolume)
         {
-            audioSource.volume += Time.deltaTime / FadeTime;
+            audioSource.volume += Time.deltaTime * fadeInSpeed;
             yield return null;
         }
     }
-
 }

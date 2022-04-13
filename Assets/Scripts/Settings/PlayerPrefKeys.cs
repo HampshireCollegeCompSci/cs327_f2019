@@ -5,16 +5,6 @@
 /// </summary>
 public static class PlayerPrefKeys
 {
-    // summary stat keys
-    private const string highScoreKey = "HighScore";
-    private const string leastMovesKey = "LeastMoves";
-
-    // settings keys
-    public const string soundEffectsVolumeKey = "SoundEffectsVolume";
-    public const string musicVolumeKey = "MusicVolume";
-    public const string vibrationEnabledKey = "VibrationEnabled";
-    public const string foodSuitsEnabledKey = "FoodSuitsEnabled";
-
     /// <summary>
     /// Checks if some keys already exist and sets them to a default value if they don't. 
     /// </summary>
@@ -22,24 +12,24 @@ public static class PlayerPrefKeys
     {
         Debug.Log("checking keys");
 
-        if (!PlayerPrefs.HasKey(soundEffectsVolumeKey))
+        if (!PlayerPrefs.HasKey(Constants.soundEffectsVolumeKey))
         {
-            PlayerPrefs.SetFloat(soundEffectsVolumeKey, 0.5f);
+            PlayerPrefs.SetFloat(Constants.soundEffectsVolumeKey, Config.GameValues.soundEffectsDefaultVolume);
         }
 
-        if (!PlayerPrefs.HasKey(musicVolumeKey))
+        if (!PlayerPrefs.HasKey(Constants.musicVolumeKey))
         {
-            PlayerPrefs.SetFloat(musicVolumeKey, 0.5f);
+            PlayerPrefs.SetFloat(Constants.musicVolumeKey, Config.GameValues.musicDefaultVolume);
         }
 
-        if (!PlayerPrefs.HasKey(vibrationEnabledKey))
+        if (!PlayerPrefs.HasKey(Constants.vibrationEnabledKey))
         {
-            PlayerPrefs.SetString(vibrationEnabledKey, true.ToString());
+            PlayerPrefs.SetString(Constants.vibrationEnabledKey, Config.GameValues.vibrationEnabledDefault.ToString());
         }
 
-        if (!PlayerPrefs.HasKey(foodSuitsEnabledKey))
+        if (!PlayerPrefs.HasKey(Constants.foodSuitsEnabledKey))
         {
-            PlayerPrefs.SetString(foodSuitsEnabledKey, true.ToString());
+            PlayerPrefs.SetString(Constants.foodSuitsEnabledKey, Config.GameValues.foodSuitsEnabledDefault.ToString());
         }
     }
 
@@ -50,7 +40,7 @@ public static class PlayerPrefKeys
     /// <returns>Difficulty + HighScoreKey</returns>
     public static string GetHighScoreKey(string difficulty)
     {
-        return difficulty + highScoreKey;
+        return difficulty + Constants.highScoreKey;
     }
 
     /// <summary>
@@ -60,6 +50,6 @@ public static class PlayerPrefKeys
     /// <returns>Difficulty + LeastMovesKey</returns>
     public static string GetLeastMovesKey(string difficulty)
     {
-        return difficulty + leastMovesKey;
+        return difficulty + Constants.leastMovesKey;
     }
 }

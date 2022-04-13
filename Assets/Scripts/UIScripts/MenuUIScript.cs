@@ -1,18 +1,17 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.IO;
 
 public class MenuUIScript : MonoBehaviour
 {
-    // MainMenuScene buttons
-    public GameObject playButton, tutorialButton, creditsButton;
+    // MainMenuScene Main buttons
+    public GameObject mainButtons, playButton, tutorialButton, settingsButton, aboutButton;
 
-    // LevelSelectScene buttons
-    public GameObject continueButton, easyButton, normalButton, hardButton, returnButton;
+    // MainMenuScene Play buttons
+    public GameObject playButtons, continueButton, easyButton, normalButton, hardButton, backButton;
 
     // LoadingScene text
-    public GameObject loadingText;
+    public Text loadingText;
 
     // PauseScene buttons
     public GameObject resumeButton, restartButton;
@@ -23,51 +22,56 @@ public class MenuUIScript : MonoBehaviour
     // SummaryScene buttons
     public GameObject playAgainButton;
 
+    public Text scoreboard;
+
     private void Start()
     {
-        Debug.Log("starting MenuUIScript");
+        // get the active scene that is on top
+        string activeScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1).name;
+        Debug.Log($"the activeScene is: {activeScene}");
 
-        string activeSceneName = SceneManager.GetActiveScene().name;
-
-        if (activeSceneName == "MainMenuScene")
+        // Update Button text from gameValues
+        switch (activeScene)
         {
-            Debug.Log("updating main menu buttons");
-            UpdateButtonText(playButton, Config.config.menuSceneButtonsTxtEnglish[0]);
-            UpdateButtonText(tutorialButton, Config.config.menuSceneButtonsTxtEnglish[1]);
-            UpdateButtonText(creditsButton, Config.config.menuSceneButtonsTxtEnglish[2]);
+            case Constants.mainMenuScene:
+                Debug.Log("updating main menu buttons");
+                // Main buttons
+                UpdateButtonText(playButton, Config.GameValues.menuButtonsTxtEnglish[0]);
+                UpdateButtonText(tutorialButton, Config.GameValues.menuButtonsTxtEnglish[1]);
+                UpdateButtonText(settingsButton, Config.GameValues.menuButtonsTxtEnglish[2]);
+                UpdateButtonText(aboutButton, Config.GameValues.menuButtonsTxtEnglish[3]);
+                // Play buttons
+                UpdateButtonText(continueButton, Config.GameValues.levelButtonsTxtEnglish[0]);
+                UpdateButtonText(easyButton, Config.GameValues.levelButtonsTxtEnglish[1]);
+                UpdateButtonText(normalButton, Config.GameValues.levelButtonsTxtEnglish[2]);
+                UpdateButtonText(hardButton, Config.GameValues.levelButtonsTxtEnglish[3]);
+                UpdateButtonText(backButton, Config.GameValues.backButtonTxtEnglish);
+                break;
+            case Constants.pauseScene:
+                Debug.Log("updating pause scene buttons");
+                UpdateButtonText(resumeButton, Config.GameValues.pauseButtonsTxtEnglish[0]);
+                UpdateButtonText(restartButton, Config.GameValues.pauseButtonsTxtEnglish[1]);
+                UpdateButtonText(settingsButton, Config.GameValues.pauseButtonsTxtEnglish[2]);
+                UpdateButtonText(mainMenuButton, Config.GameValues.pauseButtonsTxtEnglish[3]);
+                scoreboard.text = Config.Instance.score.ToString();
+                break;
+            case Constants.summaryScene:
+                Debug.Log("updating summary scene buttons");
+                UpdateButtonText(mainMenuButton, Config.GameValues.summaryButtonsTxtEnglish[0]);
+                UpdateButtonText(playAgainButton, Config.GameValues.summaryButtonsTxtEnglish[1]);
+                break;
+            case Constants.settingsScene:
+                Debug.Log("updating settings scene buttons");
+                UpdateButtonText(backButton, Config.GameValues.backButtonTxtEnglish);
+                break;
+            case Constants.aboutScene:
+                Debug.Log("updating about button text");
+                UpdateButtonText(backButton, Config.GameValues.backButtonTxtEnglish);
+                break;
+            default:
+                Debug.Log($"no buttons updated for scene: {activeScene}");
+                break;
         }
-        else if (activeSceneName == "LevelSelectScene")
-        {
-            Debug.Log("updating level select buttons");
-            UpdateButtonText(continueButton, Config.config.levelSceneButtonsTxtEnglish[0]);
-            UpdateButtonText(easyButton, Config.config.levelSceneButtonsTxtEnglish[1]);
-            UpdateButtonText(normalButton, Config.config.levelSceneButtonsTxtEnglish[2]);
-            UpdateButtonText(hardButton, Config.config.levelSceneButtonsTxtEnglish[3]);
-            UpdateButtonText(returnButton, Config.config.levelSceneButtonsTxtEnglish[4]);
-        }
-        else if (activeSceneName == "LoadingScene")
-        {
-            if (loadingText != null)
-            {
-                Debug.Log("updating loading text");
-                loadingText.GetComponent<Text>().text = Config.config.loadingSceneTxtEnglish;
-            }
-        }
-        else if (SceneManager.GetSceneByName("PauseScene").isLoaded)
-        {
-            Debug.Log("updating pause scene buttons");
-            UpdateButtonText(resumeButton, Config.config.pauseSceneButtonsTxtEnglish[0]);
-            UpdateButtonText(restartButton, Config.config.pauseSceneButtonsTxtEnglish[1]);
-            //UpdateButtonText(settingsButton, Config.config.pauseSceneButtonsTxtEnglish[2]);
-            UpdateButtonText(mainMenuButton, Config.config.pauseSceneButtonsTxtEnglish[3]);
-        }
-        else if (activeSceneName == "SummaryScene")
-        {
-            Debug.Log("updating summary scene buttons");
-            UpdateButtonText(mainMenuButton, Config.config.summarySceneButtonsTxtEnglish[0]);
-            UpdateButtonText(playAgainButton, Config.config.summarySceneButtonsTxtEnglish[1]);
-        }
-
     }
 
     private void UpdateButtonText(GameObject button, string text)
@@ -79,75 +83,97 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI play");
 
+        SoundEffectsController.Instance.ButtonPressSound();
+
         //Preprocessor Directive to make builds work
         #if (UNITY_EDITOR)
             UnityEditor.AssetDatabase.Refresh();
         #endif
 
-        SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.LoadScene("LevelSelectScene");
+        ToggleMainMenuButtons(false);
     }
 
-    public void NewGame(bool isContinue = false)
+    private void ToggleMainMenuButtons(bool showMain)
+    {
+        Debug.Log($"toggling main menu buttons: {showMain}");
+
+        // Main buttons
+        mainButtons.SetActive(showMain);
+
+        // Play buttons
+        playButtons.SetActive(!showMain);
+
+        // Continue button requires a save to exist
+        if (showMain)
+        {
+            continueButton.SetActive(false);
+        }
+        else if (SaveState.Exists())
+        {  
+            continueButton.SetActive(true);
+        }
+    }
+
+    public void NewGame(bool isContinue = false, bool isTutorial = false)
     {
         Debug.Log("MenuUI new game");
 
-        UndoScript.undoScript.moveLog.Clear();
-        if (!isContinue)
-        {
-            Config.config.score = 0;
-            Config.config.actions = 0;
-            Config.config.moveCounter = 0;
-        }
-        Config.config.gameOver = false;
-        Config.config.gameWin = false;
-        Config.config.gamePaused = false;
         SoundEffectsController.Instance.ButtonPressSound();
+        mainButtons.GetComponent<CanvasGroup>().interactable = false;
+        playButtons.GetComponent<CanvasGroup>().interactable = false;
 
-        SceneManager.LoadScene("LoadingScene");
+        Config.Instance.continuing = isContinue;
+        Config.Instance.tutorialOn = isTutorial;
+
+        if (StartGameSequence.Instance != null)
+        {
+            StartGameSequence.Instance.StartLoadingGame();
+        }
+        else
+        {
+            throw new System.NullReferenceException("A sequence Instance does not exist!");
+        }
     }
 
     public void UndoButton()
     {
         Debug.Log("MenuUI undo button");
 
-        if (UtilsScript.Instance.IsInputStopped())
-            return;
+        if (UtilsScript.Instance.IsInputStopped() || Config.Instance.gamePaused) return;
 
-        UndoScript.undoScript.Undo();
         SoundEffectsController.Instance.UndoPressSound();
+        UndoScript.Instance.Undo();
     }
 
     public void PlayAgain()
     {
         Debug.Log("MenuUI play again");
+        SoundEffectsController.Instance.ButtonPressSound();
 
-        Config.config.DeleteSave();
-        NewGame();
+        if (PlayAgainSequence.Instance != null)
+        {
+            PlayAgainSequence.Instance.StartLoadingGame();
+        }
+        else
+        {
+            throw new System.NullReferenceException("A sequence Instance does not exist!");
+        }
     }
 
     public void Restart()
     {
         Debug.Log("MenuUI restart");
-
-        Config.config.DeleteSave();
-        NewGame();
+        SoundEffectsController.Instance.ButtonPressSound();
+        SceneManager.UnloadSceneAsync(Constants.pauseScene);
+        MusicController.Instance.GameMusic();
+        GameLoader.Instance.RestartGame();
     }
 
     public void MainMenu()
     {
         Debug.Log("MenuUI main menu");
-
-        Config.config.gamePaused = false;
-        if (Config.config != null)
-        {
-            Config.config.gameOver = false;
-            Config.config.gameWin = false;
-        }
-
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.LoadScene("MainMenuScene");
-
+        SceneManager.LoadScene(Constants.mainMenuScene);
         MusicController.Instance.MainMenuMusic();
     }
 
@@ -157,127 +183,100 @@ public class MenuUIScript : MonoBehaviour
         Debug.Log("MenuUI settings");
 
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.LoadScene("SettingsScene");
+        SceneManager.LoadScene(Constants.settingsScene, LoadSceneMode.Additive);
     }
 
-    public void Credits()
+    public void About()
     {
-        Debug.Log("MenuUI credits");
+        Debug.Log("MenuUI about");
 
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.LoadScene("CreditScene");
+        SceneManager.LoadScene(Constants.aboutScene);
+        MusicController.Instance.AboutMusic();
     }
 
     public void PauseGame()
     {
         Debug.Log("MenuUI pause game");
 
-        if (UtilsScript.Instance.IsInputStopped())
-            return;
-
+        if (UtilsScript.Instance.IsInputStopped() || Config.Instance.gamePaused) return;
+        
+        Config.Instance.gamePaused = true;
         SoundEffectsController.Instance.PauseMenuButtonSound();
-        //TODO save the game scene
-        Config.config.gamePaused = true;
-        SceneManager.LoadScene("PauseScene", LoadSceneMode.Additive);
-
+        MusicController.Instance.PauseMusic();
+        SceneManager.LoadScene(Constants.pauseScene, LoadSceneMode.Additive);
     }
 
     public void ResumeGame()
     {
         Debug.Log("MenuUI resume game");
 
-        Config.config.gamePaused = false;
-        //TODO load the saved game scene then uncomment the above code
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.UnloadSceneAsync("PauseScene");
+        SceneManager.UnloadSceneAsync(Constants.pauseScene);
+        Config.Instance.gamePaused = false;
+        MusicController.Instance.PlayMusic();
     }
 
-    public void Return()
+    public void SettingsBackButton()
     {
-        Debug.Log("MenuUI return");
-
+        Debug.Log("MenuUI Settings Back");
         SoundEffectsController.Instance.ButtonPressSound();
-        if (Config.config.gamePaused)
-            SceneManager.UnloadSceneAsync("SoundScene");
-        else
-            SceneManager.LoadScene("MainMenuScene");
+        SceneManager.UnloadSceneAsync(Constants.settingsScene);
+    }
+
+    public void MainMenuBackButton()
+    {
+        Debug.Log("MenuUI Main Menu Back");
+        SoundEffectsController.Instance.ButtonPressSound();
+        // The main menu scene has two sets of buttons that get swapped on/off
+        ToggleMainMenuButtons(true);
     }
 
     public void Tutorial()
     {
-        Debug.Log("MenuUI starting tutorial");
-
-        StateLoader.saveSystem.LoadTutorialState("tutorialState_start");
-        Config.config.SetDifficulty(StateLoader.saveSystem.gameState.difficulty);
-        Config.config.tutorialOn = true;
-        //Config.config.DeleteSave();
-        NewGame();
+        NewGame(isTutorial: true);
     }
 
     public void HardDifficulty()
     {
-        Config.config.SetDifficulty(Config.config.difficulties[2]);
-        Config.config.tutorialOn = false;
-        Config.config.DeleteSave();
+        Config.Instance.SetDifficulty(2);
         NewGame();
     }
 
     public void MediumDifficulty()
     {
-        Config.config.SetDifficulty(Config.config.difficulties[1]);
-        Config.config.tutorialOn = false;
-        Config.config.DeleteSave();
+        Config.Instance.SetDifficulty(1);
         NewGame();
     }
 
     public void EasyDifficulty()
     {
-        Config.config.SetDifficulty(Config.config.difficulties[0]);
-        Config.config.tutorialOn = false;
-        Config.config.DeleteSave();
+        Config.Instance.SetDifficulty(0);
         NewGame();
     }
 
     public void Continue()
     {
-        Debug.Log("MenuUI continue");
-
-        if (Application.isEditor)
+        if (SaveState.Exists())
         {
-            if (File.Exists("Assets/Resources/GameStates/testState.json"))
+            if (Constants.inEditor)
             {
                 //Preprocessor Directive to make builds work
                 #if (UNITY_EDITOR)
-                    UnityEditor.AssetDatabase.Refresh();
+                   UnityEditor.AssetDatabase.Refresh();
                 #endif
-
-
-                StateLoader.saveSystem.LoadState();
-                Config.config.SetDifficulty(StateLoader.saveSystem.gameState.difficulty);
-                Config.config.tutorialOn = false;
-                NewGame(true);
             }
-        } 
-        else
-        {
-            if (File.Exists(Application.persistentDataPath + "/testState.json"))
-            {
-                StateLoader.saveSystem.LoadState();
-                Config.config.SetDifficulty(StateLoader.saveSystem.gameState.difficulty);
-                Config.config.tutorialOn = false;
-                NewGame(true);
-            }
+
+            NewGame(isContinue: true);
         }
-        
     }
 
     public void MakeActionsMax()
     {
         Debug.Log("MenuUI make actions max");
 
-        if (UtilsScript.Instance.IsInputStopped())
-            return;
+        if (UtilsScript.Instance.IsInputStopped() || Config.Instance.gamePaused) return;
 
-        DeckScript.Instance.StartNextCycle(manuallyTriggered: true);
+        UtilsScript.Instance.StartNextCycle(manuallyTriggered: true);
     }
 }

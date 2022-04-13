@@ -4,126 +4,105 @@ using UnityEngine.UI;
 
 public class ResultsScript : MonoBehaviour
 {
-    public Text state;
+    public Text stateText, difficultyText;
 
-    public Text scoreStat;
-    public Text highScore, highScoreStat;
+    public Text currentScoreText, currentScoreStatText;
+    public Text oldHighScoreText, oldHighScoreStatText;
 
-    public Text leastMoves, leastMovesStat;
-    public Text movesStat;
-
-    public SpaceBabyController spaceBaby;
-    public Sprite spaceShipDebris;
-    public GameObject spaceShip;
+    public Text currentMovesText, currentMovesStatText;
+    public Text oldLeastMovesText, oldLeastMovesStatText;
 
     // Start is called before the first frame update
     void Start()
     {
-        // state
-        if (Config.config.gameWin)
-            state.text = Config.config.gameStateTxtEnglish[0];
-        else
-            state.text = Config.config.gameStateTxtEnglish[1];
-
-        // score
-        scoreStat.text = Config.config.score.ToString();
-
-        // high score
-        highScore.text = Config.config.currentDifficulty + " HIGH SCORE";
-
-        // moves
-        movesStat.text = Config.config.moveCounter.ToString();
-
-        // spacebaby
-        if (Config.config.gameWin)
-        {
-            spaceBaby.BabyWin(Config.config.matchCounter);
-        }
-        else
-        {
-            spaceBaby.BabyLose();
-            SpaceShipExplode();
-        }
-
-        SetHighScore();
-        SetLeastMoves();
+        SetScoreBoard();
     }
 
-    /// <summary>
-    /// Checks to see if the current score is better than the recorded best for the current difficulty.
-    /// If so, saves it and indicates in game that it is new.
-    /// </summary>
-    private void SetHighScore()
+    private void SetScoreBoard()
     {
-        string highScoreKey = PlayerPrefKeys.GetHighScoreKey(Config.config.currentDifficulty);
-        int currentScore = Config.config.score;
-        if (!PlayerPrefs.HasKey(highScoreKey) || currentScore > PlayerPrefs.GetInt(highScoreKey))
+        // game won or lost text
+        if (Config.Instance.gameWin)
         {
-            PlayerPrefs.SetInt(highScoreKey, currentScore);
-            highScore.color = Color.cyan;
-            highScoreStat.color = Color.cyan;
-            highScoreStat.text = currentScore.ToString();
+            stateText.text = Config.GameValues.gameStateTxtEnglish[0];
         }
         else
         {
-            highScoreStat.text = PlayerPrefs.GetInt(highScoreKey).ToString();
+            stateText.text = Config.GameValues.gameStateTxtEnglish[1];
         }
+
+        difficultyText.text = Config.Instance.currentDifficulty.ToUpper();
+
+        SetScore();
+        SetMoves();
     }
 
-    /// <summary>
-    /// Checks to see if the game was won and the current move count is less than the recorded best for the current difficulty.
-    /// If so, saves it and indicates in game that it is new.
-    /// </summary>
-    private void SetLeastMoves()
+    private void SetScore()
     {
-        string leastMovesKey = PlayerPrefKeys.GetLeastMovesKey(Config.config.currentDifficulty);
-        if (Config.config.gameWin)
+        string highScoreKey = PlayerPrefKeys.GetHighScoreKey(Config.Instance.currentDifficulty);
+
+        // Set the current score
+        int currentScoreNum = Config.Instance.score;
+        currentScoreStatText.text = currentScoreNum.ToString();
+
+        if (PlayerPrefs.HasKey(highScoreKey))
         {
-            int currentMoves = Config.config.moveCounter;
-            if (!PlayerPrefs.HasKey(leastMovesKey) || currentMoves < PlayerPrefs.GetInt(leastMovesKey))
+            // Set the old high score text
+            int oldHighScoreStatNum = PlayerPrefs.GetInt(highScoreKey);
+            oldHighScoreStatText.text = oldHighScoreStatNum.ToString();
+
+            // Check for a new high score and update if need be
+            if (currentScoreNum > oldHighScoreStatNum)
             {
-                PlayerPrefs.SetInt(leastMovesKey, currentMoves);
-                leastMoves.color = Color.cyan;
-                leastMovesStat.color = Color.cyan;
-                leastMovesStat.text = currentMoves.ToString();
-            }
-            else
-            {
-                leastMovesStat.text = PlayerPrefs.GetInt(leastMovesKey).ToString();
+                UpdateHigh(currentScoreText, currentScoreStatText, highScoreKey, currentScoreNum);
             }
         }
-        else if (PlayerPrefs.HasKey(leastMovesKey))
+        else 
         {
-            leastMovesStat.text = PlayerPrefs.GetInt(leastMovesKey).ToString();
+            // Set the text to indicate no saved high scores
+            oldHighScoreStatText.fontSize = oldHighScoreText.fontSize;
+            oldHighScoreStatText.text = "NONE";
+
+            UpdateHigh(currentScoreText, currentScoreStatText, highScoreKey, currentScoreNum);
+        }
+    }
+
+    private void SetMoves()
+    {
+        string leastMovesKey = PlayerPrefKeys.GetLeastMovesKey(Config.Instance.currentDifficulty);
+
+        // Set the current moves
+        int currentMovesNum = Config.Instance.moveCounter;
+        currentMovesStatText.text = currentMovesNum.ToString();
+
+        if (PlayerPrefs.HasKey(leastMovesKey))
+        {
+            // Set the old least moves text
+            int oldLeastMovesNum = PlayerPrefs.GetInt(leastMovesKey);
+            oldLeastMovesStatText.text = oldLeastMovesNum.ToString();
+
+            // If game won, check for a new least moves and update if need be
+            if (Config.Instance.gameWin && currentMovesNum < oldLeastMovesNum)
+            {
+                UpdateHigh(currentMovesText, currentMovesStatText, leastMovesKey, currentMovesNum);
+            }
         }
         else
         {
-            leastMovesStat.text = "NULL";
+            // Set the text to indicate no saved least moves
+            oldLeastMovesStatText.fontSize = oldLeastMovesText.fontSize;
+            oldLeastMovesStatText.text = "NONE";
+
+            if (Config.Instance.gameWin)
+            {
+                UpdateHigh(currentMovesText, currentMovesStatText, leastMovesKey, currentMovesNum);
+            }
         }
     }
 
-    private bool exploded = false;
-    /// <summary>
-    /// Starts the Explode Coroutine if the space ship has already not been exploded.
-    /// </summary>
-    public void SpaceShipExplode()
+    private void UpdateHigh(Text title, Text stat, string key, int update)
     {
-        if (exploded)
-            return;
-
-        exploded = true;
-        StartCoroutine(Explode());
-    }
-
-    /// <summary>
-    /// Waits for a few seconds before playing an explosion sound and changing the space ship's sprite to debris.
-    /// </summary>
-    /// <returns></returns>
-    IEnumerator Explode()
-    {
-        yield return new WaitForSeconds(2);
-        SoundEffectsController.Instance.ExplosionSound();
-        spaceShip.GetComponent<Image>().sprite = spaceShipDebris;
-        spaceShip.transform.localScale = new Vector3(2, 2, 1);
+        title.color = Color.cyan;
+        stat.color = Color.cyan;
+        PlayerPrefs.SetInt(key, update);
     }
 }

@@ -3,11 +3,6 @@ using UnityEngine.UI;
 
 public class ReactorScoreSetScript : MonoBehaviour
 {
-    private void Start()
-    {
-        SetReactorScore();
-    }
-
     public GameObject reactor0;
     public Text reactorScore0;
 
@@ -20,12 +15,40 @@ public class ReactorScoreSetScript : MonoBehaviour
     public GameObject reactor3;
     public Text reactorScore3;
 
+    // Singleton instance.
+    public static ReactorScoreSetScript Instance = null;
+
+    // Initialize the singleton instance.
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            throw new System.ArgumentException("there should not already be an instance of this");
+        }
+    }
+
+    public void SetToDefault()
+    {
+        reactorScore0.text = "0/" + Config.Instance.maxReactorVal;
+        reactorScore1.text = "0/" + Config.Instance.maxReactorVal;
+        reactorScore2.text = "0/" + Config.Instance.maxReactorVal;
+        reactorScore3.text = "0/" + Config.Instance.maxReactorVal;
+        reactorScore0.color = Color.black;
+        reactorScore1.color = Color.black;
+        reactorScore2.color = Color.black;
+        reactorScore3.color = Color.black;
+    }
+
     public void SetReactorScore()
     {
-        reactorScore0.text = reactor0.GetComponent<ReactorScript>().CountReactorCard() + "/" + Config.config.maxReactorVal;
-        reactorScore1.text = reactor1.GetComponent<ReactorScript>().CountReactorCard() + "/" + Config.config.maxReactorVal;
-        reactorScore2.text = reactor2.GetComponent<ReactorScript>().CountReactorCard() + "/" + Config.config.maxReactorVal;
-        reactorScore3.text = reactor3.GetComponent<ReactorScript>().CountReactorCard() + "/" + Config.config.maxReactorVal;
+        reactorScore0.text = reactor0.GetComponent<ReactorScript>().CountReactorCard() + "/" + Config.Instance.maxReactorVal;
+        reactorScore1.text = reactor1.GetComponent<ReactorScript>().CountReactorCard() + "/" + Config.Instance.maxReactorVal;
+        reactorScore2.text = reactor2.GetComponent<ReactorScript>().CountReactorCard() + "/" + Config.Instance.maxReactorVal;
+        reactorScore3.text = reactor3.GetComponent<ReactorScript>().CountReactorCard() + "/" + Config.Instance.maxReactorVal;
     }
 
     public void ChangeTextColor(GameObject reactor, bool on)

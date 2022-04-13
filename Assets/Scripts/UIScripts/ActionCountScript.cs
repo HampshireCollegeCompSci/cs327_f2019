@@ -17,8 +17,26 @@ public class ActionCountScript : MonoBehaviour
     public Sprite screenOn, screenAlert;
     public Sprite buttonDown, buttonUp;
     private byte currentState;
+
+    private Coroutine actionCoroutine;
     //private Coroutine fader;
     private Coroutine flasher;
+
+    // Singleton instance.
+    public static ActionCountScript Instance = null;
+
+    // Initialize the singleton instance.
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            throw new System.ArgumentException("there should not already be an instance of this");
+        }
+    }
 
     private void Start()
     {
@@ -34,7 +52,23 @@ public class ActionCountScript : MonoBehaviour
     {
         if (setTo == null)
         {
-            actionText.text = (Config.config.actionMax - Config.config.actions).ToString();
+            int newValue = Config.Instance.actionMax - Config.Instance.actions;
+            int oldValue;
+            if (int.TryParse(actionText.text, out oldValue) &&
+                oldValue + 1 < newValue)
+            {
+                actionCoroutine = StartCoroutine(AddToActionText(oldValue, newValue));
+            }
+            else
+            {
+                if (actionCoroutine != null)
+                {
+                    StopCoroutine(actionCoroutine);
+                    actionCoroutine = null;
+                }
+
+                actionText.text = newValue.ToString();
+            }
         }
         else
         {
@@ -42,9 +76,22 @@ public class ActionCountScript : MonoBehaviour
         }
     }
 
+    IEnumerator AddToActionText(int currentValue, int newValue)
+    {
+        while (currentValue < newValue)
+        {
+            yield return new WaitForSeconds(0.05f);
+            currentValue++;
+            actionText.text = currentValue.ToString();
+        }
+
+        // just in case quick moves or undos occur
+        actionText.text = (Config.Instance.actionMax - Config.Instance.actions).ToString();
+    }
+
     public void PressKnob()
     {
-        Vibration.Vibrate(Config.config.vibrationButton);
+        SoundEffectsController.Instance.VibrateMedium();
         buttonImage.sprite = buttonDown;
         StartCoroutine(ButtonAnimTrans());
     }

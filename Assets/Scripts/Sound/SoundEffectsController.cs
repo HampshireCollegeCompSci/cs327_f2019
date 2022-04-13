@@ -8,12 +8,14 @@ public class SoundEffectsController : MonoBehaviour
 
     // Sound files
     public AudioClip buttonPressSound, undoPressSound, pauseButtonSound;
-    public AudioClip tokenRevealSound, tokenSelectSoundA, tokenSelectSoundB, tokenSelectSoundC;
+    public AudioClip tokenSelectSoundA, tokenSelectSoundB, tokenSelectSoundC;
     public AudioClip tokenInReactorSound, tokenStackSoundA, tokenStackSoundB, tokenStackSoundC, tokenStackSoundD;
     public AudioClip deckDealSound, deckReshuffleSound;
-    public AudioClip winSound, loseSound, alertSound;
+    public AudioClip winSound, loseSound, alertSound, winTransition;
     public AudioClip mushroomSound, bugSound, fruitSound, rockSound;
     public AudioClip explosionSound;
+
+    private bool vibrationEnabled;
 
     // Singleton instance.
     public static SoundEffectsController Instance = null;
@@ -25,20 +27,21 @@ public class SoundEffectsController : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         //If an instance already exists, destroy whatever this object is to enforce the singleton.
         else if (Instance != this)
         {
             Destroy(gameObject);
         }
-
-        //Set the GameObject to DontDestroyOnLoad so that it won't be destroyed when reloading our scene.
-        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
     {
-        UpdateMaxVolume(PlayerPrefs.GetFloat(PlayerPrefKeys.soundEffectsVolumeKey));
+        UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.soundEffectsVolumeKey));
+
+        Vibration.Init();
+        System.Boolean.TryParse(PlayerPrefs.GetString(Constants.vibrationEnabledKey), out vibrationEnabled);
     }
 
     public void UpdateMaxVolume(float newVolume)
@@ -47,94 +50,106 @@ public class SoundEffectsController : MonoBehaviour
         soundController.volume = newVolume;
     }
 
-    public void ButtonPressSound()
+    public void UpdateVibration(bool vibrationEnabled)
     {
-        // doesn't like PlayOneShot
-        Vibration.Vibrate(Config.config.vibrationButton);
-        soundController.clip = buttonPressSound;
-        soundController.Play();
+        this.vibrationEnabled = vibrationEnabled;
+    }
+
+    public void ButtonPressSound(bool vibrate = true)
+    {
+        soundController.PlayOneShot(buttonPressSound, 0.6f);
+
+        if (vibrate)
+        {
+            VibrateMedium();
+        }
     }
 
     public void UndoPressSound()
     {
-        Vibration.Vibrate(Config.config.vibrationButton);
         soundController.PlayOneShot(undoPressSound, 0.5f);
+        VibrateMedium();
     }
 
     public void CardPressSound()
     {
-        Vibration.Vibrate(Config.config.vibrationCard);
         int randomNo = Random.Range(0, 3);
         if (randomNo == 0)
         {
-            soundController.PlayOneShot(tokenSelectSoundA);
+            soundController.PlayOneShot(tokenSelectSoundA, 0.3f);
         }
         else if (randomNo == 1)
         {
-            soundController.PlayOneShot(tokenSelectSoundB);
+            soundController.PlayOneShot(tokenSelectSoundB, 0.3f);
         }
         else
         {
-            soundController.PlayOneShot(tokenSelectSoundC);
+            soundController.PlayOneShot(tokenSelectSoundC, 0.3f);
         }
+        VibrateSmall();
     }
 
     public void CardToReactorSound()
     {
-        Vibration.Vibrate(Config.config.vibrationCard);
-        soundController.PlayOneShot(tokenInReactorSound);
+        soundController.PlayOneShot(tokenInReactorSound, 0.5f);
+        VibrateSmall();
     }
 
     public void CardStackSound()
     {
-        Vibration.Vibrate(Config.config.vibrationCard);
         int randomNo = Random.Range(0, 4);
         if (randomNo == 0)
         {
-            soundController.PlayOneShot(tokenStackSoundA);
+            soundController.PlayOneShot(tokenStackSoundA, 0.7f);
         }
         else if (randomNo == 1)
         {
-            soundController.PlayOneShot(tokenStackSoundB);
+            soundController.PlayOneShot(tokenStackSoundB, 0.7f);
         }
         else if (randomNo == 2)
         {
-            soundController.PlayOneShot(tokenStackSoundC);
+            soundController.PlayOneShot(tokenStackSoundC, 0.7f);
         }
         else
         {
-            soundController.PlayOneShot(tokenStackSoundD);
+            soundController.PlayOneShot(tokenStackSoundD, 0.7f);
         }
-    }
-
-    public void CardRevealSound()
-    {
-        soundController.PlayOneShot(tokenRevealSound);
+        VibrateSmall();
     }
 
     public void DeckDeal()
-    {
-        Vibration.Vibrate(Config.config.vibrationCard);
+    {      
         soundController.PlayOneShot(deckDealSound, 0.6f);
+        VibrateMedium();
     }
 
     public void DeckReshuffle()
     {
-        Vibration.Vibrate(Config.config.vibrationCard);
         soundController.PlayOneShot(deckReshuffleSound, 0.6f);
+        VibrateLarge();
     }
 
     public void PauseMenuButtonSound()
     {
-        Vibration.Vibrate(Config.config.vibrationButton);
         soundController.Stop();
         soundController.clip = pauseButtonSound;
         soundController.Play();
+        VibrateMedium();
     }
 
     public void AlertSound()
     {
-        soundController.PlayOneShot(alertSound, 0.3f);
+        StartCoroutine(AlertVibration());
+    }
+
+    IEnumerator AlertVibration()
+    {
+        yield return new WaitForSeconds(0.5f);
+        soundController.PlayOneShot(alertSound, 0.2f);
+        yield return new WaitForSeconds(0.05f);
+        VibrateMedium();
+        yield return new WaitForSeconds(0.25f);
+        VibrateMedium();
     }
 
     public void WinSound()
@@ -147,40 +162,53 @@ public class SoundEffectsController : MonoBehaviour
     {
         soundController.clip = loseSound;
         soundController.Play();
-        StartCoroutine(ExplosionVibration());
+    }
+
+    public void WinTransition()
+    {
+        soundController.clip = winTransition;
+        soundController.Play();
     }
 
     public void ExplosionSound()
     {
-        soundController.clip = explosionSound;
-        soundController.Play();
-        Vibration.Vibrate(Config.config.vibrationExplosion);
-    }
-
-    IEnumerator ExplosionVibration()
-    {
-        yield return new WaitForSeconds(0.9f);
-        Vibration.Vibrate(Config.config.vibrationExplosion);
+        soundController.PlayOneShot(explosionSound, 0.6f);
+        VibrateSmall();
     }
 
     public void FoodMatch(string suit)
     {
-        Vibration.Vibrate(Config.config.vibrationMatch);
         if (suit == "hearts")
         {
-            soundController.PlayOneShot(mushroomSound);
+            soundController.PlayOneShot(mushroomSound, 1);
         }
         if (suit == "diamonds")
         {
-            soundController.PlayOneShot(bugSound);
+            soundController.PlayOneShot(bugSound, 0.6f);
         }
         if (suit == "spades")
         {
-            soundController.PlayOneShot(rockSound);
+            soundController.PlayOneShot(rockSound, 1.8f);
         }
         if (suit == "clubs")
         {
-            soundController.PlayOneShot(fruitSound);
+            soundController.PlayOneShot(fruitSound, 1.2f);
         }
+        VibrateMedium();
+    }
+
+    public void VibrateSmall()
+    {
+        if (vibrationEnabled) Vibration.VibratePop();
+    }
+
+    public void VibrateMedium()
+    {
+        if (vibrationEnabled) Vibration.VibratePeek();
+    }
+
+    public void VibrateLarge()
+    {
+        if (vibrationEnabled) Vibration.Vibrate();
     }
 }
