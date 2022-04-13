@@ -183,7 +183,7 @@ public class SpaceBabyController : MonoBehaviour
             {
                 Destroy(foods[0]);
                 foods.RemoveAt(0);
-                audioSource.PlayOneShot(eatSound, 0.4f);
+                audioSource.PlayOneShot(eatSound);
                 babyScale.x += 0.02f;
                 gameObject.transform.localScale = babyScale;
                 if (foods.Count == 0)

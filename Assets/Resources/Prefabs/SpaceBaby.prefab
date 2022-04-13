@@ -124,7 +124,7 @@ MonoBehaviour:
   happySound: {fileID: 8300000, guid: e68dab0c95cc34c27a9b6fe25a354e7b, type: 3}
   reactorHighSound: {fileID: 8300000, guid: 7c2f90662e6a74c429575d1e408bdbca, type: 3}
   counterSound: {fileID: 8300000, guid: bc83c2c36e0e54b57a955fc50954a081, type: 3}
-  eatSound: {fileID: 8300000, guid: 5ea3c16de53c1f04bb236da0226c0a36, type: 3}
+  eatSound: {fileID: 8300000, guid: 4e0e44baf55e7de45b0c766a123c5a8c, type: 3}
   loseSound: {fileID: 8300000, guid: 567c08c1d583541238e40b972d63750c, type: 3}
   foodObjects:
   - {fileID: 21300000, guid: 07b839b8af0484fe6bf941b9b60ae06b, type: 3}

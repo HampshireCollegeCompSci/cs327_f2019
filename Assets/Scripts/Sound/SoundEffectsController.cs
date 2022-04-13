@@ -8,7 +8,7 @@ public class SoundEffectsController : MonoBehaviour
 
     // Sound files
     public AudioClip buttonPressSound, undoPressSound, pauseButtonSound;
-    public AudioClip tokenRevealSound, tokenSelectSoundA, tokenSelectSoundB, tokenSelectSoundC;
+    public AudioClip tokenSelectSoundA, tokenSelectSoundB, tokenSelectSoundC;
     public AudioClip tokenInReactorSound, tokenStackSoundA, tokenStackSoundB, tokenStackSoundC, tokenStackSoundD;
     public AudioClip deckDealSound, deckReshuffleSound;
     public AudioClip winSound, loseSound, alertSound, winTransition;
@@ -57,9 +57,7 @@ public class SoundEffectsController : MonoBehaviour
 
     public void ButtonPressSound(bool vibrate = true)
     {
-        soundController.clip = buttonPressSound;
-        // doesn't like PlayOneShot
-        soundController.Play();
+        soundController.PlayOneShot(buttonPressSound, 0.6f);
 
         if (vibrate)
         {
@@ -78,22 +76,22 @@ public class SoundEffectsController : MonoBehaviour
         int randomNo = Random.Range(0, 3);
         if (randomNo == 0)
         {
-            soundController.PlayOneShot(tokenSelectSoundA);
+            soundController.PlayOneShot(tokenSelectSoundA, 0.3f);
         }
         else if (randomNo == 1)
         {
-            soundController.PlayOneShot(tokenSelectSoundB);
+            soundController.PlayOneShot(tokenSelectSoundB, 0.3f);
         }
         else
         {
-            soundController.PlayOneShot(tokenSelectSoundC);
+            soundController.PlayOneShot(tokenSelectSoundC, 0.3f);
         }
         VibrateSmall();
     }
 
     public void CardToReactorSound()
     {
-        soundController.PlayOneShot(tokenInReactorSound);
+        soundController.PlayOneShot(tokenInReactorSound, 0.5f);
         VibrateSmall();
     }
 
@@ -102,26 +100,21 @@ public class SoundEffectsController : MonoBehaviour
         int randomNo = Random.Range(0, 4);
         if (randomNo == 0)
         {
-            soundController.PlayOneShot(tokenStackSoundA);
+            soundController.PlayOneShot(tokenStackSoundA, 0.7f);
         }
         else if (randomNo == 1)
         {
-            soundController.PlayOneShot(tokenStackSoundB);
+            soundController.PlayOneShot(tokenStackSoundB, 0.7f);
         }
         else if (randomNo == 2)
         {
-            soundController.PlayOneShot(tokenStackSoundC);
+            soundController.PlayOneShot(tokenStackSoundC, 0.7f);
         }
         else
         {
-            soundController.PlayOneShot(tokenStackSoundD);
+            soundController.PlayOneShot(tokenStackSoundD, 0.7f);
         }
         VibrateSmall();
-    }
-
-    public void CardRevealSound()
-    {
-        soundController.PlayOneShot(tokenRevealSound);
     }
 
     public void DeckDeal()
@@ -179,7 +172,7 @@ public class SoundEffectsController : MonoBehaviour
 
     public void ExplosionSound()
     {
-        soundController.PlayOneShot(explosionSound);
+        soundController.PlayOneShot(explosionSound, 0.6f);
         VibrateSmall();
     }
 
@@ -187,19 +180,19 @@ public class SoundEffectsController : MonoBehaviour
     {
         if (suit == "hearts")
         {
-            soundController.PlayOneShot(mushroomSound);
+            soundController.PlayOneShot(mushroomSound, 1);
         }
         if (suit == "diamonds")
         {
-            soundController.PlayOneShot(bugSound);
+            soundController.PlayOneShot(bugSound, 0.6f);
         }
         if (suit == "spades")
         {
-            soundController.PlayOneShot(rockSound);
+            soundController.PlayOneShot(rockSound, 1.8f);
         }
         if (suit == "clubs")
         {
-            soundController.PlayOneShot(fruitSound);
+            soundController.PlayOneShot(fruitSound, 1.2f);
         }
         VibrateMedium();
     }
