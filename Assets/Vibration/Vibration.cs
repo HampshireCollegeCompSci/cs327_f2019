@@ -6,10 +6,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-// CHANGES NOT MADE BY AUTHOR
+// CHANGES NOT MADE BY INITIAL AUTHOR
 // 1. Formatted Lines
+// 2. Removed unnecessary using System.Runtime.InteropServices.ComTypes directive
+// 3. Added missing !UNITY_WEBGL checks as the Handheld Class is only available on mobile platforms
+// 4. Deleted unused variable long[] amplitudes in Vibrate()
 
-using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
 
 #if UNITY_IOS
@@ -140,18 +142,19 @@ public static class Vibration
     public static void Vibrate ( long[] pattern, int repeat )
     {
         if ( Application.isMobilePlatform ) {
-            #if UNITY_ANDROID
-                if ( AndroidVersion >= 26 ) {
-                    long[] amplitudes;
-                    AndroidJavaObject createWaveform = vibrationEffect.CallStatic<AndroidJavaObject> ( "createWaveform", pattern, repeat );
-                    vibrator.Call ( "vibrate", createWaveform );
-                } else {
-                    vibrator.Call ( "vibrate", pattern, repeat );
-                }
-            #elif UNITY_IOS
-                Handheld.Vibrate();
-            #else
-                Handheld.Vibrate();
+            #if !UNITY_WEBGL
+                #if UNITY_ANDROID
+                    if ( AndroidVersion >= 26 ) {
+                        AndroidJavaObject createWaveform = vibrationEffect.CallStatic<AndroidJavaObject> ( "createWaveform", pattern, repeat );
+                        vibrator.Call ( "vibrate", createWaveform );
+                    } else {
+                        vibrator.Call ( "vibrate", pattern, repeat );
+                    }
+                #elif UNITY_IOS
+                    Handheld.Vibrate();
+                #else
+                    Handheld.Vibrate();
+                #endif
             #endif
         }
     }
@@ -193,7 +196,9 @@ public static class Vibration
     public static void Vibrate ()
     {
         if ( Application.isMobilePlatform ) {
-            Handheld.Vibrate ();
+            #if !UNITY_WEBGL
+                Handheld.Vibrate ();
+            #endif
         }
     }
 

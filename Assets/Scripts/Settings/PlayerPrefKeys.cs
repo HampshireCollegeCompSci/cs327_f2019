@@ -24,7 +24,14 @@ public static class PlayerPrefKeys
 
         if (!PlayerPrefs.HasKey(Constants.vibrationEnabledKey))
         {
-            PlayerPrefs.SetString(Constants.vibrationEnabledKey, Config.GameValues.vibrationEnabledDefault.ToString());
+            if (Vibration.HasVibrator())
+            {
+                PlayerPrefs.SetString(Constants.vibrationEnabledKey, Config.GameValues.vibrationEnabledDefault.ToString());
+            }
+            else
+            {
+                PlayerPrefs.SetString(Constants.vibrationEnabledKey, false.ToString());
+            }
         }
 
         if (!PlayerPrefs.HasKey(Constants.foodSuitsEnabledKey))

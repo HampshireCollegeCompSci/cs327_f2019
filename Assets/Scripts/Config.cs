@@ -42,8 +42,12 @@ public class Config : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
             Instance = this;
 
-            // Load the game values from the file and then check keys
+            // These must be done in this order
+            // Load the game values from the file
             LoadGameValues();
+            // Setup the Vibration Package
+            Vibration.Init();
+            // Check Player Preferences
             PlayerPrefKeys.CheckKeys();
         }
         else if (Instance != this)
