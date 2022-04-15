@@ -33,20 +33,31 @@ public class SettingsScript : MonoBehaviour
         soundEffectsSlider.GetComponent<Slider>().value = volume;
         soundEffectsVolumeText.text = volume.ToString() + "0%";
 
+        // boolean settings
         bool isOn;
-        // vibration enabled
-        if (System.Boolean.TryParse(PlayerPrefs.GetString(Constants.vibrationEnabledKey), out isOn))
+
+        if (Vibration.HasVibrator())
         {
-            vibrationToggle.GetComponent<Toggle>().isOn = isOn;
+            // vibration enabled
+            if (bool.TryParse(PlayerPrefs.GetString(Constants.vibrationEnabledKey), out isOn))
+            {
+                vibrationToggle.GetComponent<Toggle>().isOn = isOn;
+            }
+            else
+            {
+                // unable to parse
+                vibrationToggle.GetComponent<Toggle>().isOn = false;
+            }
         }
         else
         {
-            // unable to parse
+            // disable vibration toggle
+            vibrationToggle.GetComponent<Toggle>().interactable = false;
             vibrationToggle.GetComponent<Toggle>().isOn = false;
         }
 
         // food suits enabled
-        if (System.Boolean.TryParse(PlayerPrefs.GetString(Constants.foodSuitsEnabledKey), out isOn))
+        if (bool.TryParse(PlayerPrefs.GetString(Constants.foodSuitsEnabledKey), out isOn))
         {
             foodSuitsToggle.GetComponent<Toggle>().isOn = isOn;
         }
