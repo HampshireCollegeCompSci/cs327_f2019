@@ -9,7 +9,10 @@ public class TutorialScript : MonoBehaviour
     private Queue<List<string>> commandQueue;
     private bool waiting;
 
-    public GameObject tutorial, tutorialText;
+    public Button[] gameplayButtons;
+    public Button tutorialNextButton;
+
+    public GameObject tutorialUIPanel, tutorialText;
     public GameObject tutorialReactors, tutorialScore, tutorialMoveCounter;
     public GameObject tutorialUndo, tutorialPause;
     public GameObject tutorialFoundations, tutorialDeck, tutorialWastePile;
@@ -17,17 +20,27 @@ public class TutorialScript : MonoBehaviour
     private void Awake()
     {
         // this is the gateway to turn the tutorial on
-        if (!Config.Instance.tutorialOn)
-            return;
+        if (Config.Instance.tutorialOn)
+        {
+            StartTutorial();
+        }
+    }
 
-        Debug.Log("starting tutorialScript");
-        
+    private void StartTutorial()
+    {
+        Debug.Log("starting the tutorial");
+
         // prevent the user from interacting with anything but the tutorial
         UtilsScript.Instance.SetInputStopped(true);
+        foreach (Button button in gameplayButtons)
+        {
+            button.interactable = false;
+        }
+
         // start the tutorial
-        tutorial.SetActive(true);
+        tutorialUIPanel.SetActive(true);
         // update colors via script instead of having to do it in editor each time
-        UpdateHighlightObjectsColor(new Color(1, 1, 0, 0.35f));
+        UpdateHighlightObjectsColor(Config.GameValues.tutorialObjectHighlightColor);
 
         // get the tutorial commands ready
         commandQueue = CommandEnqueuer(CreateFromJSON());
@@ -182,7 +195,12 @@ public class TutorialScript : MonoBehaviour
     {
         Debug.Log("ending tutorial");
 
-        tutorial.SetActive(false);
+        tutorialUIPanel.SetActive(false);
+        foreach (Button button in gameplayButtons)
+        {
+            button.interactable = true;
+        }
+
         Config.Instance.tutorialOn = false;
         Config.Instance.SetDifficulty(0);
         MusicController.Instance.GameMusic();
@@ -208,6 +226,14 @@ public class TutorialScript : MonoBehaviour
         Debug.Log("waiting for touch");
 
         waiting = true;
+        StartCoroutine(DelayNextButtonInteraction());
+    }
+
+    private System.Collections.IEnumerator DelayNextButtonInteraction()
+    {
+        tutorialNextButton.interactable = false;
+        yield return new WaitForSeconds(1);
+        tutorialNextButton.interactable = true;
     }
 
     /// <summary>
@@ -255,7 +281,21 @@ public class TutorialScript : MonoBehaviour
         switch (command[1].ToLower())
         {
             case "reactors":
-                tutorialReactors.SetActive(highlightOn);
+                //tutorialReactors.SetActive(highlightOn);
+                if (highlightOn)
+                {
+                    foreach (GameObject reactor in UtilsScript.Instance.reactors)
+                    {
+                        reactor.GetComponent<ReactorScript>().GlowOn(1);
+                    }
+                }
+                else
+                {
+                    foreach (GameObject reactor in UtilsScript.Instance.reactors)
+                    {
+                        reactor.GetComponent<ReactorScript>().GlowOff();
+                    }
+                }
                 break;
             case "scoreboard":
                 tutorialScore.SetActive(highlightOn);
@@ -314,8 +354,10 @@ public class TutorialScript : MonoBehaviour
                         reactor.GetComponent<ReactorScript>().GlowOn(alertLevel);
                 }
                 else
+                {
                     foreach (GameObject reactor in UtilsScript.Instance.reactors)
                         reactor.GetComponent<ReactorScript>().GlowOff();
+                }
                 break;
 
             case "reactor":

@@ -49,6 +49,8 @@
 	"cardMatchHighlightColorValues": [ 0, 1, 0, 1 ],
 	"pointColorValues": [ 0, 1, 0, 1 ],
 
+	"tutorialObjectHighlightColorValues": [ 1, 1, 0, 0.35 ],
+
 	"menuButtonsTxtEnglish": [ "PLAY", "TUTORIAL", "SETTINGS", "ABOUT" ],
 	"levelButtonsTxtEnglish": [ "CONTINUE", "EASY", "MEDIUM", "HARD" ],
 	"backButtonTxtEnglish": "BACK",

@@ -253,8 +253,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -88.850006, y: 43.725006}
-  m_SizeDelta: {x: 177.70001, y: 87.45001}
+  m_AnchoredPosition: {x: -80, y: 38}
+  m_SizeDelta: {x: 330, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &54388024
 MonoBehaviour:
@@ -3074,16 +3074,16 @@ RectTransform:
   m_GameObject: {fileID: 781405174}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9995803, y: 0.9995803, z: 0.9995803}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 980125233}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 88.85002, y: 43.724976}
-  m_SizeDelta: {x: 177.70001, y: 87.44995}
+  m_AnchoredPosition: {x: 80, y: 38}
+  m_SizeDelta: {x: 330, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &781405176
 MonoBehaviour:
@@ -3891,8 +3891,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 781405175}
   - {fileID: 1579446416}
+  - {fileID: 781405175}
   - {fileID: 54388023}
   m_Father: {fileID: 952914871}
   m_RootOrder: 0
@@ -4592,7 +4592,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c378afb05c5fd047a6c5aa0a2e3de4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tutorial: {fileID: 952914867}
+  gameplayButtons:
+  - {fileID: 341220269}
+  - {fileID: 612237310}
+  - {fileID: 1489801183}
+  - {fileID: 1524850554}
+  tutorialNextButton: {fileID: 54388024}
+  tutorialUIPanel: {fileID: 952914867}
   tutorialText: {fileID: 1579446415}
   tutorialReactors: {fileID: 830199258}
   tutorialScore: {fileID: 842856700}
@@ -6121,7 +6127,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 980125233}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}

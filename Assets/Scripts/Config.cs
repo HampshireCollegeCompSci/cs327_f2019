@@ -67,6 +67,7 @@ public class Config : MonoBehaviour
         GameValues.cardMoveHighlightColor = CreateColor(GameValues.cardMoveHighlightColorValues);
         GameValues.cardMatchHighlightColor = CreateColor(GameValues.cardMatchHighlightColorValues);
         GameValues.pointColor = CreateColor(GameValues.pointColorValues);
+        GameValues.tutorialObjectHighlightColor = CreateColor(GameValues.tutorialObjectHighlightColorValues);
     }
 
     private Color CreateColor(float [] colorV)
