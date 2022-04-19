@@ -60,6 +60,9 @@ public class GameValues
     public float[] pointColorValues;
     public Color pointColor;
 
+    public float[] tutorialObjectHighlightColorValues;
+    public Color tutorialObjectHighlightColor;
+
     public string[] menuButtonsTxtEnglish;
     public string[] levelButtonsTxtEnglish;
     public string backButtonTxtEnglish;

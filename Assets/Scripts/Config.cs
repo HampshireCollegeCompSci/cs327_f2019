@@ -14,6 +14,7 @@ public class Config : MonoBehaviour
 
     public string currentDifficulty;
     public int maxReactorVal;
+    public int maxReactorValMinus1;
     public int actionMax;
 
     // game values
@@ -67,6 +68,7 @@ public class Config : MonoBehaviour
         GameValues.cardMoveHighlightColor = CreateColor(GameValues.cardMoveHighlightColorValues);
         GameValues.cardMatchHighlightColor = CreateColor(GameValues.cardMatchHighlightColorValues);
         GameValues.pointColor = CreateColor(GameValues.pointColorValues);
+        GameValues.tutorialObjectHighlightColor = CreateColor(GameValues.tutorialObjectHighlightColorValues);
     }
 
     private Color CreateColor(float [] colorV)
@@ -78,6 +80,7 @@ public class Config : MonoBehaviour
     {
         currentDifficulty = GameValues.difficulties[dif];
         maxReactorVal = GameValues.reactorLimits[dif];
+        maxReactorValMinus1 = maxReactorVal - 1;
         actionMax = GameValues.moveLimits[dif];
     }
 

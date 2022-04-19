@@ -53,7 +53,7 @@ public class ResultsScript : MonoBehaviour
             // Check for a new high score and update if need be
             if (currentScoreNum > oldHighScoreStatNum)
             {
-                UpdateHigh(currentScoreText, currentScoreStatText, highScoreKey, currentScoreNum);
+                UpdateHigh(currentScoreText, currentScoreStatText, oldHighScoreText, oldHighScoreStatText, highScoreKey, currentScoreNum);
             }
         }
         else 
@@ -62,7 +62,7 @@ public class ResultsScript : MonoBehaviour
             oldHighScoreStatText.fontSize = oldHighScoreText.fontSize;
             oldHighScoreStatText.text = "NONE";
 
-            UpdateHigh(currentScoreText, currentScoreStatText, highScoreKey, currentScoreNum);
+            UpdateHigh(currentScoreText, currentScoreStatText, oldHighScoreText, oldHighScoreStatText, highScoreKey, currentScoreNum);
         }
     }
 
@@ -83,7 +83,7 @@ public class ResultsScript : MonoBehaviour
             // If game won, check for a new least moves and update if need be
             if (Config.Instance.gameWin && currentMovesNum < oldLeastMovesNum)
             {
-                UpdateHigh(currentMovesText, currentMovesStatText, leastMovesKey, currentMovesNum);
+                UpdateHigh(currentMovesText, currentMovesStatText, oldLeastMovesText, oldLeastMovesStatText, leastMovesKey, currentMovesNum);
             }
         }
         else
@@ -94,15 +94,19 @@ public class ResultsScript : MonoBehaviour
 
             if (Config.Instance.gameWin)
             {
-                UpdateHigh(currentMovesText, currentMovesStatText, leastMovesKey, currentMovesNum);
+                UpdateHigh(currentMovesText, currentMovesStatText, oldLeastMovesText, oldLeastMovesStatText, leastMovesKey, currentMovesNum);
             }
         }
     }
 
-    private void UpdateHigh(Text title, Text stat, string key, int update)
+    private void UpdateHigh(Text newTitle, Text newStat, Text oldTitle, Text oldStat, string key, int update)
     {
-        title.color = Color.cyan;
-        stat.color = Color.cyan;
+        newTitle.color = Color.cyan;
+        newStat.color = Color.cyan;
+
+        oldTitle.color = Color.red;
+        oldStat.color = Color.red;
+
         PlayerPrefs.SetInt(key, update);
     }
 }

@@ -203,6 +203,7 @@ public class StateLoader : MonoBehaviour
 
         ReactorScoreSetScript.Instance.SetReactorScore();
         UtilsScript.Instance.UpdateActions(state.actions, startingGame: true);
+        DeckScript.Instance.UpdateDeckCounter();
     }
 
     private void SetUpMoveLog(List<AltMove> moves, List<GameObject> cardList)

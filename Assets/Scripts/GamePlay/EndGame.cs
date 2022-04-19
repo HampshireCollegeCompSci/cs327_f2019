@@ -9,6 +9,7 @@ public class EndGame : MonoBehaviour
     public GameObject gameOverPanel;
     public GameObject gameOverTextPanel;
     public Text gameOverText;
+    public Text wonlostText;
     public Text continueText;
 
     // Singleton instance.
@@ -43,6 +44,22 @@ public class EndGame : MonoBehaviour
 
         // overwritten when manually won (cheated)
         Config.Instance.matchCounter = (byte)(MatchedPileScript.Instance.cardList.Count / 2);
+
+        if (didWin)
+        {
+            foreach (GameObject foundation in UtilsScript.Instance.foundations)
+            {
+                foundation.GetComponent<FoundationScript>().GlowOn(move: false);
+            }
+        }
+        else
+        {
+            foreach (GameObject reactor in UtilsScript.Instance.reactors)
+            {
+                reactor.GetComponent<ReactorScript>().TryHighlightOverloaded();
+            }
+        }
+
 
         StartCoroutine(BeginGameOverTransition());
     }
@@ -99,12 +116,16 @@ public class EndGame : MonoBehaviour
         if (Config.Instance.gameWin)
         {
             gameOverText.color = Color.cyan;
+            wonlostText.color = Color.cyan;
+            wonlostText.text = "YOU WON";
             continueText.color = Color.cyan;
             SpaceBabyController.Instance.BabyHappy();
         }
         else
         {
             gameOverText.color = Color.red;
+            wonlostText.color = Color.red;
+            wonlostText.text = "YOU LOST";
             continueText.color = Color.red;
             SpaceBabyController.Instance.BabyLoseTransition();
         }
