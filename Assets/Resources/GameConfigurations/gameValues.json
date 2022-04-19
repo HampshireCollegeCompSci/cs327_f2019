@@ -40,7 +40,7 @@
 	"summaryTransitionSpeed": 0.7,
 
 	"difficulties": [ "EASY", "MEDIUM", "HARD" ],
-	"reactorLimits": [ 24, 21, 18 ],
+	"reactorLimits": [ 25, 22, 19 ],
 	"moveLimits": [ 24, 21, 18 ],
 
 	"selectedCardOpacity": 0.25,
