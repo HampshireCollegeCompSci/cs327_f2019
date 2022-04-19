@@ -9,6 +9,7 @@ public class EndGame : MonoBehaviour
     public GameObject gameOverPanel;
     public GameObject gameOverTextPanel;
     public Text gameOverText;
+    public Text wonlostText;
     public Text continueText;
 
     // Singleton instance.
@@ -99,12 +100,16 @@ public class EndGame : MonoBehaviour
         if (Config.Instance.gameWin)
         {
             gameOverText.color = Color.cyan;
+            wonlostText.color = Color.cyan;
+            wonlostText.text = "YOU WON";
             continueText.color = Color.cyan;
             SpaceBabyController.Instance.BabyHappy();
         }
         else
         {
             gameOverText.color = Color.red;
+            wonlostText.color = Color.red;
+            wonlostText.text = "YOU LOST";
             continueText.color = Color.red;
             SpaceBabyController.Instance.BabyLoseTransition();
         }
