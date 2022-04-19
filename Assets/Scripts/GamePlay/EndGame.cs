@@ -45,6 +45,22 @@ public class EndGame : MonoBehaviour
         // overwritten when manually won (cheated)
         Config.Instance.matchCounter = (byte)(MatchedPileScript.Instance.cardList.Count / 2);
 
+        if (didWin)
+        {
+            foreach (GameObject foundation in UtilsScript.Instance.foundations)
+            {
+                foundation.GetComponent<FoundationScript>().GlowOn(move: false);
+            }
+        }
+        else
+        {
+            foreach (GameObject reactor in UtilsScript.Instance.reactors)
+            {
+                reactor.GetComponent<ReactorScript>().TryHighlightOverloaded();
+            }
+        }
+
+
         StartCoroutine(BeginGameOverTransition());
     }
 

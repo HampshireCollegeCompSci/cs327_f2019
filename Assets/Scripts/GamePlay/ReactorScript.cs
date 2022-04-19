@@ -155,6 +155,15 @@ public class ReactorScript : MonoBehaviour
         return totalSum;
     }
 
+    public void TryHighlightOverloaded()
+    {
+        if (CountReactorCard() >= Config.Instance.maxReactorVal)
+        {
+            GlowOn(2);
+            AlertOn();
+        }
+    }
+
     public void GlowOn(byte alertLevel)
     {
         if (isGlowing) return;
