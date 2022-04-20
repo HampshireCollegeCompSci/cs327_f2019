@@ -10,12 +10,6 @@ public class SpaceBabyController : MonoBehaviour
     public Animator animator;
     public AudioClip happySound, reactorHighSound, counterSound, eatSound, loseSound;
 
-    // game over win condition
-    public Sprite[] foodObjects;
-    public GameObject foodPrefab;
-    public GameObject babyPlanet;
-    public GameObject panelOverlay;
-
     private bool idling, angry;
 
     // Singleton instance.
@@ -122,109 +116,20 @@ public class SpaceBabyController : MonoBehaviour
         angry = false;
     }
 
-    public void BabyLoseSummary()
+    public void PlayLoseAnimation()
     {
         Debug.Log("SpaceBaby Lose Summary");
 
         animator.Play("Lose");
     }
 
-    public void BabyWinSummary(byte matchNumber)
+    public void PlayWinStartAnimation()
     {
-        Debug.Log("SpaceBaby Win");
-
         animator.Play("WinStart");
-        StartCoroutine(BabyWinAnimation());
-        StartCoroutine(EatAnimation(matchNumber));
     }
 
-    IEnumerator BabyWinAnimation()
+    public void PlayEatSound()
     {
-        yield return new WaitForSeconds(1);
-        animator.Play("WinEat");
-    }
-
-    IEnumerator EatAnimation(byte matchNumber)
-    {
-        List<GameObject> foods = new List<GameObject>();
-        Vector3 outOfBounds = new Vector3(3.8f, -0.5f, 0);
-        Vector3 babyScale = gameObject.transform.localScale;
-
-        byte limit = (byte)(matchNumber/2);
-        if (limit > 10)
-            limit = 10;
-        else if (limit == 0)
-            yield break;
-
-        if (limit > foodObjects.Length)
-            throw new System.ArgumentException("matchNumber cannot be greater than foodObjects.Length");
-
-        for (int i = 0; i < limit; i++)
-        {
-            GameObject foody = Instantiate(foodPrefab, outOfBounds, Quaternion.identity);
-            foody.GetComponent<SpriteRenderer>().sprite = foodObjects[i];
-            foods.Add(foody);
-            outOfBounds.x += 2.2f;
-        }
-
-        float minusX;
-        Vector3 position;;
-        while (true)
-        {
-            minusX = Time.deltaTime * 2.9f;
-            for (int i = 0; i < foods.Count; i++)
-            {
-                position = foods[i].transform.position;
-                position.x -= minusX;
-                foods[i].transform.position = position;
-            }
-
-            if (foods[0].transform.position.x <= 0.1)
-            {
-                Destroy(foods[0]);
-                foods.RemoveAt(0);
-                audioSource.PlayOneShot(eatSound);
-                babyScale.x += 0.02f;
-                gameObject.transform.localScale = babyScale;
-                if (foods.Count == 0)
-                {
-                    if (matchNumber == 26)
-                        StartCoroutine(WinTransition());
-                    else
-                        BabyHappy();
-
-                    yield break;
-                }
-            }
-
-            yield return null;
-        }
-    }
-
-    IEnumerator WinTransition()
-    {
-        BabyHappy();
-
-        panelOverlay.SetActive(true);
-        Image panelImage = panelOverlay.GetComponent<Image>();
-        Color panelColor = new Color(1, 1, 1, 0);
-        panelImage.color = panelColor;
-
-        while (panelColor.a < 1)
-        {
-            panelColor.a += Time.deltaTime * 0.75f;
-            panelImage.color = panelColor;
-            yield return null;
-        }
-
-        gameObject.GetComponent<SpriteRenderer>().enabled = false;
-        babyPlanet.SetActive(true);
-
-        while (panelColor.a > 0)
-        {
-            panelColor.a -= Time.deltaTime * 0.75f;
-            panelImage.color = panelColor;
-            yield return null;
-        }
+        audioSource.PlayOneShot(eatSound);
     }
 }

@@ -8,19 +8,16 @@ public class SummaryTransition : MonoBehaviour
     public Sprite spaceShipDebrisSprite;
     public GameObject spaceShipObject;
     public GameObject explosionPrefab;
+    public WinSequence winSequence;
 
     // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(FadeIn());
-        // spacebaby
-        if (Config.Instance.gameWin)
+
+        if (!Config.Instance.gameWin)
         {
-            SpaceBabyController.Instance.BabyWinSummary(Config.Instance.matchCounter);
-        }
-        else
-        {
-            SpaceBabyController.Instance.BabyLoseSummary();
+            SpaceBabyController.Instance.PlayLoseAnimation();
         }
     }
 
@@ -50,7 +47,11 @@ public class SummaryTransition : MonoBehaviour
         }
         transitionPanel.SetActive(false);
 
-        if (!Config.Instance.gameWin)
+        if (Config.Instance.gameWin)
+        {
+            winSequence.StartWinSequence();
+        }
+        else
         {
             SpaceShipExplode();
         }
@@ -77,14 +78,14 @@ public class SummaryTransition : MonoBehaviour
         GameObject explosion1 = Instantiate(explosionPrefab, spaceShipObject.transform.position, Quaternion.identity);
         explosion1.GetComponent<SpriteRenderer>().sortingOrder = 2;
         explosion1.transform.localScale = new Vector3(0.1f, 0.1f);
-        explosion1.transform.position += new Vector3(0.3f, -0.2f, 0);
+        explosion1.transform.position += new Vector3(0.3f, -0.1f, 0);
         explosion1.GetComponent<Animator>().Play("LoseExplosionAnim");
 
         yield return new WaitForSeconds(0.2f);
         GameObject explosion2 = Instantiate(explosionPrefab, spaceShipObject.transform.position, Quaternion.identity);
         explosion2.GetComponent<SpriteRenderer>().sortingOrder = 2;
         explosion2.transform.localScale = new Vector3(0.1f, 0.1f);
-        explosion2.transform.position += new Vector3(-0.3f, 0.1f, 0);
+        explosion2.transform.position += new Vector3(-0.25f, 0.1f, 0);
         explosion2.GetComponent<Animator>().Play("LoseExplosionAnim");
 
         yield return new WaitForSeconds(5);
@@ -98,6 +99,6 @@ public class SummaryTransition : MonoBehaviour
         Destroy(explosion2);
         SoundEffectsController.Instance.ExplosionSound();
         spaceShipObject.GetComponent<Image>().sprite = spaceShipDebrisSprite;
-        spaceShipObject.transform.localScale = new Vector3(2, 2, 1);
+        spaceShipObject.transform.localScale = new Vector3(1.5f, 1.5f, 1);
     }
 }
