@@ -560,7 +560,7 @@ public class UtilsScript : MonoBehaviour
         // reactors trigger their own gameovers
         if (checkGameOver && TryGameOver()) return;
 
-        if (doSaveState)
+        if (doSaveState && !Config.Instance.gameOver)
         {
             StateLoader.Instance.WriteState();
         }

@@ -32,10 +32,11 @@ public class EndGame : MonoBehaviour
     {
         Debug.Log($"Game Over, won: {didWin}");
 
-        SaveState.Delete();
         Config.Instance.gameOver = true;
         Config.Instance.gamePaused = true;
         Config.Instance.gameWin = didWin;
+
+        SaveState.Delete();
 
         if (Config.GameValues.enableBonusPoints)
         {
