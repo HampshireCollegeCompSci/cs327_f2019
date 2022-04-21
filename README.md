@@ -16,7 +16,7 @@
   </div>
 
   <p align="center">
-    A game development project started in a Hampshire College course in 2019!
+    A game development project started by a Hampshire College course in 2019!
     <br />
     Launching on the app stores soon hopefully.
     <br />
@@ -28,13 +28,13 @@
     ·
   </p>
 </div>
-<br/><br/>
+<br/>
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 This project is the result of the course of CS327 at Hampshire College during the Spring of 2019. Teams from different disciplines were formed to create a new solitare like game that could be published on the mobile app stores. After the end of the semester, the project was over halfway completed.
 
-During the 2019 Fall semester, a small group of developers consiting of members from various teams formed to finish the project. These members are indicated by a ⭐ in the credits section. They managed to get the project near completed, save for a few critical issues and missing features.
+During the 2019 Fall semester, a small group of developers consiting of members from various teams formed to finish the project. These members are indicated by a ⭐ in the credits section. They managed to get the project near completion, save for a few critical issues and missing features.
 
 Afterwards in 2021, the programmer Jona began work to finalize the game. This undertaking consisted of improving existing systems, fixing issues on discovery, and adding a plethora of features. In early 2022, the project was stable and feature rich enough to begin the distribution of builds for final playtesting.
 
@@ -85,7 +85,7 @@ Afterwards in 2021, the programmer Jona began work to finalize the game. This un
 <br/>
 
 <!-- USAGE EXAMPLES -->
-## Gameplay Showcase
+## Gameplay Preview
 <div align="center">
   <img align="center" src="Images/stack.png" alt="Logo" height="420">
   <img align="center" src="Images/highlight.png" alt="Logo" height="420">
