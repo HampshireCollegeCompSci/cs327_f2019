@@ -1007,7 +1007,7 @@ PrefabInstance:
     - target: {fileID: 862624160320751222, guid: 69181d72dc76a46519e11927d009c663,
         type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 862624160320751222, guid: 69181d72dc76a46519e11927d009c663,
         type: 3}
@@ -3808,7 +3808,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1283793620}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &973768198
 SpriteRenderer:
@@ -3848,8 +3848,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 874189689
-  m_SortingLayer: 3
+  m_SortingLayerID: 590535777
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: cb886533a87fe2246beeb76e6203296f, type: 3}
   m_Color: {r: 0, g: 0.6313726, b: 1, a: 0.29803923}
@@ -4667,7 +4667,7 @@ PrefabInstance:
     - target: {fileID: 862624160320751222, guid: 69181d72dc76a46519e11927d009c663,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 862624160320751222, guid: 69181d72dc76a46519e11927d009c663,
         type: 3}
@@ -4995,11 +4995,11 @@ Transform:
   m_LocalScale: {x: 0.15, y: 0.15, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 973768197}
   - {fileID: 1812935832}
   - {fileID: 787894276}
   - {fileID: 627912849}
   - {fileID: 1056444917}
-  - {fileID: 973768197}
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5294,7 +5294,7 @@ PrefabInstance:
     - target: {fileID: 862624160320751222, guid: 69181d72dc76a46519e11927d009c663,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 862624160320751222, guid: 69181d72dc76a46519e11927d009c663,
         type: 3}
@@ -7581,7 +7581,7 @@ PrefabInstance:
     - target: {fileID: 862624160320751222, guid: 69181d72dc76a46519e11927d009c663,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 862624160320751222, guid: 69181d72dc76a46519e11927d009c663,
         type: 3}

@@ -157,18 +157,27 @@ public class ReactorScript : MonoBehaviour
 
     public void TryHighlightOverloaded()
     {
+        // will turn glowing on but not set the flag for it
+
         if (CountReactorCard() >= Config.Instance.maxReactorVal)
         {
-            GlowOn(2);
+            GlowOn(2, move: false);
             AlertOn();
         }
     }
 
-    public void GlowOn(byte alertLevel)
+    public void GlowOn(byte alertLevel, bool move = true)
     {
-        if (isGlowing) return;
+        if (isGlowing && move) return;
 
-        isGlowing = true;
+        if (move)
+        {
+            isGlowing = true;
+        }
+        else
+        {
+            isGlowing = false;
+        }
 
         suitGlowSR.enabled = true;
         glowSR.enabled = true;

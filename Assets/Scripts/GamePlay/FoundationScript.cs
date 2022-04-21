@@ -85,24 +85,25 @@ public class FoundationScript : MonoBehaviour
 
     public void GlowOn(bool move = true)
     {
-        if (isGlowing) return;
-
-        isGlowing = true;
+        if (isGlowing && move) return;
 
         if (move)
         {
             sp.color = Color.yellow;
+            isGlowing = true;
         }
         else
         {
+            // will turn glowing on but not set the flag for it
             sp.color = Color.cyan;
+            isGlowing = false;
         }
     }
 
     public void GlowOff()
     {
-        if (!isGlowing)
-            return;
+        if (!isGlowing) return;
+
         isGlowing = false;
         sp.color = Color.white;
     }
