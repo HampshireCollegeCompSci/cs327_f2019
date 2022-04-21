@@ -3,29 +3,29 @@
 		{
 			"argumentList": [
 				"ShowText",
-				"Welcome to the visual tutorial.\nTo continue, press on next below."
+				"Welcome to the visual tutorial!\n\nAll gameplay interactions are disabled during this.\n\nTo continue, press on next below."
 			]
 		},
 		{
 			"argumentList": [
 				"WaitForTouch"
-			]
-		},
-		{
-			"argumentList": [
-				"LoadSave",
-				"tutorialState_tokens"
 			]
 		},
 		{
 			"argumentList": [
 				"ShowText",
-				"This is an example of what the game can look like after playing for a short time.\nGameplay will be explained from this perspective."
+				"The goal of this game is to survive and clear the middle section of all tokens.\n\nTo do this, you will need to know how to eliminate tokens, move them around, and avoid the lose condition."
 			]
 		},
 		{
 			"argumentList": [
 				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"Tokens can be moved by pressing and dragging them around.\n\nTokens that are moveable have white displays on them."
 			]
 		},
 		{
@@ -35,24 +35,24 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
-				"Any tokens that are fully visible and not grayed out can be interacted with.\nThey are currently being highlighted yellow."
-			]
-		},
-		{
-			"argumentList": [
 				"WaitForTouch"
 			]
 		},
 		{
 			"argumentList": [
-				"UnHighlightAllTokens"
+				"ShowText",
+				"Tokens can be eliminated by combining similar ones together.\n\nOnly tokens that share their rank and color can be combined together."
+			]
+		},
+		{
+			"argumentList": [
+				"unhighlightalltokens"
 			]
 		},
 		{
 			"argumentList": [
 				"HighlightToken",
-				"Reactor",
+				"foundation",
 				"0",
 				"0",
 				"On",
@@ -62,7 +62,7 @@
 		{
 			"argumentList": [
 				"HighlightToken",
-				"Reactor",
+				"foundation",
 				"1",
 				"0",
 				"On",
@@ -71,63 +71,18 @@
 		},
 		{
 			"argumentList": [
-				"HighlightToken",
-				"Foundation",
-				"0",
-				"0",
-				"On",
-				"True"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightToken",
-				"WastePile",
-				"0",
-				"0",
-				"On",
-				"True"
+				"WaitForTouch"
 			]
 		},
 		{
 			"argumentList": [
 				"ShowText",
-				"Remove tokens from the field by matching them together.\nMatching tokens share their rank and suit color.\nTokens that can be matched together right now are being highlighted green."
-			]
-		},
-		{
-			"argumentList": [
-				"WaitForTouch"
+				"The middle section is where tokens can be moved around on stacks.\n\nAt the beginning of a game, only the top token on each stack is revealed with the rest hidden underneath."
 			]
 		},
 		{
 			"argumentList": [
 				"UnHighlightAllTokens"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightObject",
-				"MoveCounter",
-				"On"
-			]
-		},
-		{
-			"argumentList": [
-				"ShowText",
-				"Each token interaction depletes the move counter by one.\nHowever, matching tokens or undoing do not count towards this."
-			]
-		},
-		{
-			"argumentList": [
-				"WaitForTouch"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightObject",
-				"MoveCounter",
-				"Off"
 			]
 		},
 		{
@@ -139,8 +94,42 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
-				"These are the foundations.\nTokens can be stacked here in order of their rank, with ace counting as one."
+				"HighlightToken",
+				"foundation",
+				"0",
+				"0",
+				"On",
+				"false"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"foundation",
+				"1",
+				"0",
+				"On",
+				"false"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"foundation",
+				"2",
+				"0",
+				"On",
+				"false"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"foundation",
+				"3",
+				"0",
+				"On",
+				"false"
 			]
 		},
 		{
@@ -150,60 +139,8 @@
 		},
 		{
 			"argumentList": [
-				"HighlightObject",
-				"Foundations",
-				"Off"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightToken",
-				"Foundation",
-				"1",
-				"1",
-				"On",
-				"False"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightToken",
-				"Foundation",
-				"2",
-				"0",
-				"On",
-				"False"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightToken",
-				"Foundation",
-				"1",
-				"2",
-				"On",
-				"True"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightToken",
-				"Reactor",
-				"2",
-				"0",
-				"On",
-				"True"
-			]
-		},
-		{
-			"argumentList": [
 				"ShowText",
-				"Here is an example of a move you could make, highlighted yellow, that would allow you to match the two red 3s, highlighted green, on the next move."
-			]
-		},
-		{
-			"argumentList": [
-				"WaitForTouch"
+				"Here, tokens can be stacked in order of their rank, with ace counting as one.\n\nSuit color does not matter."
 			]
 		},
 		{
@@ -213,86 +150,18 @@
 		},
 		{
 			"argumentList": [
-				"LoadSave",
-				"tutorialState_foundations"
-			]
-		},
-		{
-			"argumentList": [
-				"ShowText",
-				"Clear the foundations of all tokens to win the game."
-			]
-		},
-		{
-			"argumentList": [
-				"WaitForTouch"
-			]
-		},
-		{
-			"argumentList": [
-				"LoadSave",
-				"tutorialState_tokens"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightObject",
-				"Reactors",
-				"On"
-			]
-		},
-		{
-			"argumentList": [
-				"ShowText",
-				"These are the reactors.\nIndividual tokens can be moved to their respective reactors, but you can't move them back out unless it's for a match."
-			]
-		},
-		{
-			"argumentList": [
-				"WaitForTouch"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightObject",
-				"Reactors",
-				"Off"
-			]
-		},
-		{
-			"argumentList": [
 				"HighlightToken",
-				"Foundation",
-				"0",
-				"0",
-				"On",
-				"False"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightToken",
-				"Foundation",
-				"1",
-				"0",
-				"On",
-				"False"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightToken",
-				"Foundation",
+				"foundation",
 				"2",
 				"0",
 				"On",
-				"False"
+				"True"
 			]
 		},
 		{
 			"argumentList": [
 				"HighlightToken",
-				"Foundation",
+				"foundation",
 				"3",
 				"0",
 				"On",
@@ -301,27 +170,344 @@
 		},
 		{
 			"argumentList": [
-				"HighlightContainer",
-				"Reactor",
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"Multiple tokens can even be moved at the same time by pressing on a lower token and dragging it to an allowed location."
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_1"
+			]
+		},
+		{
+			"argumentList": [
+				"UnHighlightAllTokens"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"foundation",
+				"2",
+				"1",
 				"On",
+				"False"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"foundation",
+				"3",
+				"0",
+				"On",
+				"True"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"The bottom section contains the conveyor belt, where you can draw or take away tokens as need be."
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Foundations",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"UnHighlightAllTokens"
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_0"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Wastepile",
+				"On"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Deck",
+				"On"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"The button on the conveyor box can be pressed to draw at most three new tokens to the belt."
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Wastepile",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"Only the first token on the conveyor belt can be moved.\n\nThe belt can be scrolled through to view tokens hidden in the back."
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_2"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Deck",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Wastepile",
+				"On"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"Wastepile",
+				"0",
+				"0",
+				"On",
+				"false"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"The top section contains the storage containers, where tokens can be sent to for limited storage."
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Wastepile",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"UnHighlightAllTokens"
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_0"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Reactors",
+				"On"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"Tokens can be moved here one at a time, but they can not be removed except for their elimination."
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightObject",
+				"Reactors",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_3"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"Reactor",
+				"3",
+				"0",
+				"On",
+				"true"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"Foundation",
+				"1",
+				"0",
+				"On",
+				"true"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"wastepile",
+				"0",
+				"0",
+				"On",
+				"false"
+			]
+		},
+		{
+			"argumentList": [
+				"highlightcontainer",
+				"reactor",
+				"on",
+				"0",
+				"1"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"Watch out though!\nIf a container goes above its storage limit the game will end.\n\nAces count as 1 and all face cards count as 10 towards these limits."
+			]
+		},
+		{
+			"argumentList": [
+				"UnHighlightAllTokens"
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_4"
+			]
+		},
+		{
+			"argumentList": [
+				"highlightcontainer",
+				"reactor",
+				"off",
+				"0",
+				"0"
+			]
+		},
+		{
+			"argumentList": [
+				"highlightcontainer",
+				"reactor",
+				"on",
 				"0",
 				"2"
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightContainer",
-				"Reactor",
+				"HighlightToken",
+				"Foundation",
+				"0",
+				"0",
 				"On",
-				"3",
-				"1"
+				"false"
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightObject",
-				"MoveCounter",
-				"On"
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"Another thing to watch out for is the move counter.\n\nAll token moves except for combinations decrease the move counter by one."
+			]
+		},
+		{
+			"argumentList": [
+				"UnHighlightAllTokens"
+			]
+		},
+		{
+			"argumentList": [
+				"highlightcontainer",
+				"reactor",
+				"off",
+				"0",
+				"0"
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_0"
+			]
+		},
+		{
+			"argumentList": [
+				"highlightobject",
+				"movecounter",
+				"on"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"When the move counter reaches 0, each top card in the middle stacks move up to their respective containers automatically.\n\nThis resets the movecounter afterwards."
 			]
 		},
 		{
@@ -332,13 +518,86 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
-				"When the move counter reaches 0, all top foundation cards (from left to right) move to their respective reactors automatically, resetting the movecounter afterwards."
+				"HighlightToken",
+				"Foundation",
+				"0",
+				"0",
+				"On",
+				"false"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"Foundation",
+				"1",
+				"0",
+				"On",
+				"false"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"Foundation",
+				"2",
+				"0",
+				"On",
+				"false"
+			]
+		},
+		{
+			"argumentList": [
+				"HighlightToken",
+				"Foundation",
+				"3",
+				"0",
+				"On",
+				"false"
+			]
+		},
+		{
+			"argumentList": [
+				"highlightcontainer",
+				"reactor",
+				"on",
+				"1",
+				"1"
+			]
+		},
+		{
+			"argumentList": [
+				"highlightcontainer",
+				"reactor",
+				"on",
+				"2",
+				"1"
+			]
+		},
+		{
+			"argumentList": [
+				"highlightcontainer",
+				"reactor",
+				"on",
+				"3",
+				"1"
 			]
 		},
 		{
 			"argumentList": [
 				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ShowText",
+				"The 0 moves remaining effect can be triggered manually by pressing the button attached to the side of the move conuter."
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_5"
 			]
 		},
 		{
@@ -348,63 +607,66 @@
 		},
 		{
 			"argumentList": [
-				"HighlightContainer",
-				"Reactor",
-				"Off",
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"highlightobject",
+				"movecounter",
+				"off"
+			]
+		},
+		{
+			"argumentList": [
+				"SetMoveCounterText",
+				"18"
+			]
+		},
+		{
+			"argumentList": [
+				"highlightcontainer",
+				"reactor",
+				"off",
+				"1",
+				"0"
+			]
+		},
+		{
+			"argumentList": [
+				"highlightcontainer",
+				"reactor",
+				"off",
+				"2",
+				"0"
+			]
+		},
+		{
+			"argumentList": [
+				"highlightcontainer",
+				"reactor",
+				"off",
 				"3",
-				""
+				"0"
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightObject",
-				"MoveCounter",
-				"Off"
+				"ShowText",
+				"Moves can be completely undone by pressing the undo button.\n\nUndoing does not count against the move counter."
 			]
 		},
 		{
 			"argumentList": [
 				"LoadSave",
-				"tutorialState_reactors"
-
+				"tutorialState_0"
 			]
 		},
 		{
 			"argumentList": [
-				"ShowText",
-				"If the sum of tokens in a reactor goes above it's limit (show directly below), you lose the game.\nAces count as 1 and all face cards count as 10 towards these limits."
-			]
-		},
-		{
-			"argumentList": [
-				"WaitForTouch"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightContainer",
-				"Reactors",
-				"Off"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightObject",
-				"MoveCounter",
-				"On"
-			]
-		},
-		{
-			"argumentList": [
-				"LoadSave",
-				"tutorialState_tokens"
-
-			]
-		},
-		{
-			"argumentList": [
-				"ShowText",
-				"You can manually trigger the movecounter's 0 effect by pressing the button attached to the side of it."
+				"highlightobject",
+				"undo",
+				"on"
 			]
 		},
 		{
@@ -414,22 +676,22 @@
 		},
 		{
 			"argumentList": [
-				"HighlightObject",
-				"MoveCounter",
-				"Off"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightObject",
-				"Deck",
-				"On"
+				"highlightobject",
+				"undo",
+				"off"
 			]
 		},
 		{
 			"argumentList": [
 				"ShowText",
-				"This is the deck. You can press its button to add at most 3 new tokens to the waste pile. Pressing this counts towards the move counter."
+				"The scoreboard shows the cumulative points for each combination made during a game.\n\nCombo chains grant increasing amounts of bonus points."
+			]
+		},
+		{
+			"argumentList": [
+				"highlightobject",
+				"scoreboard",
+				"on"
 			]
 		},
 		{
@@ -439,28 +701,22 @@
 		},
 		{
 			"argumentList": [
-				"HighlightObject",
-				"Deck",
-				"Off"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightObject",
-				"WastePile",
-				"On"
-			]
-		},
-		{
-			"argumentList": [
-				"LoadSave",
-				"tutorialState_deck"
+				"highlightobject",
+				"scoreboard",
+				"off"
 			]
 		},
 		{
 			"argumentList": [
 				"ShowText",
-				"The waste pile can be scrolled through using the conveyor belt to view any tokens in it that might be hidden offscreen."
+				"The game can be paused or quit at any time and progress will be saved.\n\nIn the settings menu, the suit art can be changed to be more traditional.\nThis option requires a game reload."
+			]
+		},
+		{
+			"argumentList": [
+				"highlightobject",
+				"pause",
+				"on"
 			]
 		},
 		{
@@ -470,71 +726,15 @@
 		},
 		{
 			"argumentList": [
-				"HighlightObject",
-				"WastePile",
-				"Off"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightObject",
-				"Undo",
-				"On"
+				"highlightobject",
+				"pause",
+				"off"
 			]
 		},
 		{
 			"argumentList": [
 				"ShowText",
-				"You can press the undo button to undo the entire last move."
-			]
-		},
-		{
-			"argumentList": [
-				"WaitForTouch"
-			]
-		},
-		{
-			"argumentList": [
-				"LoadSave",
-				"tutorialState_tokens"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightObject",
-				"Undo",
-				"Off"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightObject",
-				"Scoreboard",
-				"On"
-			]
-		},
-		{
-			"argumentList": [
-				"ShowText",
-				"The scoreboard shows the cumulative points for each match you have made during a game.\nChaining together consecutive matches grants increasing amounts of bonus points."
-			]
-		},
-		{
-			"argumentList": [
-				"WaitForTouch"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightObject",
-				"Scoreboard",
-				"Off"
-			]
-		},
-		{
-			"argumentList": [
-				"ShowText",
-				"Your game is saved after each move or undo and can be continued later. "
+				"There are three gameplay difficulties to choose from.\n\nIncreasing the difficulty lowers the maximum move count and lowers the storage container limits."
 			]
 		},
 		{
@@ -545,18 +745,7 @@
 		{
 			"argumentList": [
 				"ShowText",
-				"There are three gameplay difficulties to choose from the play menu. The harder it is, the fewer moves you get until the move counter reaches 0 and the lower the reactor limits are."
-			]
-		},
-		{
-			"argumentList": [
-				"WaitForTouch"
-			]
-		},
-		{
-			"argumentList": [
-				"ShowText",
-				"That's the end of the tutorial!\nContinue to begin playing an easy difficulty game or exit to the main menu now."
+				"That's the end of the tutorial!\n\nContinue to begin playing an easy difficulty game or exit to the main menu now."
 			]
 		},
 		{
