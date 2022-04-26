@@ -1,20 +1,18 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class ReactorScript : MonoBehaviour
+public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 {
-    public GameObject gameUI;
-
     public List<GameObject> cardList;
     public string suit;
+    public Text reactorScore;
 
     public GameObject suitGlow;
     private SpriteRenderer suitGlowSR;
     private SpriteRenderer glowSR;
-    private Color oldSuitGlow;
 
-    public Sprite glow;
-    private bool isGlowing;
+
     private bool alertOn;
 
     void Start()
@@ -23,22 +21,11 @@ public class ReactorScript : MonoBehaviour
         glowSR = this.gameObject.GetComponent<SpriteRenderer>();
     }
 
-    private void CheckGameOver()
-    {
-        if (Config.Instance.tutorialOn) return;
-
-        if (!Config.Instance.gameOver && CountReactorCard() >= Config.Instance.maxReactorVal)
-        {
-            EndGame.Instance.GameOver(false);
-        }
-    }
-
     public void AddCard(GameObject card)
     {
         if (cardList.Count != 0)
         {
-            cardList[0].GetComponent<BoxCollider2D>().enabled = false;
-            cardList[0].GetComponent<SpriteRenderer>().color = Config.GameValues.cardObstructedColor;
+            cardList[0].GetComponent<CardScript>().SetObstructed(true);
         }
 
         cardList.Insert(0, card);
@@ -46,23 +33,44 @@ public class ReactorScript : MonoBehaviour
         card.GetComponent<CardScript>().HideHologram();
 
         SetCardPositions();
-        ReactorScoreSetScript.Instance.SetReactorScore();
-        CheckGameOver();
+
+        int cardValCount = CountReactorCard();
+        SetReactorScore(cardValCount);
+        CheckGameOver(cardValCount);
     }
 
     public void RemoveCard(GameObject card)
     {
-        card.GetComponent<SpriteRenderer>().color = card.GetComponent<CardScript>().originalColor;
+        //card.GetComponent<CardScript>().SetColor();
         cardList.Remove(card);
 
         if (cardList.Count != 0)
         {
-            cardList[0].GetComponent<BoxCollider2D>().enabled = true;
-            cardList[0].GetComponent<SpriteRenderer>().color = cardList[0].GetComponent<CardScript>().originalColor;
+            cardList[0].GetComponent<CardScript>().SetObstructed(false, showHologram: false);
         }
 
         SetCardPositions();
-        ReactorScoreSetScript.Instance.SetReactorScore();
+        SetReactorScore();
+    }
+
+    public void SetReactorScore()
+    {
+        SetReactorScore(CountReactorCard());
+    }
+
+    public void SetReactorScore(int cardValCount)
+    {
+        reactorScore.text = $"{cardValCount}/{Config.Instance.reactorLimit}";
+    }
+
+    private void CheckGameOver(int cardValCount)
+    {
+        if (Config.Instance.tutorialOn || Config.Instance.gameOver) return;
+
+        if (cardValCount > Config.Instance.reactorLimit)
+        {
+            EndGame.Instance.GameOver(false);
+        }
     }
 
     public Vector3 GetNextCardPosition()
@@ -124,16 +132,26 @@ public class ReactorScript : MonoBehaviour
         }
     }
 
-    public int GetIncreaseOnNextCycle()
+    public bool OverLimitSoon()
+    {
+        if (CountReactorCard() + GetIncreaseOnNextCycle() > Config.Instance.reactorLimit)
+        {
+            AlertOn();
+            return true;
+        }
+
+        return false;
+    }
+
+    private int GetIncreaseOnNextCycle()
     {
         int output = 0;
-        foreach (GameObject foundation in UtilsScript.Instance.foundations)
+        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
-            FoundationScript currentFoundationScript = foundation.GetComponent<FoundationScript>();
-            if (currentFoundationScript.cardList.Count != 0)
+            if (foundationScript.cardList.Count != 0)
             {
-                CardScript topCardScript = currentFoundationScript.cardList[0].GetComponent<CardScript>();
-                if (topCardScript.suit == suit)
+                CardScript topCardScript = foundationScript.cardList[0].GetComponent<CardScript>();
+                if (topCardScript.suit == this.suit)
                 {
                     output += topCardScript.cardVal;
                 }
@@ -158,50 +176,55 @@ public class ReactorScript : MonoBehaviour
     public void TryHighlightOverloaded()
     {
         // will turn glowing on but not set the flag for it
-
-        if (CountReactorCard() >= Config.Instance.maxReactorVal)
+        // so that it will not be turned off later
+        if (CountReactorCard() > Config.Instance.reactorLimit)
         {
-            GlowOn(2, move: false);
+            Glowing = true;
+            GlowLevel = Constants.overHighlightColorLevel;
+            _glowing = false;
             AlertOn();
         }
     }
 
-    public void GlowOn(byte alertLevel, bool move = true)
+    private bool _glowing;
+    public bool Glowing
     {
-        if (isGlowing && move) return;
-
-        if (move)
+        get { return _glowing; }
+        set
         {
-            isGlowing = true;
-        }
-        else
-        {
-            isGlowing = false;
-        }
-
-        suitGlowSR.enabled = true;
-        glowSR.enabled = true;
-
-        if (alertLevel == 1) // just highlight
-        {
-            gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 0, 0.5f);
-            ChangeSuitGlow(new Color(1, 1, 0, 0.3f));
-        }
-        else if (alertLevel == 2) // moving the selected token here will overload this reactor
-        {
-            gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 0.5f);
-            ChangeSuitGlow(new Color(1, 0, 0, 0.3f));
+            if (value && !_glowing)
+            {
+                _glowing = true;
+                RevertSuitGlow();
+                suitGlowSR.enabled = true;
+                glowSR.enabled = true;
+            }
+            else if (!value && _glowing)
+            {
+                _glowing = false;
+                suitGlowSR.enabled = false;
+                glowSR.enabled = false;
+            }
         }
     }
 
-    public void GlowOff()
+    private byte _glowLevel;
+    public byte GlowLevel
     {
-        if (!isGlowing) return;
+        get { return _glowLevel; }
+        set
+        {
+            if (value != _glowLevel)
+            {
+                _glowLevel = value;
+                Color glowColor = Config.GameValues.highlightColors[value];
+                glowColor.a = 0.3f;
+                glowSR.color = glowColor;
+                ChangeSuitGlow(glowColor);
+            }
 
-        isGlowing = false;
-
-        suitGlowSR.enabled = false;
-        glowSR.enabled = false;
+            Glowing = true;
+        }
     }
 
     public void AlertOn()
@@ -209,7 +232,7 @@ public class ReactorScript : MonoBehaviour
         if (alertOn) return;
 
         alertOn = true;
-        ReactorScoreSetScript.Instance.ChangeTextColor(gameObject, true);
+        reactorScore.color = Color.red;
     }
 
     public void AlertOff()
@@ -217,27 +240,23 @@ public class ReactorScript : MonoBehaviour
         if (!alertOn) return;
 
         alertOn = false;
-        ReactorScoreSetScript.Instance.ChangeTextColor(gameObject, false);
+        reactorScore.color = Color.black;
+    }
+
+    public void ChangeSuitGlow(byte level)
+    {
+        Color newColor = Config.GameValues.highlightColors[level];
+        newColor.a = 0.3f;
+        ChangeSuitGlow(newColor);
     }
 
     public void ChangeSuitGlow(Color newColor)
     {
-        oldSuitGlow = suitGlowSR.color;
         suitGlowSR.color = newColor;
     }
 
     public void RevertSuitGlow()
     {
-        suitGlowSR.color = oldSuitGlow;
-    }
-
-    public bool IsGlowing()
-    {
-        return isGlowing;
-    }
-
-    public Color GetGlowColor()
-    {
-        return gameObject.GetComponent<SpriteRenderer>().color;
+        ChangeSuitGlow(GlowLevel);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ShowPossibleMoves : MonoBehaviour
+public class ShowPossibleMoves
 {
     private GameObject reactorMove;
     private List<GameObject> foundationMoves;
@@ -13,23 +13,7 @@ public class ShowPossibleMoves : MonoBehaviour
     public bool moveTokensAreGlowing;
     public bool matchTokensAreGlowing;
 
-    // Singleton instance.
-    public static ShowPossibleMoves Instance = null;
-
-    // Initialize the singleton instance.
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else if (Instance != this)
-        {
-            throw new System.ArgumentException("there should not already be an instance of this");
-        }
-    }
-
-    private void Start()
+    public ShowPossibleMoves()
     {
         foundationMoves = new List<GameObject>();
         cardMoves = new List<GameObject>();
@@ -57,19 +41,19 @@ public class ShowPossibleMoves : MonoBehaviour
 
         foreach (GameObject card in cardMoves)
         {
-            card.GetComponent<CardScript>().GlowOn(false);
+            card.GetComponent<CardScript>().GlowLevel = Constants.moveHighlightColorLevel;
             moveTokensAreGlowing = true;
         }
 
         foreach (GameObject card in cardMatches)
         {
-            card.GetComponent<CardScript>().GlowOn(true);
+            card.GetComponent<CardScript>().GlowLevel = Constants.matchHighlightColorLevel;
             matchTokensAreGlowing = true;
         }
 
         foreach (GameObject foundation in foundationMoves)
         {
-            foundation.GetComponent<FoundationScript>().GlowOn();
+            foundation.GetComponent<FoundationScript>().GlowLevel = Constants.moveHighlightColorLevel;
             foundationIsGlowing = true;
         }
 
@@ -81,17 +65,17 @@ public class ShowPossibleMoves : MonoBehaviour
             // disable the top cards hitbox for the reactors hitbox to be on top
             // the top card can normally be clicked and dragged to match with other cards
             if (reactorMoveScript.cardList.Count != 0)
-                reactorMoveScript.cardList[0].GetComponent<BoxCollider2D>().enabled = false;
+                reactorMoveScript.cardList[0].GetComponent<CardScript>().SetCollider(false);
 
             // if moving the card into the reactor will lose us the game
-            if (reactorMoveScript.CountReactorCard() +
-                selectedCard.GetComponent<CardScript>().cardVal >= Config.Instance.maxReactorVal)
+            if (reactorMoveScript.CountReactorCard() + selectedCard.GetComponent<CardScript>().cardVal >
+                Config.Instance.reactorLimit)
             {
-                reactorMoveScript.GlowOn(2);
+                reactorMoveScript.GlowLevel = Constants.overHighlightColorLevel;
             }
             else
             {
-                reactorMoveScript.GlowOn(1);
+                reactorMoveScript.GlowLevel = Constants.moveHighlightColorLevel;
             }
         }
     }
@@ -115,16 +99,14 @@ public class ShowPossibleMoves : MonoBehaviour
         if (cardCanBeMatched)
         {
             // find the one complimentary reactor and check if a top card exists and can then match
-            ReactorScript reactorScriptRef;
-            foreach (GameObject reactor in UtilsScript.Instance.reactors)
+            foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
             {
-                reactorScriptRef = reactor.GetComponent<ReactorScript>();
-                if (CardTools.CompareComplimentarySuits(selectedCardScript.suit, reactorScriptRef.suit))
+                if (CardTools.CompareComplimentarySuits(selectedCardScript.suit, reactorScript.suit))
                 {
-                    if (reactorScriptRef.cardList.Count != 0 &&
-                        reactorScriptRef.cardList[0].GetComponent<CardScript>().cardNum == selectedCardScript.cardNum)
+                    if (reactorScript.cardList.Count != 0 &&
+                        reactorScript.cardList[0].GetComponent<CardScript>().cardNum == selectedCardScript.cardNum)
                     {
-                        cardMatches.Add(reactor.GetComponent<ReactorScript>().cardList[0]);
+                        cardMatches.Add(reactorScript.cardList[0]);
                     }
 
                     break;
@@ -133,42 +115,39 @@ public class ShowPossibleMoves : MonoBehaviour
 
             // if the card is not in the reactor, get the reactor that we can move into
             if (!selectedCardScript.container.CompareTag(Constants.reactorTag))
-            {                
-                foreach (GameObject reactor in UtilsScript.Instance.reactors)
+            {
+                foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
                 {
-                    if (selectedCardScript.suit == reactor.GetComponent<ReactorScript>().suit)
+                    if (selectedCardScript.suit == reactorScript.suit)
                     {
-                        reactorMove = reactor;
+                        reactorMove = reactorScript.gameObject;
                         break;
                     }
                 }
             }
         }
 
-        FoundationScript foundationScriptRef;
-        CardScript topFoundationCardScript;
-        foreach (GameObject foundation in UtilsScript.Instance.foundations)
+        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
-            foundationScriptRef = foundation.GetComponent<FoundationScript>();
-            if (foundationScriptRef.cardList.Count != 0)
+            if (foundationScript.cardList.Count != 0)
             {
-                topFoundationCardScript = foundationScriptRef.cardList[0].GetComponent<CardScript>();
+                CardScript topFoundationCardScript = foundationScript.cardList[0].GetComponent<CardScript>();
 
                 // if the card can match and matches with the foundation top
                 if (cardCanBeMatched && CardTools.CanMatch(selectedCardScript, topFoundationCardScript, checkIsTop: false))
                 {
-                    cardMatches.Add(foundationScriptRef.cardList[0]);
+                    cardMatches.Add(foundationScript.cardList[0]);
                 }
                 // if the card is not from a reactor can it stack?
                 else if ((cardIsFromFoundation || cardIsFromWastepile) &&
                     topFoundationCardScript.cardNum == selectedCardScript.cardNum + 1)
                 {
-                    cardMoves.Add(foundationScriptRef.cardList[0]);
+                    cardMoves.Add(foundationScript.cardList[0]);
                 }
             }
             else if (cardIsFromFoundation || cardIsFromWastepile)
             {
-                foundationMoves.Add(foundation);
+                foundationMoves.Add(foundationScript.gameObject);
             }
         }
 
@@ -192,17 +171,17 @@ public class ShowPossibleMoves : MonoBehaviour
 
         foreach (GameObject card in cardMoves)
         {
-            card.GetComponent<CardScript>().GlowOff();
+            card.GetComponent<CardScript>().Glowing = false;
         }
 
         foreach (GameObject card in cardMatches)
         {
-            card.GetComponent<CardScript>().GlowOff();
+            card.GetComponent<CardScript>().Glowing = false;
         }
 
         foreach (GameObject card in foundationMoves)
         {
-            card.GetComponent<FoundationScript>().GlowOff();
+            card.GetComponent<FoundationScript>().Glowing = false;
         }
 
         if (reactorMove != null)
@@ -213,10 +192,10 @@ public class ShowPossibleMoves : MonoBehaviour
             // the top card can normally be clicked and dragged to match with other cards
             if (reactorMoveScript.cardList.Count != 0)
             {
-                reactorMoveScript.cardList[0].GetComponent<BoxCollider2D>().enabled = true;
+                reactorMoveScript.cardList[0].GetComponent<CardScript>().SetCollider(true);
             }
 
-            reactorMoveScript.GlowOff();
+            reactorMoveScript.Glowing = false;
         }
     }
 }

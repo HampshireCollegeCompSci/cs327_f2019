@@ -81,11 +81,13 @@ public static class CardTools
     /// </summary>
     public static bool CompareComplimentarySuits(string suit1, string suit2)
     {
-        if ((suit1.Equals("hearts") && suit2.Equals("diamonds")) ||
-            (suit1.Equals("diamonds") && suit2.Equals("hearts")) ||
-            (suit1.Equals("spades") && suit2.Equals("clubs")) ||
-            (suit1.Equals("clubs") && suit2.Equals("spades")))
+        if ((suit1.Equals(Constants.heartsSuit) && suit2.Equals(Constants.diamondsSuit)) ||
+            (suit1.Equals(Constants.diamondsSuit) && suit2.Equals(Constants.heartsSuit)) ||
+            (suit1.Equals(Constants.spadesSuit) && suit2.Equals(Constants.clubsSuit)) ||
+            (suit1.Equals(Constants.clubsSuit) && suit2.Equals(Constants.spadesSuit)))
+        {
             return true;
+        }
 
         return false;
     }
@@ -93,9 +95,14 @@ public static class CardTools
     private static string GetSuit(GameObject suitObject)
     {
         if (suitObject.CompareTag(Constants.cardTag))
+        {
             return suitObject.GetComponent<CardScript>().suit;
+        }
+
         if (suitObject.CompareTag(Constants.reactorTag))
+        {
             return suitObject.GetComponent<ReactorScript>().suit;
+        }
 
         throw new System.ArgumentException("suitObject must have a suit variable");
     }

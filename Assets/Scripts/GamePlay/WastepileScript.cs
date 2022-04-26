@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WastepileScript : MonoBehaviour
+public class WastepileScript : MonoBehaviour, ICardContainer
 {
     public List<GameObject> cardList;
 
@@ -99,23 +99,26 @@ public class WastepileScript : MonoBehaviour
         }
     }
 
-    public void AddCard(GameObject card, bool showHolo = true)
+    public void AddCard(GameObject card, bool showHolo)
     {
-        // hidding the top
-        if (cardList.Count != 0)
-        {
-            cardList[0].GetComponent<CardScript>().HideHologram();
-            cardList[0].GetComponent<SpriteRenderer>().color = Config.GameValues.cardObstructedColor;
-            cardList[0].GetComponent<BoxCollider2D>().enabled = false;
-        }
-
-        cardList.Insert(0, card);
+        AddCard(card);
 
         if (showHolo)
         {
             card.GetComponent<CardScript>().ShowHologram();
-            card.GetComponent<BoxCollider2D>().enabled = true;
+            card.GetComponent<CardScript>().SetCollider(true);
         }
+    }
+
+    public void AddCard(GameObject card)
+    {
+        // obstructing the top
+        if (cardList.Count != 0)
+        {
+            cardList[0].GetComponent<CardScript>().SetObstructed(true);
+        }
+
+        cardList.Insert(0, card);
 
         // making a container for the card so that it plays nice with the scroll view
         cardContainers.Insert(0, Instantiate(cardContainerPrefab));
@@ -134,31 +137,37 @@ public class WastepileScript : MonoBehaviour
 
     public void RemoveCard(GameObject card, bool undoingOrDeck = false, bool showHolo = true)
     {
-        // removing the cards wastepile container
+        // get cards wastepile container before removal
         GameObject parentCardContainer = card.transform.parent.gameObject;
-        card.transform.parent = null;
-        cardContainers.Remove(parentCardContainer);
 
-        CardScript cardScriptPointer = card.GetComponent<CardScript>();
-        card.GetComponent<SpriteRenderer>().color = cardScriptPointer.originalColor;
-        cardList.Remove(card);
+        RemoveCard(card);
 
         if (showHolo && cardList.Count != 0)
         {
-            cardScriptPointer = cardList[0].GetComponent<CardScript>();
-            cardScriptPointer.ShowHologram();
-            cardList[0].GetComponent<SpriteRenderer>().color = cardScriptPointer.originalColor;
-            cardList[0].GetComponent<BoxCollider2D>().enabled = true;
+            // the new top card will stay
+            cardList[0].GetComponent<CardScript>().SetObstructed(false);
         }
 
         if (undoingOrDeck || cardList.Count == 0)
         {
+            // immediately remove 
             Destroy(parentCardContainer);
         }
         else
         {
+            // move the conveyor belt around to simulate card removal
             StartCoroutine(ScrollBarRemoving(parentCardContainer));
         }
+    }
+
+    public void RemoveCard(GameObject card)
+    {
+        // removing the cards wastepile container
+        cardContainers.Remove(card.transform.parent.gameObject);
+        card.transform.parent = null;
+
+        card.GetComponent<CardScript>().SetColor();
+        cardList.Remove(card);
     }
 
     private IEnumerator ScrollBarRemoving(GameObject parentCardContainer)

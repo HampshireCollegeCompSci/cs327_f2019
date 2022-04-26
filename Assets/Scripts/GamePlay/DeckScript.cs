@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DeckScript : MonoBehaviour
+public class DeckScript : MonoBehaviour, ICardContainer
 {
     public List<GameObject> cardList;
 
@@ -32,22 +32,19 @@ public class DeckScript : MonoBehaviour
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
         card.transform.localPosition = Vector3.zero;
-        card.GetComponent<CardScript>().SetGameplayVisibility(false);
+        card.GetComponent<CardScript>().SetEnabled(false);
         UpdateDeckCounter();
     }
 
     public void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
-        card.GetComponent<CardScript>().SetGameplayVisibility(true);
+        card.GetComponent<CardScript>().SetEnabled(true);
         UpdateDeckCounter();
     }
 
-    public void ProcessAction()
+    public void DealButton()
     {
-        // is called by the deck button
-        // user wants to deal cards, other things might need to be done before that
-
         // don't allow dealing when other stuff is happening
         if (UtilsScript.Instance.IsInputStopped())
             return;
@@ -60,7 +57,7 @@ public class DeckScript : MonoBehaviour
             StartCoroutine(ButtonDown());
         }
         // if it is possible to repopulate the deck
-        else if (WastepileScript.Instance.cardList.Count > Config.GameValues.cardsToDeal) 
+        else if (WastepileScript.Instance.cardList.Count > Config.GameValues.cardsToDeal)
         {
             DeckReset();
             StartCoroutine(ButtonDown());
@@ -132,5 +129,10 @@ public class DeckScript : MonoBehaviour
             }
             deckCounter.fontSize = 19;
         }
+    }
+
+    public void ProcessAction(GameObject input)
+    {
+        throw new System.NotImplementedException();
     }
 }

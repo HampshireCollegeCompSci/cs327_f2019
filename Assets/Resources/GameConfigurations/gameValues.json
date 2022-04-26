@@ -40,13 +40,16 @@
 	"summaryTransitionSpeed": 0.7,
 
 	"difficulties": [ "EASY", "MEDIUM", "HARD" ],
-	"reactorLimits": [ 25, 22, 19 ],
+	"reactorLimits": [ 24, 21, 18 ],
 	"moveLimits": [ 24, 21, 18 ],
 
 	"selectedCardOpacity": 0.25,
 	"cardObstructedColorValues": [ 0.6, 0.6, 0.6, 1 ],
-	"cardMoveHighlightColorValues": [ 1, 1, 0, 1 ],
-	"cardMatchHighlightColorValues": [ 0, 1, 0, 1 ],
+
+	"matchHighlightColorValues": [ 0, 1, 0, 1 ],
+	"moveHighlightColorValues": [ 1, 1, 0, 1 ],
+	"overHighlightColorValues": [ 1, 0, 0, 1 ],
+
 	"pointColorValues": [ 0, 1, 0, 1 ],
 
 	"tutorialObjectHighlightColorValues": [ 1, 1, 0, 0.35 ],
@@ -59,5 +62,4 @@
 	"summaryButtonsTxtEnglish": [ "MAIN\nMENU", "PLAY\nAGAIN" ],
 	"scoreActionLabelsTxtEnglish": [ "Score", "Action" ],
 	"gameStateTxtEnglish": [ "YOU WON", "YOU LOST" ]
-
 }

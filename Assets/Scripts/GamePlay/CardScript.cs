@@ -1,13 +1,16 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class CardScript : MonoBehaviour
+public class CardScript : MonoBehaviour, IGlow
 {
     public GameObject container;
     
     public int cardVal; //cardVal is what the card is worth to the reactor jack, queen, king are all 10
     public int cardNum; //cardNum is the number on the card, ace is 1 jack is 11 queen is 12 king is 13
     public string suit;
+
+    public Sprite cardFrontSprite;
+    public Sprite cardBackSprite;
 
     public GameObject values;
     public GameObject suitObject, rankObject;
@@ -16,7 +19,7 @@ public class CardScript : MonoBehaviour
     public GameObject glow;
 
     public Color originalColor;
-    private Color newColor;
+
     void Start()
     {
         hologramFood.GetComponent<SpriteRenderer>().sprite = hologramFoodSprite;
@@ -31,12 +34,46 @@ public class CardScript : MonoBehaviour
         }
     }
 
-    public Sprite cardFrontSprite;
-    public Sprite cardBackSprite;
     private bool isHidden;
     public bool IsHidden
     {
         get { return isHidden; }
+    }
+
+    public void SetCollider(bool enable, bool tutorialOverride = false)
+    {
+        if (!Config.Instance.tutorialOn || tutorialOverride)
+        {
+            this.gameObject.GetComponent<BoxCollider2D>().enabled = enable;
+        }
+    }
+
+    public void SetObstructed(bool obstructed, bool showHologram = true)
+    {
+        SetCollider(!obstructed);
+        if (obstructed)
+        {
+            HideHologram();
+            SetColor(Config.GameValues.cardObstructedColor);
+        }
+        else
+        {
+            if (showHologram)
+            {
+                ShowHologram();
+            }
+            SetColor();
+        }
+    }
+
+    public void SetColor()
+    {
+        SetColor(originalColor);
+    }
+
+    public void SetColor(Color setTo)
+    {
+        this.gameObject.GetComponent<SpriteRenderer>().color = setTo;
     }
 
     public void SetFoundationVisibility(bool show, bool isNotForNextCycle = true)
@@ -59,65 +96,46 @@ public class CardScript : MonoBehaviour
             isHidden = true;
         }
 
-        UpdateTokenVisibility(show);
+        UpdateCardVisibility(show);
     }
 
-    public void SetGameplayVisibility(bool show)
+    public void SetEnabled(bool enabled)
     {
-        if (show)
-        {
-            gameObject.GetComponent<SpriteRenderer>().enabled = true;
-        }
-        else
-        {
-            gameObject.GetComponent<SpriteRenderer>().enabled = false;
-        }
-
-        UpdateTokenVisibility(show);
+        gameObject.GetComponent<SpriteRenderer>().enabled = enabled;
+        UpdateCardVisibility(enabled);
     }
 
-    private void UpdateTokenVisibility(bool show)
+    private void UpdateCardVisibility(bool show)
     {
-        if (show)
+        SetCollider(show);
+        values.SetActive(show);
+
+        if (!show)
         {
-            gameObject.GetComponent<BoxCollider2D>().enabled = true;
-            values.SetActive(true);
-        }
-        else
-        {
-            gameObject.GetComponent<BoxCollider2D>().enabled = false;
-            values.SetActive(false);
             HideHologram();
         }
     }
 
-    public void SetSelected(bool selected)
+    public void SetDragging(bool dragging)
     {
-        if (selected)
+        if (dragging)
         {
-            newColor = gameObject.GetComponent<SpriteRenderer>().material.color;
+            Color newColor = originalColor;
             newColor.a = Config.GameValues.selectedCardOpacity;
-            gameObject.GetComponent<SpriteRenderer>().material.color = newColor;
-            suitObject.GetComponent<SpriteRenderer>().material.color = newColor;
 
-            Color rankColor = rankObject.GetComponent<TextMesh>().color;
-            rankColor.a = Config.GameValues.selectedCardOpacity;
-            rankObject.GetComponent<TextMesh>().color = rankColor;
-
-            hologram.GetComponent<SpriteRenderer>().color = newColor;
-            hologramFood.GetComponent<SpriteRenderer>().color = newColor;
+            foreach (Renderer renderers in this.gameObject.GetComponentsInChildren<Renderer>())
+            {
+                renderers.material.color = newColor;
+            }
+            SetCollider(false);
         }
         else
         {
-            gameObject.GetComponent<SpriteRenderer>().material.color = originalColor;
-            suitObject.GetComponent<SpriteRenderer>().material.color = originalColor;
-
-            Color rankColor = rankObject.GetComponent<TextMesh>().color;
-            rankColor.a = 1;
-            rankObject.GetComponent<TextMesh>().color = rankColor;
-
-            hologram.GetComponent<SpriteRenderer>().color = originalColor;
-            hologramFood.GetComponent<SpriteRenderer>().color = originalColor;
+            foreach (Renderer renderers in this.gameObject.GetComponentsInChildren<Renderer>(includeInactive: true))
+            {
+                renderers.material.color = originalColor;
+            }
+            SetCollider(true);
         }
     }
 
@@ -126,54 +144,53 @@ public class CardScript : MonoBehaviour
         gameObject.transform.localScale = new Vector3(Config.GameValues.draggedCardScale, Config.GameValues.draggedCardScale, 1);
         container = null;
 
-        gameObject.GetComponent<SpriteRenderer>().sortingLayerID = UtilsScript.Instance.SelectedCardsLayer;
         values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = UtilsScript.Instance.SelectedCardsLayer;
-        hologram.GetComponent<SpriteRenderer>().sortingLayerID = UtilsScript.Instance.SelectedCardsLayer;
-        hologramFood.GetComponent<SpriteRenderer>().sortingLayerID = UtilsScript.Instance.SelectedCardsLayer;
-        gameObject.GetComponent<BoxCollider2D>().enabled = false;
 
-        SetSelected(false);
+        foreach (Renderer renderers in this.gameObject.GetComponentsInChildren<Renderer>())
+        {
+            renderers.sortingLayerID = UtilsScript.Instance.SelectedCardsLayer;
+            // TODO : Unity bug requires this
+            renderers.material.color = renderers.material.color;
+        }
+
+        SetCollider(false);
+
+        // this shouldn't be needed but for some reason it is
+        // without it, after dragging a card once any clone will match its parents color
+        //SetDragging(false);
     }
 
-    public bool ChangeHologram(Color newColor)
+    private byte currentHologramColorLevel;
+    public void ChangeHologramColorLevel(byte level)
     {
+        if (currentHologramColorLevel == level) return;
+
+        hologram.GetComponent<SpriteRenderer>().color = Config.GameValues.highlightColors[level];
+
         SpriteRenderer hologramFoodSP = hologramFood.GetComponent<SpriteRenderer>();
+        hologramFoodSP.color = Config.GameValues.highlightColors[level];
 
-        if (hologramFoodSP.color == newColor)
-            return false;
-
-        hologram.GetComponent<SpriteRenderer>().color = newColor;
-        hologramFoodSP.color = newColor;
-
-        if (newColor == Config.GameValues.cardMatchHighlightColor)
+        if (level == 1) // match
         {
             hologramFoodSP.sprite = hologramComboSprite;
             hologramFood.transform.localScale = new Vector3(0.6f, 0.6f, 1);
-            return true;
         }
-        if (hologramFoodSP.sprite != hologramFoodSprite)
+        else if (currentHologramColorLevel == 1) // no more match
         {
             hologramFoodSP.sprite = hologramFoodSprite;
             hologramFood.transform.localScale = new Vector3(1.2f, 1.2f, 1);
-            return false;
         }
 
-        return false;
+        currentHologramColorLevel = level;
     }
 
-    public Color GetGlowColor()
-    {
-        return glow.GetComponent<SpriteRenderer>().color;
-    }
-
-
-    private bool holoOn = false;
+    private bool hologramOn = false;
     private Coroutine holoCoroutine;
     public void ShowHologram()
     {
-        if (holoOn == false)
+        if (hologramOn == false)
         {
-            holoOn = true;
+            hologramOn = true;
             holoCoroutine = StartCoroutine(StartHologram());
         }
     }
@@ -182,7 +199,9 @@ public class CardScript : MonoBehaviour
     {
         hologram.SetActive(true);
         hologramFood.SetActive(true);
-        hologram.GetComponent<Animator>().speed = Random.Range(0.6f, 1f);
+        
+        // start the animation at a random frame
+        hologram.GetComponent<Animator>().Play(0, -1, Random.Range(0.0f, 1.0f));
 
         SpriteRenderer holoSR = hologram.GetComponent<SpriteRenderer>();
         SpriteRenderer objectSR = hologramFood.GetComponent<SpriteRenderer>();
@@ -191,66 +210,64 @@ public class CardScript : MonoBehaviour
         holoSR.color = holoColor;
         objectSR.color = holoColor;
 
-        while (holoSR.color.a < 1)
+        while (holoColor.a < 1)
         {
+            yield return new WaitForSeconds(0.05f);
+            holoColor.a += 0.05f;
             holoSR.color = holoColor;
             objectSR.color = holoColor;
-            holoColor.a += 0.05f;
-            yield return new WaitForSeconds(0.05f);
         }
-        
-        hologram.GetComponent<Animator>().speed = 1;
     }
 
     public void HideHologram()
     {
-        if (holoOn)
+        if (hologramOn)
         {
-            holoOn = false;
+            hologramOn = false;
 
             if (holoCoroutine != null)
+            {
                 StopCoroutine(holoCoroutine);
+            }
 
             hologram.SetActive(false);
             hologramFood.SetActive(false);
         }
     }
 
-    public bool glowing = false;
-    public bool GlowOn(bool match)
+    private bool _glowing;
+    public bool Glowing
     {
-        if (!glowing)
+        get { return _glowing; }
+        set
         {
-            glow.SetActive(true);
-            if (match)
+            if (value && !_glowing)
             {
-                glow.GetComponent<SpriteRenderer>().color = Config.GameValues.cardMatchHighlightColor;
+                _glowing = true;
+                glow.SetActive(true);
             }
-            else
+            else if (!value && _glowing)
             {
-                glow.GetComponent<SpriteRenderer>().color = Config.GameValues.cardMoveHighlightColor;
+                _glowing = false;
+                glow.SetActive(false);
             }
-
-            glowing = true;
-            return true;
         }
-        return false;
     }
 
-    public bool GlowOff()
+    private byte _glowLevel;
+    public byte GlowLevel
     {
-        if (glowing)
+        get { return _glowLevel; }
+        set
         {
-            glow.SetActive(false);
-            glowing = false;
-            return true;
-        }
-        return false;
-    }
+            if (value != _glowLevel)
+            {
+                _glowLevel = value;
+                glow.GetComponent<SpriteRenderer>().color = Config.GameValues.highlightColors[value];
+            }
 
-    public bool IsGlowing()
-    {
-        return glowing;
+            Glowing = true;
+        }
     }
 
     public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool showHolo = true)

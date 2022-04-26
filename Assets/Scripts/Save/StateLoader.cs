@@ -30,18 +30,18 @@ public class StateLoader : MonoBehaviour
         };
 
         //save foundations
-        foreach (GameObject foundation in UtilsScript.Instance.foundations)
+        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
             gameState.foundations.Add(new StringListWrapper() {
-                stringList = ConvertCardListToStringList(foundation.GetComponent<FoundationScript>().cardList)
+                stringList = ConvertCardListToStringList(foundationScript.cardList)
             });
         }
 
         //save reactors
-        foreach (GameObject reactor in UtilsScript.Instance.reactors)
+        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
         {
             gameState.reactors.Add(new StringListWrapper() {
-                stringList = ConvertCardListToStringList(reactor.GetComponent<ReactorScript>().cardList)
+                stringList = ConvertCardListToStringList(reactorScript.cardList)
             });
         }
 
@@ -201,7 +201,11 @@ public class StateLoader : MonoBehaviour
             }
         }
 
-        ReactorScoreSetScript.Instance.SetReactorScore();
+        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        {
+            reactorScript.SetReactorScore();
+        }
+
         UtilsScript.Instance.UpdateActions(state.actions, startingGame: true);
         DeckScript.Instance.UpdateDeckCounter();
     }

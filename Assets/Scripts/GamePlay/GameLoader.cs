@@ -83,8 +83,6 @@ public class GameLoader : MonoBehaviour
     {
         List<GameObject> newCards = new List<GameObject>();
 
-        string[] suitStrings = new string[] { "spades", "clubs", "diamonds", "hearts" };
-
         // order: spade ace, 2, 3... 10, jack, queen, king, clubs... diamonds... hearts
         int cardIndex = 0; // 1 - 52
         int hFSIndex; // used for assigning holograms
@@ -150,7 +148,7 @@ public class GameLoader : MonoBehaviour
 
                 // setting up the cards internal rank and suit
                 newCardScript.cardNum = rank;
-                newCardScript.suit = suitStrings[suit];
+                newCardScript.suit = Constants.suits[suit];
 
                 // setting up the in-game appearance of the card's rank color
                 newCardScript.rankObject.GetComponent<TextMesh>().color = rankColor;
@@ -158,7 +156,7 @@ public class GameLoader : MonoBehaviour
                 // setting up the in-game appearance of the card's suit
                 newCardScript.suitObject.GetComponent<SpriteRenderer>().sprite = suitSpritesToUse[suit];
 
-                newCard.name = $"Card: {rank}, {suitStrings[suit]}";
+                newCard.name = $"Card: {rank}, {Constants.suits[suit]}";
                 newCards.Add(newCard);
                 cardIndex += 1;
             }
@@ -171,13 +169,13 @@ public class GameLoader : MonoBehaviour
     {
         List<GameObject> cards = new List<GameObject>();
 
-        foreach (GameObject foundation in UtilsScript.Instance.foundations)
+        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
-            cards.AddRange(foundation.GetComponent<FoundationScript>().cardList);
+            cards.AddRange(foundationScript.cardList);
         }
-        foreach (GameObject reactor in UtilsScript.Instance.reactors)
+        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
         {
-            cards.AddRange(reactor.GetComponent<ReactorScript>().cardList);
+            cards.AddRange(reactorScript.cardList);
         }
         cards.AddRange(DeckScript.Instance.cardList);
         cards.AddRange(WastepileScript.Instance.cardList);
@@ -207,7 +205,12 @@ public class GameLoader : MonoBehaviour
         Config.Instance.actions = 0;
         UtilsScript.Instance.UpdateActions(0, startingGame: true);
 
-        ReactorScoreSetScript.Instance.SetToDefault();
+        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        {
+            reactorScript.SetReactorScore(0);
+            reactorScript.AlertOff();
+        }
+
         ActionCountScript.Instance.TurnSirenOff();
 
         cards = ShuffleCards(cards);
@@ -237,19 +240,19 @@ public class GameLoader : MonoBehaviour
     private List<GameObject> SetUpFoundations(List<GameObject> cards)
     {
         CardScript currentCardScript;
-        foreach (GameObject foundation in UtilsScript.Instance.foundations)
+        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
             for (int i = 0; i < Config.GameValues.foundationStartingSize - 1; i++)
             {
                 currentCardScript = cards[0].GetComponent<CardScript>();
-                currentCardScript.MoveCard(foundation, doLog: false, showHolo: false);
+                currentCardScript.MoveCard(foundationScript.gameObject, doLog: false, showHolo: false);
                 currentCardScript.SetFoundationVisibility(false);
                 cards.RemoveAt(0);
             }
 
             // adding and revealing the top card of the foundation
             currentCardScript = cards[0].GetComponent<CardScript>();
-            currentCardScript.MoveCard(foundation, doLog: false);
+            currentCardScript.MoveCard(foundationScript.gameObject, doLog: false);
             cards.RemoveAt(0);
         }
 

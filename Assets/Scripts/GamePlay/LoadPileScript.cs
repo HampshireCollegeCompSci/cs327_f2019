@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class LoadPileScript : MonoBehaviour
+public class LoadPileScript : MonoBehaviour, ICardContainer
 {
     public List<GameObject> cardList;
 
@@ -29,5 +29,10 @@ public class LoadPileScript : MonoBehaviour
     public void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
+    }
+
+    public void ProcessAction(GameObject input)
+    {
+        throw new System.NotImplementedException();
     }
 }

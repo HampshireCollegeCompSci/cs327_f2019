@@ -2486,7 +2486,7 @@ MonoBehaviour:
   continuing: 0
   prettyColors: 0
   currentDifficulty: 
-  maxReactorVal: 0
+  reactorLimit: 0
   actionMax: 0
   gamePaused: 0
   gameOver: 0

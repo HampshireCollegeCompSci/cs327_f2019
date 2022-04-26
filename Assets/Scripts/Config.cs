@@ -13,8 +13,7 @@ public class Config : MonoBehaviour
     public bool prettyColors;
 
     public string currentDifficulty;
-    public int maxReactorVal;
-    public int maxReactorValMinus1;
+    public int reactorLimit;
     public int actionMax;
 
     // game values
@@ -65,8 +64,17 @@ public class Config : MonoBehaviour
 
         // Colors need to be reconstructed
         GameValues.cardObstructedColor = CreateColor(GameValues.cardObstructedColorValues);
-        GameValues.cardMoveHighlightColor = CreateColor(GameValues.cardMoveHighlightColorValues);
-        GameValues.cardMatchHighlightColor = CreateColor(GameValues.cardMatchHighlightColorValues);
+
+        GameValues.matchHighlightColor = CreateColor(GameValues.matchHighlightColorValues);
+        GameValues.moveHighlightColor = CreateColor(GameValues.moveHighlightColorValues);
+        GameValues.overHighlightColor = CreateColor(GameValues.overHighlightColorValues);
+        GameValues.highlightColors = new Color[] {
+            Color.white,
+            GameValues.matchHighlightColor,
+            GameValues.moveHighlightColor,
+            GameValues.overHighlightColor
+        };
+
         GameValues.pointColor = CreateColor(GameValues.pointColorValues);
         GameValues.tutorialObjectHighlightColor = CreateColor(GameValues.tutorialObjectHighlightColorValues);
     }
@@ -79,8 +87,7 @@ public class Config : MonoBehaviour
     public void SetDifficulty(int dif)
     {
         currentDifficulty = GameValues.difficulties[dif];
-        maxReactorVal = GameValues.reactorLimits[dif];
-        maxReactorValMinus1 = maxReactorVal - 1;
+        reactorLimit = GameValues.reactorLimits[dif];
         actionMax = GameValues.moveLimits[dif];
     }
 

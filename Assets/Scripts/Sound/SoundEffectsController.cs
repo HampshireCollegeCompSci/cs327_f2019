@@ -176,22 +176,24 @@ public class SoundEffectsController : MonoBehaviour
 
     public void FoodMatch(string suit)
     {
-        if (suit == "hearts")
+        switch (suit)
         {
-            soundController.PlayOneShot(mushroomSound, 1);
+            case Constants.heartsSuit:
+                soundController.PlayOneShot(mushroomSound, 1);
+                break;
+            case Constants.diamondsSuit:
+                soundController.PlayOneShot(bugSound, 1);
+                break;
+            case Constants.spadesSuit:
+                soundController.PlayOneShot(rockSound, 1);
+                break;
+            case Constants.clubsSuit:
+                soundController.PlayOneShot(fruitSound, 1);
+                break;
+            default:
+                throw new System.Exception($"{suit} isn't a suit!");
         }
-        if (suit == "diamonds")
-        {
-            soundController.PlayOneShot(bugSound, 0.6f);
-        }
-        if (suit == "spades")
-        {
-            soundController.PlayOneShot(rockSound, 1.8f);
-        }
-        if (suit == "clubs")
-        {
-            soundController.PlayOneShot(fruitSound, 1.2f);
-        }
+
         VibrateMedium();
     }
 

@@ -1,42 +1,56 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class FoundationScript : MonoBehaviour
+public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
 {
     public List<GameObject> cardList;
-    private SpriteRenderer sp;
-    private bool isGlowing;
+
+    private SpriteRenderer spriteRenderer;
 
     void Start()
     {
-        sp = gameObject.GetComponent<SpriteRenderer>();
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
     }
 
-    public void AddCard(GameObject card, bool showHolo = true)
+    public void AddCard(GameObject card, bool showHolo)
+    {
+        AddCard(card);
+
+        if (showHolo)
+        {
+            card.GetComponent<CardScript>().ShowHologram();
+        }
+    }
+
+    public void AddCard(GameObject card)
     {
         if (cardList.Count != 0)
+        {
             cardList[0].GetComponent<CardScript>().HideHologram();
+        }
 
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
 
-        if (showHolo)
-            cardList[0].GetComponent<CardScript>().ShowHologram();
-
         SetCardPositions();
     }
 
-    public void RemoveCard(GameObject card, bool showHolo = true)
+    public void RemoveCard(GameObject card, bool showHolo)
+    {
+        RemoveCard(card);
+        if (cardList.Count != 0 && showHolo)
+        {
+            cardList[0].GetComponent<CardScript>().ShowHologram();
+        }
+    }
+
+    public void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
 
-        if (cardList.Count != 0)
+        if (cardList.Count != 0 && cardList[0].gameObject.GetComponent<CardScript>().IsHidden)
         {
-            if (cardList[0].gameObject.GetComponent<CardScript>().IsHidden)
-                cardList[0].gameObject.GetComponent<CardScript>().SetFoundationVisibility(true);
-
-            if (showHolo)
-                cardList[0].GetComponent<CardScript>().ShowHologram();
+            cardList[0].gameObject.GetComponent<CardScript>().SetFoundationVisibility(true);
         }
 
         SetCardPositions();
@@ -47,7 +61,7 @@ public class FoundationScript : MonoBehaviour
         float zOffset = -0.1f;
         int hiddenCards = 0;
         float yOffset = 0;
-
+        
         int count = cardList.Count;
         for (int i = count - 1; i >= 0; i--) // go backwards through the list
         {
@@ -83,39 +97,46 @@ public class FoundationScript : MonoBehaviour
         }
     }
 
-    public void GlowOn(bool move = true)
+    private bool _glowing;
+    public bool Glowing
     {
-        if (isGlowing && move) return;
-
-        if (move)
+        get { return _glowing; }
+        set
         {
-            sp.color = Color.yellow;
-            isGlowing = true;
+            if (value && !_glowing)
+            {
+                _glowing = true;
+            }
+            else if (!value && _glowing)
+            {
+                _glowing = false;
+                GlowLevel = Constants.defaultHighlightColorLevel;
+            }
         }
-        else
+    }
+
+    private byte _glowLevel;
+    public byte GlowLevel
+    {
+        get { return _glowLevel; }
+        set
         {
-            // will turn glowing on but not set the flag for it
-            sp.color = Color.cyan;
-            isGlowing = false;
+            if (value != _glowLevel)
+            {
+                _glowLevel = value;
+                spriteRenderer.color = Config.GameValues.highlightColors[value];
+            }
+
+            Glowing = true;
         }
     }
 
-    public void GlowOff()
+    public void GlowForGameEnd()
     {
-        if (!isGlowing) return;
-
-        isGlowing = false;
-        sp.color = Color.white;
-    }
-
-    public bool IsGlowing()
-    {
-        return isGlowing;
-    }
-
-    public Color GetGlowColor()
-    {
-        return sp.color;
+        // will turn glowing on but not set the flag for it
+        // so that it will not be turned off later
+        spriteRenderer.color = Color.cyan;
+        _glowing = false;
     }
 
     public void ProcessAction(GameObject input)

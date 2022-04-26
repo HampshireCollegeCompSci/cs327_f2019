@@ -5,7 +5,6 @@ public static class Constants
     // Game Values
     public const string gameValuesPath = "GameConfigurations/gameValues";
 
-
     // Save States
     public const string saveStatePathInEditor = "Assets/Resources/GameStates/";
     public const string saveStateFileName = "saveState";
@@ -22,6 +21,18 @@ public static class Constants
 
     // Other
     public static readonly bool inEditor = Application.isEditor;
+
+    // Begin Keys
+    // Summary stats
+    public const string highScoreKey = "HighScore";
+    public const string leastMovesKey = "LeastMoves";
+
+    // Settings
+    public const string soundEffectsVolumeKey = "SoundEffectsVolume";
+    public const string musicVolumeKey = "MusicVolume";
+    public const string vibrationEnabledKey = "VibrationEnabled";
+    public const string foodSuitsEnabledKey = "FoodSuitsEnabled";
+    // End Keys
 
     // Scenes
     public const string mainMenuScene = "MainMenuScene";
@@ -44,6 +55,13 @@ public static class Constants
     public const string matchedPileTag = "MatchedPile";
     public const string loadPileTag= "LoadPile";
 
+    // Card Suits
+    public const string spadesSuit = "spades";
+    public const string clubsSuit = "clubs";
+    public const string diamondsSuit = "diamonds";
+    public const string heartsSuit = "hearts";
+    public static readonly string[] suits = { spadesSuit , clubsSuit , diamondsSuit , heartsSuit };
+
     // Log moves
     public const string stackLogMove = "stack";
     public const string moveLogMove = "move";
@@ -52,14 +70,9 @@ public static class Constants
     public const string cycleLogMove = "cycle";
     public const string deckresetLogMove = "deckreset";
 
-    // Keys
-    // Summary stats
-    public const string highScoreKey = "HighScore";
-    public const string leastMovesKey = "LeastMoves";
-
-    // Settings
-    public const string soundEffectsVolumeKey = "SoundEffectsVolume";
-    public const string musicVolumeKey = "MusicVolume";
-    public const string vibrationEnabledKey = "VibrationEnabled";
-    public const string foodSuitsEnabledKey = "FoodSuitsEnabled";
+    // Card Levels
+    public const byte defaultHighlightColorLevel = 0;
+    public const byte matchHighlightColorLevel = 1;
+    public const byte moveHighlightColorLevel = 2;
+    public const byte overHighlightColorLevel = 3;
 }

@@ -51,11 +51,16 @@ public class GameValues
     public float[] cardObstructedColorValues;
     public Color cardObstructedColor;
 
-    public float[] cardMoveHighlightColorValues;
-    public Color cardMoveHighlightColor;
+    public float[] matchHighlightColorValues;
+    public Color matchHighlightColor;
 
-    public float[] cardMatchHighlightColorValues;
-    public Color cardMatchHighlightColor;
+    public float[] moveHighlightColorValues;
+    public Color moveHighlightColor;
+
+    public float[] overHighlightColorValues;
+    public Color overHighlightColor;
+
+    public Color[] highlightColors;
 
     public float[] pointColorValues;
     public Color pointColor;
