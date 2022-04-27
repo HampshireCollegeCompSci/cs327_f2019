@@ -35,9 +35,4 @@ public class MatchedPileScript : MonoBehaviour, ICardContainer
         card.GetComponent<CardScript>().SetEnabled(true);
         cardList.Remove(card);
     }
-
-    public void ProcessAction(GameObject input)
-    {
-        throw new System.NotImplementedException();
-    }
 }

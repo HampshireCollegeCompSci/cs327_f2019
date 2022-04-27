@@ -241,16 +241,8 @@ public class CardScript : MonoBehaviour, IGlow
         get { return _glowing; }
         set
         {
-            if (value && !_glowing)
-            {
-                _glowing = true;
-                glow.SetActive(true);
-            }
-            else if (!value && _glowing)
-            {
-                _glowing = false;
-                glow.SetActive(false);
-            }
+            _glowing = value;
+            glow.SetActive(value);
         }
     }
 
@@ -310,6 +302,8 @@ public class CardScript : MonoBehaviour, IGlow
                 case Constants.loadPileTag:
                     LoadPileScript.Instance.RemoveCard(gameObject);
                     break;
+                default:
+                    throw new System.Exception($"the card conatainer of {container} is not supported");
             }
         }
 
@@ -380,8 +374,9 @@ public class CardScript : MonoBehaviour, IGlow
                 }
                 LoadPileScript.Instance.AddCard(gameObject);
                 break;
+            default:
+                throw new System.Exception($"the card destination of {destination} is not supported");
         }
-
         container = destination;
     }
 }

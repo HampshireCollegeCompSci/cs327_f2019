@@ -115,23 +115,6 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         }
     }
 
-    public void ProcessAction(GameObject input)
-    {
-        if (!input.CompareTag(Constants.cardTag)) return;
-
-        if (UtilsScript.Instance.selectedCards.Count != 1)
-        {
-            throw new System.ArgumentException("utils.selectedCards must be of size 1");
-        }
-
-        GameObject selectedCard = UtilsScript.Instance.selectedCards[0];
-
-        if (CardTools.CanMatch(input.GetComponent<CardScript>(), selectedCard.GetComponent<CardScript>()))
-        {
-            UtilsScript.Instance.Match(input, selectedCard);
-        }
-    }
-
     public bool OverLimitSoon()
     {
         if (CountReactorCard() + GetIncreaseOnNextCycle() > Config.Instance.reactorLimit)

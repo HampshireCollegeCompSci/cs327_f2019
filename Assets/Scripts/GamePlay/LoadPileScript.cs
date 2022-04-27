@@ -30,9 +30,4 @@ public class LoadPileScript : MonoBehaviour, ICardContainer
     {
         cardList.Remove(card);
     }
-
-    public void ProcessAction(GameObject input)
-    {
-        throw new System.NotImplementedException();
-    }
 }

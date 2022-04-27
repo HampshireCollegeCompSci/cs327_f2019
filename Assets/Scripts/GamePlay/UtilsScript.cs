@@ -7,7 +7,7 @@ public class UtilsScript : MonoBehaviour
 {
     public List<GameObject> selectedCards;
     private List<GameObject> selectedCardsCopy;
-    private int selectedCardsCopyCount;
+    private int selectedCardsCount;
 
     public GameObject matchPrefab;
     public GameObject matchPointsPrefab;
@@ -76,8 +76,12 @@ public class UtilsScript : MonoBehaviour
                 if (Input.GetMouseButtonUp(0))
                 {
                     TryToPlaceCards(GetClick());
-                    showPossibleMoves.HideMoves();
                     UnselectCards();
+
+                    if (!Config.Instance.tutorialOn)
+                    {
+                        showPossibleMoves.HideMoves();
+                    }
                 }
                 else
                 {
@@ -149,7 +153,6 @@ public class UtilsScript : MonoBehaviour
         }
 
         selectedCards.Add(inputCard);
-        //inputCardScript.SetDragging(true);
 
         StartDragging();
     }
@@ -167,7 +170,6 @@ public class UtilsScript : MonoBehaviour
         for (int i = inputCardFoundation.cardList.IndexOf(inputCard); i >= 0; i--)
         {
             selectedCards.Add(inputCardFoundation.cardList[i]);
-            //inputCardFoundation.cardList[i].GetComponent<CardScript>().SetDragging(true);
         }
 
         StartDragging();
@@ -188,7 +190,7 @@ public class UtilsScript : MonoBehaviour
 
             card.GetComponent<CardScript>().SetDragging(true);
         }
-        selectedCardsCopyCount = selectedCardsCopy.Count;
+        selectedCardsCount = selectedCardsCopy.Count;
 
         // enable dragged reactor tokens holograms
         if (selectedCards.Count == 1 && selectedCards[0].GetComponent<CardScript>().container.CompareTag(Constants.reactorTag))
@@ -211,29 +213,96 @@ public class UtilsScript : MonoBehaviour
 
     private void TryToPlaceCards(RaycastHit2D hit)
     {
+        // hit object is what the card will attempt to go into
         if (hit.collider == null) return;
-        if (hit.collider.gameObject == selectedCardsCopy[0].GetComponent<CardScript>().gameObject)
+
+        GameObject oldContainer = selectedCards[0].GetComponent<CardScript>().container;
+        GameObject newContainer = hit.collider.gameObject;
+
+        if (newContainer == selectedCardsCopy[0].GetComponent<CardScript>().gameObject)
         {
-            Debug.LogWarning("tried to place card on its own copy");
+            Debug.LogError("tried to place card on its own copy");
             return;
         }
 
-        GameObject selectedContainer = selectedCards[0].GetComponent<CardScript>().container;
-
-        switch (selectedContainer.tag)
+        // if the destination is glowing, then something can happen
+        switch (newContainer.tag)
         {
-            case Constants.wastepileTag:
-                WastepileScript.Instance.ProcessAction(hit.collider.gameObject);
+            case Constants.cardTag:
+                CardScript hitCardScript = newContainer.GetComponent<CardScript>();
+                if (hitCardScript.Glowing)
+                {
+                    if (hitCardScript.GlowLevel == Constants.matchHighlightColorLevel)
+                    {
+                        Match(selectedCards[0].GetComponent<CardScript>(), hitCardScript);
+                        OtherActions(oldContainer.tag, hitCardScript.container.tag, isMatch: true);
+                    }
+                    else
+                    {
+                        MoveAllSelectedCards(hitCardScript.container);
+                        OtherActions(oldContainer.tag, hitCardScript.container.tag);
+                    }
+                }
                 break;
             case Constants.foundationTag:
-                selectedContainer.GetComponent<FoundationScript>().ProcessAction(hit.collider.gameObject);
+                if (newContainer.GetComponent<FoundationScript>().Glowing)
+                {
+                    MoveAllSelectedCards(newContainer);
+                    OtherActions(oldContainer.tag, newContainer.tag);
+                }
                 break;
             case Constants.reactorTag:
-                selectedContainer.GetComponent<ReactorScript>().ProcessAction(hit.collider.gameObject);
+                if (newContainer.GetComponent<ReactorScript>().Glowing)
+                {
+                    MoveAllSelectedCards(newContainer);
+                    OtherActions(oldContainer.tag, newContainer.tag);
+                }
                 break;
             default:
-                Debug.Log("TryToPlaceCards detected a selected card that had a weird container");
+                Debug.LogWarning("tried to place card in an invalid object");
                 break;
+        }
+    }
+
+    private void OtherActions(string oldContainer, string newContainer, bool isMatch = false)
+    {
+        // if the card has matched into a foundation card,
+        // or if the card was from a foundation and moved into a non foundation container
+        bool checkGameOver = (isMatch && newContainer.Equals(Constants.foundationTag)) || 
+            (oldContainer.Equals(Constants.foundationTag) && !newContainer.Equals(Constants.foundationTag));
+
+        UpdateActions(isMatch ? 0 : 1, checkGameOver: checkGameOver, isMatch: isMatch);
+
+        if (!isMatch)
+        {
+            switch (newContainer)
+            {
+                case Constants.reactorTag:
+                    SoundEffectsController.Instance.CardToReactorSound();
+                    break;
+                case Constants.foundationTag:
+                    SoundEffectsController.Instance.CardStackSound();
+                    break;
+                default:
+                    throw new System.Exception("this shouldn't happen");
+            }
+        }
+    }
+
+    private void MoveAllSelectedCards(GameObject destination)
+    {
+        bool isStack = selectedCardsCount > 1;
+        if (isStack)
+        {
+            for (int i = 0; i < selectedCardsCount - 1; i++)
+            {
+                selectedCards[i].GetComponent<CardScript>().MoveCard(destination, isStack: true, showHolo: false);
+            }
+            selectedCards[^1].GetComponent<CardScript>().MoveCard(destination, isStack: true, showHolo: true);
+        }
+        else
+        {
+            selectedCards[0].GetComponent<CardScript>().MoveCard(destination);
         }
     }
 
@@ -250,7 +319,7 @@ public class UtilsScript : MonoBehaviour
         }
         selectedCards.Clear();
 
-        for (int i = 0; i < selectedCardsCopyCount; i++)
+        for (int i = 0; i < selectedCardsCount; i++)
         {
             Destroy(selectedCardsCopy[i]);
         }
@@ -268,7 +337,7 @@ public class UtilsScript : MonoBehaviour
                                                                                  1));
         Vector3 lastCardsPosition = selectedCardsCopy[0].transform.position;
         // have the rest of the tokens appear above it
-        for (int i = 1; i < selectedCardsCopyCount; i++)
+        for (int i = 1; i < selectedCardsCount; i++)
         {
             selectedCardsCopy[i].transform.position = new Vector3(lastCardsPosition.x,
                                                                   lastCardsPosition.y + Config.GameValues.draggedCardOffset,
@@ -299,7 +368,7 @@ public class UtilsScript : MonoBehaviour
             {
                 // change the dragged card hologram color to what it's hovering over
                 byte hoverOverGlowLevel = hoveringOver.GetComponent<CardScript>().GlowLevel;
-                selectedCardsCopy[selectedCardsCopyCount - 1].GetComponent<CardScript>().ChangeHologramColorLevel(hoverOverGlowLevel);
+                selectedCardsCopy[selectedCardsCount - 1].GetComponent<CardScript>().ChangeHologramColorLevel(hoverOverGlowLevel);
                 // if it's a match
                 if (hoverOverGlowLevel == 1)
                 {
@@ -328,7 +397,7 @@ public class UtilsScript : MonoBehaviour
             else if (showPossibleMoves.foundationIsGlowing && hoveringOver.CompareTag(Constants.foundationTag) &&
                 hoveringOver.GetComponent<FoundationScript>().Glowing)
             {
-                selectedCardsCopy[selectedCardsCopyCount - 1].GetComponent<CardScript>().ChangeHologramColorLevel(hoveringOver.GetComponent<FoundationScript>().GlowLevel);
+                selectedCardsCopy[selectedCardsCount - 1].GetComponent<CardScript>().ChangeHologramColorLevel(hoveringOver.GetComponent<FoundationScript>().GlowLevel);
                 changedHologramColor = true;
             }
         }
@@ -351,7 +420,7 @@ public class UtilsScript : MonoBehaviour
         // if we where hovering over a glowing token
         if (changedHologramColor)
         {
-            selectedCardsCopy[selectedCardsCopyCount - 1].GetComponent<CardScript>().ChangeHologramColorLevel(0);
+            selectedCardsCopy[selectedCardsCount - 1].GetComponent<CardScript>().ChangeHologramColorLevel(0);
             changedHologramColor = false;
         }
 
@@ -363,11 +432,8 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    public void Match(GameObject card1, GameObject card2)
+    public void Match(CardScript card1Script, CardScript card2Script)
     {
-        CardScript card1Script = card1.GetComponent<CardScript>();
-        CardScript card2Script = card2.GetComponent<CardScript>();
-
         GameObject comboHologram = selectedCardsCopy[0].GetComponent<CardScript>().hologramFood;
         comboHologram.transform.parent = null;
         comboHologram.GetComponent<SpriteRenderer>().color = Color.white;
@@ -382,7 +448,6 @@ public class UtilsScript : MonoBehaviour
 
         int points = Config.GameValues.matchPoints + (Config.Instance.consecutiveMatches * Config.GameValues.scoreMultiplier);
         UpdateScore(points);
-        UpdateActions(0, isMatch: true);
 
         SoundEffectsController.Instance.FoodMatch(card1Script.suit);
         SpaceBabyController.Instance.BabyEat();
@@ -499,6 +564,7 @@ public class UtilsScript : MonoBehaviour
 
     public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false, bool startingGame = false, bool isMatch = false)
     {
+        // so that during a game start consecutiveMatches is not set to 0 after being set from a saved game
         if (!startingGame)
         {
             if (isMatch)
@@ -514,7 +580,7 @@ public class UtilsScript : MonoBehaviour
         // so that a nextcycle trigger doesn't save the state before and after, we only need the after
         bool doSaveState = true;
 
-        // detecting if a nextcycle will be triggered
+        // detecting if the game is starting or if a nextcycle will be triggered
         if (startingGame || (!setAsValue && ((Config.Instance.actions + actionUpdate) >= Config.Instance.actionMax)))
         {
             doSaveState = false;

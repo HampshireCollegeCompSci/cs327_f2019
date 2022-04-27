@@ -130,9 +130,4 @@ public class DeckScript : MonoBehaviour, ICardContainer
             deckCounter.fontSize = 19;
         }
     }
-
-    public void ProcessAction(GameObject input)
-    {
-        throw new System.NotImplementedException();
-    }
 }
