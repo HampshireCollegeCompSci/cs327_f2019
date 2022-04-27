@@ -30,8 +30,7 @@ public class TutorialScript : MonoBehaviour
     {
         Debug.Log("starting the tutorial");
 
-        // prevent the user from interacting with anything but the tutorial
-        UtilsScript.Instance.SetInputStopped(true);
+        // prevent the user from interacting with buttons during the tutorial
         foreach (Button button in gameplayButtons)
         {
             button.interactable = false;

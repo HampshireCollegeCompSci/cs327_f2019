@@ -53,7 +53,7 @@ public class UndoScript : MonoBehaviour
      */
     public void Undo()
     {
-        if (UtilsScript.Instance.IsInputStopped())
+        if (UtilsScript.Instance.InputStopped)
             return;
 
         if (moveLog.Count != 0) //only run if there's something in the stack

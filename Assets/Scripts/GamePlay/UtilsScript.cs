@@ -20,11 +20,8 @@ public class UtilsScript : MonoBehaviour
 
     public GameObject gameUI;
     public Text score;
-    private bool dragOn;
-    private bool draggingWastepile = false;
 
-    private bool inputStopped = false;
-    private bool isNextCycle;
+    private bool dragOn;
 
     private GameObject hoveringOver;
     private bool changedHologramColor;
@@ -89,7 +86,7 @@ public class UtilsScript : MonoBehaviour
             }
             else if (Input.GetMouseButtonDown(0))
             {
-                if (IsInputStopped()) return;
+                if (InputStopped) return;
 
                 TryToSelectCards(GetClick());
 
@@ -148,8 +145,7 @@ public class UtilsScript : MonoBehaviour
 
         if (inputCardScript.container.CompareTag(Constants.wastepileTag))
         {
-            WastepileScript.Instance.DraggingCard(inputCard, true);
-            draggingWastepile = true;
+            WastepileScript.Instance.DraggingCard = true;
         }
 
         selectedCards.Add(inputCard);
@@ -180,7 +176,7 @@ public class UtilsScript : MonoBehaviour
     private void StartDragging()
     {
         dragOn = true;
-        SetInputStopped(true);
+        InputStopped = true;
 
         // make a copy of the selected cards to move around
         GameObject cardCopy;
@@ -216,6 +212,11 @@ public class UtilsScript : MonoBehaviour
     private void TryToPlaceCards(RaycastHit2D hit)
     {
         if (hit.collider == null) return;
+        if (hit.collider.gameObject == selectedCardsCopy[0].GetComponent<CardScript>().gameObject)
+        {
+            Debug.LogWarning("tried to place card on its own copy");
+            return;
+        }
 
         GameObject selectedContainer = selectedCards[0].GetComponent<CardScript>().container;
 
@@ -238,10 +239,9 @@ public class UtilsScript : MonoBehaviour
 
     private void UnselectCards()
     {
-        if (draggingWastepile)
+        if (WastepileScript.Instance.DraggingCard)
         {
-            WastepileScript.Instance.DraggingCard(selectedCards[0], false);
-            draggingWastepile = false;
+            WastepileScript.Instance.DraggingCard = false;
         }
 
         for (int i = 0; i < selectedCards.Count; i++)
@@ -257,7 +257,7 @@ public class UtilsScript : MonoBehaviour
         selectedCardsCopy.Clear();
 
         dragOn = false;
-        SetInputStopped(false);
+        InputStopped = false;
     }
 
     private void DragSelectedTokens(RaycastHit2D hit)
@@ -678,9 +678,9 @@ public class UtilsScript : MonoBehaviour
     // moves all of the top foundation cards into their appropriate reactors
     public void StartNextCycle(bool manuallyTriggered = false)
     {
-        if (!(manuallyTriggered && IsInputStopped())) // stops 2 NextCycles from happening at once
+        if (!(manuallyTriggered && InputStopped)) // stops 2 NextCycles from happening at once
         {
-            SetInputStopped(true, nextCycle: true);
+            IsNextCycle = true;
             StartCoroutine(NextCycle());
         }
     }
@@ -691,60 +691,63 @@ public class UtilsScript : MonoBehaviour
 
         foreach (FoundationScript foundationScript in foundationScripts)
         {
-            if (foundationScript.cardList.Count != 0)
+            if (foundationScript.cardList.Count == 0)
             {
-                GameObject topFoundationCard = foundationScript.cardList[0];
-                CardScript topCardScript = topFoundationCard.GetComponent<CardScript>();
+                continue;
+            }
 
-                foreach (ReactorScript reactorScript in reactorScripts)
+            GameObject topFoundationCard = foundationScript.cardList[0];
+            CardScript topCardScript = topFoundationCard.GetComponent<CardScript>();
+
+            foreach (ReactorScript reactorScript in reactorScripts)
+            {
+                if (topCardScript.suit != reactorScript.suit)
                 {
-                    if (topCardScript.suit == reactorScript.suit)
+                    continue;
+                }
+
+                topCardScript.HideHologram();
+                topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = SelectedCardsLayer;
+                topCardScript.values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = SelectedCardsLayer;
+
+                // immediately unhide the next possible top foundation card and start its hologram
+                if (foundationScript.cardList.Count > 1)
+                {
+                    CardScript nextTopFoundationCard = foundationScript.cardList[1].GetComponent<CardScript>();
+                    if (nextTopFoundationCard.IsHidden)
                     {
-                        topCardScript.HideHologram();
-                        topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = SelectedCardsLayer;
-                        topCardScript.values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = SelectedCardsLayer;
-
-                        // immediately unhide the next possible top foundation card and start its hologram
-                        if (foundationScript.cardList.Count > 1)
-                        {
-                            CardScript nextTopFoundationCard = foundationScript.cardList[1].GetComponent<CardScript>();
-                            if (nextTopFoundationCard.IsHidden)
-                            {
-                                nextTopFoundationCard.SetFoundationVisibility(true, isNotForNextCycle: false);
-                                nextTopFoundationCard.ShowHologram();
-                            }
-                        }
-
-                        Vector3 target = reactorScript.GetNextCardPosition();
-                        while (topFoundationCard.transform.position != target)
-                        {
-                            topFoundationCard.transform.position = Vector3.MoveTowards(topFoundationCard.transform.position, target,
-                                Time.deltaTime * Config.GameValues.cardsToReactorspeed);
-                            yield return null;
-                        }
-
-                        topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = GameplayLayer;
-                        topCardScript.values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = GameplayLayer;
-
-                        SoundEffectsController.Instance.CardToReactorSound();
-                        topCardScript.MoveCard(reactorScript.gameObject, isCycle: true);
-
-                        if (Config.Instance.gameOver)
-                        {
-                            Config.Instance.moveCounter += 1;
-                            yield break;
-                        }
-
-                        break;
+                        nextTopFoundationCard.SetFoundationVisibility(true, isNotForNextCycle: false);
+                        nextTopFoundationCard.ShowHologram();
                     }
                 }
+
+                Vector3 target = reactorScript.GetNextCardPosition();
+                while (topFoundationCard.transform.position != target)
+                {
+                    topFoundationCard.transform.position = Vector3.MoveTowards(topFoundationCard.transform.position, target,
+                        Time.deltaTime * Config.GameValues.cardsToReactorspeed);
+                    yield return null;
+                }
+
+                topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = GameplayLayer;
+                topCardScript.values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = GameplayLayer;
+
+                SoundEffectsController.Instance.CardToReactorSound();
+                topCardScript.MoveCard(reactorScript.gameObject, isCycle: true);
+
+                if (Config.Instance.gameOver)
+                {
+                    Config.Instance.moveCounter += 1;
+                    yield break;
+                }
+
+                break;
             }
         }
 
-        SetInputStopped(false, nextCycle: true);
+        IsNextCycle = false;
         UpdateActions(0, setAsValue: true);
     }
-
 
     private bool TryGameOver()
     {
@@ -768,30 +771,35 @@ public class UtilsScript : MonoBehaviour
         return true;
     }
 
-    public bool IsInputStopped()
+    private bool _isNextCycle;
+    private bool IsNextCycle
     {
-        return inputStopped;
-    }
-
-    public void SetInputStopped(bool setTo, bool nextCycle = false)
-    {
-        if (nextCycle)
+        get { return _isNextCycle; }
+        set
         {
-            isNextCycle = setTo;
-        }
-
-        if (isNextCycle && nextCycle)
-        {
-            inputStopped = setTo;
-        }
-        else if (!isNextCycle)
-        {
-            inputStopped = setTo;
+            if (_isNextCycle)
+            {
+                _isNextCycle = value;
+                InputStopped = value;
+            }
+            else
+            {
+                InputStopped = value;
+                _isNextCycle = value;
+            }
         }
     }
 
-    public bool IsDragging()
+    private bool _inputStopped;
+    public bool InputStopped
     {
-        return dragOn;
+        get { return _inputStopped; }
+        set
+        {
+            if (!IsNextCycle)
+            {
+                _inputStopped = value;
+            }
+        }
     }
 }

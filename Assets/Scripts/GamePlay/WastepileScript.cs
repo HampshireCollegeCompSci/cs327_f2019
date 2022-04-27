@@ -220,7 +220,7 @@ public class WastepileScript : MonoBehaviour, ICardContainer
     private void DisableScrolling()
     {
         scrollingDisabled = true;
-        UtilsScript.Instance.SetInputStopped(true);
+        UtilsScript.Instance.InputStopped = true;
 
         // disable scrolling
         scrollRect.horizontal = false;
@@ -241,21 +241,27 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         scrollRect.horizontal = true;
         //scrollRect.horizontalScrollbar.interactable = true;
 
-        UtilsScript.Instance.SetInputStopped(false);
+        UtilsScript.Instance.InputStopped = false;
         scrollingDisabled = false;
     }
 
-    public void DraggingCard(GameObject card, bool isDragging)
+    private bool _draggingCard;
+    public bool DraggingCard
     {
-        if (isDragging)
+        get { return _draggingCard; }
+        set
         {
-            scrollRect.horizontal = false;
-            //scrollRect.horizontalScrollbar.interactable = false;
-        }
-        else if (card.GetComponent<CardScript>().container == this.gameObject)
-        {
-            scrollRect.horizontal = true;
-            //scrollRect.horizontalScrollbar.interactable = true;
+            _draggingCard = value;
+            if (value)
+            {
+                scrollRect.horizontal = false;
+                //scrollRect.horizontalScrollbar.interactable = false;
+            }
+            else
+            {
+                scrollRect.horizontal = true;
+                //scrollRect.horizontalScrollbar.interactable = true;
+            }
         }
     }
 

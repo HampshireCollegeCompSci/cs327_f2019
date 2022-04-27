@@ -40,9 +40,9 @@ public class CardScript : MonoBehaviour, IGlow
         get { return isHidden; }
     }
 
-    public void SetCollider(bool enable, bool tutorialOverride = false)
+    public void SetCollider(bool enable, bool tutorialOverride = false, bool visualOnly = false)
     {
-        if (!Config.Instance.tutorialOn || tutorialOverride)
+        if (!Config.Instance.tutorialOn || tutorialOverride || visualOnly)
         {
             this.gameObject.GetComponent<BoxCollider2D>().enabled = enable;
         }
@@ -153,7 +153,7 @@ public class CardScript : MonoBehaviour, IGlow
             renderers.material.color = renderers.material.color;
         }
 
-        SetCollider(false);
+        SetCollider(false, visualOnly : true);
 
         // this shouldn't be needed but for some reason it is
         // without it, after dragging a card once any clone will match its parents color
