@@ -163,6 +163,14 @@ public class EndGame : MonoBehaviour
 
     private IEnumerator ReactorMeltdown()
     {
+        float explosionDelay = 0;
+        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        {
+            explosionDelay += reactorScript.cardList.Count;
+        }
+        explosionDelay *= 1.2f;
+        explosionDelay = 1f / explosionDelay;
+
         GameObject matchExplosion;
         bool reactorExploded;
         foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
@@ -176,7 +184,7 @@ public class EndGame : MonoBehaviour
                 yield return new WaitForSeconds(0.2f);
                 card.SetActive(false);
                 SoundEffectsController.Instance.ExplosionSound();
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForSeconds(explosionDelay);
             }
 
             if (reactorExploded)

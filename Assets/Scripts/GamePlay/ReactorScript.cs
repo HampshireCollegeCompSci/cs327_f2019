@@ -168,6 +168,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
             GlowLevel = Constants.overHighlightColorLevel;
             _glowing = false;
             AlertOn();
+            ChangeSuitGlow(3);
         }
     }
 
