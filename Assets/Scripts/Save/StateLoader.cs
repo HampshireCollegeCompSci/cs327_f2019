@@ -97,7 +97,7 @@ public class StateLoader : MonoBehaviour
         for (int i = cardList.Count - 1; i != -1; i--)
         {
             cardScriptRef = cardList[i].GetComponent<CardScript>();
-            stringList.Add($"{cardScriptRef.suit}_{cardScriptRef.cardNum}_{cardScriptRef.IsHidden}");
+            stringList.Add($"{cardScriptRef.suit}_{cardScriptRef.cardNum}_{cardScriptRef.Hidden}");
         }
 
         return stringList;
@@ -167,7 +167,7 @@ public class StateLoader : MonoBehaviour
         index = 0;
         foreach (StringListWrapper lw in state.foundations)
         {
-            SetUpLocationWithCards(lw.stringList, LoadPileScript.Instance.cardList, UtilsScript.Instance.foundations[index]);
+            SetUpLocationWithCards(lw.stringList, LoadPileScript.Instance.cardList, UtilsScript.Instance.foundations[index], isFoundation: true);
             index++;
         }
 
@@ -285,7 +285,7 @@ public class StateLoader : MonoBehaviour
         }
     }
 
-    private void SetUpLocationWithCards(List<string> stringList, List<GameObject> cardList, GameObject newLocation)
+    private void SetUpLocationWithCards(List<string> stringList, List<GameObject> cardList, GameObject newLocation, bool isFoundation = false)
     {
         // seting up the new location with cards using the given commands, and cards
 
@@ -293,7 +293,7 @@ public class StateLoader : MonoBehaviour
         string[] segments;
         string suite;
         int number;
-        bool hiddenState;
+        bool hiddenState = false;
 
         bool foundCard;
         CardScript cardScriptRef;
@@ -304,7 +304,10 @@ public class StateLoader : MonoBehaviour
             segments = s.Split('_');
             suite = segments[0];
             number = System.Int32.Parse(segments[1]);
-            hiddenState = bool.Parse(segments[2]);
+            if (isFoundation)
+            {
+                hiddenState = bool.Parse(segments[2]);
+            }
 
             // looking for the card that needs to be moved
             foundCard = false;
@@ -314,9 +317,9 @@ public class StateLoader : MonoBehaviour
                 if (cardScriptRef.cardNum == number && cardScriptRef.suit == suite)
                 {
                     cardScriptRef.MoveCard(newLocation, doLog: false, isAction: false);
-                    if (hiddenState)
+                    if (isFoundation)
                     {
-                        cardScriptRef.SetFoundationVisibility(false);
+                        cardScriptRef.Hidden = hiddenState;
                     }
 
                     foundCard = true;

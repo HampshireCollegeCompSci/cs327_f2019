@@ -65,7 +65,7 @@ public class ShowPossibleMoves
             // disable the top cards hitbox for the reactors hitbox to be on top
             // the top card can normally be clicked and dragged to match with other cards
             if (reactorMoveScript.cardList.Count != 0)
-                reactorMoveScript.cardList[0].GetComponent<CardScript>().SetCollider(false);
+                reactorMoveScript.cardList[0].GetComponent<CardScript>().HitBox = false;
 
             // if moving the card into the reactor will lose us the game
             if (reactorMoveScript.CountReactorCard() + selectedCard.GetComponent<CardScript>().cardVal >
@@ -192,7 +192,7 @@ public class ShowPossibleMoves
             // the top card can normally be clicked and dragged to match with other cards
             if (reactorMoveScript.cardList.Count != 0)
             {
-                reactorMoveScript.cardList[0].GetComponent<CardScript>().SetCollider(true);
+                reactorMoveScript.cardList[0].GetComponent<CardScript>().HitBox = true;
             }
 
             reactorMoveScript.Glowing = false;

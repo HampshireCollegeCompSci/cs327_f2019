@@ -18,7 +18,8 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
 
         if (showHolo)
         {
-            card.GetComponent<CardScript>().ShowHologram();
+            card.GetComponent<CardScript>().Hologram = true;
+            card.GetComponent<CardScript>().Interactable = true;
         }
     }
 
@@ -26,7 +27,7 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
     {
         if (cardList.Count != 0)
         {
-            cardList[0].GetComponent<CardScript>().HideHologram();
+            cardList[0].GetComponent<CardScript>().Hologram = false;
         }
 
         cardList.Insert(0, card);
@@ -40,7 +41,7 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
         RemoveCard(card);
         if (cardList.Count != 0 && showHolo)
         {
-            cardList[0].GetComponent<CardScript>().ShowHologram();
+            cardList[0].GetComponent<CardScript>().Hologram = true;
         }
     }
 
@@ -48,9 +49,9 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
     {
         cardList.Remove(card);
 
-        if (cardList.Count != 0 && cardList[0].gameObject.GetComponent<CardScript>().IsHidden)
+        if (cardList.Count != 0)
         {
-            cardList[0].gameObject.GetComponent<CardScript>().SetFoundationVisibility(true);
+            cardList[0].gameObject.GetComponent<CardScript>().Interactable = true;
         }
 
         SetCardPositions();
@@ -68,7 +69,7 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
             // as we go through, place cards above and in-front the previous one
             cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, zOffset);
 
-            if (cardList[i].GetComponent<CardScript>().IsHidden)  // don't show hidden cards as much
+            if (cardList[i].GetComponent<CardScript>().Hidden)  // don't show hidden cards as much
             {
                 hiddenCards++;
                 if (count > 16)
@@ -97,7 +98,7 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
         }
     }
 
-    private bool _glowing;
+    public bool _glowing;
     public bool Glowing
     {
         get { return _glowing; }
@@ -115,7 +116,7 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
         }
     }
 
-    private byte _glowLevel;
+    public byte _glowLevel;
     public byte GlowLevel
     {
         get { return _glowLevel; }
@@ -127,7 +128,10 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
                 spriteRenderer.color = Config.GameValues.highlightColors[value];
             }
 
-            Glowing = true;
+            if (value != Constants.defaultHighlightColorLevel)
+            {
+                Glowing = true;
+            }
         }
     }
 

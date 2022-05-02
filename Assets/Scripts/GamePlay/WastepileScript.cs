@@ -15,8 +15,6 @@ public class WastepileScript : MonoBehaviour, ICardContainer
     private ScrollRect scrollRect;
     private RectTransform contentRectTransform;
 
-    private bool scrollingDisabled;
-
     // Singleton instance.
     public static WastepileScript Instance = null;
 
@@ -46,15 +44,15 @@ public class WastepileScript : MonoBehaviour, ICardContainer
 
     IEnumerator ScrollBarAdding(List<GameObject> cards, bool doLog)
     {
-        if (!scrollingDisabled)
+        if (!Scrolling)
         {
-            DisableScrolling();
+            Scrolling = true;
         }
 
-        if (cardList.Count != 0) // hide the current top tokens hologram now
+        if (cardList.Count != 0) // hide the current top token now
         {
-            cardList[0].GetComponent<CardScript>().HideHologram();
-            cardList[0].GetComponent<SpriteRenderer>().color = Config.GameValues.cardObstructedColor;
+            cardList[0].GetComponent<CardScript>().Hologram = false;
+            cardList[0].GetComponent<CardScript>().Interactable = false;
         }
 
         Vector3 temp = contentRectTransform.anchoredPosition;
@@ -67,15 +65,12 @@ public class WastepileScript : MonoBehaviour, ICardContainer
             contentRectTransform.anchoredPosition = temp;
         }
 
-        // add the new cards, for the non-top cards:
-        // shade them differently and
-        // don't try to show their hologram
+        // add the new cards, for the non-top cards: don't try to show their hologram
         for (int i = 0; i < cards.Count - 1; i++)
         {
-            cards[i].GetComponent<CardScript>().MoveCard(gameObject, doLog, showHolo: false);
-            //cards[i].GetComponent<SpriteRenderer>().color = Config.GameValues.cardObstructedColor;
+            cards[i].GetComponent<CardScript>().MoveCard(this.gameObject, doLog, showHolo: false);
         }
-        cards[cards.Count - 1].GetComponent<CardScript>().MoveCard(gameObject, doLog);
+        cards[^1].GetComponent<CardScript>().MoveCard(gameObject, doLog);
 
         // move the scroll rect's content so that the new cards are hidden to the left side of the belt
         temp.x = cards.Count * cardSpacing;
@@ -91,7 +86,7 @@ public class WastepileScript : MonoBehaviour, ICardContainer
 
         DeckScript.Instance.StartButtonUp();
 
-        ResetScrollBar();
+        Scrolling = false;
 
         if (doLog)
         {
@@ -105,8 +100,9 @@ public class WastepileScript : MonoBehaviour, ICardContainer
 
         if (showHolo)
         {
-            card.GetComponent<CardScript>().ShowHologram();
-            card.GetComponent<CardScript>().SetCollider(true);
+            CardScript cardScript = card.GetComponent<CardScript>();
+            cardScript.Interactable = true;
+            cardScript.Hologram = true;
         }
     }
 
@@ -115,7 +111,9 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         // obstructing the top
         if (cardList.Count != 0)
         {
-            cardList[0].GetComponent<CardScript>().SetObstructed(true);
+            CardScript cardScript = cardList[0].GetComponent<CardScript>();
+            cardScript.Interactable = false;
+            cardScript.Hologram = false;
         }
 
         cardList.Insert(0, card);
@@ -145,7 +143,8 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         if (showHolo && cardList.Count != 0)
         {
             // the new top card will stay
-            cardList[0].GetComponent<CardScript>().SetObstructed(false);
+            cardList[0].GetComponent<CardScript>().Interactable = true;
+            cardList[0].GetComponent<CardScript>().Hologram = true;
         }
 
         if (undoingOrDeck || cardList.Count == 0)
@@ -166,13 +165,13 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         cardContainers.Remove(card.transform.parent.gameObject);
         card.transform.parent = null;
 
-        card.GetComponent<CardScript>().SetColor();
+        card.GetComponent<CardScript>().DefaultColor();
         cardList.Remove(card);
     }
 
     private IEnumerator ScrollBarRemoving(GameObject parentCardContainer)
     {
-        DisableScrolling();
+        Scrolling = true;
 
         // Scrolls the conveyor belt back 1 token distance
         Vector3 temp = contentRectTransform.anchoredPosition;
@@ -184,7 +183,7 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         }
 
         Destroy(parentCardContainer);
-        ResetScrollBar();
+        Scrolling = false;
     }
 
     public void StartDeckReset()
@@ -194,7 +193,7 @@ public class WastepileScript : MonoBehaviour, ICardContainer
 
     private IEnumerator DeckReset()
     {
-        DisableScrolling();
+        Scrolling = true;
 
         // move all the tokens in the conveyor belt to the left
         Vector3 temp = contentRectTransform.anchoredPosition;
@@ -213,36 +212,39 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         }
 
         yield return new WaitForSeconds(0.5f);
-
         DeckScript.Instance.Deal();
     }
 
-    private void DisableScrolling()
+    private bool _scrolling;
+    private bool Scrolling
     {
-        scrollingDisabled = true;
-        UtilsScript.Instance.InputStopped = true;
+        get { return _scrolling; }
+        set
+        {
+            _scrolling = value;
+            if (value)
+            {
+                // disable scrolling
+                scrollRect.horizontal = false;
+                // if there was a scrollbar
+                //scrollRect.horizontalScrollbar.interactable = false;
 
-        // disable scrolling
-        scrollRect.horizontal = false;
-        //scrollRect.horizontalScrollbar.interactable = false;
+                // we need unrestricted scroll for later shenanigans
+                scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
+                scrollRect.inertia = false;
+            }
+            else
+            {
+                contentRectTransform.anchoredPosition = Vector3.zero;
 
-        // we need unrestricted scroll for later shenanigans
-        scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
-        scrollRect.inertia = false;
-    }
+                scrollRect.movementType = ScrollRect.MovementType.Clamped;
+                scrollRect.inertia = true;
 
-    public void ResetScrollBar()
-    {
-        contentRectTransform.anchoredPosition = Vector3.zero;
-
-        scrollRect.movementType = ScrollRect.MovementType.Clamped;
-        scrollRect.inertia = true;
-
-        scrollRect.horizontal = true;
-        //scrollRect.horizontalScrollbar.interactable = true;
-
-        UtilsScript.Instance.InputStopped = false;
-        scrollingDisabled = false;
+                scrollRect.horizontal = true;
+                //scrollRect.horizontalScrollbar.interactable = true;
+            }
+            UtilsScript.Instance.InputStopped = value;
+        }
     }
 
     private bool _draggingCard;

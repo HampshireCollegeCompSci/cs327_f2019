@@ -25,12 +25,14 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
     {
         if (cardList.Count != 0)
         {
-            cardList[0].GetComponent<CardScript>().SetObstructed(true);
+            cardList[0].GetComponent<CardScript>().Interactable = false;
         }
 
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
-        card.GetComponent<CardScript>().HideHologram();
+        CardScript cardScript = card.GetComponent<CardScript>();
+        cardScript.Hologram = false;
+        cardScript.Interactable = true;
 
         SetCardPositions();
 
@@ -46,7 +48,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
         if (cardList.Count != 0)
         {
-            cardList[0].GetComponent<CardScript>().SetObstructed(false, showHologram: false);
+            cardList[0].GetComponent<CardScript>().Interactable = true;
         }
 
         SetCardPositions();
@@ -169,7 +171,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         }
     }
 
-    private bool _glowing;
+    public bool _glowing;
     public bool Glowing
     {
         get { return _glowing; }
@@ -191,7 +193,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         }
     }
 
-    private byte _glowLevel;
+    public byte _glowLevel;
     public byte GlowLevel
     {
         get { return _glowLevel; }

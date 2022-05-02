@@ -27,12 +27,12 @@ public class MatchedPileScript : MonoBehaviour, ICardContainer
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
         card.transform.localPosition = Vector3.zero;
-        card.GetComponent<CardScript>().SetEnabled(false);
+        card.GetComponent<CardScript>().Enabled = false;
     }
 
     public void RemoveCard(GameObject card)
     {
-        card.GetComponent<CardScript>().SetEnabled(true);
+        card.GetComponent<CardScript>().Enabled = true;
         cardList.Remove(card);
     }
 }

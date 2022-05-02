@@ -188,14 +188,14 @@ public class UtilsScript : MonoBehaviour
             cardCopy.GetComponent<CardScript>().MakeVisualOnly();
             selectedCardsCopy.Add(cardCopy);
 
-            card.GetComponent<CardScript>().SetDragging(true);
+            card.GetComponent<CardScript>().Dragging = true;
         }
         selectedCardsCount = selectedCardsCopy.Count;
 
         // enable dragged reactor tokens holograms
         if (selectedCards.Count == 1 && selectedCards[0].GetComponent<CardScript>().container.CompareTag(Constants.reactorTag))
         {
-            selectedCardsCopy[0].GetComponent<CardScript>().ShowHologram();
+            selectedCardsCopy[0].GetComponent<CardScript>().Hologram = true;
         }
 
         if (!Config.Instance.tutorialOn)
@@ -315,7 +315,7 @@ public class UtilsScript : MonoBehaviour
 
         for (int i = 0; i < selectedCards.Count; i++)
         {
-            selectedCards[i].GetComponent<CardScript>().SetDragging(false);
+            selectedCards[i].GetComponent<CardScript>().Dragging = false;
         }
         selectedCards.Clear();
 
@@ -368,7 +368,7 @@ public class UtilsScript : MonoBehaviour
             {
                 // change the dragged card hologram color to what it's hovering over
                 byte hoverOverGlowLevel = hoveringOver.GetComponent<CardScript>().GlowLevel;
-                selectedCardsCopy[selectedCardsCount - 1].GetComponent<CardScript>().ChangeHologramColorLevel(hoverOverGlowLevel);
+                selectedCardsCopy[selectedCardsCount - 1].GetComponent<CardScript>().HologramColorLevel = hoverOverGlowLevel;
                 // if it's a match
                 if (hoverOverGlowLevel == 1)
                 {
@@ -376,7 +376,7 @@ public class UtilsScript : MonoBehaviour
                     if (!hoveringOver.transform.parent.CompareTag(Constants.reactorTag))
                     {
                         // hide the hover over card food hologram
-                        hoveringOver.GetComponent<CardScript>().HideHologram();
+                        hoveringOver.GetComponent<CardScript>().Hologram = false;
                         hidFoodHologram = true;
                     }
                 }
@@ -388,7 +388,7 @@ public class UtilsScript : MonoBehaviour
                 hoveringOver.CompareTag(Constants.reactorTag) &&
                 hoveringOver.GetComponent<ReactorScript>().Glowing)
             {
-                selectedCardsCopy[0].GetComponent<CardScript>().ChangeHologramColorLevel(hoveringOver.GetComponent<ReactorScript>().GlowLevel);
+                selectedCardsCopy[0].GetComponent<CardScript>().HologramColorLevel = hoveringOver.GetComponent<ReactorScript>().GlowLevel;
                 changedHologramColor = true;
 
                 hoveringOver.GetComponent<ReactorScript>().ChangeSuitGlow(1);
@@ -397,7 +397,7 @@ public class UtilsScript : MonoBehaviour
             else if (showPossibleMoves.foundationIsGlowing && hoveringOver.CompareTag(Constants.foundationTag) &&
                 hoveringOver.GetComponent<FoundationScript>().Glowing)
             {
-                selectedCardsCopy[selectedCardsCount - 1].GetComponent<CardScript>().ChangeHologramColorLevel(hoveringOver.GetComponent<FoundationScript>().GlowLevel);
+                selectedCardsCopy[selectedCardsCount - 1].GetComponent<CardScript>().HologramColorLevel = hoveringOver.GetComponent<FoundationScript>().GlowLevel;
                 changedHologramColor = true;
             }
         }
@@ -420,14 +420,14 @@ public class UtilsScript : MonoBehaviour
         // if we where hovering over a glowing token
         if (changedHologramColor)
         {
-            selectedCardsCopy[selectedCardsCount - 1].GetComponent<CardScript>().ChangeHologramColorLevel(0);
+            selectedCardsCopy[selectedCardsCount - 1].GetComponent<CardScript>().HologramColorLevel = 0;
             changedHologramColor = false;
         }
 
         // if we where hovering over a matching glowing token
         if (hidFoodHologram)
         {
-            hoveringOver.GetComponent<CardScript>().ShowHologram();
+            hoveringOver.GetComponent<CardScript>().Hologram = true;
             hidFoodHologram = false;
         }
     }
@@ -772,7 +772,7 @@ public class UtilsScript : MonoBehaviour
                     continue;
                 }
 
-                topCardScript.HideHologram();
+                topCardScript.Hologram = false;
                 topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = SelectedCardsLayer;
                 topCardScript.values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = SelectedCardsLayer;
 
@@ -780,10 +780,9 @@ public class UtilsScript : MonoBehaviour
                 if (foundationScript.cardList.Count > 1)
                 {
                     CardScript nextTopFoundationCard = foundationScript.cardList[1].GetComponent<CardScript>();
-                    if (nextTopFoundationCard.IsHidden)
+                    if (nextTopFoundationCard.Hidden)
                     {
-                        nextTopFoundationCard.SetFoundationVisibility(true, isNotForNextCycle: false);
-                        nextTopFoundationCard.ShowHologram();
+                        nextTopFoundationCard.NextCycleReveal();
                     }
                 }
 

@@ -199,7 +199,6 @@ public class GameLoader : MonoBehaviour
         Config.Instance.gameWin = false;
 
         // these are updated visually as well
-        Config.Instance.score = 0;
         UtilsScript.Instance.UpdateScore(0, setAsValue: true);
 
         Config.Instance.actions = 0;
@@ -246,7 +245,7 @@ public class GameLoader : MonoBehaviour
             {
                 currentCardScript = cards[0].GetComponent<CardScript>();
                 currentCardScript.MoveCard(foundationScript.gameObject, doLog: false, showHolo: false);
-                currentCardScript.SetFoundationVisibility(false);
+                currentCardScript.Hidden = true;
                 cards.RemoveAt(0);
             }
 
