@@ -127,7 +127,7 @@ public class DeckScript : MonoBehaviour, ICardContainer
             {
                 deckCounter.text = "EMPTY";
             }
-            deckCounter.fontSize = 19;
+            deckCounter.fontSize = 18;
         }
     }
 }

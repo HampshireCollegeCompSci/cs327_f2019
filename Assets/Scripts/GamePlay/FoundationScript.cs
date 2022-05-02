@@ -72,11 +72,11 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
             if (cardList[i].GetComponent<CardScript>().Hidden)  // don't show hidden cards as much
             {
                 hiddenCards++;
-                if (count > 16)
+                if (count > 12)
                 {
                     yOffset += 0.02f;
                 }
-                else if (count > 12)
+                else if (count > 10)
                 {
                     yOffset += 0.07f;
                 }
@@ -85,7 +85,11 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
                     yOffset += 0.15f;
                 }
             }
-            else if (hiddenCards != 0 && count > 17)
+            else if (hiddenCards != 0 && count > 16)
+            {
+                yOffset += 0.30f;
+            }
+            else if (count - hiddenCards > 11)
             {
                 yOffset += 0.30f;
             }
