@@ -51,7 +51,12 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
 
         if (cardList.Count != 0)
         {
-            cardList[0].gameObject.GetComponent<CardScript>().Interactable = true;
+            CardScript cardScript = cardList[0].GetComponent<CardScript>();
+            if (cardScript.Hidden)
+            {
+                cardScript.Hidden = false;
+            }
+            cardScript.Interactable = !Config.Instance.tutorialOn;
         }
 
         SetCardPositions();

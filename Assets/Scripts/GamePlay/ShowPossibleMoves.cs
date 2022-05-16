@@ -18,6 +18,8 @@ public class ShowPossibleMoves
         foundationMoves = new List<GameObject>();
         cardMoves = new List<GameObject>();
         cardMatches = new List<GameObject>();
+        TokenMoveable = true;
+        ReactorInteractable = true;
     }
 
     public bool AreThingsGlowing()
@@ -30,8 +32,24 @@ public class ShowPossibleMoves
         return moveTokensAreGlowing || matchTokensAreGlowing;
     }
 
+    private bool _tokenMoveable;
+    public bool TokenMoveable
+    {
+        get { return _tokenMoveable; }
+        set { _tokenMoveable = value; }
+    }
+
+    private bool _reactorInteractable;
+    public bool ReactorInteractable
+    {
+        get { return _reactorInteractable; }
+        set { _reactorInteractable = value; }
+    }
+
     public void ShowMoves(GameObject selectedCard)
     {
+        if (!TokenMoveable) return;
+
         cardMoves.Clear();
         cardMatches.Clear();
         foundationMoves.Clear();
@@ -78,6 +96,8 @@ public class ShowPossibleMoves
                 reactorMoveScript.GlowLevel = Constants.moveHighlightColorLevel;
             }
         }
+
+        //Debug.Log($"{moveTokensAreGlowing}{matchTokensAreGlowing}{foundationIsGlowing}{reactorIsGlowing}");
     }
 
     private void FindMoves(GameObject selectedCard)
@@ -103,10 +123,13 @@ public class ShowPossibleMoves
             {
                 if (CardTools.CompareComplimentarySuits(selectedCardScript.suit, reactorScript.suit))
                 {
-                    if (reactorScript.cardList.Count != 0 &&
-                        reactorScript.cardList[0].GetComponent<CardScript>().cardNum == selectedCardScript.cardNum)
+                    if (reactorScript.cardList.Count != 0)
                     {
-                        cardMatches.Add(reactorScript.cardList[0]);
+                        CardScript cardScript = reactorScript.cardList[0].GetComponent<CardScript>();
+                        if (cardScript.Interactable && cardScript.cardNum == selectedCardScript.cardNum)
+                        {
+                            cardMatches.Add(reactorScript.cardList[0]);
+                        }
                     }
 
                     break;
@@ -114,7 +137,7 @@ public class ShowPossibleMoves
             }
 
             // if the card is not in the reactor, get the reactor that we can move into
-            if (!selectedCardScript.container.CompareTag(Constants.reactorTag))
+            if (ReactorInteractable && !selectedCardScript.container.CompareTag(Constants.reactorTag))
             {
                 foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
                 {
@@ -133,16 +156,19 @@ public class ShowPossibleMoves
             {
                 CardScript topFoundationCardScript = foundationScript.cardList[0].GetComponent<CardScript>();
 
-                // if the card can match and matches with the foundation top
-                if (cardCanBeMatched && CardTools.CanMatch(selectedCardScript, topFoundationCardScript, checkIsTop: false))
+                if (topFoundationCardScript.Interactable)
                 {
-                    cardMatches.Add(foundationScript.cardList[0]);
-                }
-                // if the card is not from a reactor can it stack?
-                else if ((cardIsFromFoundation || cardIsFromWastepile) &&
-                    topFoundationCardScript.cardNum == selectedCardScript.cardNum + 1)
-                {
-                    cardMoves.Add(foundationScript.cardList[0]);
+                    // if the card can match and matches with the foundation top
+                    if (cardCanBeMatched && CardTools.CanMatch(selectedCardScript, topFoundationCardScript, checkIsTop: false))
+                    {
+                        cardMatches.Add(foundationScript.cardList[0]);
+                    }
+                    // if the card is not from a reactor can it stack?
+                    else if ((cardIsFromFoundation || cardIsFromWastepile) &&
+                        topFoundationCardScript.cardNum == selectedCardScript.cardNum + 1)
+                    {
+                        cardMoves.Add(foundationScript.cardList[0]);
+                    }
                 }
             }
             else if (cardIsFromFoundation || cardIsFromWastepile)
@@ -155,7 +181,8 @@ public class ShowPossibleMoves
         if (cardCanBeMatched && WastepileScript.Instance.cardList.Count != 0)
         {
             GameObject topWastepileCard = WastepileScript.Instance.cardList[0];
-            if (CardTools.CanMatch(topWastepileCard.GetComponent<CardScript>(), selectedCardScript, checkIsTop: false))
+            CardScript cardScript = topWastepileCard.GetComponent<CardScript>();
+            if (cardScript.Interactable && CardTools.CanMatch(cardScript, selectedCardScript, checkIsTop: false))
             {
                 cardMatches.Add(topWastepileCard);
             }
@@ -164,6 +191,8 @@ public class ShowPossibleMoves
 
     public void HideMoves()
     {
+        if (!TokenMoveable) return;
+
         reactorIsGlowing = false;
         foundationIsGlowing = false;
         moveTokensAreGlowing = false;

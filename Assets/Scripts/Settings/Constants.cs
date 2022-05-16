@@ -17,7 +17,7 @@ public static class Constants
     // Tutorial
     public const string tutorialResourcePath = "Tutorial/";
     public const string tutorialCommandListFilePath = tutorialResourcePath + "TutorialCommandList";
-    public const string tutorialStateStartFileName = "tutorialState_0";
+    public const string tutorialStateStartFileName = "tutorialState_default";
 
     // Other
     public static readonly bool inEditor = Application.isEditor;

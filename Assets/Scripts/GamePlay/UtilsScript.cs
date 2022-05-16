@@ -28,7 +28,7 @@ public class UtilsScript : MonoBehaviour
     private bool changedSuitGlowColor;
     private bool hidFoodHologram;
 
-    private ShowPossibleMoves showPossibleMoves;
+    public ShowPossibleMoves showPossibleMoves;
 
     // Singleton instance.
     public static UtilsScript Instance = null;
@@ -69,7 +69,7 @@ public class UtilsScript : MonoBehaviour
 
     void Update()
     {
-        if (!Config.Instance.gamePaused && !Config.Instance.tutorialOn && !Config.Instance.gameOver)
+        if (!Config.Instance.gamePaused && !Config.Instance.gameOver)
         {
             if (dragOn)
             {
@@ -77,11 +77,6 @@ public class UtilsScript : MonoBehaviour
                 {
                     TryToPlaceCards(GetClick());
                     UnselectCards();
-
-                    if (!Config.Instance.tutorialOn)
-                    {
-                        showPossibleMoves.HideMoves();
-                    }
                 }
                 else
                 {
@@ -198,11 +193,8 @@ public class UtilsScript : MonoBehaviour
             selectedCardsCopy[0].GetComponent<CardScript>().Hologram = true;
         }
 
-        if (!Config.Instance.tutorialOn)
-        {
-            // show any tokens (and reactors) that we can interact with
-            showPossibleMoves.ShowMoves(selectedCards[0]);
-        }
+        // show any tokens (and reactors) that we can interact with
+        showPossibleMoves.ShowMoves(selectedCards[0]);
 
         changedHologramColor = false;
         changedSuitGlowColor = false;
@@ -327,6 +319,8 @@ public class UtilsScript : MonoBehaviour
 
         dragOn = false;
         InputStopped = false;
+
+        showPossibleMoves.HideMoves();
     }
 
     private void DragSelectedTokens(RaycastHit2D hit)
@@ -351,7 +345,7 @@ public class UtilsScript : MonoBehaviour
     private void DragGlow(RaycastHit2D hit)
     {
         // if the tutorial is not on and there is no stuff glowing, stop
-        if (!Config.Instance.tutorialOn && !showPossibleMoves.AreThingsGlowing()) return;
+        if (!showPossibleMoves.AreThingsGlowing()) return;
 
         if (hit.collider != null)
         {
@@ -744,6 +738,18 @@ public class UtilsScript : MonoBehaviour
     // moves all of the top foundation cards into their appropriate reactors
     public void StartNextCycle(bool manuallyTriggered = false)
     {
+        if (Config.Instance.tutorialOn)
+        {
+            if (Config.Instance.nextCycleEnabled)
+            {
+                Config.Instance.nextCycleEnabled = false;
+            }
+            else
+            {
+                return;
+            }
+        }
+
         if (!(manuallyTriggered && InputStopped)) // stops 2 NextCycles from happening at once
         {
             IsNextCycle = true;

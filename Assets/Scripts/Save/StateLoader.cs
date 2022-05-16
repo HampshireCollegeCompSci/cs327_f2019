@@ -22,6 +22,8 @@ public class StateLoader : MonoBehaviour
 
     public void WriteState(/*string path*/)
     {
+        if (Config.Instance.tutorialOn) return;
+
         Debug.Log("writing state");
 
         GameState gameState = new GameState() {
@@ -156,8 +158,10 @@ public class StateLoader : MonoBehaviour
             {
                 throw new System.Exception("there are no cards in the load pile");
             }
-
-            SetUpMoveLog(state.moveLog, LoadPileScript.Instance.cardList);
+            else
+            {
+                SetUpMoveLog(state.moveLog, LoadPileScript.Instance.cardList);
+            }
         }
 
         // sharing the index variable for the foundations and reactors

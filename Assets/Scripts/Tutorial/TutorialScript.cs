@@ -9,13 +9,20 @@ public class TutorialScript : MonoBehaviour
     private Queue<List<string>> commandQueue;
     private bool waiting;
 
-    public Button[] gameplayButtons;
+    public Button deckButton, undoButton, timerButton, pauseButton;
     public Button tutorialNextButton;
 
     public GameObject tutorialUIPanel, tutorialText;
     public GameObject tutorialReactors, tutorialScore, tutorialMoveCounter;
     public GameObject tutorialUndo, tutorialPause;
     public GameObject tutorialFoundations, tutorialDeck, tutorialWastePile;
+
+    // command names for switch usage
+    private const string sReactors = "REACTORS";
+    private const string sReactor = "REACTOR";
+    private const string sFoundations = "FOUNDATIONS";
+    private const string sFoundation = "FOUNDATION";
+    private const string sWastepile = "WASTEPILE";
 
     private void Awake()
     {
@@ -31,10 +38,10 @@ public class TutorialScript : MonoBehaviour
         Debug.Log("starting the tutorial");
 
         // prevent the user from interacting with buttons during the tutorial
-        foreach (Button button in gameplayButtons)
-        {
-            button.interactable = false;
-        }
+        deckButton.interactable = false;
+        undoButton.interactable = false;
+        timerButton.interactable = false;
+        pauseButton.interactable = false;
 
         // start the tutorial
         tutorialUIPanel.SetActive(true);
@@ -140,37 +147,52 @@ public class TutorialScript : MonoBehaviour
         // catches all failed attempts and logs them readably
         try
         {
-            switch (command[0].ToLower())
+            switch (command[0].ToUpper())
             {
-                case "endtutorial":
+                case "ENDTUTORIAL":
                     EndTutorial();
                     break;
-                case "waitfortouch":
+                case "WAITFORTOUCH":
                     WaitForTouch();
                     break;
-                case "loadsave":
+                case "LOADSAVE":
                     LoadSave(command);
                     break;
-                case "showtext":
-                    ShowText(command);
+                case "CHANGESHOWNTEXT":
+                    ChangeShownText(command);
                     break;
-                case "highlightobject":
-                    HighlightObject(command);
+                case "CHANGEOBJECTHIGHLIGHT":
+                    ChangeObjectHighlight(command);
                     break;
-                case "highlightcontainer":
-                    HighlightContainer(command);
+                case "CHANGECONTAINERHIGHLIGHT":
+                    ChangeContainerHighlight(command);
                     break;
-                case "highlighttoken":
-                    HighlightToken(command);
+                case "CHANGETOKENHIGHLIGHT":
+                    ChangeTokenHighlight(command);
                     break;
-                case "highlightallinteractabletokens":
-                    HighlightAllInteractableTokens();
+                case "REMOVEALLTOKENHIGHLIGHT":
+                    RemoveAllTokenHighlight();
                     break;
-                case "unhighlightalltokens":
-                    UnHighlightAllTokens();
+                case "CHANGETOKENINTERACTABLE":
+                    ChangeTokenInteractable(command);
                     break;
-                case "setmovecountertext":
-                    SetMoveCounterText(command);
+                case "CHANGEALLTOKENINTERACTABLE":
+                    ChangeAllTokenInteractable();
+                    break;
+                case "CHANGETOKENMOVEABILITY":
+                    ChangeTokenMoveability(command);
+                    break;
+                case "CHANGEREACTORINTERACTABLE":
+                    ChangeReactorInteractable(command);
+                    break;
+                case "CHANGEBUTTONINTERACTABLE":
+                    ChangeButtonInteractable(command);
+                    break;
+                case "ENABLEONENEXTCYCLE":
+                    EnableOneNextCycle();
+                    break;
+                case "CHANGEMOVECOUNTERTEXT":
+                    ChangeMoveCounterText(command);
                     break;
                 default:
                     throw new FormatException("does not contain a valid command request for command #0");
@@ -195,10 +217,12 @@ public class TutorialScript : MonoBehaviour
         Debug.Log("ending tutorial");
 
         tutorialUIPanel.SetActive(false);
-        foreach (Button button in gameplayButtons)
-        {
-            button.interactable = true;
-        }
+        UtilsScript.Instance.showPossibleMoves.TokenMoveable = true;
+
+        deckButton.interactable = true;
+        undoButton.interactable = true;
+        timerButton.interactable = true;
+        pauseButton.interactable = true;
 
         Config.Instance.tutorialOn = false;
         Config.Instance.SetDifficulty(0);
@@ -225,7 +249,7 @@ public class TutorialScript : MonoBehaviour
         Debug.Log("waiting for touch");
 
         waiting = true;
-        StartCoroutine(DelayNextButtonInteraction());
+        //StartCoroutine(DelayNextButtonInteraction());
     }
 
     private System.Collections.IEnumerator DelayNextButtonInteraction()
@@ -251,7 +275,7 @@ public class TutorialScript : MonoBehaviour
     /// <summary>
     /// Displays the text in the command on screen in the tutorial box.
     /// </summary>
-    private void ShowText(List<string> command)
+    private void ChangeShownText(List<string> command)
     {
         CheckCommandCount(command, 2);
 
@@ -263,11 +287,11 @@ public class TutorialScript : MonoBehaviour
     /// <summary>
     /// Changes the highlight state of a game object according to the given commands instructions.
     /// </summary>
-    private void HighlightObject(List<string> command)
+    private void ChangeObjectHighlight(List<string> command)
     {
         // command format: 
-        // 0:HighlightObject, 1:Object to Highlight, 2:Highlight On/Off
-        // 0:HighlightObject, 1:MANY,                2:On/Off
+        // 0:ChangeObjectHighlight, 1:Object to Highlight, 2:Highlight On/Off
+        // 0:ChangeObjectHighlight, 1:MANY,                2:On/Off
 
         Debug.Log("highlighting object");
 
@@ -277,30 +301,30 @@ public class TutorialScript : MonoBehaviour
         bool highlightOn = ParseOnOrOff(command, 2);
 
         // interpreting  1st command
-        switch (command[1].ToLower())
+        switch (command[1].ToUpper())
         {
-            case "reactors":
+            case sReactors:
                 tutorialReactors.SetActive(highlightOn);
                 break;
-            case "scoreboard":
+            case "SCOREBOARD":
                 tutorialScore.SetActive(highlightOn);
                 break;
-            case "movecounter":
+            case "MOVECOUNTER":
                 tutorialMoveCounter.SetActive(highlightOn);
                 break;
-            case "undo":
+            case "UNDO":
                 tutorialUndo.SetActive(highlightOn);
                 break;
-            case "pause":
+            case "PAUSE":
                 tutorialPause.SetActive(highlightOn);
                 break;
-            case "foundations":
+            case sFoundations:
                 tutorialFoundations.SetActive(highlightOn);
                 break;
-            case "deck":
+            case "DECK":
                 tutorialDeck.SetActive(highlightOn);
                 break;
-            case "wastepile":
+            case sWastepile:
                 tutorialWastePile.SetActive(highlightOn);
                 break;
             default:
@@ -311,11 +335,11 @@ public class TutorialScript : MonoBehaviour
     /// <summary>
     /// Changes the highlight state of a container game object (where tokens/cards reside) according to the given commands instructions.
     /// </summary>
-    private void HighlightContainer(List<string> command)
+    private void ChangeContainerHighlight(List<string> command)
     {
         // command format: 
-        // 0:HighlightContainer, 1:Container(s) to Highlight,       2:Highlight On/Off, 3:Index,   4:Highlight Color Level
-        // 0:HighlightContainer, 1:Reactor(s) or Foundation(s),     2:On/Off,           3:0-Count, 4:0-3 (inclusive)
+        // 0:ChangeContainerHighlight, 1:Container(s) to Highlight,       2:Highlight On/Off, 3:Index,   4:Highlight Color Level
+        // 0:ChangeContainerHighlight, 1:Reactor(s) or Foundation(s),     2:On/Off,           3:0-Count, 4:0-3 (inclusive)
 
         Debug.Log("highlighting container(s)");
 
@@ -331,9 +355,9 @@ public class TutorialScript : MonoBehaviour
         byte highlightColorLevel = ParseHighlightColorLevel(command, 4);
 
         // find the container
-        switch (command[1].ToLower())
+        switch (command[1].ToUpper())
         {
-            case "reactors":
+            case sReactors:
                 if (highlightOn)
                 {
                     foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
@@ -349,17 +373,22 @@ public class TutorialScript : MonoBehaviour
                     }
                 }
                 break;
-            case "reactor":
+            case sReactor:
                 if (highlightOn)
                 {
                     UtilsScript.Instance.reactorScripts[index].GlowLevel = highlightColorLevel;
+                    if (highlightColorLevel == Constants.overHighlightColorLevel)
+                    {
+                        UtilsScript.Instance.reactorScripts[index].AlertOn();
+                    }
                 }
                 else
                 {
                     UtilsScript.Instance.reactorScripts[index].Glowing = false;
+                    UtilsScript.Instance.reactorScripts[index].AlertOff();
                 }
                 break;
-            case "foundations":
+            case sFoundations:
                 if (highlightOn)
                 {
                     foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
@@ -375,7 +404,7 @@ public class TutorialScript : MonoBehaviour
                     }
                 }
                 break;
-            case "foundation":
+            case sFoundation:
                 if (highlightOn)
                 {
                     UtilsScript.Instance.foundationScripts[index].GlowLevel = highlightColorLevel;
@@ -393,11 +422,11 @@ public class TutorialScript : MonoBehaviour
     /// <summary>
     /// Changes the highlight state of a token/card game object according to the given commands instructions.
     /// </summary>
-    private void HighlightToken(List<string> command)
+    private void ChangeTokenHighlight(List<string> command)
     {
         // command format: 
-        // 0:Highlight Token, 1:Object(s) Containing Token,   2:Object Index, 3:Token Index, 4:Highlight On/Off, 5:Highlight Color Level
-        // 0:HighlightToken,  1:Reactor-Foundation-WastePile, 2:0-1-2-3,      3:0-Count,     4:On-Off,           5:0-3 (inclusive)
+        // 0:ChangeTokenHighlight, 1:Object(s) Containing Token,   2:Object Index, 3:Token Index, 4:Highlight On/Off, 5:Highlight Color Level
+        // 0:ChangeTokenHighlight,  1:Reactor-Foundation-WastePile, 2:0-1-2-3,      3:0-Count,     4:On-Off,           5:0-3 (inclusive)
 
         Debug.Log("highlighting token");
 
@@ -406,31 +435,19 @@ public class TutorialScript : MonoBehaviour
         // 2nd command
         int containerIndex = ParseContainerIndex(command, 2);
 
-        // detect if the 3rd command is valid and parse it
-        int tokenIndex;
-        try
-        {
-            tokenIndex = Int32.Parse(command[3]);
-        }
-        catch (FormatException)
-        {
-            throw new FormatException("does not contain an int for command #3");
-        }
-        if (tokenIndex < 0)
-        {
-            throw new FormatException("contains a negative int for command #3");
-        }
+        // 3rd command
+        int tokenIndex = ParseTokenIndex(command, 3);
 
-        // get if the highlight needs to turned on or off 
+        // 4th command 
         bool highlightOn = ParseOnOrOff(command, 4);
 
         // get the highlight color level
         byte highlightColorLevel = ParseHighlightColorLevel(command, 5);
 
         // find the desired token's location
-        switch (command[1].ToLower())
+        switch (command[1].ToUpper())
         {
-            case "reactor":
+            case sReactor:
                 List<GameObject> reactorCardList = UtilsScript.Instance.reactorScripts[containerIndex].cardList;
                 if (reactorCardList.Count < tokenIndex)
                 {
@@ -447,7 +464,7 @@ public class TutorialScript : MonoBehaviour
                     reactorCardList[tokenIndex].GetComponent<CardScript>().Glowing = false;
                 }
                 break;
-            case "foundation":
+            case sFoundation:
                 List<GameObject> foundationCardList = UtilsScript.Instance.foundationScripts[containerIndex].cardList;
                 if (foundationCardList.Count < tokenIndex)
                 {
@@ -463,7 +480,7 @@ public class TutorialScript : MonoBehaviour
                     foundationCardList[tokenIndex].GetComponent<CardScript>().Glowing = false;
                 }
                 break;
-            case "wastepile":
+            case sWastepile:
                 if (WastepileScript.Instance.cardList.Count < tokenIndex)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
@@ -485,52 +502,153 @@ public class TutorialScript : MonoBehaviour
     }
 
     /// <summary>
-    /// Highlights all tokens/cards that can be interacted with by the user.
+    /// Changes the interactability state of a token/card game object according to the given commands instructions.
     /// </summary>
-    private void HighlightAllInteractableTokens()
+    private void ChangeTokenInteractable(List<string> command)
     {
-        Debug.Log("highlighting all interactable tokens");
+        // command format: 
+        // 0:ChangeTokenInteractable,  1:Object(s) Containing Token,   2:Object Index, 3:Token Index, 4:Interactable On/Off
+        // 0:ChangeTokenInteractable,  1:Reactor-Foundation-WastePile, 2:0-1-2-3,      3:0-Count,     4:On-Off
 
-        // each token/card on the top of every reactor can be interacted with
+        Debug.Log("changing token interactability");
+
+        CheckCommandCount(command, 5);
+
+        // 2nd command
+        int containerIndex = ParseContainerIndex(command, 2);
+
+        // 3rd command
+        int tokenIndex = ParseTokenIndex(command, 3);
+
+        // 4th command 
+        bool interactable = ParseOnOrOff(command, 4);
+
+        // find the desired token's location
+        switch (command[1].ToUpper())
+        {
+            case sReactor:
+                ref List<GameObject> reactorCardList = ref UtilsScript.Instance.reactorScripts[containerIndex].cardList;
+                if (reactorCardList.Count < tokenIndex)
+                {
+                    throw new FormatException($"contains an out of bounds token index for command #3. " +
+                        $"there are only {reactorCardList.Count} token(s) to choose from in reactor {containerIndex}");
+                }
+                reactorCardList[tokenIndex].GetComponent<CardScript>().Interactable = interactable;
+                break;
+            case sFoundation:
+                ref List<GameObject> foundationCardList = ref UtilsScript.Instance.foundationScripts[containerIndex].cardList;
+                if (foundationCardList.Count < tokenIndex)
+                {
+                    throw new FormatException($"contains an out of bounds token index for command #3. " +
+                        $"there are only {foundationCardList.Count} token(s) to choose from in foundation {containerIndex}");
+                }
+                foundationCardList[tokenIndex].GetComponent<CardScript>().Interactable = interactable;
+                if (interactable && tokenIndex == 0)
+                {
+                    foundationCardList[0].GetComponent<CardScript>().Hologram = true;
+                }
+                break;
+            case sWastepile:
+                if (WastepileScript.Instance.cardList.Count < tokenIndex)
+                {
+                    throw new FormatException($"contains an out of bounds token index for command #3. " +
+                        $"there are only {WastepileScript.Instance.cardList.Count} token(s) to choose from in the waste pile");
+                }
+                WastepileScript.Instance.cardList[tokenIndex].GetComponent<CardScript>().Interactable = interactable;
+                if (interactable && tokenIndex == 0)
+                {
+                    WastepileScript.Instance.cardList[0].GetComponent<CardScript>().Hologram = true;
+                }
+                break;
+            default:
+                throw new FormatException("contains an invalid object that contains the token for command #1");
+        }
+    }
+
+    private void ChangeAllTokenInteractable()
+    {
+        Debug.Log("obscuring all tokens");
+
         foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
         {
+            // only the first reactor token/card is ever not obscured
             if (reactorScript.cardList.Count != 0)
             {
-                reactorScript.cardList[0].GetComponent<CardScript>().GlowLevel = Constants.moveHighlightColorLevel;
+                reactorScript.cardList[0].GetComponent<CardScript>().Interactable = false;
             }
         }
 
-        // all tokens/cards that are not hidden in the foundations can be interacted with
         foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
-            if (foundationScript.cardList.Count != 0)
-            {   
-                foreach(GameObject card in foundationScript.cardList)
-                {
-                    CardScript cardScriptRef = card.GetComponent<CardScript>();
-                    
-                    // if this token/card is hidden all subsequents will be too
-                    if (cardScriptRef.IsHidden)
-                    {
-                        break;
-                    }
-
-                    cardScriptRef.GlowLevel = Constants.moveHighlightColorLevel;
-                }
+            foreach (GameObject card in foundationScript.cardList)
+            {
+                if (card.GetComponent<CardScript>().Hidden) break;
+                card.GetComponent<CardScript>().Interactable = false;
             }
         }
 
-        // the first wastepile token/card can always be interacted with
+        // only the first wastepile token/card is ever not obscured
         if (WastepileScript.Instance.cardList.Count != 0)
         {
-            WastepileScript.Instance.cardList[0].GetComponent<CardScript>().GlowLevel = Constants.moveHighlightColorLevel;
+            WastepileScript.Instance.cardList[0].GetComponent<CardScript>().Interactable = false;
         }
+    }
+
+    private void ChangeReactorInteractable(List<string> command)
+    {
+        CheckCommandCount(command, 2);
+
+        Debug.Log($"changing reactor interactable: {command[1]}");
+
+        bool interactable = ParseOnOrOff(command, 1);
+        UtilsScript.Instance.showPossibleMoves.ReactorInteractable = interactable;
+    }
+
+    private void ChangeTokenMoveability(List<string> command)
+    {
+        CheckCommandCount(command, 2);
+
+        Debug.Log($"changing token moveability: {command[1]}");
+
+        bool moveability = ParseOnOrOff(command, 1);
+        UtilsScript.Instance.showPossibleMoves.TokenMoveable = moveability;
+    }
+
+    private void ChangeButtonInteractable(List<string> command)
+    {
+        CheckCommandCount(command, 3);
+
+        Debug.Log($"changing button interactable: {command[1]}");
+
+        bool interactable = ParseOnOrOff(command, 2);
+
+        switch (command[1].ToUpper())
+        {
+            case "DECK":
+                deckButton.interactable = interactable;
+                break;
+            case "UNDO":
+                undoButton.interactable = interactable;
+                break;
+            case "TIMER":
+                timerButton.interactable = interactable;
+                break;
+            default:
+                throw new FormatException("contains an invalid button for command #2");
+        }
+    }
+
+    private void EnableOneNextCycle()
+    {
+        Debug.Log($"enabling one next cycle");
+
+        Config.Instance.nextCycleEnabled = true;
     }
 
     /// <summary>
     /// UnHighlights all tokens/cards.
     /// </summary>
-    private void UnHighlightAllTokens()
+    private void RemoveAllTokenHighlight()
     {
         Debug.Log("unhighlighting all tokens");
 
@@ -543,6 +661,8 @@ public class TutorialScript : MonoBehaviour
             CardListGlowOff(foundationScript.cardList);
         }
         CardListGlowOff(WastepileScript.Instance.cardList);
+        CardListGlowOff(DeckScript.Instance.cardList);
+        CardListGlowOff(MatchedPileScript.Instance.cardList);
     }
 
     /// <summary>
@@ -559,7 +679,7 @@ public class TutorialScript : MonoBehaviour
     /// <summary>
     /// Sets the move counter text according to the given commands instructions.
     /// </summary>
-    private void SetMoveCounterText(List<string> command)
+    private void ChangeMoveCounterText(List<string> command)
     {
         Debug.Log("setting move counter text");
 
@@ -658,5 +778,26 @@ public class TutorialScript : MonoBehaviour
         }
 
         return parsedIndex;
+    }
+
+    /// <summary>
+    /// Parses the given command's index for a token/card index and returns it.
+    /// </summary>
+    private int ParseTokenIndex(List<string> command, byte index)
+    {
+        int tokenIndex;
+        try
+        {
+            tokenIndex = Int32.Parse(command[index]);
+        }
+        catch (FormatException)
+        {
+            throw new FormatException($"does not contain an int for command #{index}");
+        }
+        if (tokenIndex < 0)
+        {
+            throw new FormatException($"contains a negative int for command #{index}");
+        }
+        return tokenIndex;
     }
 }

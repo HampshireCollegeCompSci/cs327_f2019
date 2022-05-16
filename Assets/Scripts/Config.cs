@@ -7,7 +7,7 @@ public class Config : MonoBehaviour
     public List<Move> moveLog = new List<Move>();
 
     // game settings
-    public bool tutorialOn;
+    public bool tutorialOn, nextCycleEnabled;
     public bool continuing;
 
     public bool prettyColors;

@@ -20,6 +20,19 @@ public class CardScript : MonoBehaviour, IGlow
 
     private Color originalColor = new(1, 1, 1);
 
+    void Awake()
+    {
+        _enabled = true;
+        _hidden = false;
+        _hitBox = false;
+        _interactable = false;
+        _hologram = false;
+        _dragging = false;
+        _glowing = false;
+        _glowLevel = 0;
+        _hologramColorLevel = 0;
+    }
+
     void Start()
     {
         hologramFood.GetComponent<SpriteRenderer>().sprite = hologramFoodSprite;
@@ -46,6 +59,7 @@ public class CardScript : MonoBehaviour, IGlow
             values.SetActive(value);
             if (!value)
             {
+                _interactable = false;
                 HitBox = false;
                 Hologram = false;
             }
@@ -112,10 +126,6 @@ public class CardScript : MonoBehaviour, IGlow
             if (value)
             {
                 DefaultColor();
-                if (Hidden)
-                {
-                    Hidden = false;
-                }
             }
             else
             {

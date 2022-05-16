@@ -1,8 +1,7 @@
 {
     "wastePile": [
         "clubs_4_False",
-        "hearts_12_False",
-        "spades_13_False"
+        "hearts_12_False"
     ],
     "deck": [],
     "matches": [],
@@ -10,9 +9,7 @@
         {
             "stringList": [
                 "hearts_4_True",
-                "spades_10_True",
-                "spades_12_False"
-                
+                "spades_10_False"
             ]
         },
         {
@@ -20,44 +17,40 @@
                 "diamonds_10_True",
                 "clubs_6_True",
                 "hearts_1_False"
-                
             ]
         },
         {
             "stringList": [
                 "diamonds_8_True",
                 "spades_5_True",
-                "spades_1_False"
-                
+                "spades_1_True",
+                "hearts_2_False"
             ]
         },
         {
             "stringList": [
                 "clubs_11_True",
                 "diamonds_5_True",
-                "spades_3_False"
+                "spades_3_True",
+                "clubs_1_False"
             ]
         }
     ],
     "reactors": [
         {
+            "stringList": [
+                "spades_13_False",
+                "spades_12_False"
+            ]
+        },
+        {
             "stringList": []
         },
         {
-            "stringList": [
-                "clubs_1_False"
-            ]
+            "stringList": []
         },
         {
-            "stringList": [
-                "diamonds_6_False"
-            ]
-        },
-        {
-            "stringList": [
-                "hearts_6_False",
-                "hearts_2_False"
-            ]
+            "stringList": []
         }
     ],
     "moveLog": [],

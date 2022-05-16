@@ -140,7 +140,7 @@ public class WastepileScript : MonoBehaviour, ICardContainer
 
         RemoveCard(card);
 
-        if (showHolo && cardList.Count != 0)
+        if (!Config.Instance.tutorialOn && showHolo && cardList.Count != 0)
         {
             // the new top card will stay
             cardList[0].GetComponent<CardScript>().Interactable = true;
