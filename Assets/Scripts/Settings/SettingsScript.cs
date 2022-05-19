@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class SettingsScript : MonoBehaviour
@@ -13,6 +14,7 @@ public class SettingsScript : MonoBehaviour
     public GameObject foodSuitsToggle;
 
     public GameObject confirmObject;
+    public Button confirmYesButton;
 
     private bool lockout;
 
@@ -123,7 +125,15 @@ public class SettingsScript : MonoBehaviour
             return;
 
         SoundEffectsController.Instance.ButtonPressSound();
+        confirmYesButton.interactable = false;
         confirmObject.SetActive(true);
+        StartCoroutine(ButtonDelay());
+    }
+
+    private IEnumerator ButtonDelay()
+    {
+        yield return new WaitForSeconds(2);
+        confirmYesButton.interactable = true;
     }
 
     public void ClearRecordsConfirmationButton(bool confirm)

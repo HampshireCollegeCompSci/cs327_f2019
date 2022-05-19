@@ -79,6 +79,11 @@ public class MenuUIScript : MonoBehaviour
         button.transform.GetChild(2).GetComponent<Text>().text = text;
     }
 
+    public void ButtonPressEffect()
+    {
+        SoundEffectsController.Instance.ButtonPressSound();
+    }
+
     public void Play()
     {
         Debug.Log("MenuUI play");
@@ -109,8 +114,12 @@ public class MenuUIScript : MonoBehaviour
             continueButton.SetActive(false);
         }
         else if (SaveState.Exists())
-        {  
+        {
             continueButton.SetActive(true);
+        }
+        else
+        {
+            continueButton.SetActive(false);
         }
     }
 
@@ -119,8 +128,6 @@ public class MenuUIScript : MonoBehaviour
         Debug.Log("MenuUI new game");
 
         SoundEffectsController.Instance.ButtonPressSound();
-        mainButtons.GetComponent<CanvasGroup>().interactable = false;
-        playButtons.GetComponent<CanvasGroup>().interactable = false;
 
         Config.Instance.continuing = isContinue;
         Config.Instance.tutorialOn = isTutorial;

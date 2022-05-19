@@ -13,7 +13,6 @@ public class GameLoader : MonoBehaviour
     public Sprite[] holograms;
     public Sprite[] combinedHolograms;
 
-
     // Singleton instance.
     public static GameLoader Instance = null;
 
@@ -30,7 +29,7 @@ public class GameLoader : MonoBehaviour
         }
     }
 
-    public void LoadGame()
+    public bool LoadGame()
     {
         SetUpScene();
 
@@ -43,12 +42,24 @@ public class GameLoader : MonoBehaviour
         {
             Debug.Log("loading saved game");
             MoveCardsToLoadPile(GetNewCards());
-            StateLoader.Instance.LoadSaveState();
+
+            try
+            {
+                StateLoader.Instance.LoadSaveState();
+            }
+            catch
+            {
+                Debug.LogError("failed to load the save state");
+                SaveState.Delete();
+                return false;
+            }
         }
         else
         {
             StartNewGame(GetNewCards());
         }
+
+        return true;
     }
 
     private void SetUpScene()
@@ -107,7 +118,7 @@ public class GameLoader : MonoBehaviour
         {
             for (byte rank = 1; rank < 14; rank++) // card num: 1 - 13
             {
-                GameObject newCard = Instantiate(cardPrefab);
+                GameObject newCard = Instantiate(cardPrefab, this.gameObject.transform);
 
                 Sprite hologramFoodSprite, hologramComboSprite;
                 // setting up the cards reactor value, in-game appearance, and hologram sprites

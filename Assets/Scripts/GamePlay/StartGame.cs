@@ -2,11 +2,11 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class StartGame : MonoBehaviour
 {
-    public Camera mainCamera;
-    public AudioListener audioListener;
+    public GameObject mainCameraObject;
 
     // Singleton instance.
     public static StartGame Instance = null;
@@ -28,9 +28,8 @@ public class StartGame : MonoBehaviour
         // and there need to be only one of each
         if (StartGameSequence.Instance != null || PlayAgainSequence.Instance != null)
         {
-            Debug.Log("disabling gameplay camera and audio listener");
-            mainCamera.enabled = false;
-            audioListener.enabled = false;
+            Debug.Log("disabling gameplay camera, audio listener and event system");
+            mainCameraObject.SetActive(false);
         }
     }
 
@@ -40,7 +39,18 @@ public class StartGame : MonoBehaviour
         Config.Instance.gamePaused = true;
 
         // load the game to the point that it can be played
-        GameLoader.Instance.LoadGame();
+        if (!GameLoader.Instance.LoadGame())
+        {
+            if (StartGameSequence.Instance != null)
+            {
+                StartGameSequence.Instance.FailedToLoadGame();
+                return;
+            }
+            else
+            {
+                throw new System.Exception("a start game sequence instance doesn't exist!");
+            }
+        }
 
         // Inform that the gameplay scene is done loading
         // and try to start the transition to gameplay
@@ -60,8 +70,8 @@ public class StartGame : MonoBehaviour
 
     public void TransitionToGamePlay()
     {
-        mainCamera.enabled = true;
-        audioListener.enabled = true;
+        mainCameraObject.SetActive(true);
+        mainCameraObject.GetComponent<EventSystem>().enabled = true;
         // the alert music starts playing ASAP if triggered so make sure not to override it
         if (Config.Instance.tutorialOn)
         {

@@ -189,8 +189,6 @@ public class StateLoader : MonoBehaviour
         UtilsScript.Instance.UpdateScore(state.score, setAsValue: true);
         Config.Instance.consecutiveMatches = state.consecutiveMatches;
         Config.Instance.moveCounter = state.moveCounter;
-        Config.Instance.gameOver = false;
-        Config.Instance.gameWin = false;
         // more is done at the end
 
         // if the tutorial isn't being loaded then we need to setup the move log

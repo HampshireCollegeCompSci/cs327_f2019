@@ -9,6 +9,7 @@ public class MusicController : MonoBehaviour
 
     // Music files
     public AudioClip menuMusic, themeMusic, transitionMusic, loseMusic, winMusic, aboutMusic, tutorialMusic;
+    public AudioClip[] audioClips;
 
     // Variables to keep track of the current playing song
     private byte playingTrack;
@@ -40,6 +41,10 @@ public class MusicController : MonoBehaviour
 
     private void Start()
     {
+        audioClips = new AudioClip[7]
+        {
+            menuMusic, themeMusic, transitionMusic, loseMusic, winMusic, aboutMusic, tutorialMusic
+        };
         playingTrack = 0;
         UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.musicVolumeKey));
     }
@@ -59,10 +64,6 @@ public class MusicController : MonoBehaviour
         else if (audioSource_2.isPlaying || pausedAudioSource == 2)
         {
             audioSource_2.volume = maxVolume;
-        }
-        else
-        {
-            Debug.LogWarning("tried to update max volume on no music");
         }
     }
 
@@ -85,6 +86,23 @@ public class MusicController : MonoBehaviour
         else if (audioSource_2.isPlaying)
         {
             StartCoroutine(FadeOut(audioSource_2, fadeOutSpeedSlow));
+        }
+    }
+
+    public void FadeMusicIn()
+    {
+        StopAllCoroutines();
+        if (audioSource_1.isPlaying)
+        {
+            StartCoroutine(FadeIn(audioSource_1));
+        }
+        else if (audioSource_2.isPlaying)
+        {
+            StartCoroutine(FadeIn(audioSource_2));
+        }
+        else
+        {
+            Transition(audioClips[playingTrack - 1]);
         }
     }
 

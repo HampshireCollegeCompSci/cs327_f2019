@@ -2,11 +2,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class StartGameSequence : MonoBehaviour
 {
     public GameObject cameraObject;
+
+    public GameObject popupWindow;
+    public Button popupContinueButton;
 
     public GameObject mainButtons;
     public GameObject playButtons;
@@ -15,8 +17,9 @@ public class StartGameSequence : MonoBehaviour
     public GameObject spaceShipWindowObject;
 
     public GameObject startSequencePanel;
-    public GameObject LoadingTextObject;
+    public GameObject loadingTextObject;
 
+    private Vector3 originalPanelTransformPosition;
     private bool sequenceDone;
     private bool gameplayLoaded;
 
@@ -41,10 +44,10 @@ public class StartGameSequence : MonoBehaviour
     public void StartLoadingGame()
     {
         sequenceDone = false;
-        cameraObject.GetComponent<EventSystem>().enabled = false;
-        SceneManager.LoadSceneAsync(Constants.gameplayScene, LoadSceneMode.Additive);
         MusicController.Instance.FadeMusicOut();
+        originalPanelTransformPosition = panelTransform.position;
         StartCoroutine(FadeOutButtons());
+        SceneManager.LoadSceneAsync(Constants.gameplayScene, LoadSceneMode.Additive);
     }
 
     private IEnumerator FadeOutButtons()
@@ -65,11 +68,13 @@ public class StartGameSequence : MonoBehaviour
             yield break;
         }
 
-        while (buttonGroup.alpha != 0)
+        buttonGroup.interactable = false;
+        while (buttonGroup.alpha > 0)
         {
             buttonGroup.alpha -= Time.deltaTime * Config.GameValues.fadeOutButtonsSpeed;
             yield return null;
         }
+
         StartCoroutine(PanAndZoomTo(spaceShipWindowObject.transform.position, Config.GameValues.zoomFactor));
     }
 
@@ -77,7 +82,7 @@ public class StartGameSequence : MonoBehaviour
     {
         startSequencePanel.SetActive(true);
         Image sequenceImage = startSequencePanel.GetComponent<Image>();
-        Color startColor = sequenceImage.color;
+        Color startColor = new(0, 0, 0, 0);
         Color endColor = Color.black;
 
         positionEnd = new Vector3(-positionEnd.x * zoomFactor, -positionEnd.y * zoomFactor, positionEnd.z);
@@ -88,7 +93,6 @@ public class StartGameSequence : MonoBehaviour
         float zoomSpeed = panDistance > zoomDistance ? Config.GameValues.panAndZoomSpeed * zoomDistance / panDistance : Config.GameValues.panAndZoomSpeed;
         float panSpeed = zoomDistance > panDistance ? Config.GameValues.panAndZoomSpeed * panDistance / zoomDistance : Config.GameValues.panAndZoomSpeed;
 
-        Debug.Log("starting p&z");
         float startDistance = Vector3.Distance(panelTransform.localScale, zoomEnd);
         float distanceToEnd = startDistance;
 
@@ -105,8 +109,7 @@ public class StartGameSequence : MonoBehaviour
         sequenceDone = true;
         if (!TryEndSequence())
         {
-            LoadingTextObject.SetActive(true);
-            //SceneManager.LoadSceneAsync(Constants.gameplayScene, LoadSceneMode.Additive);
+            loadingTextObject.SetActive(true);
         }
     }
 
@@ -121,13 +124,50 @@ public class StartGameSequence : MonoBehaviour
     {
         if (gameplayLoaded && sequenceDone)
         {
-            Debug.Log("unloading menu scene");
+            Debug.Log("unloading gameplay scene");
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.gameplayScene));
-            cameraObject.GetComponent<AudioListener>().enabled = false;
+            cameraObject.SetActive(false);
             StartGame.Instance.TransitionToGamePlay();
             SceneManager.UnloadSceneAsync(Constants.mainMenuScene);
             return true;
         }
         return false;
+    }
+
+    public void FailedToLoadGame()
+    {
+        StopAllCoroutines();
+        SceneManager.UnloadSceneAsync(Constants.gameplayScene);
+        loadingTextObject.SetActive(false);
+
+        CanvasGroup buttonGroup;
+        if (mainButtons.activeSelf)
+        {
+            buttonGroup = mainButtons.GetComponent<CanvasGroup>();
+        }
+        else
+        {
+            buttonGroup = playButtons.GetComponent<CanvasGroup>();
+        }
+        buttonGroup.alpha = 1;
+        buttonGroup.interactable = true;
+
+        playButtons.SetActive(false);
+        mainButtons.SetActive(true);
+
+        panelTransform.position = originalPanelTransformPosition;
+        panelTransform.localScale = Vector3.one;
+
+        startSequencePanel.SetActive(false);
+        MusicController.Instance.FadeMusicIn();
+        popupContinueButton.interactable = false;
+        popupWindow.SetActive(true);
+        StartCoroutine(ButtonDelay());
+    }
+
+    private IEnumerator ButtonDelay()
+    {
+        yield return new WaitForSeconds(2);
+        popupContinueButton.interactable = true;
     }
 }
