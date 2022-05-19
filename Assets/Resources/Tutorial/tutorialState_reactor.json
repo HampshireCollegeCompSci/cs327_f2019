@@ -1,61 +1,68 @@
 {
     "wastePile": [
-        "clubs_4_False",
-        "hearts_12_False",
-        "spades_13_False"
+        "clubs_4",
+        "hearts_12",
+        "spades_13"
     ],
     "deck": [],
     "matches": [],
     "foundations": [
         {
-            "stringList": [
-                "hearts_4_True",
-                "spades_10_True",
-                "spades_12_False"
+            "hidden": [
+                "hearts_4",
+                "spades_10"
+            ],
+            "unhidden": [
+                "spades_12"
             ]
         },
         {
-            "stringList": [
-                "diamonds_10_True",
-                "clubs_6_True",
-                "hearts_1_True",
-                "diamonds_6_False"
+            "hidden": [
+                "diamonds_10",
+                "clubs_6",
+                "hearts_1"
+            ],
+            "unhidden": [
+                "diamonds_6"
             ]
         },
         {
-            "stringList": [
-                "diamonds_8_True",
-                "spades_5_True",
-                "spades_1_True",
-                "hearts_2_False"
+            "hidden": [
+                "diamonds_8",
+                "spades_5",
+                "spades_1"
+            ],
+            "unhidden": [
+                "hearts_2"
             ]
         },
         {
-            "stringList": [
-                "clubs_11_True",
-                "diamonds_5_True",
-                "spades_3_True",
-                "clubs_1_False"
+            "hidden": [
+                "clubs_11",
+                "diamonds_5",
+                "spades_3"
+            ],
+            "unhidden": [
+                "clubs_1"
             ]
         }
     ],
     "reactors": [
         {
-            "stringList": []
+            "cards": []
         },
         {
-            "stringList": []
+            "cards": []
         },
         {
-            "stringList": []
+            "cards": []
         },
         {
-            "stringList": [
-                "hearts_6_False"
+            "cards": [
+                "hearts_6"
             ]
         }
     ],
-    "moveLog": [],
     "score": 0,
     "consecutiveMatches": 0,
     "moveCounter": 0,

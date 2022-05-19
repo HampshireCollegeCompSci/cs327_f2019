@@ -1,60 +1,70 @@
 {
     "wastePile": [
-        "clubs_4_False",
-        "hearts_12_False"
+        "clubs_4",
+        "hearts_12"
     ],
     "deck": [],
-    "matches": [],
+    "matches": [
+        "diamonds_6",
+        "hearts_6"
+    ],
     "foundations": [
         {
-            "stringList": [
-                "hearts_4_True",
-                "spades_10_False"
+            "hidden": [
+                "hearts_4"
+            ],
+            "unhidden": [
+                "spades_10"
             ]
         },
         {
-            "stringList": [
-                "diamonds_10_True",
-                "clubs_6_True",
-                "hearts_1_False"
+            "hidden": [
+                "diamonds_10",
+                "clubs_6"
+            ],
+            "unhidden": [
+                "hearts_1"
             ]
         },
         {
-            "stringList": [
-                "diamonds_8_True",
-                "spades_5_True",
-                "spades_1_True",
-                "hearts_2_False"
+            "hidden": [
+                "diamonds_8",
+                "spades_5",
+                "spades_1"
+            ],
+            "unhidden": [
+                "hearts_2"
             ]
         },
         {
-            "stringList": [
-                "clubs_11_True",
-                "diamonds_5_True",
-                "spades_3_True",
-                "clubs_1_False"
+            "hidden": [
+                "clubs_11",
+                "diamonds_5",
+                "spades_3"
+            ],
+            "unhidden": [
+                "clubs_1"
             ]
         }
     ],
     "reactors": [
         {
-            "stringList": [
-                "spades_13_False",
-                "spades_12_False"
+            "cards": [
+                "spades_13",
+                "spades_12"
             ]
         },
         {
-            "stringList": []
+            "cards": []
         },
         {
-            "stringList": []
+            "cards": []
         },
         {
-            "stringList": []
+            "cards": []
         }
     ],
-    "moveLog": [],
-    "score": 0,
+    "score": 200,
     "consecutiveMatches": 0,
     "moveCounter": 0,
     "actions": 0,

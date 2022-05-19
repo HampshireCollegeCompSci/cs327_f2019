@@ -86,7 +86,7 @@ public class ShowPossibleMoves
                 reactorMoveScript.cardList[0].GetComponent<CardScript>().HitBox = false;
 
             // if moving the card into the reactor will lose us the game
-            if (reactorMoveScript.CountReactorCard() + selectedCard.GetComponent<CardScript>().cardVal >
+            if (reactorMoveScript.CountReactorCard() + selectedCard.GetComponent<CardScript>().cardReactorValue >
                 Config.Instance.reactorLimit)
             {
                 reactorMoveScript.GlowLevel = Constants.overHighlightColorLevel;
@@ -121,12 +121,12 @@ public class ShowPossibleMoves
             // find the one complimentary reactor and check if a top card exists and can then match
             foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
             {
-                if (CardTools.CompareComplimentarySuits(selectedCardScript.suit, reactorScript.suit))
+                if (CardTools.CompareComplimentarySuits(selectedCardScript.cardSuitIndex, reactorScript.reactorSuitIndex))
                 {
                     if (reactorScript.cardList.Count != 0)
                     {
                         CardScript cardScript = reactorScript.cardList[0].GetComponent<CardScript>();
-                        if (cardScript.Interactable && cardScript.cardNum == selectedCardScript.cardNum)
+                        if (cardScript.Interactable && cardScript.cardRank == selectedCardScript.cardRank)
                         {
                             cardMatches.Add(reactorScript.cardList[0]);
                         }
@@ -141,7 +141,7 @@ public class ShowPossibleMoves
             {
                 foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
                 {
-                    if (selectedCardScript.suit == reactorScript.suit)
+                    if (selectedCardScript.cardSuitIndex == reactorScript.reactorSuitIndex)
                     {
                         reactorMove = reactorScript.gameObject;
                         break;
@@ -165,7 +165,7 @@ public class ShowPossibleMoves
                     }
                     // if the card is not from a reactor can it stack?
                     else if ((cardIsFromFoundation || cardIsFromWastepile) &&
-                        topFoundationCardScript.cardNum == selectedCardScript.cardNum + 1)
+                        topFoundationCardScript.cardRank == selectedCardScript.cardRank + 1)
                     {
                         cardMoves.Add(foundationScript.cardList[0]);
                     }

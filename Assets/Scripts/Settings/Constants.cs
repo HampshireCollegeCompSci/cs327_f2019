@@ -56,19 +56,24 @@ public static class Constants
     public const string loadPileTag= "LoadPile";
 
     // Card Suits
+    public const byte spadesSuitIndex = 0;
+    public const byte clubsSuitIndex = 1;
+    public const byte diamondsSuitIndex = 2;
+    public const byte heartsSuitIndex = 3;
+
     public const string spadesSuit = "spades";
     public const string clubsSuit = "clubs";
     public const string diamondsSuit = "diamonds";
     public const string heartsSuit = "hearts";
-    public static readonly string[] suits = { spadesSuit , clubsSuit , diamondsSuit , heartsSuit };
+    public static readonly string[] suits = { spadesSuit, clubsSuit, diamondsSuit, heartsSuit };
 
     // Log moves
-    public const string stackLogMove = "stack";
-    public const string moveLogMove = "move";
-    public const string matchLogMove = "match";
-    public const string drawLogMove = "draw";
-    public const string cycleLogMove = "cycle";
-    public const string deckresetLogMove = "deckreset";
+    public const byte moveLogMove = 0;
+    public const byte stackLogMove = 1;
+    public const byte matchLogMove = 3;
+    public const byte drawLogMove = 4;
+    public const byte cycleLogMove = 5;
+    public const byte deckresetLogMove = 6;
 
     // Card Levels
     public const byte defaultHighlightColorLevel = 0;

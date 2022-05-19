@@ -67,16 +67,23 @@ public class DeckScript : MonoBehaviour, ICardContainer
     public void Deal(bool doLog = true)
     {
         List<GameObject> toMoveList = new List<GameObject>();
-        for (int i = 0; i < Config.GameValues.cardsToDeal; i++) // try to deal set number of cards
-        {
-            if (cardList.Count <= i) // are there no more cards in the deck?
-                break;
+        int cardCount = cardList.Count;
 
+        // try to deal set number of cards
+        for (int i = 0; i < Config.GameValues.cardsToDeal && i < cardCount; i++)
+        {
             toMoveList.Add(cardList[i]);
         }
 
         if (toMoveList.Count != 0)
+        {
+            if (Config.Instance.tutorialOn)
+            {
+                doLog = false;
+            }
+
             WastepileScript.Instance.AddCards(toMoveList, doLog);
+        }
     }
 
     public void DeckReset()

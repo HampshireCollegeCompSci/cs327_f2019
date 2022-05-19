@@ -74,7 +74,7 @@ public class TutorialScript : MonoBehaviour
     /// <summary>
     /// Creates and returns a list of commands to follow from a JSON file.
     /// </summary>
-    private static List<ArgumentListWrapper> CreateFromJSON()
+    private static List<Command> CreateFromJSON()
     {
         Debug.Log("creating list from JSON");
 
@@ -86,13 +86,13 @@ public class TutorialScript : MonoBehaviour
     /// <summary>
     /// Enqueues the command list into a queue.
     /// </summary>
-    private Queue<List<string>> CommandEnqueuer(List<ArgumentListWrapper> commandList)
+    private Queue<List<string>> CommandEnqueuer(List<Command> commandList)
     {
         Debug.Log("creating command queue");
 
-        Queue<List<string>> newQueue = new Queue<List<string>>();
+        Queue<List<string>> newQueue = new();
 
-        foreach (ArgumentListWrapper command in commandList)
+        foreach (Command command in commandList)
         {
             newQueue.Enqueue(command.argumentList);
         }
@@ -379,13 +379,13 @@ public class TutorialScript : MonoBehaviour
                     UtilsScript.Instance.reactorScripts[index].GlowLevel = highlightColorLevel;
                     if (highlightColorLevel == Constants.overHighlightColorLevel)
                     {
-                        UtilsScript.Instance.reactorScripts[index].AlertOn();
+                        UtilsScript.Instance.reactorScripts[index].Alert = true;
                     }
                 }
                 else
                 {
                     UtilsScript.Instance.reactorScripts[index].Glowing = false;
-                    UtilsScript.Instance.reactorScripts[index].AlertOff();
+                    UtilsScript.Instance.reactorScripts[index].Alert = false;
                 }
                 break;
             case sFoundations:

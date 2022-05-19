@@ -7,9 +7,13 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
 
     private SpriteRenderer spriteRenderer;
 
-    void Start()
+    public void SetUp()
     {
+        cardList = new();
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+
+        _glowing = false;
+        _glowLevel = 0;
     }
 
     public void AddCard(GameObject card, bool showHolo)

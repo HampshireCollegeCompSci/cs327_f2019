@@ -4,10 +4,11 @@ using UnityEngine;
 public class CardScript : MonoBehaviour, IGlow
 {
     public GameObject container;
-    
-    public int cardVal; //cardVal is what the card is worth to the reactor jack, queen, king are all 10
-    public int cardNum; //cardNum is the number on the card, ace is 1 jack is 11 queen is 12 king is 13
-    public string suit;
+
+    public byte cardRank; // the number on the card, ace is 1 jack is 11 queen is 12 king is 13
+    public byte cardSuitIndex;
+    public byte cardID;
+    public byte cardReactorValue; // what the card is worth to the reactor jack, queen, king are all 10
 
     public Sprite cardFrontSprite;
     public Sprite cardBackSprite;
@@ -18,10 +19,49 @@ public class CardScript : MonoBehaviour, IGlow
     public Sprite hologramFoodSprite, hologramComboSprite;
     public GameObject glow;
 
-    private Color originalColor = new(1, 1, 1);
+    private Color originalColor;
 
-    void Awake()
+    public void SetUp(byte rank, byte suitIndex, Sprite suitSprite, Sprite hologramFoodSprite, Sprite hologramComboSprite)
     {
+        cardRank = rank;
+        cardSuitIndex = suitIndex;
+
+        cardID = (byte)(rank + suitIndex * 13);
+        this.name = $"{Constants.suits[cardSuitIndex]}_{cardRank}";
+
+        // reactor values, all face cards have a value of 10
+        cardReactorValue = (byte)(rank < 10 ? rank : 10);
+
+        hologramFood.GetComponent<SpriteRenderer>().sprite = hologramFoodSprite;
+        this.hologramFoodSprite = hologramFoodSprite;
+        this.hologramComboSprite = hologramComboSprite;
+
+        // in-game appearance of the card's rank
+        TextMesh rankText = rankObject.GetComponent<TextMesh>();
+        rankText.color = suitIndex > 1 ? Color.red : Color.black;
+        rankText.text = rank switch
+        {
+            1 => "A",
+            11 => "J",
+            12 => "Q",
+            13 => "K",
+            _ => rank.ToString()
+        };
+
+        // setting up the in-game appearance of the card's suit
+        suitObject.GetComponent<SpriteRenderer>().sprite = suitSprite;
+
+        if (Config.Instance.prettyColors)
+        {
+            originalColor = new Color(Random.Range(0.4f, 1), Random.Range(0.4f, 1f), Random.Range(0.4f, 1f), 1);
+            // this needs to change
+            DefaultColor();
+        }
+        else
+        {
+            originalColor = Color.white;
+        }
+
         _enabled = true;
         _hidden = false;
         _hitBox = false;
@@ -31,18 +71,6 @@ public class CardScript : MonoBehaviour, IGlow
         _glowing = false;
         _glowLevel = 0;
         _hologramColorLevel = 0;
-    }
-
-    void Start()
-    {
-        hologramFood.GetComponent<SpriteRenderer>().sprite = hologramFoodSprite;
-
-        //if (Config.Instance.prettyColors)
-        //{
-        //    originalColor = new Color(Random.Range(0.4f, 1), Random.Range(0.4f, 1f), Random.Range(0.4f, 1f), 1);
-        //    // this needs to change
-        //    DefaultColor();
-        //}
     }
 
     public bool _enabled;
@@ -388,11 +416,11 @@ public class CardScript : MonoBehaviour, IGlow
                 {
                     if (isStack)
                     {
-                        UndoScript.Instance.LogMove(Constants.stackLogMove, gameObject, isAction, nextCardWasHidden);
+                        UndoScript.Instance.LogMove(gameObject, Constants.stackLogMove, isAction, nextCardWasHidden);
                     }
                     else
                     {
-                        UndoScript.Instance.LogMove(Constants.moveLogMove, gameObject, isAction, nextCardWasHidden);
+                        UndoScript.Instance.LogMove(gameObject, Constants.moveLogMove, isAction, nextCardWasHidden);
                     }
                 }
                 destination.GetComponent<FoundationScript>().AddCard(gameObject, showHolo: showHolo);
@@ -402,11 +430,11 @@ public class CardScript : MonoBehaviour, IGlow
                 {
                     if (isCycle)
                     {
-                        UndoScript.Instance.LogMove(Constants.cycleLogMove, gameObject, true, nextCardWasHidden);
+                        UndoScript.Instance.LogMove(gameObject, Constants.cycleLogMove, true, nextCardWasHidden);
                     }
                     else
                     {
-                        UndoScript.Instance.LogMove(Constants.moveLogMove, gameObject, isAction, nextCardWasHidden);
+                        UndoScript.Instance.LogMove(gameObject, Constants.moveLogMove, isAction, nextCardWasHidden);
                     }
                 }
                 destination.GetComponent<ReactorScript>().AddCard(gameObject);
@@ -417,11 +445,11 @@ public class CardScript : MonoBehaviour, IGlow
                     // for undoing a match that goes into the wastepile
                     if (container.CompareTag(Constants.foundationTag))
                     {
-                        UndoScript.Instance.LogMove(Constants.moveLogMove, gameObject, isAction, nextCardWasHidden);
+                        UndoScript.Instance.LogMove(gameObject, Constants.moveLogMove, isAction, nextCardWasHidden);
                     }
                     else
                     {
-                        UndoScript.Instance.LogMove(Constants.drawLogMove, gameObject, isAction);
+                        UndoScript.Instance.LogMove(gameObject, Constants.drawLogMove, isAction);
                     }
                 }
 
@@ -430,21 +458,21 @@ public class CardScript : MonoBehaviour, IGlow
             case Constants.deckTag:
                 if (doLog)
                 {
-                    UndoScript.Instance.LogMove(Constants.deckresetLogMove, gameObject, isAction);
+                    UndoScript.Instance.LogMove(gameObject, Constants.deckresetLogMove, isAction);
                 }
                 DeckScript.Instance.AddCard(gameObject);
                 break;
             case Constants.matchedPileTag:
                 if (doLog)
                 {
-                    UndoScript.Instance.LogMove(Constants.matchLogMove, gameObject, isAction, nextCardWasHidden);
+                    UndoScript.Instance.LogMove(gameObject, Constants.matchLogMove, isAction, nextCardWasHidden);
                 }
                 MatchedPileScript.Instance.AddCard(gameObject);
                 break;
             case Constants.loadPileTag:
                 if (doLog)
                 {
-                    UndoScript.Instance.LogMove(Constants.matchLogMove, gameObject, isAction, nextCardWasHidden);
+                    UndoScript.Instance.LogMove(gameObject, Constants.matchLogMove, isAction, nextCardWasHidden);
                 }
                 LoadPileScript.Instance.AddCard(gameObject);
                 break;

@@ -5,20 +5,23 @@ using UnityEngine.UI;
 public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 {
     public List<GameObject> cardList;
-    public string suit;
+    public byte reactorSuitIndex;
     public Text reactorScore;
 
     public GameObject suitGlow;
     private SpriteRenderer suitGlowSR;
     private SpriteRenderer glowSR;
 
-
-    private bool alertOn;
-
-    void Start()
+    public void SetUp(byte reactorSuitIndex)
     {
+        cardList = new();
+        this.reactorSuitIndex = reactorSuitIndex;
         suitGlowSR = suitGlow.GetComponent<SpriteRenderer>();
         glowSR = this.gameObject.GetComponent<SpriteRenderer>();
+
+        _glowing = false;
+        _glowLevel = 0;
+        _alert = false;
     }
 
     public void AddCard(GameObject card)
@@ -121,7 +124,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
     {
         if (CountReactorCard() + GetIncreaseOnNextCycle() > Config.Instance.reactorLimit)
         {
-            AlertOn();
+            Alert = true;
             return true;
         }
 
@@ -136,9 +139,9 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
             if (foundationScript.cardList.Count != 0)
             {
                 CardScript topCardScript = foundationScript.cardList[0].GetComponent<CardScript>();
-                if (topCardScript.suit == this.suit)
+                if (topCardScript.cardSuitIndex == reactorSuitIndex)
                 {
-                    output += topCardScript.cardVal;
+                    output += topCardScript.cardReactorValue;
                 }
             }
         }
@@ -152,7 +155,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         int cardListVal = cardList.Count;
         for (int i = 0; i < cardListVal; i++)
         {
-            totalSum += cardList[i].gameObject.GetComponent<CardScript>().cardVal;
+            totalSum += cardList[i].gameObject.GetComponent<CardScript>().cardReactorValue;
         }
 
         return totalSum;
@@ -167,7 +170,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
             Glowing = true;
             GlowLevel = Constants.overHighlightColorLevel;
             _glowing = false;
-            AlertOn();
+            Alert = true;
             ChangeSuitGlow(3);
         }
     }
@@ -181,13 +184,13 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
             if (value && !_glowing)
             {
                 _glowing = true;
-                RevertSuitGlow();
                 suitGlowSR.enabled = true;
                 glowSR.enabled = true;
             }
             else if (!value && _glowing)
             {
                 _glowing = false;
+                RevertSuitGlow();
                 suitGlowSR.enabled = false;
                 glowSR.enabled = false;
             }
@@ -213,20 +216,23 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         }
     }
 
-    public void AlertOn()
+    private bool _alert;
+    public bool Alert
     {
-        if (alertOn) return;
-
-        alertOn = true;
-        reactorScore.color = Color.red;
-    }
-
-    public void AlertOff()
-    {
-        if (!alertOn) return;
-
-        alertOn = false;
-        reactorScore.color = Color.black;
+        get { return _alert; }
+        set
+        {
+            if (value == _alert) return;
+            _alert = value;
+            if (value)
+            {
+                reactorScore.color = Color.red;
+            }
+            else
+            {
+                reactorScore.color = Color.black;
+            }
+        }
     }
 
     public void ChangeSuitGlow(byte level)

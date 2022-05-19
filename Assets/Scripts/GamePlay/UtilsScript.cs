@@ -443,7 +443,7 @@ public class UtilsScript : MonoBehaviour
         int points = Config.GameValues.matchPoints + (Config.Instance.consecutiveMatches * Config.GameValues.scoreMultiplier);
         UpdateScore(points);
 
-        SoundEffectsController.Instance.FoodMatch(card1Script.suit);
+        SoundEffectsController.Instance.FoodMatch(card1Script.cardSuitIndex);
         SpaceBabyController.Instance.BabyEat();
 
         StartCoroutine(FoodComboMove(comboHologram, matchExplosion));
@@ -677,7 +677,7 @@ public class UtilsScript : MonoBehaviour
                 }
                 else if (checkAgain) // try turning the glow off just in case if it already on
                 {
-                    reactorScript.AlertOff();
+                    reactorScript.Alert = false;
                 }
             }
         }
@@ -687,7 +687,7 @@ public class UtilsScript : MonoBehaviour
 
             foreach (ReactorScript reactorScript in reactorScripts)
             {
-                reactorScript.AlertOff();
+                reactorScript.Alert = false;
             }
         }
 
@@ -773,7 +773,7 @@ public class UtilsScript : MonoBehaviour
 
             foreach (ReactorScript reactorScript in reactorScripts)
             {
-                if (topCardScript.suit != reactorScript.suit)
+                if (topCardScript.cardSuitIndex != reactorScript.reactorSuitIndex)
                 {
                     continue;
                 }

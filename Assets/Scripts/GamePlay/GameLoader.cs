@@ -23,10 +23,6 @@ public class GameLoader : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-
-            // suit sprites
-            suitSpritesToUse = GetSuitSprites();
-            SetRectorSuitSprites(suitSpritesToUse);
         }
         else if (Instance != this)
         {
@@ -36,6 +32,8 @@ public class GameLoader : MonoBehaviour
 
     public void LoadGame()
     {
+        SetUpScene();
+
         // Figure out what kinda game to start
         if (Config.Instance.tutorialOn)
         {
@@ -51,6 +49,26 @@ public class GameLoader : MonoBehaviour
         {
             StartNewGame(GetNewCards());
         }
+    }
+
+    private void SetUpScene()
+    {
+        // suit sprites
+        suitSpritesToUse = GetSuitSprites();
+        SetRectorSuitSprites(suitSpritesToUse);
+
+        byte suitIndex = 0;
+        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        {
+            reactorScript.SetUp(suitIndex);
+            suitIndex++;
+        }
+        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+        {
+            foundationScript.SetUp();
+        }
+
+        StateLoader.Instance.SetUp();
     }
 
     public void LoadTutorial(string fileName, bool gameStart = false)
@@ -81,85 +99,35 @@ public class GameLoader : MonoBehaviour
 
     private List<GameObject> GetNewCards()
     {
-        List<GameObject> newCards = new List<GameObject>();
+        List<GameObject> newCards = new();
 
         // order: spade ace, 2, 3... 10, jack, queen, king, clubs... diamonds... hearts
-        int cardIndex = 0; // 1 - 52
-        int hFSIndex; // used for assigning holograms
-        int rank;
-        Color rankColor = Color.black;
-        for (int suit = 0; suit < 4; suit++) // order: spades, clubs, diamonds, hearts
+        int hFSIndex = 0; // used for assigning holograms
+        for (byte suit = 0; suit < 4; suit++) // order: spades, clubs, diamonds, hearts
         {
-            if (suit == 2)
-                rankColor = Color.red;
-
-            hFSIndex = suit * 5;
-
-            for (rank = 1; rank < 14; rank++) // card num: 1 - 13
+            for (byte rank = 1; rank < 14; rank++) // card num: 1 - 13
             {
                 GameObject newCard = Instantiate(cardPrefab);
-                CardScript newCardScript = newCard.GetComponent<CardScript>();
 
+                Sprite hologramFoodSprite, hologramComboSprite;
                 // setting up the cards reactor value, in-game appearance, and hologram sprites
                 if (rank < 10)
                 {
-                    // reactor value
-                    newCardScript.cardVal = rank;
-
-                    // in-game appearance of the card's rank
-                    if (rank == 1)
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = "A";
-                    else
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = rank.ToString();
-
-                    // basic hologram shown
-                    newCardScript.hologramFoodSprite = holograms[hFSIndex];
-
-                    // hologram shown during match
-                    if (suit < 2)
-                        newCardScript.hologramComboSprite = combinedHolograms[0];
-                    else
-                        newCardScript.hologramComboSprite = combinedHolograms[5];
+                    hologramFoodSprite = holograms[hFSIndex];
+                    hologramComboSprite = suit < 2 ? combinedHolograms[0] : combinedHolograms[5];
                 }
                 else
                 {
-                    // reactor value, all face cards have a value of 10
-                    newCardScript.cardVal = 10;
-
-                    // in-game appearance of the card's rank
-                    if (rank == 10)
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = "10";
-                    else if (rank == 11)
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = "J";
-                    else if (rank == 12)
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = "Q";
-                    else
-                        newCardScript.rankObject.GetComponent<TextMesh>().text = "K";
-
+                    hFSIndex++;
                     // all cards >10 have fancy holograms, this is a complex way of assigning them
-                    newCardScript.hologramFoodSprite = holograms[rank - (9 - hFSIndex)];
-
-                    // cards >10 have fancy holograms for matching as well
-                    if (suit < 2)
-                        newCardScript.hologramComboSprite = combinedHolograms[rank - 9];
-                    else
-                        newCardScript.hologramComboSprite = combinedHolograms[rank - 4];
+                    hologramFoodSprite = holograms[hFSIndex];
+                    hologramComboSprite = suit < 2 ? combinedHolograms[rank - 9] : combinedHolograms[rank - 4];
                 }
-
-                // setting up the cards internal rank and suit
-                newCardScript.cardNum = rank;
-                newCardScript.suit = Constants.suits[suit];
-
-                // setting up the in-game appearance of the card's rank color
-                newCardScript.rankObject.GetComponent<TextMesh>().color = rankColor;
-
-                // setting up the in-game appearance of the card's suit
-                newCardScript.suitObject.GetComponent<SpriteRenderer>().sprite = suitSpritesToUse[suit];
-
-                newCard.name = $"Card: {rank}, {Constants.suits[suit]}";
+                
+                newCard.GetComponent<CardScript>().SetUp(rank, suit, suitSpritesToUse[suit], hologramFoodSprite, hologramComboSprite);
                 newCards.Add(newCard);
-                cardIndex += 1;
             }
+            hFSIndex++;
         }
 
         return newCards;
@@ -189,7 +157,7 @@ public class GameLoader : MonoBehaviour
         // the game difficultuy should already be set to what is desired for things to work properly
 
         // remove old stuff
-        UndoScript.Instance.moveLog.Clear();
+        UndoScript.Instance.ClearMoveLog();
         SaveState.Delete();
 
         // reset game values
@@ -207,7 +175,7 @@ public class GameLoader : MonoBehaviour
         foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
         {
             reactorScript.SetReactorScore(0);
-            reactorScript.AlertOff();
+            reactorScript.Alert = false;
         }
 
         ActionCountScript.Instance.TurnSirenOff();

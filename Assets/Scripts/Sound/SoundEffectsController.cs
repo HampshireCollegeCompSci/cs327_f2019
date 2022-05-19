@@ -174,20 +174,20 @@ public class SoundEffectsController : MonoBehaviour
         VibrateSmall();
     }
 
-    public void FoodMatch(string suit)
+    public void FoodMatch(byte suit)
     {
         switch (suit)
         {
-            case Constants.heartsSuit:
+            case Constants.heartsSuitIndex:
                 soundController.PlayOneShot(mushroomSound, 1);
                 break;
-            case Constants.diamondsSuit:
+            case Constants.diamondsSuitIndex:
                 soundController.PlayOneShot(bugSound, 1);
                 break;
-            case Constants.spadesSuit:
+            case Constants.spadesSuitIndex:
                 soundController.PlayOneShot(rockSound, 1);
                 break;
-            case Constants.clubsSuit:
+            case Constants.clubsSuitIndex:
                 soundController.PlayOneShot(fruitSound, 1);
                 break;
             default:
