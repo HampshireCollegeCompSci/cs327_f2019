@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class SoundEffectsController : MonoBehaviour
+public class SoundEffectsController : MonoBehaviour, ISound
 {
     // Audio players component
     public AudioSource soundController;

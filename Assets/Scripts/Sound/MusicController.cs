@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class MusicController : MonoBehaviour
+public class MusicController : MonoBehaviour, ISound
 {
     // Audio players components
     public AudioSource audioSource_1;
@@ -12,7 +12,6 @@ public class MusicController : MonoBehaviour
     public AudioClip[] audioClips;
 
     // Variables to keep track of the current playing song
-    private byte playingTrack;
     private byte pausedAudioSource;
 
     private float fadeInSpeed;
@@ -45,7 +44,7 @@ public class MusicController : MonoBehaviour
         {
             menuMusic, themeMusic, transitionMusic, loseMusic, winMusic, aboutMusic, tutorialMusic
         };
-        playingTrack = 0;
+        _playingTrack = byte.MaxValue;
         UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.musicVolumeKey));
     }
 
@@ -76,6 +75,24 @@ public class MusicController : MonoBehaviour
         fadeOutSpeedSlow = (float)(Config.GameValues.musicFadeOutSlow * audioDifference);
     }
 
+    private byte _playingTrack;
+    private byte PlayingTrack
+    {
+        get { return _playingTrack; }
+        set
+        {
+            if (value == _playingTrack)
+            {
+                PlayMusic();
+                return;
+            }
+
+            _playingTrack = value;
+            Transition(audioClips[value]);
+        }
+    }
+
+
     public void FadeMusicOut()
     {
         StopAllCoroutines();
@@ -102,7 +119,7 @@ public class MusicController : MonoBehaviour
         }
         else
         {
-            Transition(audioClips[playingTrack - 1]);
+            Transition(audioClips[PlayingTrack]);
         }
     }
 
@@ -140,88 +157,44 @@ public class MusicController : MonoBehaviour
 
     public void MainMenuMusic()
     {
-        if (playingTrack == 1)
-        {
-            PlayMusic();
-            return;
-        }
-
-        playingTrack = 1;
-        Transition(menuMusic);
+        PlayingTrack = 0;
     }
 
     public void GameMusic(bool noOverrideAlert = false)
     {
         // continuing a new game can trigger the alert music to play before
-        // gameplay begins so don't override its playback
-        if (playingTrack == 2 || (playingTrack == 3 && noOverrideAlert))
+        // gameplay officially begins so don't override its playback
+        if (noOverrideAlert && PlayingTrack == 2)
         {
-            PlayMusic();
             return;
         }
 
-        playingTrack = 2;
-        Transition(themeMusic);
+        PlayingTrack = 1;
     }
 
     public void AlertMusic()
     {
-        if (playingTrack == 3)
-        {
-            PlayMusic();
-            return;
-        }
-
-        playingTrack = 3;
-        Transition(transitionMusic);
+        PlayingTrack = 2;
     }
 
     public void LoseMusic()
     {
-        if (playingTrack == 4)
-        {
-            PlayMusic();
-            return;
-        }
-
-        playingTrack = 4;
-        Transition(loseMusic);
+        PlayingTrack = 3;
     }
 
     public void WinMusic()
     {
-        if (playingTrack == 5)
-        {
-            PlayMusic();
-            return;
-        }
-
-        playingTrack = 5;
-        Transition(winMusic);
+        PlayingTrack = 4;
     }
 
     public void AboutMusic()
     {
-        if (playingTrack == 6)
-        {
-            PlayMusic();
-            return;
-        }
-
-        playingTrack = 6;
-        Transition(aboutMusic);
+        PlayingTrack = 5;
     }
 
     public void TutorialMusic()
     {
-        if (playingTrack == 7)
-        {
-            PlayMusic();
-            return;
-        }
-
-        playingTrack = 7;
-        Transition(tutorialMusic);
+        PlayingTrack = 6;
     }
 
     private void Transition(AudioClip newTrack)
