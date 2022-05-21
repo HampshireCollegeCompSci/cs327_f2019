@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class LoadPileScript : MonoBehaviour
+public class LoadPileScript : MonoBehaviour, ICardContainer
 {
     public List<GameObject> cardList;
 

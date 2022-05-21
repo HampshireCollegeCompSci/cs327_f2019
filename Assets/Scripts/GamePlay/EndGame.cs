@@ -28,6 +28,15 @@ public class EndGame : MonoBehaviour
         }
     }
 
+    public void ManualGameWin()
+    {
+        if (!Config.GameValues.enableCheat || Config.Instance.gamePaused) return;
+
+        GameOver(true);
+        // to ensure that the full win animation plays for debug
+        Config.Instance.matchCounter = 26;
+    }
+
     public void GameOver(bool didWin)
     {
         Debug.Log($"Game Over, won: {didWin}");
@@ -48,16 +57,16 @@ public class EndGame : MonoBehaviour
 
         if (didWin)
         {
-            foreach (GameObject foundation in UtilsScript.Instance.foundations)
+            foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
             {
-                foundation.GetComponent<FoundationScript>().GlowOn(move: false);
+                foundationScript.GlowForGameEnd();
             }
         }
         else
         {
-            foreach (GameObject reactor in UtilsScript.Instance.reactors)
+            foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
             {
-                reactor.GetComponent<ReactorScript>().TryHighlightOverloaded();
+                reactorScript.TryHighlightOverloaded();
             }
         }
 
@@ -73,9 +82,9 @@ public class EndGame : MonoBehaviour
             extraScore += Config.GameValues.perfectGamePoints;
         }
 
-        foreach (GameObject foundation in UtilsScript.Instance.foundations)
+        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
-            if (foundation.GetComponent<FoundationScript>().cardList.Count == 0)
+            if (foundationScript.cardList.Count == 0)
             {
                 extraScore += Config.GameValues.emptyReactorPoints;
             }
@@ -154,12 +163,20 @@ public class EndGame : MonoBehaviour
 
     private IEnumerator ReactorMeltdown()
     {
+        float explosionDelay = 0;
+        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        {
+            explosionDelay += reactorScript.cardList.Count;
+        }
+        explosionDelay *= 1.2f;
+        explosionDelay = 1f / explosionDelay;
+
         GameObject matchExplosion;
         bool reactorExploded;
-        foreach (GameObject reactor in UtilsScript.Instance.reactors)
+        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
         {
             reactorExploded = false;
-            foreach (GameObject card in reactor.GetComponent<ReactorScript>().cardList)
+            foreach (GameObject card in reactorScript.cardList)
             {
                 reactorExploded = true;
                 matchExplosion = Instantiate(UtilsScript.Instance.matchPrefab, card.transform.position, Quaternion.identity);
@@ -167,12 +184,12 @@ public class EndGame : MonoBehaviour
                 yield return new WaitForSeconds(0.2f);
                 card.SetActive(false);
                 SoundEffectsController.Instance.ExplosionSound();
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForSeconds(explosionDelay);
             }
 
             if (reactorExploded)
             {
-                matchExplosion = Instantiate(UtilsScript.Instance.matchPrefab, reactor.transform.position, Quaternion.identity);
+                matchExplosion = Instantiate(UtilsScript.Instance.matchPrefab, reactorScript.gameObject.transform.position, Quaternion.identity);
                 matchExplosion.transform.localScale = new Vector3(Config.GameValues.matchExplosionScale / 2, Config.GameValues.matchExplosionScale / 2);
                 matchExplosion.GetComponent<Animator>().Play("LoseExplosionAnim");
             }

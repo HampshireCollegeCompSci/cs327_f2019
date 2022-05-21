@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class MatchedPileScript : MonoBehaviour
+public class MatchedPileScript : MonoBehaviour, ICardContainer
 {
     public List<GameObject> cardList;
 
@@ -27,12 +26,12 @@ public class MatchedPileScript : MonoBehaviour
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
         card.transform.localPosition = Vector3.zero;
-        card.GetComponent<CardScript>().SetGameplayVisibility(false);
+        card.GetComponent<CardScript>().Enabled = false;
     }
 
     public void RemoveCard(GameObject card)
     {
-        card.GetComponent<CardScript>().SetGameplayVisibility(true);
+        card.GetComponent<CardScript>().Enabled = true;
         cardList.Remove(card);
     }
 }

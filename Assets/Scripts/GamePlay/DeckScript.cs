@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DeckScript : MonoBehaviour
+public class DeckScript : MonoBehaviour, ICardContainer
 {
     public List<GameObject> cardList;
 
@@ -32,24 +32,21 @@ public class DeckScript : MonoBehaviour
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
         card.transform.localPosition = Vector3.zero;
-        card.GetComponent<CardScript>().SetGameplayVisibility(false);
+        card.GetComponent<CardScript>().Enabled = false;
         UpdateDeckCounter();
     }
 
     public void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
-        card.GetComponent<CardScript>().SetGameplayVisibility(true);
+        card.GetComponent<CardScript>().Enabled = true;
         UpdateDeckCounter();
     }
 
-    public void ProcessAction()
+    public void DealButton()
     {
-        // is called by the deck button
-        // user wants to deal cards, other things might need to be done before that
-
         // don't allow dealing when other stuff is happening
-        if (UtilsScript.Instance.IsInputStopped())
+        if (UtilsScript.Instance.InputStopped)
             return;
 
         if (cardList.Count != 0) // can the deck can be drawn from
@@ -60,7 +57,7 @@ public class DeckScript : MonoBehaviour
             StartCoroutine(ButtonDown());
         }
         // if it is possible to repopulate the deck
-        else if (WastepileScript.Instance.cardList.Count > Config.GameValues.cardsToDeal) 
+        else if (WastepileScript.Instance.cardList.Count > Config.GameValues.cardsToDeal)
         {
             DeckReset();
             StartCoroutine(ButtonDown());
@@ -70,16 +67,23 @@ public class DeckScript : MonoBehaviour
     public void Deal(bool doLog = true)
     {
         List<GameObject> toMoveList = new List<GameObject>();
-        for (int i = 0; i < Config.GameValues.cardsToDeal; i++) // try to deal set number of cards
-        {
-            if (cardList.Count <= i) // are there no more cards in the deck?
-                break;
+        int cardCount = cardList.Count;
 
+        // try to deal set number of cards
+        for (int i = 0; i < Config.GameValues.cardsToDeal && i < cardCount; i++)
+        {
             toMoveList.Add(cardList[i]);
         }
 
         if (toMoveList.Count != 0)
+        {
+            if (Config.Instance.tutorialOn)
+            {
+                doLog = false;
+            }
+
             WastepileScript.Instance.AddCards(toMoveList, doLog);
+        }
     }
 
     public void DeckReset()
@@ -130,7 +134,7 @@ public class DeckScript : MonoBehaviour
             {
                 deckCounter.text = "EMPTY";
             }
-            deckCounter.fontSize = 19;
+            deckCounter.fontSize = 18;
         }
     }
 }

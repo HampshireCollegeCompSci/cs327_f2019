@@ -79,6 +79,11 @@ public class MenuUIScript : MonoBehaviour
         button.transform.GetChild(2).GetComponent<Text>().text = text;
     }
 
+    public void ButtonPressEffect()
+    {
+        SoundEffectsController.Instance.ButtonPressSound();
+    }
+
     public void Play()
     {
         Debug.Log("MenuUI play");
@@ -109,8 +114,12 @@ public class MenuUIScript : MonoBehaviour
             continueButton.SetActive(false);
         }
         else if (SaveState.Exists())
-        {  
+        {
             continueButton.SetActive(true);
+        }
+        else
+        {
+            continueButton.SetActive(false);
         }
     }
 
@@ -119,8 +128,6 @@ public class MenuUIScript : MonoBehaviour
         Debug.Log("MenuUI new game");
 
         SoundEffectsController.Instance.ButtonPressSound();
-        mainButtons.GetComponent<CanvasGroup>().interactable = false;
-        playButtons.GetComponent<CanvasGroup>().interactable = false;
 
         Config.Instance.continuing = isContinue;
         Config.Instance.tutorialOn = isTutorial;
@@ -139,7 +146,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI undo button");
 
-        if (UtilsScript.Instance.IsInputStopped() || Config.Instance.gamePaused) return;
+        if (UtilsScript.Instance.InputStopped || Config.Instance.gamePaused) return;
 
         SoundEffectsController.Instance.UndoPressSound();
         UndoScript.Instance.Undo();
@@ -199,7 +206,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI pause game");
 
-        if (UtilsScript.Instance.IsInputStopped() || Config.Instance.gamePaused) return;
+        if (UtilsScript.Instance.InputStopped || Config.Instance.gamePaused) return;
         
         Config.Instance.gamePaused = true;
         SoundEffectsController.Instance.PauseMenuButtonSound();
@@ -275,7 +282,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI make actions max");
 
-        if (UtilsScript.Instance.IsInputStopped() || Config.Instance.gamePaused) return;
+        if (UtilsScript.Instance.InputStopped || Config.Instance.gamePaused) return;
 
         UtilsScript.Instance.StartNextCycle(manuallyTriggered: true);
     }

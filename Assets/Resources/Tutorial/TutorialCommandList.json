@@ -2,8 +2,20 @@
 	"commands": [
 		{
 			"argumentList": [
-				"ShowText",
-				"Welcome to the visual tutorial!\n\nAll gameplay interactions are disabled during this.\n\nTo continue, press on next below."
+				"ChangeTokenMoveability",
+				"off"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeReactorInteractable",
+				"off"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeShownText",
+				"Welcome to the interactive tutorial!\n\nNormal gameplay interactions are modified during this.\n\nTo continue, press on next below."
 			]
 		},
 		{
@@ -13,7 +25,7 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
+				"ChangeShownText",
 				"The goal of this game is to survive and clear the middle section of all tokens.\n\nTo do this, you will need to know how to eliminate tokens, move them around, and avoid the lose condition."
 			]
 		},
@@ -24,13 +36,8 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
-				"Tokens can be moved by pressing and dragging them around.\n\nTokens that are moveable have white displays on them."
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightAllInteractableTokens"
+				"ChangeShownText",
+				"Tokens can be moved by pressing and dragging them around.\n\nTokens that are moveable have white displays on them.\n\nTry moving some around now."
 			]
 		},
 		{
@@ -40,33 +47,41 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
-				"Tokens can be eliminated by combining similar ones together.\n\nOnly tokens that share their rank and color can be combined together."
+				"ChangeShownText",
+				"Tokens can be eliminated by combining similar ones together.\n\nOnly tokens that share their rank and color can be combined together.\n\nTry combining some tokens now."
 			]
 		},
 		{
 			"argumentList": [
-				"unhighlightalltokens"
+				"ChangeTokenMoveability",
+				"on"
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightToken",
+				"ChangeTokenInteractable",
 				"foundation",
+				"2",
 				"0",
-				"0",
-				"On",
-				"True"
+				"Off"
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightToken",
+				"ChangeTokenInteractable",
 				"foundation",
-				"1",
+				"3",
 				"0",
-				"On",
-				"True"
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeTokenInteractable",
+				"wastepile",
+				"0",
+				"0",
+				"Off"
 			]
 		},
 		{
@@ -76,60 +91,71 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
+				"ChangeShownText",
 				"The middle section is where tokens can be moved around on stacks.\n\nAt the beginning of a game, only the top token on each stack is revealed with the rest hidden underneath."
 			]
 		},
 		{
 			"argumentList": [
-				"UnHighlightAllTokens"
+				"ChangeTokenMoveability",
+				"off"
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightObject",
+				"LoadSave",
+				"tutorialState_default"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
 				"Foundations",
 				"On"
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightToken",
-				"foundation",
-				"0",
-				"0",
-				"On",
-				"false"
+				"WaitForTouch"
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightToken",
+				"ChangeShownText",
+				"Here, tokens can be stacked in order of their rank, with ace counting as one.\nSuit color does not matter.\n\nTry stacking a token now."
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeTokenMoveability",
+				"on"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeTokenInteractable",
+				"foundation",
+				"0",
+				"0",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeTokenInteractable",
 				"foundation",
 				"1",
 				"0",
-				"On",
-				"false"
+				"Off"
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightToken",
-				"foundation",
-				"2",
+				"ChangeTokenInteractable",
+				"wastepile",
 				"0",
-				"On",
-				"false"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightToken",
-				"foundation",
-				"3",
 				"0",
-				"On",
-				"false"
+				"Off"
 			]
 		},
 		{
@@ -139,75 +165,41 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
-				"Here, tokens can be stacked in order of their rank, with ace counting as one.\n\nSuit color does not matter."
-			]
-		},
-		{
-			"argumentList": [
-				"UnHighlightAllTokens"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightToken",
-				"foundation",
-				"2",
-				"0",
-				"On",
-				"True"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightToken",
-				"foundation",
-				"3",
-				"0",
-				"On",
-				"False"
-			]
-		},
-		{
-			"argumentList": [
-				"WaitForTouch"
-			]
-		},
-		{
-			"argumentList": [
-				"ShowText",
-				"Multiple tokens can even be moved at the same time by pressing on a lower token and dragging it to an allowed location."
+				"ChangeShownText",
+				"Multiple tokens in a stack can even be moved at the same time by pressing on a lower token and dragging it to an allowed location.\n\nTry moving a stack of tokens now."
 			]
 		},
 		{
 			"argumentList": [
 				"LoadSave",
-				"tutorialState_1"
+				"tutorialState_stack"
 			]
 		},
 		{
 			"argumentList": [
-				"UnHighlightAllTokens"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightToken",
+				"ChangeTokenInteractable",
 				"foundation",
-				"2",
-				"1",
-				"On",
-				"False"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightToken",
-				"foundation",
-				"3",
 				"0",
-				"On",
-				"True"
+				"0",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeTokenInteractable",
+				"foundation",
+				"1",
+				"0",
+				"Off"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeTokenInteractable",
+				"wastepile",
+				"0",
+				"0",
+				"Off"
 			]
 		},
 		{
@@ -217,38 +209,40 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
+				"ChangeShownText",
 				"The bottom section contains the conveyor belt, where you can draw or take away tokens as need be."
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightObject",
+				"LoadSave",
+				"tutorialState_default"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeTokenMoveability",
+				"off"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
 				"Foundations",
 				"Off"
 			]
 		},
+
 		{
 			"argumentList": [
-				"UnHighlightAllTokens"
-			]
-		},
-		{
-			"argumentList": [
-				"LoadSave",
-				"tutorialState_0"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightObject",
+				"ChangeObjectHighlight",
 				"Wastepile",
 				"On"
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightObject",
+				"ChangeObjectHighlight",
 				"Deck",
 				"On"
 			]
@@ -260,13 +254,20 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
-				"The button on the conveyor box can be pressed to draw at most three new tokens to the belt."
+				"ChangeShownText",
+				"The button on the conveyor box can be pressed to draw at most three new tokens to the belt.\n\nTry drawing some more tokens now."
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightObject",
+				"ChangeButtonInteractable",
+				"deck",
+				"on"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
 				"Wastepile",
 				"Off"
 			]
@@ -278,38 +279,22 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
+				"ChangeShownText",
 				"Only the first token on the conveyor belt can be moved.\n\nThe belt can be scrolled through to view tokens hidden in the back."
 			]
 		},
 		{
 			"argumentList": [
-				"LoadSave",
-				"tutorialState_2"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightObject",
+				"ChangeObjectHighlight",
 				"Deck",
 				"Off"
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightObject",
+				"ChangeObjectHighlight",
 				"Wastepile",
 				"On"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightToken",
-				"Wastepile",
-				"0",
-				"0",
-				"On",
-				"false"
 			]
 		},
 		{
@@ -319,32 +304,34 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
+				"ChangeShownText",
 				"The top section contains the storage containers, where tokens can be sent to for limited storage."
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightObject",
+				"ChangeObjectHighlight",
 				"Wastepile",
 				"Off"
 			]
 		},
 		{
 			"argumentList": [
-				"UnHighlightAllTokens"
+				"ChangeButtonInteractable",
+				"Deck",
+				"Off"
 			]
 		},
 		{
 			"argumentList": [
 				"LoadSave",
-				"tutorialState_0"
+				"tutorialState_reactor"
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightObject",
-				"Reactors",
+				"ChangeObjectHighlight",
+				"reactors",
 				"On"
 			]
 		},
@@ -355,60 +342,54 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
-				"Tokens can be moved here one at a time, but they can not be removed except for their elimination."
+				"ChangeShownText",
+				"Tokens can be moved here one at a time, but they can not be removed except for their elimination.\n\nTry moving some tokens into the containers now."
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightObject",
-				"Reactors",
+				"ChangeObjectHighlight",
+				"reactors",
+				"off"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeTokenMoveability",
+				"on"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeReactorInteractable",
+				"on"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeTokenInteractable",
+				"foundation",
+				"0",
+				"0",
 				"Off"
 			]
 		},
 		{
 			"argumentList": [
-				"LoadSave",
-				"tutorialState_3"
+				"ChangeTokenInteractable",
+				"foundation",
+				"2",
+				"0",
+				"Off"
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightToken",
-				"Reactor",
+				"ChangeTokenInteractable",
+				"foundation",
 				"3",
 				"0",
-				"On",
-				"true"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightToken",
-				"Foundation",
-				"1",
-				"0",
-				"On",
-				"true"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightToken",
-				"wastepile",
-				"0",
-				"0",
-				"On",
-				"false"
-			]
-		},
-		{
-			"argumentList": [
-				"highlightcontainer",
-				"reactor",
-				"on",
-				"0",
-				"1"
+				"Off"
 			]
 		},
 		{
@@ -418,47 +399,28 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
+				"ChangeShownText",
 				"Watch out though!\nIf a container goes above its storage limit the game will end.\n\nAces count as 1 and all face cards count as 10 towards these limits."
 			]
 		},
 		{
 			"argumentList": [
-				"UnHighlightAllTokens"
-			]
-		},
-		{
-			"argumentList": [
 				"LoadSave",
-				"tutorialState_4"
+				"tutorialState_over"
 			]
 		},
 		{
 			"argumentList": [
-				"highlightcontainer",
-				"reactor",
-				"off",
-				"0",
-				"0"
+				"ChangeAllTokenInteractable"
 			]
 		},
 		{
 			"argumentList": [
-				"highlightcontainer",
+				"ChangeContainerHighlight",
 				"reactor",
 				"on",
 				"0",
-				"2"
-			]
-		},
-		{
-			"argumentList": [
-				"HighlightToken",
-				"Foundation",
-				"0",
-				"0",
-				"On",
-				"false"
+				"3"
 			]
 		},
 		{
@@ -468,18 +430,19 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
+				"ChangeShownText",
 				"Another thing to watch out for is the move counter.\n\nAll token moves except for combinations decrease the move counter by one."
 			]
 		},
 		{
 			"argumentList": [
-				"UnHighlightAllTokens"
+				"ChangeTokenMoveability",
+				"off"
 			]
 		},
 		{
 			"argumentList": [
-				"highlightcontainer",
+				"ChangeContainerHighlight",
 				"reactor",
 				"off",
 				"0",
@@ -489,12 +452,12 @@
 		{
 			"argumentList": [
 				"LoadSave",
-				"tutorialState_0"
+				"tutorialState_default"
 			]
 		},
 		{
 			"argumentList": [
-				"highlightobject",
+				"ChangeObjectHighlight",
 				"movecounter",
 				"on"
 			]
@@ -506,81 +469,44 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
+				"ChangeShownText",
 				"When the move counter reaches 0, each top card in the middle stacks move up to their respective containers automatically.\n\nThis resets the movecounter afterwards."
 			]
 		},
 		{
 			"argumentList": [
-				"SetMoveCounterText",
+				"ChangeObjectHighlight",
+				"Foundations",
+				"on"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeMoveCounterText",
 				"0"
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightToken",
-				"Foundation",
-				"0",
-				"0",
-				"On",
-				"false"
+				"WaitForTouch"
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightToken",
-				"Foundation",
-				"1",
-				"0",
-				"On",
-				"false"
+				"ChangeShownText",
+				"The 0 moves remaining effect can be triggered manually by pressing the button attached to the left side of the move counter.\n\nTry manually triggering one now."
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightToken",
-				"Foundation",
-				"2",
-				"0",
-				"On",
-				"false"
+				"EnableOneNextCycle"
 			]
 		},
 		{
 			"argumentList": [
-				"HighlightToken",
-				"Foundation",
-				"3",
-				"0",
-				"On",
-				"false"
-			]
-		},
-		{
-			"argumentList": [
-				"highlightcontainer",
-				"reactor",
-				"on",
-				"1",
-				"1"
-			]
-		},
-		{
-			"argumentList": [
-				"highlightcontainer",
-				"reactor",
-				"on",
-				"2",
-				"1"
-			]
-		},
-		{
-			"argumentList": [
-				"highlightcontainer",
-				"reactor",
-				"on",
-				"3",
-				"1"
+				"ChangeButtonInteractable",
+				"timer",
+				"on"
 			]
 		},
 		{
@@ -590,81 +516,34 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
-				"The 0 moves remaining effect can be triggered manually by pressing the button attached to the side of the move conuter."
-			]
-		},
-		{
-			"argumentList": [
-				"LoadSave",
-				"tutorialState_5"
-			]
-		},
-		{
-			"argumentList": [
-				"UnHighlightAllTokens"
-			]
-		},
-		{
-			"argumentList": [
-				"WaitForTouch"
-			]
-		},
-		{
-			"argumentList": [
-				"highlightobject",
+				"ChangeObjectHighlight",
 				"movecounter",
 				"off"
 			]
 		},
 		{
 			"argumentList": [
-				"SetMoveCounterText",
-				"18"
+				"ChangeObjectHighlight",
+				"Foundations",
+				"off"
 			]
 		},
 		{
 			"argumentList": [
-				"highlightcontainer",
-				"reactor",
-				"off",
-				"1",
-				"0"
-			]
-		},
-		{
-			"argumentList": [
-				"highlightcontainer",
-				"reactor",
-				"off",
-				"2",
-				"0"
-			]
-		},
-		{
-			"argumentList": [
-				"highlightcontainer",
-				"reactor",
-				"off",
-				"3",
-				"0"
-			]
-		},
-		{
-			"argumentList": [
-				"ShowText",
+				"ChangeShownText",
 				"Moves can be completely undone by pressing the undo button.\n\nUndoing does not count against the move counter."
 			]
 		},
 		{
 			"argumentList": [
-				"LoadSave",
-				"tutorialState_0"
+				"ChangeButtonInteractable",
+				"timer",
+				"off"
 			]
 		},
 		{
 			"argumentList": [
-				"highlightobject",
+				"ChangeObjectHighlight",
 				"undo",
 				"on"
 			]
@@ -676,20 +555,20 @@
 		},
 		{
 			"argumentList": [
-				"highlightobject",
-				"undo",
-				"off"
-			]
-		},
-		{
-			"argumentList": [
-				"ShowText",
+				"ChangeShownText",
 				"The scoreboard shows the cumulative points for each combination made during a game.\n\nCombo chains grant increasing amounts of bonus points."
 			]
 		},
 		{
 			"argumentList": [
-				"highlightobject",
+				"ChangeObjectHighlight",
+				"undo",
+				"off"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
 				"scoreboard",
 				"on"
 			]
@@ -701,20 +580,20 @@
 		},
 		{
 			"argumentList": [
-				"highlightobject",
+				"ChangeShownText",
+				"The game can be paused or quit at any time and progress will be saved.\n\nIn the settings menu, the suits art style can be selected to be either traditional or thematic."
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
 				"scoreboard",
 				"off"
 			]
 		},
 		{
 			"argumentList": [
-				"ShowText",
-				"The game can be paused or quit at any time and progress will be saved.\n\nIn the settings menu, the suit art can be changed to be more traditional.\nThis option requires a game reload."
-			]
-		},
-		{
-			"argumentList": [
-				"highlightobject",
+				"ChangeObjectHighlight",
 				"pause",
 				"on"
 			]
@@ -726,15 +605,15 @@
 		},
 		{
 			"argumentList": [
-				"highlightobject",
-				"pause",
-				"off"
+				"ChangeShownText",
+				"There are three gameplay difficulties to choose from.\n\nIncreasing the difficulty lowers the maximum move count and the storage container limits."
 			]
 		},
 		{
 			"argumentList": [
-				"ShowText",
-				"There are three gameplay difficulties to choose from.\n\nIncreasing the difficulty lowers the maximum move count and lowers the storage container limits."
+				"ChangeObjectHighlight",
+				"pause",
+				"off"
 			]
 		},
 		{
@@ -744,7 +623,7 @@
 		},
 		{
 			"argumentList": [
-				"ShowText",
+				"ChangeShownText",
 				"That's the end of the tutorial!\n\nContinue to begin playing an easy difficulty game or exit to the main menu now."
 			]
 		},

@@ -13,10 +13,10 @@ public static class CardTools
         if (checkIsTop && (!IsAtContainerTop(card1) || !IsAtContainerTop(card2)))
             return false;
 
-        if (card1.cardNum != card2.cardNum)
+        if (card1.cardRank != card2.cardRank)
             return false;
 
-        return CompareComplimentarySuits(card1.suit, card2.suit);
+        return CompareComplimentarySuits(card1.cardSuitIndex, card2.cardSuitIndex);
     }
 
     /// <summary>
@@ -77,25 +77,29 @@ public static class CardTools
     }
 
     /// <summary>
-    /// Compares two strings to see if they are complimentary suits. Or, in other words, can the suits can match together.
+    /// Compares two bytes to see if they are complimentary suits. Or, in other words, can the suits can match together.
     /// </summary>
-    public static bool CompareComplimentarySuits(string suit1, string suit2)
+    public static bool CompareComplimentarySuits(byte suit1, byte suit2)
     {
-        if ((suit1.Equals("hearts") && suit2.Equals("diamonds")) ||
-            (suit1.Equals("diamonds") && suit2.Equals("hearts")) ||
-            (suit1.Equals("spades") && suit2.Equals("clubs")) ||
-            (suit1.Equals("clubs") && suit2.Equals("spades")))
-            return true;
-
-        return false;
+        // spades(0) + clubs(1) = 1, diamonds(2) + hearts(3) = 5
+        return (suit1 + suit2) switch
+        {
+            1 or 5 => true,
+            _ => false,
+        };
     }
 
-    private static string GetSuit(GameObject suitObject)
+    private static byte GetSuit(GameObject suitObject)
     {
         if (suitObject.CompareTag(Constants.cardTag))
-            return suitObject.GetComponent<CardScript>().suit;
+        {
+            return suitObject.GetComponent<CardScript>().cardSuitIndex;
+        }
+
         if (suitObject.CompareTag(Constants.reactorTag))
-            return suitObject.GetComponent<ReactorScript>().suit;
+        {
+            return suitObject.GetComponent<ReactorScript>().reactorSuitIndex;
+        }
 
         throw new System.ArgumentException("suitObject must have a suit variable");
     }

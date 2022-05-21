@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class SoundEffectsController : MonoBehaviour
+public class SoundEffectsController : MonoBehaviour, ISound
 {
     // Audio players component
     public AudioSource soundController;
@@ -174,24 +174,26 @@ public class SoundEffectsController : MonoBehaviour
         VibrateSmall();
     }
 
-    public void FoodMatch(string suit)
+    public void FoodMatch(byte suit)
     {
-        if (suit == "hearts")
+        switch (suit)
         {
-            soundController.PlayOneShot(mushroomSound, 1);
+            case Constants.heartsSuitIndex:
+                soundController.PlayOneShot(mushroomSound, 1);
+                break;
+            case Constants.diamondsSuitIndex:
+                soundController.PlayOneShot(bugSound, 1);
+                break;
+            case Constants.spadesSuitIndex:
+                soundController.PlayOneShot(rockSound, 1);
+                break;
+            case Constants.clubsSuitIndex:
+                soundController.PlayOneShot(fruitSound, 1);
+                break;
+            default:
+                throw new System.Exception($"{suit} isn't a suit!");
         }
-        if (suit == "diamonds")
-        {
-            soundController.PlayOneShot(bugSound, 0.6f);
-        }
-        if (suit == "spades")
-        {
-            soundController.PlayOneShot(rockSound, 1.8f);
-        }
-        if (suit == "clubs")
-        {
-            soundController.PlayOneShot(fruitSound, 1.2f);
-        }
+
         VibrateMedium();
     }
 

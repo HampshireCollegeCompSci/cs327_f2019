@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class PlayAgainSequence : MonoBehaviour
 {
@@ -38,7 +37,6 @@ public class PlayAgainSequence : MonoBehaviour
     public void StartLoadingGame()
     {
         sequenceDone = false;
-        cameraObject.GetComponent<EventSystem>().enabled = false;
         SpaceBabyController.Instance = null;
 
         Config.Instance.tutorialOn = false;
@@ -90,7 +88,7 @@ public class PlayAgainSequence : MonoBehaviour
         {
             Debug.Log("unloading summary scene");
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.gameplayScene));
-            cameraObject.GetComponent<AudioListener>().enabled = false;
+            cameraObject.SetActive(false);
             StartGame.Instance.TransitionToGamePlay();
             SceneManager.UnloadSceneAsync(Constants.summaryScene);
             return true;
