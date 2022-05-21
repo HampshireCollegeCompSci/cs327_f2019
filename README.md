@@ -96,8 +96,8 @@ Afterwards in 2021, the programmer Jona began work to finalize the game. This un
 <!-- ROADMAP -->
 ## Roadmap
 
+- [x] Add Interactability to the Tutorial
 - [ ] Address Aspect Ratio Issues
-- [ ] Add Interactability to the Tutorial
 - [ ] Launch On App Stores
 - [ ] Multi-language Support
 
