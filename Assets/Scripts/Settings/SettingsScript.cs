@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class SettingsScript : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class SettingsScript : MonoBehaviour
 
     public GameObject confirmObject;
     public Button confirmYesButton;
+
+    public GameObject suitArtNoticeObject;
 
     private bool lockout;
 
@@ -117,6 +120,11 @@ public class SettingsScript : MonoBehaviour
 
         PlayerPrefs.SetString(Constants.foodSuitsEnabledKey, update.ToString());
         SoundEffectsController.Instance.ButtonPressSound();
+
+        if (SceneManager.GetActiveScene().name.Equals(Constants.gameplayScene))
+        {
+            suitArtNoticeObject.SetActive(true);
+        }
     }
 
     public void TryToClearRecordsButton()
@@ -136,21 +144,15 @@ public class SettingsScript : MonoBehaviour
         confirmYesButton.interactable = true;
     }
 
-    public void ClearRecordsConfirmationButton(bool confirm)
+    public void ClearRecordsConfirmationButton()
     {
-        if (confirm)
+        Debug.Log("clearing saved records");
+
+        // since ResultsScript.cs detects and auto fills the very first records this is how it must be done
+        foreach (string difficulty in Config.GameValues.difficulties)
         {
-            Debug.Log("clearing saved records");
-
-            // since ResultsScript.cs detects and auto fills the very first records this is how it must be done
-            foreach (string difficulty in Config.GameValues.difficulties)
-            {
-                PlayerPrefs.DeleteKey(PlayerPrefKeys.GetHighScoreKey(difficulty));
-                PlayerPrefs.DeleteKey(PlayerPrefKeys.GetLeastMovesKey(difficulty));
-            }
+            PlayerPrefs.DeleteKey(PlayerPrefKeys.GetHighScoreKey(difficulty));
+            PlayerPrefs.DeleteKey(PlayerPrefKeys.GetLeastMovesKey(difficulty));
         }
-
-        SoundEffectsController.Instance.ButtonPressSound();
-        confirmObject.SetActive(false);
     }
 }

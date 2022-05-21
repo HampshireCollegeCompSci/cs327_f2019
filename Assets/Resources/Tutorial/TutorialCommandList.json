@@ -581,7 +581,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"The game can be paused or quit at any time and progress will be saved.\n\nIn the settings menu, the suits art style can be selected to be either traditional or thematic.\nThis option requires a game reload."
+				"The game can be paused or quit at any time and progress will be saved.\n\nIn the settings menu, the suits art style can be selected to be either traditional or thematic."
 			]
 		},
 		{

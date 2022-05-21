@@ -30,7 +30,7 @@
 	"musicDefaultVolume": 1,
 	"soundEffectsDefaultVolume": 1,
 	"vibrationEnabledDefault": true,
-	"foodSuitsEnabledDefault": true,
+	"foodSuitsEnabledDefault": false,
 
 	"fadeOutButtonsSpeed": 2,
 	"zoomFactor": 20,
