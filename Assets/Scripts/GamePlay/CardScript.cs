@@ -288,6 +288,14 @@ public class CardScript : MonoBehaviour, IGlow
             renderers.material.color = renderers.material.color;
         }
 
+        // when picking up a card that has a hologram that's just starting up
+        // make the dragged card's hologram have full alpha
+        SpriteRenderer holoSR = hologram.GetComponent<SpriteRenderer>();
+        Color holoColor = holoSR.color;
+        holoColor.a = 1;
+        holoSR.color = holoColor;
+        hologramFood.GetComponent<SpriteRenderer>().color = holoColor;
+
         HitBox = false;
     }
 
@@ -310,12 +318,10 @@ public class CardScript : MonoBehaviour, IGlow
             if (value == 1) // match
             {
                 hologramFoodSP.sprite = hologramComboSprite;
-                hologramFood.transform.localScale = new Vector3(0.6f, 0.6f, 1);
             }
             else if (_hologramColorLevel == 1) // no more match
             {
                 hologramFoodSP.sprite = hologramFoodSprite;
-                hologramFood.transform.localScale = new Vector3(1.2f, 1.2f, 1);
             }
 
             _hologramColorLevel = value;
