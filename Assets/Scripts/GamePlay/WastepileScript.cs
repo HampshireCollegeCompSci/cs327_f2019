@@ -44,15 +44,13 @@ public class WastepileScript : MonoBehaviour, ICardContainer
 
     IEnumerator ScrollBarAdding(List<GameObject> cards, bool doLog)
     {
-        if (!Scrolling)
-        {
-            Scrolling = true;
-        }
+        Scrolling = true;
 
         if (cardList.Count != 0) // hide the current top token now
         {
-            cardList[0].GetComponent<CardScript>().Hologram = false;
-            cardList[0].GetComponent<CardScript>().Interactable = false;
+            CardScript cardScript = cardList[0].GetComponent<CardScript>();
+            cardScript.Hologram = false;
+            cardScript.Obstructed = true;
         }
 
         Vector3 temp = contentRectTransform.anchoredPosition;
@@ -101,8 +99,8 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         if (showHolo)
         {
             CardScript cardScript = card.GetComponent<CardScript>();
-            cardScript.Interactable = true;
             cardScript.Hologram = true;
+            cardScript.HitBox = true;
 
             if (cardList.Count == Config.GameValues.cardsToDeal + 1)
             {
@@ -117,8 +115,8 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         if (cardList.Count != 0)
         {
             CardScript cardScript = cardList[0].GetComponent<CardScript>();
-            cardScript.Interactable = false;
             cardScript.Hologram = false;
+            cardScript.Obstructed = true;
         }
 
         cardList.Insert(0, card);
@@ -147,8 +145,14 @@ public class WastepileScript : MonoBehaviour, ICardContainer
 
         if (cardList.Count != 0)
         {
-            cardList[0].GetComponent<CardScript>().Interactable = true;
             CardScript cardScript = cardList[0].GetComponent<CardScript>();
+
+            // during the tutorial we don't want the next card avalible for user interaction
+            if (!Config.Instance.tutorialOn)
+            {
+                // set obstruction to false as it isn't accounted for elsewhere
+                cardScript.Obstructed = false;
+            }
 
             // will the new top card stay
             if (showHolo)
@@ -179,8 +183,6 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         // removing the cards wastepile container
         cardContainers.Remove(card.transform.parent.gameObject);
         card.transform.parent = null;
-
-        card.GetComponent<CardScript>().DefaultColor();
         cardList.Remove(card);
     }
 
@@ -236,6 +238,7 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         get { return _scrolling; }
         set
         {
+            if (_scrolling == value) return;
             _scrolling = value;
             if (value)
             {

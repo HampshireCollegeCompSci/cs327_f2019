@@ -22,8 +22,9 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
 
         if (showHolo)
         {
-            card.GetComponent<CardScript>().Hologram = true;
-            card.GetComponent<CardScript>().Interactable = true;
+            CardScript cardScript = card.GetComponent<CardScript>();
+            cardScript.Hologram = true;
+            cardScript.HitBox = true;
         }
     }
 
@@ -56,11 +57,22 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
         if (cardList.Count != 0)
         {
             CardScript cardScript = cardList[0].GetComponent<CardScript>();
+
             if (cardScript.Hidden)
             {
                 cardScript.Hidden = false;
+
+                // when the tutorial is active, disable moving the next top card so that
+                // we don't need to deal with some user interactions
+                if (Config.Instance.tutorialOn)
+                {
+                    cardScript.Obstructed = true;
+                }
+                else
+                {
+                    cardScript.HitBox = true;
+                }
             }
-            cardScript.Interactable = !Config.Instance.tutorialOn;
         }
 
         SetCardPositions();

@@ -69,7 +69,7 @@ public class UtilsScript : MonoBehaviour
 
     void Update()
     {
-        if (!Config.Instance.gamePaused && !Config.Instance.gameOver)
+        if (!Config.Instance.gamePaused)
         {
             if (dragOn)
             {

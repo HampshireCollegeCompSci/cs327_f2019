@@ -54,7 +54,7 @@ public class CardScript : MonoBehaviour, IGlow
         if (Config.Instance.prettyColors)
         {
             originalColor = new Color(Random.Range(0.4f, 1), Random.Range(0.4f, 1f), Random.Range(0.4f, 1f), 1);
-            // this needs to change
+            // TODO: this needs to change
             DefaultColor();
         }
         else
@@ -62,15 +62,29 @@ public class CardScript : MonoBehaviour, IGlow
             originalColor = Color.white;
         }
 
+        // initialized default values
         _enabled = true;
         _hidden = false;
         _hitBox = false;
-        _interactable = false;
+        _obstructed = false;
         _hologram = false;
         _dragging = false;
         _glowing = false;
         _glowLevel = 0;
         _hologramColorLevel = 0;
+    }
+
+    public void SetValuesToDefault()
+    {
+        Enabled = true;
+        Hidden = false;
+        Hologram = false;
+        Dragging = false;
+        Glowing = false;
+
+        // order matters here
+        Obstructed = false;
+        HitBox = false;
     }
 
     public bool _enabled;
@@ -82,12 +96,12 @@ public class CardScript : MonoBehaviour, IGlow
         get { return _enabled; }
         set
         {
+            if (_enabled == value) return;
             _enabled = value;
             gameObject.GetComponent<SpriteRenderer>().enabled = value;
             values.SetActive(value);
             if (!value)
             {
-                _interactable = false;
                 HitBox = false;
                 Hologram = false;
             }
@@ -103,6 +117,7 @@ public class CardScript : MonoBehaviour, IGlow
         get { return _hidden; }
         set
         {
+            if (value == _hidden) return;
             _hidden = value;
             if (value)
             {
@@ -135,29 +150,31 @@ public class CardScript : MonoBehaviour, IGlow
         get { return _hitBox; }
         set
         {
+            if (_hitBox == value) return;
             _hitBox = value;
             this.gameObject.GetComponent<BoxCollider2D>().enabled = value;
         }
     }
 
-    public bool _interactable;
+    public bool _obstructed;
     /// <summary>
-    /// The state of the presentation and hitbox of the card.
+    /// The state of both the presentation and hitbox of the card.
     /// </summary>
-    public bool Interactable
+    public bool Obstructed
     {
-        get { return _interactable; }
+        get { return _obstructed; }
         set
         {
-            HitBox = value;
-            _interactable = value;
+            HitBox = !value;
+            if (_obstructed == value) return;
+            _obstructed = value;
             if (value)
             {
-                DefaultColor();
+                SetColor(Config.GameValues.cardObstructedColor);
             }
             else
             {
-                SetColor(Config.GameValues.cardObstructedColor);
+                DefaultColor();
             }
         }
     }
@@ -172,6 +189,7 @@ public class CardScript : MonoBehaviour, IGlow
         get { return _hologram; }
         set
         {
+            if (_hologram == value) return;
             if (value && !_hologram)
             {
                 holoCoroutine = StartCoroutine(StartHologram());
@@ -239,11 +257,7 @@ public class CardScript : MonoBehaviour, IGlow
         get { return _dragging; }
         set
         {
-            if (value == _dragging)
-            {
-                Debug.LogWarning("tried to set card to the same dragging state");
-                return;
-            }
+            if (_dragging == value) return;
 
             _dragging = value;
             if (value)
@@ -308,7 +322,7 @@ public class CardScript : MonoBehaviour, IGlow
         get { return _hologramColorLevel; }
         set
         {
-            if (value == _hologramColorLevel) return;
+            if (_hologramColorLevel == value) return;
 
             hologram.GetComponent<SpriteRenderer>().color = Config.GameValues.highlightColors[value];
 
@@ -324,6 +338,7 @@ public class CardScript : MonoBehaviour, IGlow
                 hologramFoodSP.sprite = hologramFoodSprite;
             }
 
+            // do this at the end
             _hologramColorLevel = value;
         }
     }
@@ -337,6 +352,7 @@ public class CardScript : MonoBehaviour, IGlow
         get { return _glowing; }
         set
         {
+            if (_glowing == value) return;
             _glowing = value;
             glow.SetActive(value);
         }
@@ -351,13 +367,13 @@ public class CardScript : MonoBehaviour, IGlow
         get { return _glowLevel; }
         set
         {
+            Glowing = true;
+            if (_glowLevel == value) return;
             if (value != _glowLevel)
             {
                 _glowLevel = value;
                 glow.GetComponent<SpriteRenderer>().color = Config.GameValues.highlightColors[value];
             }
-
-            Glowing = true;
         }
     }
 

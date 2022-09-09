@@ -19,7 +19,7 @@ public class ShowPossibleMoves
         cardMoves = new List<GameObject>();
         cardMatches = new List<GameObject>();
         TokenMoveable = true;
-        ReactorInteractable = true;
+        ReactorObstructed = false;
     }
 
     public bool AreThingsGlowing()
@@ -39,11 +39,11 @@ public class ShowPossibleMoves
         set { _tokenMoveable = value; }
     }
 
-    private bool _reactorInteractable;
-    public bool ReactorInteractable
+    private bool _reactorObstructed;
+    public bool ReactorObstructed
     {
-        get { return _reactorInteractable; }
-        set { _reactorInteractable = value; }
+        get { return _reactorObstructed; }
+        set { _reactorObstructed = value; }
     }
 
     public void ShowMoves(GameObject selectedCard)
@@ -118,35 +118,24 @@ public class ShowPossibleMoves
         // find moves that can only occur when dragging only one token/card
         if (cardCanBeMatched)
         {
-            // find the one complimentary reactor and check if a top card exists and can then match
-            foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
-            {
-                if (CardTools.CompareComplimentarySuits(selectedCardScript.cardSuitIndex, reactorScript.reactorSuitIndex))
-                {
-                    if (reactorScript.cardList.Count != 0)
-                    {
-                        CardScript cardScript = reactorScript.cardList[0].GetComponent<CardScript>();
-                        if (cardScript.Interactable && cardScript.cardRank == selectedCardScript.cardRank)
-                        {
-                            cardMatches.Add(reactorScript.cardList[0]);
-                        }
-                    }
+            ReactorScript complimentaryReactorScript = UtilsScript.Instance.reactorScripts[
+                CardTools.GetComplimentarySuit(selectedCardScript.cardSuitIndex)];
 
-                    break;
+            if (complimentaryReactorScript.cardList.Count != 0)
+            {
+                CardScript cardScript = complimentaryReactorScript.cardList[0].GetComponent<CardScript>();
+                // during the tutorial, the top card may be obstructed at times
+                if (!cardScript.Obstructed && cardScript.cardRank == selectedCardScript.cardRank)
+                {
+                    cardMatches.Add(complimentaryReactorScript.cardList[0]);
                 }
             }
 
-            // if the card is not in the reactor, get the reactor that we can move into
-            if (ReactorInteractable && !selectedCardScript.container.CompareTag(Constants.reactorTag))
+            // if the reactor is not obstructed (tutorial setting)
+            // and the card is not in the reactor, get the reactor that we can move into
+            if (!ReactorObstructed && !selectedCardScript.container.CompareTag(Constants.reactorTag))
             {
-                foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
-                {
-                    if (selectedCardScript.cardSuitIndex == reactorScript.reactorSuitIndex)
-                    {
-                        reactorMove = reactorScript.gameObject;
-                        break;
-                    }
-                }
+                reactorMove = UtilsScript.Instance.reactorScripts[selectedCardScript.cardSuitIndex].gameObject;
             }
         }
 
@@ -156,7 +145,8 @@ public class ShowPossibleMoves
             {
                 CardScript topFoundationCardScript = foundationScript.cardList[0].GetComponent<CardScript>();
 
-                if (topFoundationCardScript.Interactable)
+                // during the tutorial, the top card may be obstructed at times
+                if (!topFoundationCardScript.Obstructed)
                 {
                     // if the card can match and matches with the foundation top
                     if (cardCanBeMatched && CardTools.CanMatch(selectedCardScript, topFoundationCardScript, checkIsTop: false))
@@ -182,7 +172,9 @@ public class ShowPossibleMoves
         {
             GameObject topWastepileCard = WastepileScript.Instance.cardList[0];
             CardScript cardScript = topWastepileCard.GetComponent<CardScript>();
-            if (cardScript.Interactable && CardTools.CanMatch(cardScript, selectedCardScript, checkIsTop: false))
+
+            // during the tutorial, the top card may be obstructed at times
+            if (!cardScript.Obstructed && CardTools.CanMatch(cardScript, selectedCardScript, checkIsTop: false))
             {
                 cardMatches.Add(topWastepileCard);
             }

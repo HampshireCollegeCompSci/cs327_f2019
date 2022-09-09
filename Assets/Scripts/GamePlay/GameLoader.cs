@@ -33,6 +33,9 @@ public class GameLoader : MonoBehaviour
     {
         SetUpScene();
 
+        Config.Instance.gameOver = false;
+        Config.Instance.gameWin = false;
+
         // Figure out what kinda game to start
         if (Config.Instance.tutorialOn)
         {
@@ -40,6 +43,7 @@ public class GameLoader : MonoBehaviour
         }
         else if (Config.Instance.continuing)
         {
+            Config.Instance.continuing = false;
             Debug.Log("loading saved game");
             MoveCardsToLoadPile(GetNewCards());
 
@@ -91,7 +95,12 @@ public class GameLoader : MonoBehaviour
         }
         else
         {
-            MoveCardsToLoadPile(GetAllCards());
+            List<GameObject> cards = GetAllCards();
+            MoveCardsToLoadPile(cards);
+            foreach (GameObject card in cards)
+            {
+                card.GetComponent<CardScript>().SetValuesToDefault();
+            }
         }
 
         StateLoader.Instance.LoadTutorialState(fileName);
@@ -103,6 +112,10 @@ public class GameLoader : MonoBehaviour
 
         List<GameObject> cards = GetAllCards();
         MoveCardsToLoadPile(cards);
+        foreach (GameObject card in cards)
+        {
+            card.GetComponent<CardScript>().SetValuesToDefault();
+        }
         StartNewGame(cards);
 
         Config.Instance.gamePaused = false;
@@ -146,7 +159,7 @@ public class GameLoader : MonoBehaviour
 
     private List<GameObject> GetAllCards()
     {
-        List<GameObject> cards = new List<GameObject>();
+        List<GameObject> cards = new();
 
         foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
@@ -174,8 +187,6 @@ public class GameLoader : MonoBehaviour
         // reset game values
         Config.Instance.consecutiveMatches = 0;
         Config.Instance.moveCounter = 0;
-        Config.Instance.gameOver = false;
-        Config.Instance.gameWin = false;
 
         // these are updated visually as well
         UtilsScript.Instance.UpdateScore(0, setAsValue: true);

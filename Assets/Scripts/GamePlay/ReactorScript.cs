@@ -28,14 +28,14 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
     {
         if (cardList.Count != 0)
         {
-            cardList[0].GetComponent<CardScript>().Interactable = false;
+            cardList[0].GetComponent<CardScript>().Obstructed = true;
         }
 
         cardList.Insert(0, card);
         card.transform.SetParent(gameObject.transform);
         CardScript cardScript = card.GetComponent<CardScript>();
         cardScript.Hologram = false;
-        cardScript.Interactable = true;
+        cardScript.Obstructed = false;
 
         SetCardPositions();
 
@@ -46,12 +46,11 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     public void RemoveCard(GameObject card)
     {
-        //card.GetComponent<CardScript>().SetColor();
         cardList.Remove(card);
 
         if (cardList.Count != 0)
         {
-            cardList[0].GetComponent<CardScript>().Interactable = true;
+            cardList[0].GetComponent<CardScript>().Obstructed = false;
         }
 
         SetCardPositions();

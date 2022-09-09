@@ -81,11 +81,21 @@ public static class CardTools
     /// </summary>
     public static bool CompareComplimentarySuits(byte suit1, byte suit2)
     {
-        // spades(0) + clubs(1) = 1, diamonds(2) + hearts(3) = 5
-        return (suit1 + suit2) switch
+        return suit1 == GetComplimentarySuit(suit2);
+    }
+
+    /// <summary>
+    /// Returns the complimentary suit to the given suit.
+    /// </summary>
+    public static byte GetComplimentarySuit(byte suit)
+    {
+        return suit switch
         {
-            1 or 5 => true,
-            _ => false,
+            0 => 1,
+            1 => 0,
+            2 => 3,
+            3 => 2,
+            _ => throw new System.ArgumentException("suit not found to be valid"),
         };
     }
 
