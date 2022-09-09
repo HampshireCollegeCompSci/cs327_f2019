@@ -11,6 +11,8 @@ public class DeckScript : MonoBehaviour, ICardContainer
     public Text deckCounter;
     public Sprite[] buttonAnimation;
 
+    private Coroutine buttonCoroutine;
+
     // Singleton instance.
     public static DeckScript Instance = null;
 
@@ -40,27 +42,25 @@ public class DeckScript : MonoBehaviour, ICardContainer
     {
         cardList.Remove(card);
         card.GetComponent<CardScript>().Enabled = true;
-        UpdateDeckCounter();
+        UpdateDeckCounter(dealed: true);
     }
 
     public void DealButton()
     {
         // don't allow dealing when other stuff is happening
-        if (UtilsScript.Instance.InputStopped)
-            return;
+        if (UtilsScript.Instance.InputStopped) return;
 
         if (cardList.Count != 0) // can the deck can be drawn from
         {
+            buttonCoroutine = StartCoroutine(ButtonDown());
             SoundEffectsController.Instance.DeckDeal();
             Deal();
-
-            StartCoroutine(ButtonDown());
         }
         // if it is possible to repopulate the deck
         else if (WastepileScript.Instance.cardList.Count > Config.GameValues.cardsToDeal)
         {
+            buttonCoroutine = StartCoroutine(ButtonDown());
             DeckReset();
-            StartCoroutine(ButtonDown());
         }
     }
 
@@ -105,6 +105,8 @@ public class DeckScript : MonoBehaviour, ICardContainer
 
     public void StartButtonUp()
     {
+        if (buttonCoroutine == null) return;
+        StopCoroutine(buttonCoroutine);
         StartCoroutine(ButtonUp());
     }
 
@@ -117,7 +119,9 @@ public class DeckScript : MonoBehaviour, ICardContainer
         }
     }
 
-    public void UpdateDeckCounter()
+    private const string deckFlipText = "FLIP";
+    private const string deckEmptyText = "EMPTY";
+    public void UpdateDeckCounter(bool dealed = false)
     {
         if (cardList.Count != 0)
         {
@@ -126,15 +130,33 @@ public class DeckScript : MonoBehaviour, ICardContainer
         }
         else
         {
-            if (WastepileScript.Instance.cardList.Count > Config.GameValues.cardsToDeal)
+            // if there are enough cards that a deck flip will do something worthwhile
+            // notice: cards are removed from containers before they are added to a new one
+            if (WastepileScript.Instance.cardList.Count > Config.GameValues.cardsToDeal || 
+                (dealed && WastepileScript.Instance.cardList.Count == Config.GameValues.cardsToDeal))
             {
-                deckCounter.text = "FLIP";
+                deckCounter.text = deckFlipText;
             }
             else
             {
-                deckCounter.text = "EMPTY";
+                deckCounter.text = deckEmptyText;
             }
             deckCounter.fontSize = 18;
+        }
+    }
+
+    public void TryUpdateDeckCounter(bool canFlip)
+    {
+        if (cardList.Count == 0)
+        {
+            if (canFlip)
+            {
+                deckCounter.text = deckFlipText;
+            }
+            else
+            {
+                deckCounter.text = deckEmptyText;
+            }
         }
     }
 }

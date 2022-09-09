@@ -103,6 +103,11 @@ public class WastepileScript : MonoBehaviour, ICardContainer
             CardScript cardScript = card.GetComponent<CardScript>();
             cardScript.Interactable = true;
             cardScript.Hologram = true;
+
+            if (cardList.Count == Config.GameValues.cardsToDeal + 1)
+            {
+                DeckScript.Instance.TryUpdateDeckCounter(true);
+            }
         }
     }
 
@@ -140,11 +145,21 @@ public class WastepileScript : MonoBehaviour, ICardContainer
 
         RemoveCard(card);
 
-        if (!Config.Instance.tutorialOn && showHolo && cardList.Count != 0)
+        if (cardList.Count != 0)
         {
-            // the new top card will stay
             cardList[0].GetComponent<CardScript>().Interactable = true;
-            cardList[0].GetComponent<CardScript>().Hologram = true;
+            CardScript cardScript = cardList[0].GetComponent<CardScript>();
+
+            // will the new top card stay
+            if (showHolo)
+            {
+                cardScript.Hologram = true;
+
+                if (cardList.Count == Config.GameValues.cardsToDeal)
+                {
+                    DeckScript.Instance.TryUpdateDeckCounter(false);
+                }
+            }
         }
 
         if (undoingOrDeck || cardList.Count == 0)
