@@ -10,8 +10,13 @@ public class PlayAgainSequence : MonoBehaviour
     public GameObject sequencePanel;
     public GameObject LoadingTextObject;
 
+    public GameObject spaceShip;
     public GameObject spaceBaby;
     public GameObject spaceBabyPlanet;
+    public GameObject foodObjects;
+    public SummaryTransition summaryTransition;
+
+    public WinSequence winSequence;
 
     private bool sequenceDone;
     private bool gameplayLoaded;
@@ -39,8 +44,6 @@ public class PlayAgainSequence : MonoBehaviour
         sequenceDone = false;
         SpaceBabyController.Instance = null;
 
-        Config.Instance.tutorialOn = false;
-        Config.Instance.continuing = false;
         SceneManager.LoadSceneAsync(Constants.gameplayScene, LoadSceneMode.Additive);
 
         MusicController.Instance.FadeMusicOut();
@@ -62,10 +65,15 @@ public class PlayAgainSequence : MonoBehaviour
             yield return null;
         }
 
-        // they will flash on screen for one frame during the scene transition without this
+        winSequence.StopAllCoroutines();
+        spaceBaby.GetComponent<SpaceBabyController>().StopAllCoroutines();
+        // these gameobject's images can flash on screen for one frame on scene transition if they aren't disabled
         spaceBaby.SetActive(false);
+        spaceShip.SetActive(false);
         spaceBabyPlanet.SetActive(false);
-        //spaceBaby.GetComponent<SpaceBabyController>().StopAllCoroutines();
+        foodObjects.SetActive(false);
+        summaryTransition.StopExplosion();
+        yield return new WaitForSeconds(0.3f);
 
         Debug.Log("play again sequence done");
         sequenceDone = true;

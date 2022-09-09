@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class WinSequence : MonoBehaviour
 {
+    public SpaceBabyController spaceBabyController;
     public GameObject spaceShip;
     public Transform foodTarget;
     public GameObject babyPlanet;
@@ -16,7 +17,7 @@ public class WinSequence : MonoBehaviour
 
     private Vector3 babyScale;
     private Vector3 foodTargetPosition;
-    private Vector3 targetScale = new Vector3(0.1f, 0.1f, 1);
+    private Vector3 targetScale;
 
     public void StartWinSequence()
     {
@@ -43,13 +44,14 @@ public class WinSequence : MonoBehaviour
     IEnumerator SpaceBabyAnimationDelay()
     {
         yield return new WaitForSeconds(0.3f);
-        SpaceBabyController.Instance.PlayWinStartAnimation();
+        spaceBabyController.PlayWinStartAnimation();
     }
 
     IEnumerator Feed(int matches)
     {
-        babyScale = SpaceBabyController.Instance.gameObject.transform.localScale;
+        babyScale = spaceBabyController.gameObject.transform.localScale;
         foodTargetPosition = foodTarget.position;
+        targetScale = new Vector3(0.2f, 0.2f, 1);
 
         for (int i = 0; i < matches; i++)
         {
@@ -64,13 +66,13 @@ public class WinSequence : MonoBehaviour
         }
         else
         {
-            SpaceBabyController.Instance.BabyHappy();
+            spaceBabyController.BabyHappy();
         }
     }
 
     IEnumerator FoodMove(Sprite foodSprite)
     {
-        GameObject foody = Instantiate(foodPrefab, spaceShip.transform.position, Quaternion.identity);
+        GameObject foody = Instantiate(foodPrefab, spaceShip.transform.position, Quaternion.identity, foodTarget);
         foody.transform.localScale = Vector3.zero;
         foody.GetComponent<SpriteRenderer>().sprite = foodSprite;
         foody.GetComponent<SpriteRenderer>().sortingOrder = 2;
@@ -84,15 +86,15 @@ public class WinSequence : MonoBehaviour
             yield return null;
         }
 
-        SpaceBabyController.Instance.PlayEatSound();
+        spaceBabyController.PlayEatSound();
         Destroy(foody);
         babyScale.x += 0.02f;
-        SpaceBabyController.Instance.gameObject.transform.localScale = babyScale;
+        spaceBabyController.gameObject.transform.localScale = babyScale;
     }
 
     IEnumerator WinTransition()
     {
-        SpaceBabyController.Instance.BabyHappy();
+        spaceBabyController.BabyHappy();
 
         panelOverlay.SetActive(true);
         Image panelImage = panelOverlay.GetComponent<Image>();
@@ -106,7 +108,7 @@ public class WinSequence : MonoBehaviour
             yield return null;
         }
 
-        SpaceBabyController.Instance.gameObject.SetActive(false);
+        spaceBabyController.gameObject.SetActive(false);
         babyPlanet.SetActive(true);
 
         while (panelColor.a > 0)
