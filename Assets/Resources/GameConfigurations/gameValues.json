@@ -54,6 +54,9 @@
 
 	"tutorialObjectHighlightColorValues": [ 1, 1, 0, 0.35 ],
 
+	"fadeDarkColorValues": [ 0, 0, 0, 1],
+	"fadeLightColorValues": [ 0.5, 0.5, 0.5, 1 ],
+
 	"menuButtonsTxtEnglish": [ "PLAY", "TUTORIAL", "SETTINGS", "ABOUT" ],
 	"levelButtonsTxtEnglish": [ "CONTINUE", "EASY", "MEDIUM", "HARD" ],
 	"backButtonTxtEnglish": "BACK",

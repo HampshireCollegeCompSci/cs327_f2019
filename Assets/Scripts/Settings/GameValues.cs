@@ -68,6 +68,12 @@ public class GameValues
     public float[] tutorialObjectHighlightColorValues;
     public Color tutorialObjectHighlightColor;
 
+    public float[] fadeDarkColorValues;
+    public Color fadeDarkColor;
+
+    public float[] fadeLightColorValues;
+    public Color fadeLightColor;
+
     public string[] menuButtonsTxtEnglish;
     public string[] levelButtonsTxtEnglish;
     public string backButtonTxtEnglish;

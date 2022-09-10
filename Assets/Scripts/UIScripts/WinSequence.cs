@@ -98,7 +98,8 @@ public class WinSequence : MonoBehaviour
 
         panelOverlay.SetActive(true);
         Image panelImage = panelOverlay.GetComponent<Image>();
-        Color panelColor = new Color(1, 1, 1, 0);
+        Color panelColor = Config.GameValues.fadeLightColor;
+        panelColor.a = 0;
         panelImage.color = panelColor;
 
         while (panelColor.a < 1)
@@ -117,5 +118,7 @@ public class WinSequence : MonoBehaviour
             panelImage.color = panelColor;
             yield return null;
         }
+
+        panelOverlay.SetActive(false);
     }
 }

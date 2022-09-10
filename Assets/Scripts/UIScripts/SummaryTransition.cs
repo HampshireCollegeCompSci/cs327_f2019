@@ -27,17 +27,8 @@ public class SummaryTransition : MonoBehaviour
     {
         transitionPanel.SetActive(true);
         Image panelImage = transitionPanel.GetComponent<Image>();
-
-        Color panelColor;
-        if (Config.Instance.gameWin)
-        {
-            panelColor = Color.white;
-        }
-        else
-        {
-            panelColor = Color.black;
-        }
-
+        Color panelColor = Config.Instance.gameWin ? Config.GameValues.fadeLightColor : Config.GameValues.fadeDarkColor;
+        panelColor.a = 1;
         panelImage.color = panelColor;
         yield return null;
 

@@ -82,8 +82,10 @@ public class StartGameSequence : MonoBehaviour
     {
         startSequencePanel.SetActive(true);
         Image sequenceImage = startSequencePanel.GetComponent<Image>();
-        Color startColor = new(0, 0, 0, 0);
-        Color endColor = Color.black;
+        Color startColor = Config.GameValues.fadeDarkColor;
+        startColor.a = 0;
+        Color endColor = startColor;
+        endColor.a = 1;
 
         positionEnd = new Vector3(-positionEnd.x * zoomFactor, -positionEnd.y * zoomFactor, positionEnd.z);
         Vector3 zoomEnd = new(zoomFactor, zoomFactor, panelTransform.localScale.z);

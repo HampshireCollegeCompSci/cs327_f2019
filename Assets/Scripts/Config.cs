@@ -77,10 +77,16 @@ public class Config : MonoBehaviour
 
         GameValues.pointColor = CreateColor(GameValues.pointColorValues);
         GameValues.tutorialObjectHighlightColor = CreateColor(GameValues.tutorialObjectHighlightColorValues);
+        GameValues.fadeDarkColor = CreateColor(GameValues.fadeDarkColorValues);
+        GameValues.fadeLightColor = CreateColor(GameValues.fadeLightColorValues);
     }
 
     private Color CreateColor(float [] colorV)
     {
+        if (colorV.Length != 4)
+        {
+            throw new System.ArgumentException("the array of color values is not a lenght of 4");
+        }
         return new Color(colorV[0], colorV[1], colorV[2], colorV[3]);
     }
 

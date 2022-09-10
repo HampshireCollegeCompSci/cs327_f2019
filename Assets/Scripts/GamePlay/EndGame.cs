@@ -101,12 +101,12 @@ public class EndGame : MonoBehaviour
 
         if (Config.Instance.gameWin)
         {
-            fadeColor = Color.white;
+            fadeColor = Config.GameValues.fadeLightColor;
             SoundEffectsController.Instance.WinSound();
         }
         else
         {
-            fadeColor = Color.black;
+            fadeColor = Config.GameValues.fadeDarkColor;
             errorObject.SetActive(true);
             SoundEffectsController.Instance.LoseSound();
         }
@@ -153,7 +153,7 @@ public class EndGame : MonoBehaviour
         {
             SoundEffectsController.Instance.WinTransition();
             MusicController.Instance.FadeMusicOut();
-            StartCoroutine(FadeGameplayOut(true));
+            StartCoroutine(FadeGameplayOut());
         }
         else
         {
@@ -196,20 +196,18 @@ public class EndGame : MonoBehaviour
         }
         
         MusicController.Instance.FadeMusicOut();
-        StartCoroutine(FadeGameplayOut(false));
+        StartCoroutine(FadeGameplayOut());
     } 
 
-    private IEnumerator FadeGameplayOut(bool gameWin)
+    private IEnumerator FadeGameplayOut()
     {
         Image fadeInScreen = this.gameObject.GetComponent<Image>();
-        Color fadeColor = gameWin ? Color.white : Color.black;
-        fadeColor.a = fadeInScreen.color.a;
-        //fadeColor.a = 0;
+        Color fadeColor = fadeInScreen.color;
 
         while (fadeColor.a < 1)
         {
-            fadeInScreen.color = fadeColor;
             fadeColor.a += Time.deltaTime * Config.GameValues.endGameFadeOutSpeed;
+            fadeInScreen.color = fadeColor;
             yield return null;
         }
 

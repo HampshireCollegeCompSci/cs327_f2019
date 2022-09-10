@@ -54,7 +54,8 @@ public class PlayAgainSequence : MonoBehaviour
     {
         sequencePanel.SetActive(true);
         Image panelImage = sequencePanel.GetComponent<Image>();
-        Color panelColor = new(0, 0, 0, 0);
+        Color panelColor = Config.GameValues.fadeDarkColor;
+        panelColor.a = 0;
         panelImage.color = panelColor;
         yield return null;
 
