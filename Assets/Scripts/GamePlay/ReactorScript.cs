@@ -160,17 +160,25 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         return totalSum;
     }
 
-    public void TryHighlightOverloaded()
+    public void TryHighlightOverloaded(bool turnOn)
     {
-        // will turn glowing on but not set the flag for it
-        // so that it will not be turned off later
-        if (CountReactorCard() > Config.Instance.reactorLimit)
+        if (turnOn)
         {
-            Glowing = true;
-            GlowLevel = Constants.overHighlightColorLevel;
-            _glowing = false;
-            Alert = true;
-            ChangeSuitGlow(3);
+            // will turn glowing on but not set the flag for it
+            // so that it will not be turned off later
+            if (CountReactorCard() > Config.Instance.reactorLimit)
+            {
+                Glowing = true;
+                GlowLevel = Constants.overHighlightColorLevel;
+                _glowing = false;
+                Alert = true;
+                ChangeSuitGlow(3);
+            }
+        }
+        else
+        {
+            _glowing = true;
+            Glowing = false;
         }
     }
 

@@ -80,4 +80,5 @@ public static class Constants
     public const byte matchHighlightColorLevel = 1;
     public const byte moveHighlightColorLevel = 2;
     public const byte overHighlightColorLevel = 3;
+    public const byte winHighlightColorLevel = 4;
 }

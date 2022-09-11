@@ -72,7 +72,8 @@ public class Config : MonoBehaviour
             Color.white,
             GameValues.matchHighlightColor,
             GameValues.moveHighlightColor,
-            GameValues.overHighlightColor
+            GameValues.overHighlightColor,
+            Color.cyan
         };
 
         GameValues.pointColor = CreateColor(GameValues.pointColorValues);

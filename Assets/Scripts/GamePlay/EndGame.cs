@@ -1,16 +1,17 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class EndGame : MonoBehaviour
 {
+    public GameObject restartButton, continueButton;
     public GameObject errorObject;
     public GameObject gameOverPanel;
     public GameObject gameOverTextPanel;
     public Text gameOverText;
     public Text wonlostText;
-    public Text continueText;
 
     // Singleton instance.
     public static EndGame Instance = null;
@@ -59,17 +60,16 @@ public class EndGame : MonoBehaviour
         {
             foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
             {
-                foundationScript.GlowForGameEnd();
+                foundationScript.GlowForGameEnd(true);
             }
         }
         else
         {
             foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
             {
-                reactorScript.TryHighlightOverloaded();
+                reactorScript.TryHighlightOverloaded(true);
             }
         }
-
 
         StartCoroutine(BeginGameOverTransition());
     }
@@ -96,118 +96,158 @@ public class EndGame : MonoBehaviour
     private IEnumerator BeginGameOverTransition()
     {
         gameOverPanel.SetActive(true);
+        MusicController.Instance.FadeMusicOut();
+
         Image fadeInScreen = this.gameObject.GetComponent<Image>();
+        CanvasGroup textGroup = gameOverTextPanel.GetComponent<CanvasGroup>();
         Color fadeColor;
 
         if (Config.Instance.gameWin)
         {
             fadeColor = Config.GameValues.fadeLightColor;
             SoundEffectsController.Instance.WinSound();
+            gameOverText.color = Color.cyan;
+            wonlostText.color = Color.cyan;
+            wonlostText.text = "YOU WON";
         }
         else
         {
             fadeColor = Config.GameValues.fadeDarkColor;
             errorObject.SetActive(true);
             SoundEffectsController.Instance.LoseSound();
+            gameOverText.color = Color.red;
+            wonlostText.color = Color.red;
+            wonlostText.text = "YOU LOST";
         }
 
         fadeColor.a = 0;
         fadeInScreen.color = fadeColor;
         fadeInScreen.enabled = true;
+        textGroup.alpha = 0;
+        gameOverTextPanel.SetActive(true);
         yield return null;
 
-        while (fadeColor.a < 0.3)
+        while (textGroup.alpha < 1)
         {
             fadeColor.a += Time.deltaTime * 0.3f;
             fadeInScreen.color = fadeColor;
+            textGroup.alpha += Time.deltaTime;
             yield return null;
         }
 
         if (Config.Instance.gameWin)
-        {
-            gameOverText.color = Color.cyan;
-            wonlostText.color = Color.cyan;
-            wonlostText.text = "YOU WON";
-            continueText.color = Color.cyan;
+        {   
             SpaceBabyController.Instance.BabyHappy();
+            MusicController.Instance.WinMusic();
         }
         else
         {
-            gameOverText.color = Color.red;
-            wonlostText.color = Color.red;
-            wonlostText.text = "YOU LOST";
-            continueText.color = Color.red;
             SpaceBabyController.Instance.BabyLoseTransition();
+            MusicController.Instance.LoseMusic();
         }
 
-        this.gameObject.GetComponent<Button>().enabled = true;
-        gameOverTextPanel.SetActive(true);
+        restartButton.SetActive(true);
+        continueButton.SetActive(true);
     }
 
-    public void EndGameOverTransition()
+    public void RestartGame()
     {
-        this.gameObject.GetComponent<Button>().enabled = false;
+        SoundEffectsController.Instance.ButtonPressSound();
+        restartButton.SetActive(false);
+        continueButton.SetActive(false);
         gameOverTextPanel.SetActive(false);
+        gameOverPanel.SetActive(false);
+        SpaceBabyController.Instance.ResetBaby();
+
+        if (Config.Instance.gameWin)
+        {
+            // save the results
+            PlayerPrefKeys.TrySetHighScore(Config.Instance.currentDifficulty, Config.Instance.score);
+            PlayerPrefKeys.TrySetLeastMoves(Config.Instance.currentDifficulty, Config.Instance.moveCounter);
+
+            foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+            {
+                foundationScript.GlowForGameEnd(false);
+            }
+        }
+        else
+        {
+            foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+            {
+                reactorScript.TryHighlightOverloaded(false);
+            }
+        }
+
+        MusicController.Instance.GameMusic();
+        Config.Instance.gameOver = false;
+        GameLoader.Instance.RestartGame();
+        this.gameObject.GetComponent<Image>().enabled = false;
+    }
+
+    public void ContinueGameOverTransition()
+    {
+        SoundEffectsController.Instance.ButtonPressSound();
+        restartButton.SetActive(false);
+        continueButton.SetActive(false);
 
         if (Config.Instance.gameWin)
         {
             SoundEffectsController.Instance.WinTransition();
-            MusicController.Instance.FadeMusicOut();
             StartCoroutine(FadeGameplayOut());
         }
         else
         {
-            StartCoroutine(ReactorMeltdown());
+            StartCoroutine(ReactorsMeltdown());
         }
     }
 
-    private IEnumerator ReactorMeltdown()
+    private IEnumerator ReactorsMeltdown()
     {
-        float explosionDelay = 0;
+        // wait for dramatic effect
+        yield return new WaitForSeconds(0.5f);
         foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
         {
-            explosionDelay += reactorScript.cardList.Count;
-        }
-        explosionDelay *= 1.2f;
-        explosionDelay = 1f / explosionDelay;
-
-        GameObject matchExplosion;
-        bool reactorExploded;
-        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
-        {
-            reactorExploded = false;
-            foreach (GameObject card in reactorScript.cardList)
+            if (reactorScript.cardList.Count != 0)
             {
-                reactorExploded = true;
-                matchExplosion = Instantiate(UtilsScript.Instance.matchPrefab, card.transform.position, Quaternion.identity);
-                matchExplosion.transform.localScale = new Vector3(Config.GameValues.matchExplosionScale, Config.GameValues.matchExplosionScale);
-                yield return new WaitForSeconds(0.2f);
-                card.SetActive(false);
-                SoundEffectsController.Instance.ExplosionSound();
-                yield return new WaitForSeconds(explosionDelay);
-            }
-
-            if (reactorExploded)
-            {
-                matchExplosion = Instantiate(UtilsScript.Instance.matchPrefab, reactorScript.gameObject.transform.position, Quaternion.identity);
-                matchExplosion.transform.localScale = new Vector3(Config.GameValues.matchExplosionScale / 2, Config.GameValues.matchExplosionScale / 2);
-                matchExplosion.GetComponent<Animator>().Play("LoseExplosionAnim");
+                StartCoroutine(ReactorMeltdown(reactorScript));
+                yield return new WaitForSeconds(Config.GameValues.reactorMeltDownSpeed);
             }
         }
-        
-        MusicController.Instance.FadeMusicOut();
+
         StartCoroutine(FadeGameplayOut());
-    } 
+    }
+
+    private IEnumerator ReactorMeltdown(ReactorScript reactorScript)
+    {
+        foreach (GameObject card in reactorScript.cardList)
+        {
+            GameObject matchExplosion = Instantiate(UtilsScript.Instance.matchPrefab, card.transform.position, Quaternion.identity);
+            matchExplosion.transform.localScale = new Vector3(Config.GameValues.matchExplosionScale, Config.GameValues.matchExplosionScale);
+        }
+        yield return new WaitForSeconds(0.2f);
+        foreach (GameObject card in reactorScript.cardList)
+        {
+            card.SetActive(false);
+        }
+        SoundEffectsController.Instance.ExplosionSound();
+
+        GameObject reactorExplosion = Instantiate(UtilsScript.Instance.matchPrefab, reactorScript.gameObject.transform.position, Quaternion.identity);
+        reactorExplosion.transform.localScale = new Vector3(Config.GameValues.matchExplosionScale / 2, Config.GameValues.matchExplosionScale / 2);
+        reactorExplosion.GetComponent<Animator>().Play("LoseExplosionAnim");
+    }
 
     private IEnumerator FadeGameplayOut()
     {
         Image fadeInScreen = this.gameObject.GetComponent<Image>();
         Color fadeColor = fadeInScreen.color;
+        CanvasGroup textGroup = gameOverTextPanel.GetComponent<CanvasGroup>();
 
-        while (fadeColor.a < 1)
+        while (textGroup.alpha > 0)
         {
-            fadeColor.a += Time.deltaTime * Config.GameValues.endGameFadeOutSpeed;
+            float alphaChange = Time.deltaTime * Config.GameValues.endGameFadeOutSpeed;
+            fadeColor.a += alphaChange;
             fadeInScreen.color = fadeColor;
+            textGroup.alpha -= alphaChange;
             yield return null;
         }
 
@@ -216,15 +256,6 @@ public class EndGame : MonoBehaviour
 
     private void TransitionToSummaryScene()
     {
-        if (Config.Instance.gameWin)
-        {
-            MusicController.Instance.WinMusic();
-        }
-        else
-        {
-            MusicController.Instance.LoseMusic();
-        }
-
         SceneManager.LoadScene(Constants.summaryScene);
     }
 }

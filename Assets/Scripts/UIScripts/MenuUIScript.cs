@@ -171,7 +171,10 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI restart");
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.UnloadSceneAsync(Constants.pauseScene);
+        if (SceneManager.GetSceneByName(Constants.pauseScene).isLoaded)
+        {
+            SceneManager.UnloadSceneAsync(Constants.pauseScene);
+        }
         MusicController.Instance.GameMusic();
         GameLoader.Instance.RestartGame();
     }
@@ -280,10 +283,8 @@ public class MenuUIScript : MonoBehaviour
 
     public void MakeActionsMax()
     {
-        Debug.Log("MenuUI make actions max");
-
         if (UtilsScript.Instance.InputStopped || Config.Instance.gamePaused) return;
-
+        Debug.Log("MenuUI make actions max");
         UtilsScript.Instance.StartNextCycle(manuallyTriggered: true);
     }
 }

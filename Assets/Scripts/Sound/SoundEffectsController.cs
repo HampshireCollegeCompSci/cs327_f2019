@@ -171,7 +171,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
     public void ExplosionSound()
     {
         soundController.PlayOneShot(explosionSound, 0.6f);
-        VibrateSmall();
+        VibrateMedium();
     }
 
     public void FoodMatch(byte suit)

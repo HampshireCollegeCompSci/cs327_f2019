@@ -809,6 +809,7 @@ public class UtilsScript : MonoBehaviour
                 if (Config.Instance.gameOver)
                 {
                     Config.Instance.moveCounter += 1;
+                    IsNextCycle = false;
                     yield break;
                 }
 

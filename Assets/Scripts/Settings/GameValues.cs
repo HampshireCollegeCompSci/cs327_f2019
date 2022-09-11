@@ -42,6 +42,8 @@ public class GameValues
     public float endGameFadeOutSpeed;
     public float summaryTransitionSpeed;
 
+    public float reactorMeltDownSpeed;
+
     public string[] difficulties;
     public int[] reactorLimits;
     public int[] moveLimits;

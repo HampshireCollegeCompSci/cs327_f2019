@@ -160,11 +160,19 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
         }
     }
 
-    public void GlowForGameEnd()
+    public void GlowForGameEnd(bool turnOn)
     {
-        // will turn glowing on but not set the flag for it
-        // so that it will not be turned off later
-        spriteRenderer.color = Color.cyan;
-        _glowing = false;
+        if (turnOn)
+        {
+            // will turn glowing on but not set the flag for it
+            // so that it will not be turned off later
+            GlowLevel = Constants.winHighlightColorLevel;
+            _glowing = false;
+        }
+        else
+        {
+            _glowing = true;
+            Glowing = false;
+        }
     }
 }
