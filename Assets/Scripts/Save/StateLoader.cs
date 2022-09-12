@@ -39,6 +39,11 @@ public class StateLoader : MonoBehaviour
         originsLength = origins.Count;
     }
 
+    public void ClearSaveMoveLog()
+    {
+        saveMoveLog.Clear();
+    }
+
     public void AddMove(Move newMove)
     {
         SaveMove newSaveMove = new()
@@ -194,7 +199,8 @@ public class StateLoader : MonoBehaviour
         // if the tutorial isn't being loaded then we need to setup the move log
         if (LoadPileScript.Instance.cardList.Count == 0)
         {
-            throw new System.Exception("there are no cards in the load pile");
+            Debug.LogError("there are no cards in the load pile when starting to load the game");
+            throw new System.Exception("there are no cards in the load pile when starting to load the game");
         }
         
         SetUpMoveLog(state.moveLog, LoadPileScript.Instance.cardList);
@@ -227,6 +233,13 @@ public class StateLoader : MonoBehaviour
 
         //set up deck
         SetUpLocationWithCards(state.deck, DeckScript.Instance.gameObject);
+
+        // if the game state has missing cards they will be leftover in the load pile cardlist
+        if (LoadPileScript.Instance.cardList.Count != 0)
+        {
+            Debug.LogError("there are cards still in the load pile after loading the game");
+            throw new System.Exception("there are cards still in the load pile after loading the game");
+        }
 
         foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
         {

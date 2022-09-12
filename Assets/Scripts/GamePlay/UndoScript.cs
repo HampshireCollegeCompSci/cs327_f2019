@@ -34,6 +34,7 @@ public class UndoScript : MonoBehaviour
     public void ClearMoveLog()
     {
         moveLog.Clear();
+        StateLoader.Instance.ClearSaveMoveLog();
     }
 
     /*
@@ -65,6 +66,7 @@ public class UndoScript : MonoBehaviour
     {
         if (moveLog.Count != 0) //only run if there's something in the stack
         {
+            Debug.Log("undoing move");
             Move lastMove;
             switch (moveLog.Peek().moveType)
             {
