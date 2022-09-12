@@ -441,7 +441,7 @@ public class UtilsScript : MonoBehaviour
         card1Script.MoveCard(MatchedPileScript.Instance.gameObject);
 
         int points = Config.GameValues.matchPoints + (Config.Instance.consecutiveMatches * Config.GameValues.scoreMultiplier);
-        UpdateScore(points);
+        ScoreScript.Instance.UpdateScore(points);
 
         SoundEffectsController.Instance.FoodMatch(card1Script.cardSuitIndex);
         SpaceBabyController.Instance.BabyEat();
@@ -540,20 +540,6 @@ public class UtilsScript : MonoBehaviour
         }
 
         Destroy(matchPointsEffect);
-    }
-
-    public void UpdateScore(int addScore, bool setAsValue = false)
-    {
-        if (setAsValue)
-        {
-            Config.Instance.score = addScore;
-        }
-        else
-        {
-            Config.Instance.score += addScore;
-        }
-
-        score.text = Config.Instance.score.ToString();
     }
 
     public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false, bool startingGame = false, bool isMatch = false)

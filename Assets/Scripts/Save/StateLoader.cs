@@ -191,7 +191,7 @@ public class StateLoader : MonoBehaviour
 
         //set up simple variables
         Config.Instance.SetDifficulty(state.difficulty);
-        UtilsScript.Instance.UpdateScore(state.score, setAsValue: true);
+        ScoreScript.Instance.SetScore(state.score);
         Config.Instance.consecutiveMatches = state.consecutiveMatches;
         Config.Instance.moveCounter = state.moveCounter;
         // more is done at the end
@@ -256,7 +256,7 @@ public class StateLoader : MonoBehaviour
 
         //set up simple variables
         Config.Instance.SetDifficulty(state.difficulty);
-        UtilsScript.Instance.UpdateScore(state.score, setAsValue: true);
+        ScoreScript.Instance.SetScore(state.score);
         Config.Instance.consecutiveMatches = state.consecutiveMatches;
         Config.Instance.moveCounter = state.moveCounter;
         // more is done at the end

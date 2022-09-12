@@ -124,7 +124,7 @@ public class UndoScript : MonoBehaviour
                     StateLoader.Instance.RemoveMove();
                     MoveFoundationCard(lastMove);
 
-                    UtilsScript.Instance.UpdateScore(lastMove.score, setAsValue: true);
+                    ScoreScript.Instance.SetScore(lastMove.score);
                     UtilsScript.Instance.UpdateActions(-1);
                     break;
                 case Constants.drawLogMove:

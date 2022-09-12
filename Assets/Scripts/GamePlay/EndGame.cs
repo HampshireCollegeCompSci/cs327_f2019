@@ -90,7 +90,7 @@ public class EndGame : MonoBehaviour
             }
         }
 
-        UtilsScript.Instance.UpdateScore(extraScore);
+        ScoreScript.Instance.UpdateScore(extraScore);
     }
 
     private IEnumerator BeginGameOverTransition()

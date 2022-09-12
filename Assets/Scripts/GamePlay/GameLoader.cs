@@ -189,7 +189,7 @@ public class GameLoader : MonoBehaviour
         Config.Instance.moveCounter = 0;
 
         // these are updated visually as well
-        UtilsScript.Instance.UpdateScore(0, setAsValue: true);
+        ScoreScript.Instance.SetScore(0);
 
         Config.Instance.actions = 0;
         UtilsScript.Instance.UpdateActions(0, startingGame: true);
