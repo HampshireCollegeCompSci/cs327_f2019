@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class SpaceBabyController : MonoBehaviour
+public class SpaceBabyController : MonoBehaviour, ISound
 {
     public AudioSource audioSource;
     public Animator animator;
@@ -29,7 +29,7 @@ public class SpaceBabyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.soundEffectsVolumeKey));
+        UpdateMaxVolume(PlayerPrefKeys.GetSoundEffectsVolume());
         BabyIdle();
     }
 

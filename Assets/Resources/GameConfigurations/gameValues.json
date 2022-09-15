@@ -27,8 +27,8 @@
 	"musicFadeOutFast": 0.7,
 	"musicFadeOutSlow": 0.2,
 
-	"musicDefaultVolume": 1,
-	"soundEffectsDefaultVolume": 1,
+	"musicDefaultVolume": 10,
+	"soundEffectsDefaultVolume": 10,
 	"vibrationEnabledDefault": true,
 	"foodSuitsEnabledDefault": false,
 

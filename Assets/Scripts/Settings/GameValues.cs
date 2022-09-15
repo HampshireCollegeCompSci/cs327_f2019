@@ -30,8 +30,8 @@ public class GameValues
     public float musicFadeOutFast;
     public float musicFadeOutSlow;
 
-    public float musicDefaultVolume;
-    public float soundEffectsDefaultVolume;
+    public int musicDefaultVolume;
+    public int soundEffectsDefaultVolume;
     public bool vibrationEnabledDefault;
     public bool foodSuitsEnabledDefault;
 

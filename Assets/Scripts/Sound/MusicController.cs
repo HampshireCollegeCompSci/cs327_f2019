@@ -45,16 +45,16 @@ public class MusicController : MonoBehaviour, ISound
             menuMusic, themeMusic, transitionMusic, loseMusic, winMusic, aboutMusic, tutorialMusic
         };
         _playingTrack = byte.MaxValue;
-        UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.musicVolumeKey));
+        UpdateMaxVolume(PlayerPrefKeys.GetMusicVolume());
     }
 
     public void UpdateMaxVolume(float newVolume)
     {
         Debug.Log($"setting music volume to: {newVolume}");
-        NormalizeFadeValues();
+        NormalizeFadeValues(newVolume);
         maxVolume = newVolume;
 
-        Debug.Log($"1: {audioSource_1.isPlaying}, 2: {audioSource_2.isPlaying}");
+        //Debug.Log($"paused: {pausedAudioSource}, 1: {audioSource_1.isPlaying}, 2: {audioSource_2.isPlaying}");
 
         if (audioSource_1.isPlaying || pausedAudioSource == 1)
         {
@@ -66,13 +66,13 @@ public class MusicController : MonoBehaviour, ISound
         }
     }
 
-    private void NormalizeFadeValues()
+    private void NormalizeFadeValues(float newVolume)
     {
         // changing the music volume requires that the fade timings be updated as well 
-        double audioDifference = PlayerPrefs.GetFloat(Constants.musicVolumeKey) / 0.5;
-        fadeInSpeed = (float)(Config.GameValues.musicFadeIn * audioDifference);
-        fadeOutSpeedFast = (float)(Config.GameValues.musicFadeOutFast * audioDifference);
-        fadeOutSpeedSlow = (float)(Config.GameValues.musicFadeOutSlow * audioDifference);
+        float audioDifference = newVolume * 2;
+        fadeInSpeed = Config.GameValues.musicFadeIn * audioDifference;
+        fadeOutSpeedFast = Config.GameValues.musicFadeOutFast * audioDifference;
+        fadeOutSpeedSlow = Config.GameValues.musicFadeOutSlow * audioDifference;
     }
 
     private byte _playingTrack;

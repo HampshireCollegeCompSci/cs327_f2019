@@ -38,7 +38,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
 
     private void Start()
     {
-        UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.soundEffectsVolumeKey));
+        UpdateMaxVolume(PlayerPrefKeys.GetSoundEffectsVolume());
         bool.TryParse(PlayerPrefs.GetString(Constants.vibrationEnabledKey), out vibrationEnabled);
     }
 
@@ -142,11 +142,11 @@ public class SoundEffectsController : MonoBehaviour, ISound
 
     IEnumerator AlertVibration()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1);
         soundController.PlayOneShot(alertSound, 0.2f);
         yield return new WaitForSeconds(0.05f);
         VibrateMedium();
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.3f);
         VibrateMedium();
     }
 

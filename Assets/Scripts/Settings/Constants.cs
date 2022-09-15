@@ -29,7 +29,9 @@ public static class Constants
 
     // Settings
     public const string soundEffectsVolumeKey = "SoundEffectsVolume";
+    public const int soundEffectsVolumeDenominator = 10;
     public const string musicVolumeKey = "MusicVolume";
+    public const int musicVolumeDenominator = 10;
     public const string vibrationEnabledKey = "VibrationEnabled";
     public const string foodSuitsEnabledKey = "FoodSuitsEnabled";
     public const string frameRateKey = "FrameRate";

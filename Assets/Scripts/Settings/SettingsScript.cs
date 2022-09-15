@@ -6,14 +6,14 @@ using UnityEngine.SceneManagement;
 
 public class SettingsScript : MonoBehaviour
 {
-    public GameObject musicSlider;
+    public Slider musicSlider;
     public Text musicVolumeText;
 
-    public GameObject soundEffectsSlider;
+    public Slider soundEffectsSlider;
     public Text soundEffectsVolumeText;
 
-    public GameObject vibrationToggle;
-    public GameObject foodSuitsToggle;
+    public Toggle vibrationToggle;
+    public Toggle foodSuitsToggle;
 
     public Slider frameRateSlider;
     public Text frameRateText;
@@ -36,14 +36,14 @@ public class SettingsScript : MonoBehaviour
         PlayerPrefKeys.CheckKeys();
 
         // music volume
-        int volume = (int)(PlayerPrefs.GetFloat(Constants.musicVolumeKey) * 10);
-        musicSlider.GetComponent<Slider>().value = volume;
-        musicVolumeText.text = volume.ToString() + "0%";
+        int volume = PlayerPrefs.GetInt(Constants.musicVolumeKey);
+        musicSlider.value = volume;
+        musicVolumeText.text = $"{volume}0%";
 
         // sound effects volume
-        volume = (int)(PlayerPrefs.GetFloat(Constants.soundEffectsVolumeKey) * 10);
-        soundEffectsSlider.GetComponent<Slider>().value = volume;
-        soundEffectsVolumeText.text = volume.ToString() + "0%";
+        volume = PlayerPrefs.GetInt(Constants.soundEffectsVolumeKey);
+        soundEffectsSlider.value = volume;
+        soundEffectsVolumeText.text = $"{volume}0%";
 
         // boolean settings
         bool isOn;
@@ -53,30 +53,33 @@ public class SettingsScript : MonoBehaviour
             // vibration enabled
             if (bool.TryParse(PlayerPrefs.GetString(Constants.vibrationEnabledKey), out isOn))
             {
-                vibrationToggle.GetComponent<Toggle>().isOn = isOn;
+                vibrationToggle.isOn = isOn;
             }
             else
             {
                 // unable to parse
-                vibrationToggle.GetComponent<Toggle>().isOn = false;
+                PlayerPrefs.SetString(Constants.vibrationEnabledKey, false.ToString());
+                vibrationToggle.isOn = false;
             }
         }
         else
         {
             // disable vibration toggle
-            vibrationToggle.GetComponent<Toggle>().interactable = false;
-            vibrationToggle.GetComponent<Toggle>().isOn = false;
+            vibrationToggle.interactable = false;
+            vibrationToggle.isOn = false;
         }
 
         // food suits enabled
         if (bool.TryParse(PlayerPrefs.GetString(Constants.foodSuitsEnabledKey), out isOn))
         {
-            foodSuitsToggle.GetComponent<Toggle>().isOn = isOn;
+            foodSuitsToggle.isOn = isOn;
         }
         else
         {
             // unable to parse
-            foodSuitsToggle.GetComponent<Toggle>().isOn = false;
+            PlayerPrefs.SetString(Constants.foodSuitsEnabledKey, false.ToString());
+            foodSuitsToggle.isOn = false;
+        }
 
         // target frame rate settings
         // https://docs.unity3d.com/ScriptReference/Application-targetFrameRate.html
@@ -164,9 +167,10 @@ public class SettingsScript : MonoBehaviour
         if (lockout)
             return;
 
-        musicVolumeText.text = update.ToString() + "0%";
-        update /= 10;
-        PlayerPrefs.SetFloat(Constants.musicVolumeKey, update);
+        int volumeUpdate = (int)update;
+        musicVolumeText.text = $"{volumeUpdate}0%";
+        PlayerPrefs.SetInt(Constants.musicVolumeKey, volumeUpdate);
+        update /= Constants.musicVolumeDenominator;
         MusicController.Instance.UpdateMaxVolume(update);
     }
 
@@ -175,9 +179,10 @@ public class SettingsScript : MonoBehaviour
         if (lockout)
             return;
 
-        soundEffectsVolumeText.text = update.ToString() + "0%";
-        update /= 10;
-        PlayerPrefs.SetFloat(Constants.soundEffectsVolumeKey, update);
+        int volumeUpdate = (int)update;
+        soundEffectsVolumeText.text = $"{volumeUpdate}0%";
+        PlayerPrefs.SetInt(Constants.soundEffectsVolumeKey, volumeUpdate);
+        update /= Constants.soundEffectsVolumeDenominator;
         SoundEffectsController.Instance.UpdateMaxVolume(update);
         SoundEffectsController.Instance.ButtonPressSound(vibrate: false);
 
@@ -185,6 +190,7 @@ public class SettingsScript : MonoBehaviour
         {
             SpaceBabyController.Instance.UpdateMaxVolume(update);
         }
+
     }
 
     public void VibrationEnabledOnToggle(bool update)
@@ -216,7 +222,6 @@ public class SettingsScript : MonoBehaviour
         if (lockout)
             return;
 
-        SoundEffectsController.Instance.ButtonPressSound();
         confirmYesButton.interactable = false;
         confirmObject.SetActive(true);
         StartCoroutine(ButtonDelay());

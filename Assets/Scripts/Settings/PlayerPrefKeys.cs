@@ -14,12 +14,12 @@ public static class PlayerPrefKeys
 
         if (!PlayerPrefs.HasKey(Constants.soundEffectsVolumeKey))
         {
-            PlayerPrefs.SetFloat(Constants.soundEffectsVolumeKey, Config.GameValues.soundEffectsDefaultVolume);
+            PlayerPrefs.SetInt(Constants.soundEffectsVolumeKey, Config.GameValues.soundEffectsDefaultVolume);
         }
 
         if (!PlayerPrefs.HasKey(Constants.musicVolumeKey))
         {
-            PlayerPrefs.SetFloat(Constants.musicVolumeKey, Config.GameValues.musicDefaultVolume);
+            PlayerPrefs.SetInt(Constants.musicVolumeKey, Config.GameValues.musicDefaultVolume);
         }
 
         if (!PlayerPrefs.HasKey(Constants.vibrationEnabledKey))
@@ -43,6 +43,16 @@ public static class PlayerPrefKeys
         {
             PlayerPrefs.SetInt(Constants.frameRateKey, -1);
         }
+    }
+
+    public static float GetMusicVolume()
+    {
+        return ((float) PlayerPrefs.GetInt(Constants.musicVolumeKey)) / Constants.musicVolumeDenominator;
+    }
+
+    public static float GetSoundEffectsVolume()
+    {
+        return ((float) PlayerPrefs.GetInt(Constants.soundEffectsVolumeKey)) / Constants.soundEffectsVolumeDenominator;
     }
 
     /// <summary>
