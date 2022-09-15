@@ -32,6 +32,7 @@ public static class Constants
     public const string musicVolumeKey = "MusicVolume";
     public const string vibrationEnabledKey = "VibrationEnabled";
     public const string foodSuitsEnabledKey = "FoodSuitsEnabled";
+    public const string frameRateKey = "FrameRate";
     // End Keys
 
     // Scenes

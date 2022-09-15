@@ -38,6 +38,11 @@ public static class PlayerPrefKeys
         {
             PlayerPrefs.SetString(Constants.foodSuitsEnabledKey, Config.GameValues.foodSuitsEnabledDefault.ToString());
         }
+
+        if (!PlayerPrefs.HasKey(Constants.frameRateKey))
+        {
+            PlayerPrefs.SetInt(Constants.frameRateKey, -1);
+        }
     }
 
     /// <summary>

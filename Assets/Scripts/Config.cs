@@ -49,11 +49,28 @@ public class Config : MonoBehaviour
             Vibration.Init();
             // Check Player Preferences
             PlayerPrefKeys.CheckKeys();
+            // Set the application frame rate to what was saved
+            SetFrameRate();
         }
         else if (Instance != this)
         {
             Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
         }
+    }
+
+    private void SetFrameRate()
+    {
+        int targetFrameRate = PlayerPrefs.GetInt(Constants.frameRateKey, -1);
+        // the screen refresh rate must be divisible by the targeted frame rate
+        if (targetFrameRate != -1 && (Screen.currentResolution.refreshRate % targetFrameRate != 0))
+        {
+            Debug.LogWarning($"the screen refresh rate of {Screen.currentResolution.refreshRate} doesn't support the saved target frame rate.");
+            targetFrameRate = -1;
+            PlayerPrefs.SetInt(Constants.frameRateKey, targetFrameRate);
+        }
+
+        Debug.Log($"setting target frame rate to: {targetFrameRate}");
+        Application.targetFrameRate = targetFrameRate;
     }
 
     private void LoadGameValues()
