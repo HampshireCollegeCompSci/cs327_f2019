@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SplashScreen : MonoBehaviour
 {
@@ -22,26 +21,17 @@ public class SplashScreen : MonoBehaviour
 
     IEnumerator DisplayLogo()
     {
-        Image[] logos = splashScreen.GetComponentsInChildren<Image>(true);
-
-        float fade = 1;
-        Color splashScreenColor = new Color(0, 0, 0, 1);
-        Color logosColor = new Color(1, 1, 1, 1);
-
         yield return new WaitForSeconds(2);
         MusicController.Instance.MainMenuMusic();
 
-        while (fade > 0)
+        CanvasGroup canvasGroup = splashScreen.GetComponent<CanvasGroup>();
+
+        float alpha = canvasGroup.alpha;
+        while (alpha > 0)
         {
+            alpha -= Time.deltaTime * 0.5f;
+            canvasGroup.alpha = alpha;
             yield return null;
-
-            fade -= Time.deltaTime * 0.5f;
-            splashScreenColor.a = fade;
-            logosColor.a = fade;
-
-            logos[0].color = splashScreenColor;
-            logos[1].color = logosColor;
-            logos[2].color = logosColor;
         }
 
         splashScreen.SetActive(false);
