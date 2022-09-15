@@ -74,7 +74,7 @@ public class PlayAgainSequence : MonoBehaviour
         spaceBabyPlanet.SetActive(false);
         foodObjects.SetActive(false);
         summaryTransition.StopExplosion();
-        yield return new WaitForSeconds(0.3f);
+        yield return null;
 
         Debug.Log("play again sequence done");
         sequenceDone = true;

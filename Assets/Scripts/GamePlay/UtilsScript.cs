@@ -428,9 +428,12 @@ public class UtilsScript : MonoBehaviour
 
     public void Match(CardScript card1Script, CardScript card2Script)
     {
+        // stop the hologram fade in coroutine so that its alpha value doesn't change anymore
+        card1Script.StopAllCoroutines();
+        card2Script.StopAllCoroutines();
+
         GameObject comboHologram = selectedCardsCopy[0].GetComponent<CardScript>().hologramFood;
         comboHologram.transform.parent = null;
-        comboHologram.GetComponent<SpriteRenderer>().color = Color.white;
 
         Vector3 p = selectedCardsCopy[0].transform.position;
         p.z += 2;
@@ -447,15 +450,12 @@ public class UtilsScript : MonoBehaviour
         SpaceBabyController.Instance.BabyEat();
 
         StartCoroutine(FoodComboMove(comboHologram, matchExplosion));
+        p.y += 0.2f;
         StartCoroutine(PointFade(points, p));
     }
 
     private IEnumerator FoodComboMove(GameObject comboHologram, GameObject matchExplosion)
     {
-        yield return new WaitForSeconds(0.3f);
-        SpriteRenderer comboSR = comboHologram.GetComponent<SpriteRenderer>();
-        Color fadeColor = new Color(1, 1, 1, 1);
-
         // moves the object to the spacebaby
         //Vector3 target = baby.transform.position;
         //float initialDistance = Vector3.Distance(comboHologram.transform.position, target);
@@ -468,22 +468,23 @@ public class UtilsScript : MonoBehaviour
         //    yield return null;
         //}
 
-        Vector3 initialScale = comboSR.transform.localScale;
-        float scale = 1;
+        SpriteRenderer comboSR = comboHologram.GetComponent<SpriteRenderer>();
+        Color fadeColor = Color.white;
+
+        // wait for one frame so that the holograms's color won't be overwritten by 
+        // the card script's hologram fade coroutine which will stopped during the wait
+        yield return null;
+        comboSR.color = fadeColor;
+
+        yield return new WaitForSeconds(0.9f);
+        Vector3 comboScale = comboSR.transform.localScale;
         while (fadeColor.a > 0)
         {
-            yield return new WaitForSeconds(0.01f);
-            scale += 0.01f;
-            comboHologram.transform.localScale = initialScale * scale;
-            fadeColor.a -= 0.01f;
+            comboScale += 0.04f * Time.deltaTime * Vector3.one;
+            comboHologram.transform.localScale = comboScale;
+            fadeColor.a -= Time.deltaTime * 0.8f;
             comboSR.color = fadeColor;
-
-            if (Config.Instance.gamePaused)
-            {
-                Destroy(matchExplosion);
-                Destroy(comboHologram);
-                yield break;
-            }
+            yield return null;
         }
 
         //SoundController.Instance.CardMatchSound();
@@ -497,46 +498,37 @@ public class UtilsScript : MonoBehaviour
         GameObject matchPointsEffect = Instantiate(matchPointsPrefab, position, Quaternion.identity, gameUI.transform);
 
         Text pointText = matchPointsEffect.GetComponent<Text>();
-        pointText.text = "+" + points.ToString();
+        pointText.text = $"+{points} ";
 
         Text comboText = matchPointsEffect.transform.GetChild(0).GetComponent<Text>();
         if (Config.Instance.consecutiveMatches > 1)
         {
-            comboText.text = "X" + Config.Instance.consecutiveMatches.ToString() + " COMBO";
+            comboText.text = $"X{Config.Instance.consecutiveMatches} COMBO";
         }
 
         comboText.color = Config.GameValues.pointColor;
         pointText.color = Config.GameValues.pointColor;
 
-        float scale = 1;
-        while (scale < 1.5)
+        Vector3 pointsScale = new Vector3(0.2f, 0.2f, 0.2f);
+        matchPointsEffect.transform.localScale = pointsScale;
+        while (pointsScale.x < 1)
         {
-            yield return new WaitForSeconds(0.02f);
-            scale += 0.01f;
-            matchPointsEffect.transform.localScale = Vector3.one * scale;
-
-            if (Config.Instance.gamePaused)
-            {
-                Destroy(matchPointsEffect);
-                yield break;
-            }
+            yield return null;
+            pointsScale += 3f * Time.deltaTime * Vector3.one;
+            matchPointsEffect.transform.localScale = pointsScale;
         }
+
+        yield return new WaitForSeconds(0.5f);
 
         Color fadeColor = pointText.color;
         while (fadeColor.a > 0)
         {
-            yield return new WaitForSeconds(0.02f);
-            scale += 0.02f;
-            matchPointsEffect.transform.localScale = Vector3.one * scale;
-            fadeColor.a -= 0.05f;
+            pointsScale += 0.3f * Time.deltaTime * Vector3.one;
+            matchPointsEffect.transform.localScale = pointsScale;
+            fadeColor.a -= Time.deltaTime * 0.9f;
             pointText.color = fadeColor;
             comboText.color = fadeColor;
-
-            if (Config.Instance.gamePaused)
-            {
-                Destroy(matchPointsEffect);
-                yield break;
-            }
+            yield return null;
         }
 
         Destroy(matchPointsEffect);

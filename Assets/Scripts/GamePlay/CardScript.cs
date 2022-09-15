@@ -222,13 +222,14 @@ public class CardScript : MonoBehaviour, IGlow
         holoColor.a = 0;
         holoSR.color = holoColor;
         objectSR.color = holoColor;
+        yield return null;
 
         while (holoColor.a < 1)
         {
-            yield return new WaitForSeconds(0.05f);
-            holoColor.a += 0.05f;
+            holoColor.a += Time.deltaTime * 0.5f;
             holoSR.color = holoColor;
             objectSR.color = holoColor;
+            yield return null;
         }
     }
 

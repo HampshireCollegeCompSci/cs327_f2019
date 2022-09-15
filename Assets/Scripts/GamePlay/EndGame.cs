@@ -241,10 +241,10 @@ public class EndGame : MonoBehaviour
         Image fadeInScreen = this.gameObject.GetComponent<Image>();
         Color fadeColor = fadeInScreen.color;
         CanvasGroup textGroup = gameOverTextPanel.GetComponent<CanvasGroup>();
-
+        float alphaChange;
         while (textGroup.alpha > 0)
         {
-            float alphaChange = Time.deltaTime * Config.GameValues.endGameFadeOutSpeed;
+            alphaChange = Time.deltaTime * Config.GameValues.endGameFadeOutSpeed;
             fadeColor.a += alphaChange;
             fadeInScreen.color = fadeColor;
             textGroup.alpha -= alphaChange;
