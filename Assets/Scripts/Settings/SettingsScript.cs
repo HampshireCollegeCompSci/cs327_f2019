@@ -1,30 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SettingsScript : MonoBehaviour
 {
-    public Slider musicSlider;
-    public Text musicVolumeText;
+    [SerializeField]
+    private Slider musicSlider, soundEffectsSlider;
+    [SerializeField]
+    private Text musicVolumeText, soundEffectsVolumeText;
 
-    public Slider soundEffectsSlider;
-    public Text soundEffectsVolumeText;
+    [SerializeField]
+    private Toggle vibrationToggle, foodSuitsToggle;
 
-    public Toggle vibrationToggle;
-    public Toggle foodSuitsToggle;
-
-    public Slider frameRateSlider;
-    public Text frameRateText;
+    [SerializeField]
+    private Slider frameRateSlider;
+    [SerializeField]
+    private Text frameRateText;
     private List<int> frameRates;
 
-    public GameObject frameRateInfoObject;
+    [SerializeField]
+    private GameObject frameRateInfoObject, suitArtNoticeObject;
 
-    public GameObject confirmObject;
-    public Button confirmYesButton;
-
-    public GameObject suitArtNoticeObject;
+    [SerializeField]
+    private GameObject confirmObject;
+    [SerializeField]
+    private Button confirmYesButton;
 
     private bool lockout;
 
@@ -227,12 +229,6 @@ public class SettingsScript : MonoBehaviour
         StartCoroutine(ButtonDelay());
     }
 
-    private IEnumerator ButtonDelay()
-    {
-        yield return new WaitForSeconds(2);
-        confirmYesButton.interactable = true;
-    }
-
     public void ClearRecordsConfirmationButton()
     {
         Debug.Log("clearing saved records");
@@ -249,7 +245,7 @@ public class SettingsScript : MonoBehaviour
     {
         if (lockout) return;
 
-        int frameRateIndex = (int) update;
+        int frameRateIndex = (int)update;
         if (frameRateIndex < 0 || frameRateIndex >= frameRates.Count)
         {
             Debug.LogError($"an invalid frame rate index update of {frameRateIndex} was inputted.");
@@ -268,5 +264,11 @@ public class SettingsScript : MonoBehaviour
         {
             frameRateText.text = frameRateSetting.ToString();
         }
+    }
+
+    private IEnumerator ButtonDelay()
+    {
+        yield return new WaitForSeconds(2);
+        confirmYesButton.interactable = true;
     }
 }

@@ -5,24 +5,23 @@ using UnityEngine.UI;
 
 public class PlayAgainSequence : MonoBehaviour
 {
-    public GameObject cameraObject;
+    // Singleton instance.
+    public static PlayAgainSequence Instance;
 
-    public GameObject sequencePanel;
-    public GameObject LoadingTextObject;
+    [SerializeField]
+    private GameObject cameraObject, sequencePanel, LoadingTextObject;
 
-    public GameObject spaceShip;
-    public GameObject spaceBaby;
-    public GameObject spaceBabyPlanet;
-    public GameObject foodObjects;
-    public SummaryTransition summaryTransition;
+    [SerializeField]
+    private GameObject spaceShip, spaceBaby, spaceBabyPlanet, foodObjects;
 
-    public WinSequence winSequence;
+    [SerializeField]
+    private SummaryTransition summaryTransition;
+
+    [SerializeField]
+    private WinSequence winSequence;
 
     private bool sequenceDone;
     private bool gameplayLoaded;
-
-    // Singleton instance.
-    public static PlayAgainSequence Instance = null;
 
     // Initialize the singleton instance.
     private void Awake()
@@ -48,6 +47,27 @@ public class PlayAgainSequence : MonoBehaviour
 
         MusicController.Instance.FadeMusicOut();
         StartCoroutine(FadeOut());
+    }
+
+    public void GameplayLoaded()
+    {
+        Debug.Log("Game is loaded");
+        gameplayLoaded = true;
+        TryEndSequence();
+    }
+
+    public bool TryEndSequence()
+    {
+        if (gameplayLoaded && sequenceDone)
+        {
+            Debug.Log("unloading summary scene");
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.gameplayScene));
+            cameraObject.SetActive(false);
+            StartGame.Instance.TransitionToGamePlay();
+            SceneManager.UnloadSceneAsync(Constants.summaryScene);
+            return true;
+        }
+        return false;
     }
 
     private IEnumerator FadeOut()
@@ -82,26 +102,5 @@ public class PlayAgainSequence : MonoBehaviour
         {
             LoadingTextObject.SetActive(true);
         }
-    }
-
-    public void GameplayLoaded()
-    {
-        Debug.Log("Game is loaded");
-        gameplayLoaded = true;
-        TryEndSequence();
-    }
-
-    public bool TryEndSequence()
-    {
-        if (gameplayLoaded && sequenceDone)
-        {
-            Debug.Log("unloading summary scene");
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.gameplayScene));
-            cameraObject.SetActive(false);
-            StartGame.Instance.TransitionToGamePlay();
-            SceneManager.UnloadSceneAsync(Constants.summaryScene);
-            return true;
-        }
-        return false;
     }
 }

@@ -4,13 +4,25 @@ using UnityEngine.UI;
 
 public class SummaryTransition : MonoBehaviour
 {
-    public GameObject transitionPanel;
-    public Sprite spaceShipDebrisSprite;
-    public GameObject spaceShipObject;
-    public GameObject explosionPrefab;
-    public WinSequence winSequence;
+    [SerializeField]
+    private GameObject transitionPanel;
+    [SerializeField]
+    private Sprite spaceShipDebrisSprite;
+    [SerializeField]
+    private GameObject spaceShipObject;
+    [SerializeField]
+    private GameObject explosionPrefab;
+    [SerializeField]
+    private WinSequence winSequence;
 
     private GameObject[] explosions;
+
+    private bool exploded;
+
+    public SummaryTransition()
+    {
+        exploded = false;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -20,6 +32,27 @@ public class SummaryTransition : MonoBehaviour
         if (!Config.Instance.gameWin)
         {
             SpaceBabyController.Instance.PlayLoseAnimation();
+        }
+    }
+
+    public void SpaceShipExplode()
+    {
+        if (exploded) return;
+
+        exploded = true;
+        StartCoroutine(Explode());
+    }
+
+    public void StopExplosion()
+    {
+        StopAllCoroutines();
+        if (explosions == null) return;
+        foreach (GameObject explosion in explosions)
+        {
+            if (explosion != null)
+            {
+                explosion.SetActive(false);
+            }
         }
     }
 
@@ -50,16 +83,7 @@ public class SummaryTransition : MonoBehaviour
         }
     }
 
-    private bool exploded = false;
-    public void SpaceShipExplode()
-    {
-        if (exploded) return;
-
-        exploded = true;
-        StartCoroutine(Explode());
-    }
-
-    IEnumerator Explode()
+    private IEnumerator Explode()
     {
         explosions = new GameObject[4];
         explosions[0] = Instantiate(explosionPrefab, spaceShipObject.transform.position, Quaternion.identity);
@@ -67,7 +91,7 @@ public class SummaryTransition : MonoBehaviour
         explosions[0].transform.localScale = new Vector3(0.1f, 0.1f);
         explosions[0].transform.position += new Vector3(0.3f, 0.3f, 0);
         explosions[0].GetComponent<Animator>().Play("LoseExplosionAnim");
-        
+
         yield return new WaitForSeconds(0.2f);
         explosions[1] = Instantiate(explosionPrefab, spaceShipObject.transform.position, Quaternion.identity);
         explosions[1].GetComponent<SpriteRenderer>().sortingOrder = 2;
@@ -94,18 +118,5 @@ public class SummaryTransition : MonoBehaviour
         SoundEffectsController.Instance.ExplosionSound();
         spaceShipObject.GetComponent<Image>().sprite = spaceShipDebrisSprite;
         spaceShipObject.transform.localScale = new Vector3(1.5f, 1.5f, 1);
-    }
-
-    public void StopExplosion()
-    {
-        StopAllCoroutines();
-        if (explosions == null) return;
-        foreach (GameObject explosion in explosions)
-        {
-            if (explosion != null)
-            {
-                explosion.SetActive(false);
-            }
-        }
     }
 }

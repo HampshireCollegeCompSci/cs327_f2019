@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Config : MonoBehaviour
 {
-    // the undo log
-    public List<Move> moveLog = new List<Move>();
+    // Singleton instance.
+    public static Config Instance;
+    public static GameValues GameValues;
 
     // game settings
     public bool tutorialOn, nextCycleEnabled;
@@ -29,10 +29,6 @@ public class Config : MonoBehaviour
     public int moveCounter;
     public byte matchCounter;
 
-    // Singleton instance.
-    public static Config Instance = null;
-    public static GameValues GameValues = null;
-
     // Initialize the singleton instance.
     private void Awake()
     {
@@ -56,6 +52,27 @@ public class Config : MonoBehaviour
         {
             Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
         }
+    }
+
+    public void SetDifficulty(int dif)
+    {
+        currentDifficulty = GameValues.difficulties[dif];
+        reactorLimit = GameValues.reactorLimits[dif];
+        actionMax = GameValues.moveLimits[dif];
+    }
+
+    public void SetDifficulty(string dif)
+    {
+        for (int i = 0; i < GameValues.difficulties.Length; i++)
+        {
+            if (dif.Equals(GameValues.difficulties[i]))
+            {
+                SetDifficulty(i);
+                return;
+            }
+        }
+
+        throw new System.Exception($"The difficulty \"{dif}\" was not found.");
     }
 
     private void SetFrameRate()
@@ -99,33 +116,12 @@ public class Config : MonoBehaviour
         GameValues.fadeLightColor = CreateColor(GameValues.fadeLightColorValues);
     }
 
-    private Color CreateColor(float [] colorV)
+    private Color CreateColor(float[] colorV)
     {
         if (colorV.Length != 4)
         {
             throw new System.ArgumentException("the array of color values is not a lenght of 4");
         }
         return new Color(colorV[0], colorV[1], colorV[2], colorV[3]);
-    }
-
-    public void SetDifficulty(int dif)
-    {
-        currentDifficulty = GameValues.difficulties[dif];
-        reactorLimit = GameValues.reactorLimits[dif];
-        actionMax = GameValues.moveLimits[dif];
-    }
-
-    public void SetDifficulty(string dif)
-    {
-        for (int i = 0; i < GameValues.difficulties.Length; i++)
-        {
-            if (dif.Equals(GameValues.difficulties[i]))
-            {
-                SetDifficulty(i);
-                return;
-            }
-        }
-
-        throw new System.Exception($"The difficulty \"{dif}\" was not found.");
     }
 }

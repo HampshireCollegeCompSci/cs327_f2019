@@ -3,13 +3,12 @@ using UnityEngine.UI;
 
 public class ResultsScript : MonoBehaviour
 {
-    public Text stateText, difficultyText;
-
-    public Text currentScoreText, currentScoreStatText;
-    public Text oldHighScoreText, oldHighScoreStatText;
-
-    public Text currentMovesText, currentMovesStatText;
-    public Text oldLeastMovesText, oldLeastMovesStatText;
+    [SerializeField]
+    private Text stateText, difficultyText,
+        currentScoreText, currentScoreStatText,
+        oldHighScoreText, oldHighScoreStatText,
+        currentMovesText, currentMovesStatText,
+        oldLeastMovesText, oldLeastMovesStatText;
 
     // Start is called before the first frame update
     void Start()
@@ -55,7 +54,7 @@ public class ResultsScript : MonoBehaviour
                 UpdateHigh(currentScoreText, currentScoreStatText, oldHighScoreText, oldHighScoreStatText, highScoreKey, currentScoreNum);
             }
         }
-        else 
+        else
         {
             // Set the text to indicate no saved high scores
             oldHighScoreStatText.fontSize = oldHighScoreText.fontSize;

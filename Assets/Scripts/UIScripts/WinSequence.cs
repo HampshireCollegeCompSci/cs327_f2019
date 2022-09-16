@@ -1,19 +1,21 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class WinSequence : MonoBehaviour
 {
-    public SpaceBabyController spaceBabyController;
-    public GameObject spaceShip;
+    [SerializeField]
+    private SpaceBabyController spaceBabyController;
+    [SerializeField]
+    private GameObject spaceShip;
     public Transform foodTarget;
-    public GameObject babyPlanet;
-    public GameObject panelOverlay;
+    [SerializeField]
+    private GameObject babyPlanet, panelOverlay;
 
-    public GameObject foodPrefab;
-    public Sprite[] foodObjects;
+    [SerializeField]
+    private GameObject foodPrefab;
+    [SerializeField]
+    private Sprite[] foodObjects;
 
     private Vector3 babyScale;
     private Vector3 foodTargetPosition;
@@ -41,13 +43,13 @@ public class WinSequence : MonoBehaviour
         StartCoroutine(Feed(matches));
     }
 
-    IEnumerator SpaceBabyAnimationDelay()
+    private IEnumerator SpaceBabyAnimationDelay()
     {
         yield return new WaitForSeconds(0.3f);
         spaceBabyController.PlayWinStartAnimation();
     }
 
-    IEnumerator Feed(int matches)
+    private IEnumerator Feed(int matches)
     {
         babyScale = spaceBabyController.gameObject.transform.localScale;
         foodTargetPosition = foodTarget.position;
@@ -70,7 +72,7 @@ public class WinSequence : MonoBehaviour
         }
     }
 
-    IEnumerator FoodMove(Sprite foodSprite)
+    private IEnumerator FoodMove(Sprite foodSprite)
     {
         GameObject foody = Instantiate(foodPrefab, spaceShip.transform.position, Quaternion.identity, foodTarget);
         foody.transform.localScale = Vector3.zero;
@@ -92,7 +94,7 @@ public class WinSequence : MonoBehaviour
         spaceBabyController.gameObject.transform.localScale = babyScale;
     }
 
-    IEnumerator WinTransition()
+    private IEnumerator WinTransition()
     {
         spaceBabyController.BabyHappy();
 

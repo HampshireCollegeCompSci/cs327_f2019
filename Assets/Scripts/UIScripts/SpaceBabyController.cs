@@ -3,12 +3,15 @@ using UnityEngine;
 
 public class SpaceBabyController : MonoBehaviour, ISound
 {
-    public AudioSource audioSource;
-    public Animator animator;
-    public AudioClip happySound, reactorHighSound, counterSound, eatSound, loseSound;
-
     // Singleton instance.
-    public static SpaceBabyController Instance = null;
+    public static SpaceBabyController Instance;
+
+    [SerializeField]
+    private AudioSource audioSource;
+    [SerializeField]
+    private Animator animator;
+    [SerializeField]
+    private AudioClip happySound, reactorHighSound, counterSound, eatSound, loseSound;
 
     private Coroutine idleCoroutine;
 
@@ -94,40 +97,12 @@ public class SpaceBabyController : MonoBehaviour, ISound
         idleCoroutine = StartCoroutine(LoseAnimTrans());
     }
 
-    IEnumerator LoseAnimTrans()
-    {
-        yield return new WaitForSeconds(1.6f);
-        animator.Play("Lose");
-    }
-
     public void BabyActionCounter()
     {
         Debug.Log("SpaceBaby ActionCounter");
 
         audioSource.PlayOneShot(counterSound, 0.5f);
         AngryAnimation();
-    }
-
-    private void AngryAnimation()
-    {
-        animator.Play("AngryAnim");
-        DelayIdle();
-    }
-
-    private void DelayIdle()
-    {
-        if (idleCoroutine != null)
-        {
-            StopCoroutine(idleCoroutine);
-        }
-        idleCoroutine = StartCoroutine(BabyAnimTrans());
-    }
-
-    IEnumerator BabyAnimTrans()
-    {
-        yield return new WaitForSeconds(2);
-        BabyIdle();
-        idleCoroutine = null;
     }
 
     public void PlayLoseAnimation()
@@ -145,5 +120,33 @@ public class SpaceBabyController : MonoBehaviour, ISound
     public void PlayEatSound()
     {
         audioSource.PlayOneShot(eatSound);
+    }
+
+    private IEnumerator LoseAnimTrans()
+    {
+        yield return new WaitForSeconds(1.6f);
+        animator.Play("Lose");
+    }
+
+    private void AngryAnimation()
+    {
+        animator.Play("AngryAnim");
+        DelayIdle();
+    }
+
+    private void DelayIdle()
+    {
+        if (idleCoroutine != null)
+        {
+            StopCoroutine(idleCoroutine);
+        }
+        idleCoroutine = StartCoroutine(BabyAnimTrans());
+    }
+
+    private IEnumerator BabyAnimTrans()
+    {
+        yield return new WaitForSeconds(2);
+        BabyIdle();
+        idleCoroutine = null;
     }
 }

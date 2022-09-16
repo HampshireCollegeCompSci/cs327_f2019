@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class StartGame : MonoBehaviour
 {
-    public GameObject mainCameraObject;
-
     // Singleton instance.
-    public static StartGame Instance = null;
+    public static StartGame Instance;
+
+    [SerializeField]
+    private GameObject mainCameraObject;
 
     private void Awake()
     {

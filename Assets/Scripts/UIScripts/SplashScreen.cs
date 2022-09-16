@@ -5,7 +5,8 @@ public class SplashScreen : MonoBehaviour
 {
     private static bool firstRun = true;
 
-    public GameObject splashScreen;
+    [SerializeField]
+    private GameObject splashScreen;
     private Coroutine splashScreenFade;
 
     // Start is called before the first frame update
@@ -19,7 +20,7 @@ public class SplashScreen : MonoBehaviour
         }
     }
 
-    IEnumerator DisplayLogo()
+    private IEnumerator DisplayLogo()
     {
         yield return new WaitForSeconds(2);
         MusicController.Instance.MainMenuMusic();
@@ -37,7 +38,8 @@ public class SplashScreen : MonoBehaviour
         splashScreen.SetActive(false);
     }
 
-    public void SkipSplashScreen()
+    [SerializeField]
+    private void SkipSplashScreen()
     {
         // the splash screen acts as a big button and clicking it calls this
 

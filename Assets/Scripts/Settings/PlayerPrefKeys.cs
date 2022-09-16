@@ -47,12 +47,12 @@ public static class PlayerPrefKeys
 
     public static float GetMusicVolume()
     {
-        return ((float) PlayerPrefs.GetInt(Constants.musicVolumeKey)) / Constants.musicVolumeDenominator;
+        return ((float)PlayerPrefs.GetInt(Constants.musicVolumeKey)) / Constants.musicVolumeDenominator;
     }
 
     public static float GetSoundEffectsVolume()
     {
-        return ((float) PlayerPrefs.GetInt(Constants.soundEffectsVolumeKey)) / Constants.soundEffectsVolumeDenominator;
+        return ((float)PlayerPrefs.GetInt(Constants.soundEffectsVolumeKey)) / Constants.soundEffectsVolumeDenominator;
     }
 
     /// <summary>

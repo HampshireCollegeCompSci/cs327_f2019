@@ -4,13 +4,14 @@ using UnityEngine.UI;
 
 public class ScoreScript : MonoBehaviour
 {
-    public Text scoreText;
+    // Singleton instance.
+    public static ScoreScript Instance;
+
+    [SerializeField]
+    private Text scoreText;
 
     private Coroutine scoreCoroutine;
     private int newScore;
-
-    // Singleton instance.
-    public static ScoreScript Instance = null;
 
     // Initialize the singleton instance.
     void Awake()

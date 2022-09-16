@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class UndoScript : MonoBehaviour
 {
-    private Stack<Move> moveLog;
-
     // Singleton instance.
     public static UndoScript Instance;
+
+    private Stack<Move> moveLog;
 
     // Initialize the singleton instance.
     private void Awake()
@@ -46,7 +46,7 @@ public class UndoScript : MonoBehaviour
         Move move = new()
         {
             card = card,
-            origin = card.GetComponent<CardScript>().container,
+            origin = card.GetComponent<CardScript>().Container,
             moveType = moveType,
             nextCardWasHidden = nextCardWasHidden,
             isAction = isAction,
@@ -92,7 +92,7 @@ public class UndoScript : MonoBehaviour
                     // therefore, the top of the stack is the only card that will know if the stack sat on a hidden card
                     if (undoList[^1].nextCardWasHidden)
                     {
-                        newFoundation.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().Hidden = true;
+                        newFoundation.GetComponent<FoundationScript>().CardList[0].GetComponent<CardScript>().Hidden = true;
                     }
 
                     // move the tokens back
@@ -179,7 +179,7 @@ public class UndoScript : MonoBehaviour
     {
         if (toMove.nextCardWasHidden)
         {
-            toMove.origin.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>().Hidden = true;
+            toMove.origin.GetComponent<FoundationScript>().CardList[0].GetComponent<CardScript>().Hidden = true;
         }
 
         toMove.card.GetComponent<CardScript>().MoveCard(toMove.origin, doLog: false);

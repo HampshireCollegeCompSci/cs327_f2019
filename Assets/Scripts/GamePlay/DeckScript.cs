@@ -5,16 +5,28 @@ using UnityEngine.UI;
 
 public class DeckScript : MonoBehaviour, ICardContainer
 {
-    public List<GameObject> cardList;
+    private const string deckFlipText = "FLIP";
+    private const string deckEmptyText = "EMPTY";
 
-    public Image buttonImage;
-    public Text deckCounter;
-    public Sprite[] buttonAnimation;
+    // Singleton instance.
+    public static DeckScript Instance;
+
+    [SerializeField]
+    private List<GameObject> cardList;
+
+    [SerializeField]
+    private Image buttonImage;
+    [SerializeField]
+    private Text deckCounter;
+    [SerializeField]
+    private Sprite[] buttonAnimation;
 
     private Coroutine buttonCoroutine;
 
-    // Singleton instance.
-    public static DeckScript Instance = null;
+    public DeckScript()
+    {
+        cardList = new();
+    }
 
     // Initialize the singleton instance.
     void Awake()
@@ -27,6 +39,11 @@ public class DeckScript : MonoBehaviour, ICardContainer
         {
             throw new System.ArgumentException("there should not already be an instance of this");
         }
+    }
+
+    public List<GameObject> CardList
+    {
+        get => cardList;
     }
 
     public void AddCard(GameObject card)
@@ -57,7 +74,7 @@ public class DeckScript : MonoBehaviour, ICardContainer
             Deal();
         }
         // if it is possible to repopulate the deck
-        else if (WastepileScript.Instance.cardList.Count > Config.GameValues.cardsToDeal)
+        else if (WastepileScript.Instance.CardList.Count > Config.GameValues.cardsToDeal)
         {
             buttonCoroutine = StartCoroutine(ButtonDown());
             DeckReset();
@@ -66,11 +83,10 @@ public class DeckScript : MonoBehaviour, ICardContainer
 
     public void Deal(bool doLog = true)
     {
-        List<GameObject> toMoveList = new List<GameObject>();
-        int cardCount = cardList.Count;
+        List<GameObject> toMoveList = new();
 
         // try to deal set number of cards
-        for (int i = 0; i < Config.GameValues.cardsToDeal && i < cardCount; i++)
+        for (int i = 0; i < Config.GameValues.cardsToDeal && i < cardList.Count; i++)
         {
             toMoveList.Add(cardList[i]);
         }
@@ -94,15 +110,6 @@ public class DeckScript : MonoBehaviour, ICardContainer
         SoundEffectsController.Instance.DeckReshuffle();
     }
 
-    IEnumerator ButtonDown()
-    {
-        foreach (Sprite button in buttonAnimation)
-        {
-            buttonImage.sprite = button;
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
-
     public void StartButtonUp()
     {
         if (buttonCoroutine == null) return;
@@ -110,17 +117,6 @@ public class DeckScript : MonoBehaviour, ICardContainer
         StartCoroutine(ButtonUp());
     }
 
-    IEnumerator ButtonUp()
-    {
-        for (int i = buttonAnimation.Length - 2; i > 0; i--)
-        {
-            buttonImage.sprite = buttonAnimation[i];
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
-
-    private const string deckFlipText = "FLIP";
-    private const string deckEmptyText = "EMPTY";
     public void UpdateDeckCounter(bool dealed = false)
     {
         if (cardList.Count != 0)
@@ -132,8 +128,8 @@ public class DeckScript : MonoBehaviour, ICardContainer
         {
             // if there are enough cards that a deck flip will do something worthwhile
             // notice: cards are removed from containers before they are added to a new one
-            if (WastepileScript.Instance.cardList.Count > Config.GameValues.cardsToDeal || 
-                (dealed && WastepileScript.Instance.cardList.Count == Config.GameValues.cardsToDeal))
+            if (WastepileScript.Instance.CardList.Count > Config.GameValues.cardsToDeal ||
+                (dealed && WastepileScript.Instance.CardList.Count == Config.GameValues.cardsToDeal))
             {
                 deckCounter.text = deckFlipText;
             }
@@ -157,6 +153,24 @@ public class DeckScript : MonoBehaviour, ICardContainer
             {
                 deckCounter.text = deckEmptyText;
             }
+        }
+    }
+
+    private IEnumerator ButtonDown()
+    {
+        foreach (Sprite button in buttonAnimation)
+        {
+            buttonImage.sprite = button;
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    private IEnumerator ButtonUp()
+    {
+        for (int i = buttonAnimation.Length - 2; i > 0; i--)
+        {
+            buttonImage.sprite = buttonAnimation[i];
+            yield return new WaitForSeconds(0.1f);
         }
     }
 }

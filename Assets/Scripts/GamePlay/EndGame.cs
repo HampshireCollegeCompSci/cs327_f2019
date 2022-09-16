@@ -1,20 +1,20 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class EndGame : MonoBehaviour
 {
-    public GameObject restartButton, continueButton;
-    public GameObject errorObject;
-    public GameObject gameOverPanel;
-    public GameObject gameOverTextPanel;
-    public Text gameOverText;
-    public Text wonlostText;
-
     // Singleton instance.
-    public static EndGame Instance = null;
+    public static EndGame Instance;
+
+    [SerializeField]
+    private GameObject explosionPrefab;
+    [SerializeField]
+    private GameObject restartButton, continueButton,
+        errorObject, gameOverPanel, gameOverTextPanel;
+    [SerializeField]
+    private Text gameOverText, wonlostText;
 
     private void Awake()
     {
@@ -54,7 +54,7 @@ public class EndGame : MonoBehaviour
         }
 
         // overwritten when manually won (cheated)
-        Config.Instance.matchCounter = (byte)(MatchedPileScript.Instance.cardList.Count / 2);
+        Config.Instance.matchCounter = (byte)(MatchedPileScript.Instance.CardList.Count / 2);
 
         if (didWin)
         {
@@ -77,14 +77,14 @@ public class EndGame : MonoBehaviour
     private void AddExtraEndGameScore()
     {
         int extraScore = 0;
-        if (MatchedPileScript.Instance.cardList.Count == 52)
+        if (MatchedPileScript.Instance.CardList.Count == 52)
         {
             extraScore += Config.GameValues.perfectGamePoints;
         }
 
         foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
-            if (foundationScript.cardList.Count == 0)
+            if (foundationScript.CardList.Count == 0)
             {
                 extraScore += Config.GameValues.emptyReactorPoints;
             }
@@ -136,7 +136,7 @@ public class EndGame : MonoBehaviour
         }
 
         if (Config.Instance.gameWin)
-        {   
+        {
             SpaceBabyController.Instance.BabyHappy();
             MusicController.Instance.WinMusic();
         }
@@ -207,7 +207,7 @@ public class EndGame : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
         {
-            if (reactorScript.cardList.Count != 0)
+            if (reactorScript.CardList.Count != 0)
             {
                 StartCoroutine(ReactorMeltdown(reactorScript));
                 yield return new WaitForSeconds(Config.GameValues.reactorMeltDownSpeed);
@@ -219,19 +219,19 @@ public class EndGame : MonoBehaviour
 
     private IEnumerator ReactorMeltdown(ReactorScript reactorScript)
     {
-        foreach (GameObject card in reactorScript.cardList)
+        foreach (GameObject card in reactorScript.CardList)
         {
-            GameObject matchExplosion = Instantiate(UtilsScript.Instance.matchPrefab, card.transform.position, Quaternion.identity);
+            GameObject matchExplosion = Instantiate(explosionPrefab, card.transform.position, Quaternion.identity);
             matchExplosion.transform.localScale = new Vector3(Config.GameValues.matchExplosionScale, Config.GameValues.matchExplosionScale);
         }
         yield return new WaitForSeconds(0.2f);
-        foreach (GameObject card in reactorScript.cardList)
+        foreach (GameObject card in reactorScript.CardList)
         {
             card.SetActive(false);
         }
         SoundEffectsController.Instance.ExplosionSound();
 
-        GameObject reactorExplosion = Instantiate(UtilsScript.Instance.matchPrefab, reactorScript.gameObject.transform.position, Quaternion.identity);
+        GameObject reactorExplosion = Instantiate(explosionPrefab, reactorScript.gameObject.transform.position, Quaternion.identity);
         reactorExplosion.transform.localScale = new Vector3(Config.GameValues.matchExplosionScale / 2, Config.GameValues.matchExplosionScale / 2);
         reactorExplosion.GetComponent<Animator>().Play("LoseExplosionAnim");
     }

@@ -1,28 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class TutorialScript : MonoBehaviour
 {
-    private Queue<List<string>> commandQueue;
-    private bool waiting;
-
-    public Button deckButton, undoButton, timerButton, pauseButton;
-    public Button tutorialNextButton;
-
-    public GameObject tutorialUIPanel, tutorialText;
-    public GameObject tutorialReactors, tutorialScore, tutorialMoveCounter;
-    public GameObject tutorialUndo, tutorialPause;
-    public GameObject tutorialFoundations, tutorialDeck, tutorialWastePile;
-
     // command names for switch usage
     private const string sReactors = "REACTORS";
     private const string sReactor = "REACTOR";
     private const string sFoundations = "FOUNDATIONS";
     private const string sFoundation = "FOUNDATION";
     private const string sWastepile = "WASTEPILE";
+
+    private Queue<List<string>> commandQueue;
+    private bool waiting;
+
+    [SerializeField]
+    private Button deckButton, undoButton, timerButton, pauseButton, tutorialNextButton;
+
+    [SerializeField]
+    private GameObject tutorialUIPanel, tutorialText,
+        tutorialReactors, tutorialScore, tutorialMoveCounter,
+        tutorialUndo, tutorialPause,
+        tutorialFoundations, tutorialDeck, tutorialWastePile;
 
     private void Awake()
     {
@@ -111,10 +112,11 @@ public class TutorialScript : MonoBehaviour
         }
     }
 
+    [SerializeField]
     /// <summary>
     /// Continues the tutorial if it's ready. The tutorial next button calls this.
     /// </summary>
-    public void NextButton()
+    private void NextButton()
     {
         Debug.Log("tutorial touch");
 
@@ -217,7 +219,7 @@ public class TutorialScript : MonoBehaviour
         Debug.Log("ending tutorial");
 
         tutorialUIPanel.SetActive(false);
-        UtilsScript.Instance.showPossibleMoves.TokenMoveable = true;
+        UtilsScript.Instance.ShowPossibleMoves.TokenMoveable = true;
 
         Config.Instance.tutorialOn = false;
         Config.Instance.SetDifficulty(0);
@@ -230,10 +232,11 @@ public class TutorialScript : MonoBehaviour
         pauseButton.interactable = true;
     }
 
+    [SerializeField]
     /// <summary>
     /// Ends the tutorial by request from the tutorial exit button.
     /// </summary>
-    public void ExitButton()
+    private void ExitButton()
     {
         Debug.Log("exit tutorial requested");
         SoundEffectsController.Instance.ButtonPressSound();
@@ -448,7 +451,7 @@ public class TutorialScript : MonoBehaviour
         switch (command[1].ToUpper())
         {
             case sReactor:
-                List<GameObject> reactorCardList = UtilsScript.Instance.reactorScripts[containerIndex].cardList;
+                List<GameObject> reactorCardList = UtilsScript.Instance.reactorScripts[containerIndex].CardList;
                 if (reactorCardList.Count < tokenIndex)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
@@ -465,7 +468,7 @@ public class TutorialScript : MonoBehaviour
                 }
                 break;
             case sFoundation:
-                List<GameObject> foundationCardList = UtilsScript.Instance.foundationScripts[containerIndex].cardList;
+                List<GameObject> foundationCardList = UtilsScript.Instance.foundationScripts[containerIndex].CardList;
                 if (foundationCardList.Count < tokenIndex)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
@@ -481,19 +484,19 @@ public class TutorialScript : MonoBehaviour
                 }
                 break;
             case sWastepile:
-                if (WastepileScript.Instance.cardList.Count < tokenIndex)
+                if (WastepileScript.Instance.CardList.Count < tokenIndex)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
-                        $"there are only {WastepileScript.Instance.cardList.Count} token(s) to choose from in the waste pile");
+                        $"there are only {WastepileScript.Instance.CardList.Count} token(s) to choose from in the waste pile");
                 }
 
                 if (highlightOn)
                 {
-                    WastepileScript.Instance.cardList[tokenIndex].GetComponent<CardScript>().GlowLevel = highlightColorLevel;
+                    WastepileScript.Instance.CardList[tokenIndex].GetComponent<CardScript>().GlowLevel = highlightColorLevel;
                 }
                 else
                 {
-                    WastepileScript.Instance.cardList[tokenIndex].GetComponent<CardScript>().Glowing = false;
+                    WastepileScript.Instance.CardList[tokenIndex].GetComponent<CardScript>().Glowing = false;
                 }
                 break;
             default:
@@ -527,7 +530,7 @@ public class TutorialScript : MonoBehaviour
         switch (command[1].ToUpper())
         {
             case sReactor:
-                ref List<GameObject> reactorCardList = ref UtilsScript.Instance.reactorScripts[containerIndex].cardList;
+                List<GameObject> reactorCardList = UtilsScript.Instance.reactorScripts[containerIndex].CardList;
                 if (reactorCardList.Count < tokenIndex)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
@@ -536,7 +539,7 @@ public class TutorialScript : MonoBehaviour
                 reactorCardList[tokenIndex].GetComponent<CardScript>().Obstructed = obstructed;
                 break;
             case sFoundation:
-                ref List<GameObject> foundationCardList = ref UtilsScript.Instance.foundationScripts[containerIndex].cardList;
+                List<GameObject> foundationCardList = UtilsScript.Instance.foundationScripts[containerIndex].CardList;
                 if (foundationCardList.Count < tokenIndex)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
@@ -545,12 +548,12 @@ public class TutorialScript : MonoBehaviour
                 foundationCardList[tokenIndex].GetComponent<CardScript>().Obstructed = obstructed;
                 break;
             case sWastepile:
-                if (WastepileScript.Instance.cardList.Count < tokenIndex)
+                if (WastepileScript.Instance.CardList.Count < tokenIndex)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
-                        $"there are only {WastepileScript.Instance.cardList.Count} token(s) to choose from in the waste pile");
+                        $"there are only {WastepileScript.Instance.CardList.Count} token(s) to choose from in the waste pile");
                 }
-                WastepileScript.Instance.cardList[tokenIndex].GetComponent<CardScript>().Obstructed = obstructed;
+                WastepileScript.Instance.CardList[tokenIndex].GetComponent<CardScript>().Obstructed = obstructed;
                 break;
             default:
                 throw new FormatException("contains an invalid object that contains the token for command #1");
@@ -564,15 +567,15 @@ public class TutorialScript : MonoBehaviour
         foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
         {
             // only the first reactor token/card is ever not obstructed
-            if (reactorScript.cardList.Count != 0)
+            if (reactorScript.CardList.Count != 0)
             {
-                reactorScript.cardList[0].GetComponent<CardScript>().Obstructed = true;
+                reactorScript.CardList[0].GetComponent<CardScript>().Obstructed = true;
             }
         }
 
         foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
-            foreach (GameObject card in foundationScript.cardList)
+            foreach (GameObject card in foundationScript.CardList)
             {
                 if (card.GetComponent<CardScript>().Hidden) break;
                 card.GetComponent<CardScript>().Obstructed = true;
@@ -580,9 +583,9 @@ public class TutorialScript : MonoBehaviour
         }
 
         // only the first wastepile token/card is ever not obstructed
-        if (WastepileScript.Instance.cardList.Count != 0)
+        if (WastepileScript.Instance.CardList.Count != 0)
         {
-            WastepileScript.Instance.cardList[0].GetComponent<CardScript>().Obstructed = true;
+            WastepileScript.Instance.CardList[0].GetComponent<CardScript>().Obstructed = true;
         }
     }
 
@@ -593,7 +596,7 @@ public class TutorialScript : MonoBehaviour
         Debug.Log($"changing reactor obstruction: {command[1]}");
 
         bool obstructed = ParseOnOrOff(command, 1);
-        UtilsScript.Instance.showPossibleMoves.ReactorObstructed = obstructed;
+        UtilsScript.Instance.ShowPossibleMoves.ReactorObstructed = obstructed;
     }
 
     private void ChangeTokenMoveability(List<string> command)
@@ -603,7 +606,7 @@ public class TutorialScript : MonoBehaviour
         Debug.Log($"changing token moveability: {command[1]}");
 
         bool moveability = ParseOnOrOff(command, 1);
-        UtilsScript.Instance.showPossibleMoves.TokenMoveable = moveability;
+        UtilsScript.Instance.ShowPossibleMoves.TokenMoveable = moveability;
     }
 
     private void ChangeButtonInteractable(List<string> command)
@@ -646,15 +649,15 @@ public class TutorialScript : MonoBehaviour
 
         foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
         {
-            CardListGlowOff(reactorScript.cardList);
+            CardListGlowOff(reactorScript.CardList);
         }
         foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
-            CardListGlowOff(foundationScript.cardList);
+            CardListGlowOff(foundationScript.CardList);
         }
-        CardListGlowOff(WastepileScript.Instance.cardList);
-        CardListGlowOff(DeckScript.Instance.cardList);
-        CardListGlowOff(MatchedPileScript.Instance.cardList);
+        CardListGlowOff(WastepileScript.Instance.CardList);
+        CardListGlowOff(DeckScript.Instance.CardList);
+        CardListGlowOff(MatchedPileScript.Instance.CardList);
     }
 
     /// <summary>

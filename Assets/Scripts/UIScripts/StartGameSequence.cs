@@ -5,26 +5,31 @@ using UnityEngine.UI;
 
 public class StartGameSequence : MonoBehaviour
 {
-    public GameObject cameraObject;
+    // Singleton instance.
+    public static StartGameSequence Instance;
 
-    public GameObject popupWindow;
-    public Button popupContinueButton;
+    [SerializeField]
+    private GameObject cameraObject;
 
-    public GameObject mainButtons;
-    public GameObject playButtons;
+    [SerializeField]
+    private GameObject popupWindow;
+    [SerializeField]
+    private Button popupContinueButton;
 
-    public RectTransform panelTransform;
-    public GameObject spaceShipWindowObject;
+    [SerializeField]
+    private GameObject mainButtons, playButtons;
 
-    public GameObject startSequencePanel;
-    public GameObject loadingTextObject;
+    [SerializeField]
+    private RectTransform panelTransform;
+    [SerializeField]
+    private GameObject spaceShipWindowObject;
+
+    [SerializeField]
+    private GameObject startSequencePanel, loadingTextObject;
 
     private Vector3 originalPanelTransformPosition;
     private bool sequenceDone;
     private bool gameplayLoaded;
-
-    // Singleton instance.
-    public static StartGameSequence Instance = null;
 
     // Initialize the singleton instance.
     private void Awake()
@@ -48,6 +53,58 @@ public class StartGameSequence : MonoBehaviour
         originalPanelTransformPosition = panelTransform.position;
         StartCoroutine(FadeOutButtons());
         SceneManager.LoadSceneAsync(Constants.gameplayScene, LoadSceneMode.Additive);
+    }
+
+    public void GameplayLoaded()
+    {
+        Debug.Log("gameplay scene is loaded");
+        gameplayLoaded = true;
+        TryEndSequence();
+    }
+
+    public bool TryEndSequence()
+    {
+        if (gameplayLoaded && sequenceDone)
+        {
+            Debug.Log("unloading gameplay scene");
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.gameplayScene));
+            cameraObject.SetActive(false);
+            StartGame.Instance.TransitionToGamePlay();
+            SceneManager.UnloadSceneAsync(Constants.mainMenuScene);
+            return true;
+        }
+        return false;
+    }
+
+    public void FailedToLoadGame()
+    {
+        StopAllCoroutines();
+        SceneManager.UnloadSceneAsync(Constants.gameplayScene);
+        loadingTextObject.SetActive(false);
+
+        CanvasGroup buttonGroup;
+        if (mainButtons.activeSelf)
+        {
+            buttonGroup = mainButtons.GetComponent<CanvasGroup>();
+        }
+        else
+        {
+            buttonGroup = playButtons.GetComponent<CanvasGroup>();
+        }
+        buttonGroup.alpha = 1;
+        buttonGroup.interactable = true;
+
+        playButtons.SetActive(false);
+        mainButtons.SetActive(true);
+
+        panelTransform.position = originalPanelTransformPosition;
+        panelTransform.localScale = Vector3.one;
+
+        startSequencePanel.SetActive(false);
+        MusicController.Instance.FadeMusicIn();
+        popupContinueButton.interactable = false;
+        popupWindow.SetActive(true);
+        StartCoroutine(ButtonDelay());
     }
 
     private IEnumerator FadeOutButtons()
@@ -113,58 +170,6 @@ public class StartGameSequence : MonoBehaviour
         {
             loadingTextObject.SetActive(true);
         }
-    }
-
-    public void GameplayLoaded()
-    {
-        Debug.Log("gameplay scene is loaded");
-        gameplayLoaded = true;
-        TryEndSequence();
-    }
-
-    public bool TryEndSequence()
-    {
-        if (gameplayLoaded && sequenceDone)
-        {
-            Debug.Log("unloading gameplay scene");
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.gameplayScene));
-            cameraObject.SetActive(false);
-            StartGame.Instance.TransitionToGamePlay();
-            SceneManager.UnloadSceneAsync(Constants.mainMenuScene);
-            return true;
-        }
-        return false;
-    }
-
-    public void FailedToLoadGame()
-    {
-        StopAllCoroutines();
-        SceneManager.UnloadSceneAsync(Constants.gameplayScene);
-        loadingTextObject.SetActive(false);
-
-        CanvasGroup buttonGroup;
-        if (mainButtons.activeSelf)
-        {
-            buttonGroup = mainButtons.GetComponent<CanvasGroup>();
-        }
-        else
-        {
-            buttonGroup = playButtons.GetComponent<CanvasGroup>();
-        }
-        buttonGroup.alpha = 1;
-        buttonGroup.interactable = true;
-
-        playButtons.SetActive(false);
-        mainButtons.SetActive(true);
-
-        panelTransform.position = originalPanelTransformPosition;
-        panelTransform.localScale = Vector3.one;
-
-        startSequencePanel.SetActive(false);
-        MusicController.Instance.FadeMusicIn();
-        popupContinueButton.interactable = false;
-        popupWindow.SetActive(true);
-        StartCoroutine(ButtonDelay());
     }
 
     private IEnumerator ButtonDelay()

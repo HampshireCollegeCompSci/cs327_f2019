@@ -3,23 +3,269 @@ using UnityEngine;
 
 public class CardScript : MonoBehaviour, IGlow
 {
-    public GameObject container;
+    [SerializeField]
+    private Sprite cardFrontSprite, cardBackSprite, hologramFoodSprite, hologramComboSprite;
+    [SerializeField]
+    private GameObject values, suitObject, rankObject, glow, hologram, hologramFood;
 
-    public byte cardRank; // the number on the card, ace is 1 jack is 11 queen is 12 king is 13
-    public byte cardSuitIndex;
-    public byte cardID;
-    public byte cardReactorValue; // what the card is worth to the reactor jack, queen, king are all 10
+    [SerializeField]
+    private byte cardRank; // the number on the card, ace is 1 jack is 11 queen is 12 king is 13
+    [SerializeField]
+    private byte cardSuitIndex;
+    [SerializeField]
+    private byte cardID;
+    [SerializeField]
+    private byte cardReactorValue; // what the card is worth to the reactor jack, queen, king are all 10
 
-    public Sprite cardFrontSprite;
-    public Sprite cardBackSprite;
+    [SerializeField]
+    private bool _enabled, _hidden, _hitBox, _obstructed, _dragging;
+    [SerializeField]
+    private bool _hologram;
+    [SerializeField]
+    private byte _hologramColorLevel;
+    [SerializeField]
+    private bool _glowing;
+    [SerializeField]
+    private byte _glowLevel;
 
-    public GameObject values;
-    public GameObject suitObject, rankObject;
-    public GameObject hologramFood, hologram;
-    public Sprite hologramFoodSprite, hologramComboSprite;
-    public GameObject glow;
-
+    private Coroutine holoCoroutine;
     private Color originalColor;
+    private GameObject container;
+
+    public byte CardRank
+    {
+        get => cardRank;
+    }
+
+    public byte CardSuitIndex
+    {
+        get => cardSuitIndex;
+    }
+
+    public byte CardID
+    {
+        get => cardID;
+    }
+
+    public byte CardReactorValue
+    {
+        get => cardReactorValue;
+    }
+
+    public GameObject Container
+    {
+        get => container;
+    }
+
+    public GameObject Values
+    {
+        get => values;
+    }
+
+    public GameObject HologramFood
+    {
+        get => hologramFood;
+    }
+
+    /// <summary>
+    /// The state of the card's existence.
+    /// </summary>
+    public bool Enabled
+    {
+        get => _enabled;
+        set
+        {
+            if (_enabled == value) return;
+            _enabled = value;
+            gameObject.GetComponent<SpriteRenderer>().enabled = value;
+            values.SetActive(value);
+            if (!value)
+            {
+                HitBox = false;
+                Hologram = false;
+            }
+        }
+    }
+
+    /// <summary>
+    /// The state of the card's visibility.
+    /// </summary>
+    public bool Hidden
+    {
+        get => _hidden;
+        set
+        {
+            if (value == _hidden) return;
+            _hidden = value;
+            if (value)
+            {
+                gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
+                HitBox = false;
+            }
+            else
+            {
+                gameObject.GetComponent<SpriteRenderer>().sprite = cardFrontSprite;
+            }
+            values.SetActive(!value);
+        }
+    }
+
+    /// <summary>
+    /// The state of the box collider for the card.
+    /// </summary>
+    public bool HitBox
+    {
+        get => _hitBox;
+        set
+        {
+            if (_hitBox == value) return;
+            _hitBox = value;
+            this.gameObject.GetComponent<BoxCollider2D>().enabled = value;
+        }
+    }
+
+    /// <summary>
+    /// The state of both the presentation and hitbox of the card.
+    /// </summary>
+    public bool Obstructed
+    {
+        get => _obstructed;
+        set
+        {
+            HitBox = !value;
+            if (_obstructed == value) return;
+            _obstructed = value;
+            if (value)
+            {
+                SetColor(Config.GameValues.cardObstructedColor);
+            }
+            else
+            {
+                SetColor(originalColor);
+            }
+        }
+    }
+
+    /// <summary>
+    /// The cards drag state.
+    /// </summary>
+    public bool Dragging
+    {
+        get => _dragging;
+        set
+        {
+            if (_dragging == value) return;
+
+            _dragging = value;
+            if (value)
+            {
+                Color newColor = originalColor;
+                newColor.a = Config.GameValues.selectedCardOpacity;
+
+                foreach (Renderer renderers in this.gameObject.GetComponentsInChildren<Renderer>())
+                {
+                    renderers.material.color = newColor;
+                }
+            }
+            else
+            {
+                foreach (Renderer renderers in this.gameObject.GetComponentsInChildren<Renderer>(includeInactive: true))
+                {
+                    renderers.material.color = originalColor;
+                }
+            }
+
+            if (Enabled)
+            {
+                HitBox = !value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// The state of the card's hologram.
+    /// </summary>
+    public bool Hologram
+    {
+        get => _hologram;
+        set
+        {
+            if (_hologram == value) return;
+            if (value && !_hologram)
+            {
+                holoCoroutine = StartCoroutine(StartHologram());
+            }
+            else if (!value && _hologram && holoCoroutine != null)
+            {
+                StopCoroutine(holoCoroutine);
+                hologram.SetActive(false);
+                hologramFood.SetActive(false);
+            }
+
+            _hologram = value;
+        }
+    }
+
+    /// <summary>
+    /// The color level (translates to rgb color) of the card's hologram.
+    /// </summary>
+    public byte HologramColorLevel
+    {
+        get => _hologramColorLevel;
+        set
+        {
+            if (_hologramColorLevel == value) return;
+
+            hologram.GetComponent<SpriteRenderer>().color = Config.GameValues.highlightColors[value];
+
+            SpriteRenderer hologramFoodSP = hologramFood.GetComponent<SpriteRenderer>();
+            hologramFoodSP.color = Config.GameValues.highlightColors[value];
+
+            if (value == Constants.matchHighlightColorLevel)
+            {
+                hologramFoodSP.sprite = hologramComboSprite;
+            }
+            else if (_hologramColorLevel == Constants.matchHighlightColorLevel)
+            {
+                hologramFoodSP.sprite = hologramFoodSprite;
+            }
+
+            // do this at the end
+            _hologramColorLevel = value;
+        }
+    }
+
+    /// <summary>
+    /// The glow state of the card.
+    /// </summary>
+    public bool Glowing
+    {
+        get => _glowing;
+        set
+        {
+            if (_glowing == value) return;
+            _glowing = value;
+            glow.SetActive(value);
+        }
+    }
+
+    /// <summary>
+    /// The color level (translates to rgb color) of the card's glow.
+    /// </summary>
+    public byte GlowLevel
+    {
+        get => _glowLevel;
+        set
+        {
+            Glowing = true;
+            if (_glowLevel == value) return;
+            if (value != _glowLevel)
+            {
+                _glowLevel = value;
+                glow.GetComponent<SpriteRenderer>().color = Config.GameValues.highlightColors[value];
+            }
+        }
+    }
 
     public void SetUp(byte rank, byte suitIndex, Sprite suitSprite, Sprite hologramFoodSprite, Sprite hologramComboSprite)
     {
@@ -55,7 +301,7 @@ public class CardScript : MonoBehaviour, IGlow
         {
             originalColor = new Color(Random.Range(0.4f, 1), Random.Range(0.4f, 1f), Random.Range(0.4f, 1f), 1);
             // TODO: this needs to change
-            DefaultColor();
+            SetColor(originalColor);
         }
         else
         {
@@ -87,51 +333,6 @@ public class CardScript : MonoBehaviour, IGlow
         HitBox = false;
     }
 
-    public bool _enabled;
-    /// <summary>
-    /// The state of the card's existence.
-    /// </summary>
-    public bool Enabled
-    {
-        get { return _enabled; }
-        set
-        {
-            if (_enabled == value) return;
-            _enabled = value;
-            gameObject.GetComponent<SpriteRenderer>().enabled = value;
-            values.SetActive(value);
-            if (!value)
-            {
-                HitBox = false;
-                Hologram = false;
-            }
-        }
-    }
-
-    public bool _hidden;
-    /// <summary>
-    /// The state of the card's visibility.
-    /// </summary>
-    public bool Hidden
-    {
-        get { return _hidden; }
-        set
-        {
-            if (value == _hidden) return;
-            _hidden = value;
-            if (value)
-            {
-                gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
-                HitBox = false;
-            }
-            else
-            {
-                gameObject.GetComponent<SpriteRenderer>().sprite = cardFrontSprite;
-            }
-            values.SetActive(!value);
-        }
-    }
-
     /// <summary>
     /// Reveals the card without setting the flag that it is hidden (for undo purposes).
     /// </summary>
@@ -141,149 +342,12 @@ public class CardScript : MonoBehaviour, IGlow
         _hidden = true;
     }
 
-    public bool _hitBox;
-    /// <summary>
-    /// The state of the box collider for the card.
-    /// </summary>
-    public bool HitBox
-    {
-        get { return _hitBox; }
-        set
-        {
-            if (_hitBox == value) return;
-            _hitBox = value;
-            this.gameObject.GetComponent<BoxCollider2D>().enabled = value;
-        }
-    }
-
-    public bool _obstructed;
-    /// <summary>
-    /// The state of both the presentation and hitbox of the card.
-    /// </summary>
-    public bool Obstructed
-    {
-        get { return _obstructed; }
-        set
-        {
-            HitBox = !value;
-            if (_obstructed == value) return;
-            _obstructed = value;
-            if (value)
-            {
-                SetColor(Config.GameValues.cardObstructedColor);
-            }
-            else
-            {
-                DefaultColor();
-            }
-        }
-    }
-
-    private Coroutine holoCoroutine;
-    public bool _hologram;
-    /// <summary>
-    /// The state of the card's hologram.
-    /// </summary>
-    public bool Hologram
-    {
-        get { return _hologram; }
-        set
-        {
-            if (_hologram == value) return;
-            if (value && !_hologram)
-            {
-                holoCoroutine = StartCoroutine(StartHologram());
-            }
-            else if (!value && _hologram && holoCoroutine != null)
-            {
-                StopCoroutine(holoCoroutine);
-                hologram.SetActive(false);
-                hologramFood.SetActive(false);
-            }
-
-            _hologram = value;
-        }
-    }
-
-    /// <summary>
-    /// Starts the card's hologram at a random frame and fades it in.
-    /// </summary>
-    private IEnumerator StartHologram()
-    {
-        hologram.SetActive(true);
-        hologramFood.SetActive(true);
-
-        // start the animation at a random frame
-        hologram.GetComponent<Animator>().Play(0, -1, Random.Range(0.0f, 1.0f));
-
-        SpriteRenderer holoSR = hologram.GetComponent<SpriteRenderer>();
-        SpriteRenderer objectSR = hologramFood.GetComponent<SpriteRenderer>();
-        Color holoColor = holoSR.color;
-        holoColor.a = 0;
-        holoSR.color = holoColor;
-        objectSR.color = holoColor;
-        yield return null;
-
-        while (holoColor.a < 1)
-        {
-            holoColor.a += Time.deltaTime * 0.5f;
-            holoSR.color = holoColor;
-            objectSR.color = holoColor;
-            yield return null;
-        }
-    }
-
-    /// <summary>
-    /// Sets the cards color to its default color (normally white), doesn't include hologram, glow, and values.
-    /// </summary>
-    public void DefaultColor()
-    {
-        SetColor(originalColor);
-    }
-
     /// <summary>
     /// Sets the cards color, doesn't include hologram, glow, and values.
     /// </summary>
     public void SetColor(Color setTo)
     {
         this.gameObject.GetComponent<SpriteRenderer>().color = setTo;
-    }
-
-    public bool _dragging;
-    /// <summary>
-    /// The cards drag state.
-    /// </summary>
-    public bool Dragging
-    {
-        get { return _dragging; }
-        set
-        {
-            if (_dragging == value) return;
-
-            _dragging = value;
-            if (value)
-            {
-                Color newColor = originalColor;
-                newColor.a = Config.GameValues.selectedCardOpacity;
-
-                foreach (Renderer renderers in this.gameObject.GetComponentsInChildren<Renderer>())
-                {
-                    renderers.material.color = newColor;
-                }
-            }
-            else
-            {
-                foreach (Renderer renderers in this.gameObject.GetComponentsInChildren<Renderer>(includeInactive: true))
-                {
-                    renderers.material.color = originalColor;
-                }
-            }
-
-            if (Enabled)
-            {
-                HitBox = !value;
-            }
-        }
     }
 
     /// <summary>
@@ -314,70 +378,6 @@ public class CardScript : MonoBehaviour, IGlow
         HitBox = false;
     }
 
-    public byte _hologramColorLevel;
-    /// <summary>
-    /// The color level (translates to rgb color) of the card's hologram.
-    /// </summary>
-    public byte HologramColorLevel
-    {
-        get { return _hologramColorLevel; }
-        set
-        {
-            if (_hologramColorLevel == value) return;
-
-            hologram.GetComponent<SpriteRenderer>().color = Config.GameValues.highlightColors[value];
-
-            SpriteRenderer hologramFoodSP = hologramFood.GetComponent<SpriteRenderer>();
-            hologramFoodSP.color = Config.GameValues.highlightColors[value];
-
-            if (value == 1) // match
-            {
-                hologramFoodSP.sprite = hologramComboSprite;
-            }
-            else if (_hologramColorLevel == 1) // no more match
-            {
-                hologramFoodSP.sprite = hologramFoodSprite;
-            }
-
-            // do this at the end
-            _hologramColorLevel = value;
-        }
-    }
-
-    public bool _glowing;
-    /// <summary>
-    /// The glow state of the card.
-    /// </summary>
-    public bool Glowing
-    {
-        get { return _glowing; }
-        set
-        {
-            if (_glowing == value) return;
-            _glowing = value;
-            glow.SetActive(value);
-        }
-    }
-
-    public byte _glowLevel;
-    /// <summary>
-    /// The color level (translates to rgb color) of the card's glow.
-    /// </summary>
-    public byte GlowLevel
-    {
-        get { return _glowLevel; }
-        set
-        {
-            Glowing = true;
-            if (_glowLevel == value) return;
-            if (value != _glowLevel)
-            {
-                _glowLevel = value;
-                glow.GetComponent<SpriteRenderer>().color = Config.GameValues.highlightColors[value];
-            }
-        }
-    }
-
     /// <summary>
     /// Moves the card to the given destination according to the parameters given.
     /// </summary>
@@ -390,23 +390,23 @@ public class CardScript : MonoBehaviour, IGlow
     public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool showHolo = true)
     {
         bool nextCardWasHidden = false;
-        if (container != null)
+        if (Container != null)
         {
-            switch (container.tag)
+            switch (Container.tag)
             {
                 case Constants.foundationTag:
                     if (doLog)
                     {
-                        FoundationScript foundationScript = container.GetComponent<FoundationScript>();
-                        if (foundationScript.cardList.Count > 1 && foundationScript.cardList[1].GetComponent<CardScript>().Hidden)
+                        FoundationScript foundationScript = Container.GetComponent<FoundationScript>();
+                        if (foundationScript.CardList.Count > 1 && foundationScript.CardList[1].GetComponent<CardScript>().Hidden)
                         {
                             nextCardWasHidden = true;
                         }
                     }
-                    container.GetComponent<FoundationScript>().RemoveCard(gameObject, showHolo: showHolo);
+                    Container.GetComponent<FoundationScript>().RemoveCard(gameObject, showHolo: showHolo);
                     break;
                 case Constants.reactorTag:
-                    container.GetComponent<ReactorScript>().RemoveCard(gameObject);
+                    Container.GetComponent<ReactorScript>().RemoveCard(gameObject);
                     break;
                 case Constants.wastepileTag:
                     if (!doLog || destination.CompareTag(Constants.deckTag))
@@ -428,7 +428,7 @@ public class CardScript : MonoBehaviour, IGlow
                     LoadPileScript.Instance.RemoveCard(gameObject);
                     break;
                 default:
-                    throw new System.Exception($"the card conatainer of {container} is not supported");
+                    throw new System.Exception($"the card conatainer of {Container} is not supported");
             }
         }
 
@@ -466,7 +466,7 @@ public class CardScript : MonoBehaviour, IGlow
                 if (doLog)
                 {
                     // for undoing a match that goes into the wastepile
-                    if (container.CompareTag(Constants.foundationTag))
+                    if (Container.CompareTag(Constants.foundationTag))
                     {
                         UndoScript.Instance.LogMove(gameObject, Constants.moveLogMove, isAction, nextCardWasHidden);
                     }
@@ -503,5 +503,33 @@ public class CardScript : MonoBehaviour, IGlow
                 throw new System.Exception($"the card destination of {destination} is not supported");
         }
         container = destination;
+    }
+
+    /// <summary>
+    /// Starts the card's hologram at a random frame and fades it in.
+    /// </summary>
+    private IEnumerator StartHologram()
+    {
+        hologram.SetActive(true);
+        hologramFood.SetActive(true);
+
+        // start the animation at a random frame
+        hologram.GetComponent<Animator>().Play(0, -1, Random.Range(0.0f, 1.0f));
+
+        SpriteRenderer holoSR = hologram.GetComponent<SpriteRenderer>();
+        SpriteRenderer objectSR = hologramFood.GetComponent<SpriteRenderer>();
+        Color holoColor = holoSR.color;
+        holoColor.a = 0;
+        holoSR.color = holoColor;
+        objectSR.color = holoColor;
+        yield return null;
+
+        while (holoColor.a < 1)
+        {
+            holoColor.a += Time.deltaTime * 0.5f;
+            holoSR.color = holoColor;
+            objectSR.color = holoColor;
+            yield return null;
+        }
     }
 }

@@ -56,7 +56,7 @@ public static class Constants
     public const string deckTag = "Deck";
     public const string wastepileTag = "Wastepile";
     public const string matchedPileTag = "MatchedPile";
-    public const string loadPileTag= "LoadPile";
+    public const string loadPileTag = "LoadPile";
 
     // Card Suits
     public const byte spadesSuitIndex = 0;

@@ -1,19 +1,65 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
+public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
 {
-    public List<GameObject> cardList;
+    [SerializeField]
+    private List<GameObject> cardList;
+
+    [SerializeField]
+    private bool _glowing;
+    [SerializeField]
+    private byte _glowLevel;
 
     private SpriteRenderer spriteRenderer;
 
-    public void SetUp()
+    void Awake()
     {
         cardList = new();
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
         _glowing = false;
         _glowLevel = 0;
+    }
+
+    public List<GameObject> CardList
+    {
+        get => cardList;
+    }
+
+    public bool Glowing
+    {
+        get => _glowing;
+        set
+        {
+            if (value && !_glowing)
+            {
+                _glowing = true;
+            }
+            else if (!value && _glowing)
+            {
+                _glowing = false;
+                GlowLevel = Constants.defaultHighlightColorLevel;
+            }
+        }
+    }
+
+    public byte GlowLevel
+    {
+        get => _glowLevel;
+        set
+        {
+            if (value != _glowLevel)
+            {
+                _glowLevel = value;
+                spriteRenderer.color = Config.GameValues.highlightColors[value];
+            }
+
+            if (value != Constants.defaultHighlightColorLevel)
+            {
+                Glowing = true;
+            }
+        }
     }
 
     public void AddCard(GameObject card, bool showHolo)
@@ -83,7 +129,7 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
         float zOffset = -0.1f;
         int hiddenCards = 0;
         float yOffset = 0;
-        
+
         int count = cardList.Count;
         for (int i = count - 1; i >= 0; i--) // go backwards through the list
         {
@@ -120,43 +166,6 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
             }
 
             zOffset -= 0.05f;
-        }
-    }
-
-    public bool _glowing;
-    public bool Glowing
-    {
-        get { return _glowing; }
-        set
-        {
-            if (value && !_glowing)
-            {
-                _glowing = true;
-            }
-            else if (!value && _glowing)
-            {
-                _glowing = false;
-                GlowLevel = Constants.defaultHighlightColorLevel;
-            }
-        }
-    }
-
-    public byte _glowLevel;
-    public byte GlowLevel
-    {
-        get { return _glowLevel; }
-        set
-        {
-            if (value != _glowLevel)
-            {
-                _glowLevel = value;
-                spriteRenderer.color = Config.GameValues.highlightColors[value];
-            }
-
-            if (value != Constants.defaultHighlightColorLevel)
-            {
-                Glowing = true;
-            }
         }
     }
 

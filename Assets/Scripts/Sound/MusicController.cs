@@ -3,13 +3,20 @@ using UnityEngine;
 
 public class MusicController : MonoBehaviour, ISound
 {
+    // Singleton instance.
+    public static MusicController Instance;
+
     // Audio players components
-    public AudioSource audioSource_1;
-    public AudioSource audioSource_2;
+    [SerializeField]
+    private AudioSource audioSource_1, audioSource_2;
 
     // Music files
-    public AudioClip menuMusic, themeMusic, transitionMusic, loseMusic, winMusic, aboutMusic, tutorialMusic;
-    public AudioClip[] audioClips;
+    [SerializeField]
+    private AudioClip menuMusic, themeMusic, transitionMusic, loseMusic, winMusic, aboutMusic, tutorialMusic;
+    [SerializeField]
+    private AudioClip[] audioClips;
+
+    private byte _playingTrack;
 
     // Variables to keep track of the current playing song
     private byte pausedAudioSource;
@@ -19,11 +26,8 @@ public class MusicController : MonoBehaviour, ISound
     private float fadeOutSpeedSlow;
     private float maxVolume;
 
-    // Singleton instance.
-    public static MusicController Instance = null;
-
     // Initialize the singleton instance.
-    private void Awake()
+    void Awake()
     {
         // If there is not already an instance, set it to this.
         if (Instance == null)
@@ -38,7 +42,7 @@ public class MusicController : MonoBehaviour, ISound
         }
     }
 
-    private void Start()
+    void Start()
     {
         audioClips = new AudioClip[7]
         {
@@ -46,6 +50,22 @@ public class MusicController : MonoBehaviour, ISound
         };
         _playingTrack = byte.MaxValue;
         UpdateMaxVolume(PlayerPrefKeys.GetMusicVolume());
+    }
+
+    private byte PlayingTrack
+    {
+        get => _playingTrack;
+        set
+        {
+            if (value == _playingTrack)
+            {
+                PlayMusic();
+                return;
+            }
+
+            _playingTrack = value;
+            Transition(audioClips[value]);
+        }
     }
 
     public void UpdateMaxVolume(float newVolume)
@@ -65,33 +85,6 @@ public class MusicController : MonoBehaviour, ISound
             audioSource_2.volume = maxVolume;
         }
     }
-
-    private void NormalizeFadeValues(float newVolume)
-    {
-        // changing the music volume requires that the fade timings be updated as well 
-        float audioDifference = newVolume * 2;
-        fadeInSpeed = Config.GameValues.musicFadeIn * audioDifference;
-        fadeOutSpeedFast = Config.GameValues.musicFadeOutFast * audioDifference;
-        fadeOutSpeedSlow = Config.GameValues.musicFadeOutSlow * audioDifference;
-    }
-
-    private byte _playingTrack;
-    private byte PlayingTrack
-    {
-        get { return _playingTrack; }
-        set
-        {
-            if (value == _playingTrack)
-            {
-                PlayMusic();
-                return;
-            }
-
-            _playingTrack = value;
-            Transition(audioClips[value]);
-        }
-    }
-
 
     public void FadeMusicOut()
     {
@@ -195,6 +188,15 @@ public class MusicController : MonoBehaviour, ISound
     public void TutorialMusic()
     {
         PlayingTrack = 6;
+    }
+
+    private void NormalizeFadeValues(float newVolume)
+    {
+        // changing the music volume requires that the fade timings be updated as well 
+        float audioDifference = newVolume * 2;
+        fadeInSpeed = Config.GameValues.musicFadeIn * audioDifference;
+        fadeOutSpeedFast = Config.GameValues.musicFadeOutFast * audioDifference;
+        fadeOutSpeedSlow = Config.GameValues.musicFadeOutSlow * audioDifference;
     }
 
     private void Transition(AudioClip newTrack)

@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class GameLoader : MonoBehaviour
 {
-    public GameObject cardPrefab;
-
-    public GameObject[] topSuitObjects, bottomSuitObjects;
-    public Sprite[] allSuitSprites;
-    private Sprite[] suitSpritesToUse;
-
-    public Sprite[] holograms;
-    public Sprite[] combinedHolograms;
-
     // Singleton instance.
-    public static GameLoader Instance = null;
+    public static GameLoader Instance;
+
+    [SerializeField]
+    private GameObject cardPrefab;
+    [SerializeField]
+    private GameObject[] topSuitObjects, bottomSuitObjects;
+    [SerializeField]
+    private Sprite[] allSuitSprites, suitSpritesToUse;
+    [SerializeField]
+    private Sprite[] holograms, combinedHolograms;
 
     private void Awake()
     {
@@ -31,7 +31,16 @@ public class GameLoader : MonoBehaviour
 
     public bool LoadGame()
     {
-        SetUpScene();
+        // suit sprites
+        suitSpritesToUse = GetSuitSprites();
+        SetRectorSuitSprites(suitSpritesToUse);
+
+        byte suitIndex = 0;
+        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        {
+            reactorScript.SetReactorSuitIndex(suitIndex);
+            suitIndex++;
+        }
 
         Config.Instance.gameOver = false;
         Config.Instance.gameWin = false;
@@ -64,26 +73,6 @@ public class GameLoader : MonoBehaviour
         }
 
         return true;
-    }
-
-    private void SetUpScene()
-    {
-        // suit sprites
-        suitSpritesToUse = GetSuitSprites();
-        SetRectorSuitSprites(suitSpritesToUse);
-
-        byte suitIndex = 0;
-        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
-        {
-            reactorScript.SetUp(suitIndex);
-            suitIndex++;
-        }
-        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
-        {
-            foundationScript.SetUp();
-        }
-
-        StateLoader.Instance.SetUp();
     }
 
     public void LoadTutorial(string fileName, bool gameStart = false)
@@ -147,7 +136,7 @@ public class GameLoader : MonoBehaviour
                     hologramFoodSprite = holograms[hFSIndex];
                     hologramComboSprite = suit < 2 ? combinedHolograms[rank - 9] : combinedHolograms[rank - 4];
                 }
-                
+
                 newCard.GetComponent<CardScript>().SetUp(rank, suit, suitSpritesToUse[suit], hologramFoodSprite, hologramComboSprite);
                 newCards.Add(newCard);
             }
@@ -163,15 +152,15 @@ public class GameLoader : MonoBehaviour
 
         foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
-            cards.AddRange(foundationScript.cardList);
+            cards.AddRange(foundationScript.CardList);
         }
         foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
         {
-            cards.AddRange(reactorScript.cardList);
+            cards.AddRange(reactorScript.CardList);
         }
-        cards.AddRange(DeckScript.Instance.cardList);
-        cards.AddRange(WastepileScript.Instance.cardList);
-        cards.AddRange(MatchedPileScript.Instance.cardList);
+        cards.AddRange(DeckScript.Instance.CardList);
+        cards.AddRange(WastepileScript.Instance.CardList);
+        cards.AddRange(MatchedPileScript.Instance.CardList);
 
         return cards;
     }
@@ -211,7 +200,7 @@ public class GameLoader : MonoBehaviour
 
     private List<GameObject> ShuffleCards(List<GameObject> cards)
     {
-        System.Random rand = new System.Random();
+        System.Random rand = new();
         int count = cards.Count;
         int length = count - 1;
         int j;
@@ -275,8 +264,7 @@ public class GameLoader : MonoBehaviour
     private Sprite[] GetSuitSprites()
     {
         // getting user setting
-        bool isOn;
-        if (System.Boolean.TryParse(PlayerPrefs.GetString(Constants.foodSuitsEnabledKey), out isOn))
+        if (bool.TryParse(PlayerPrefs.GetString(Constants.foodSuitsEnabledKey), out bool isOn))
         { }
         else
         {

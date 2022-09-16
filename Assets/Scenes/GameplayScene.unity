@@ -3461,6 +3461,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: ead76294ef40e694e9506afab6965c81, type: 3}
   - {fileID: 21300000, guid: d35c2965d44e73b4b90392fc6a8c8696, type: 3}
   - {fileID: 21300000, guid: 41c560bc9c90ce440a2a29c1e47a2531, type: 3}
+  suitSpritesToUse: []
   holograms:
   - {fileID: 21300000, guid: e26fce72ec7ca48319bf2171883e7773, type: 3}
   - {fileID: 21300000, guid: 4e01b9bd0e4704adab84a132c106b6ff, type: 3}
@@ -4372,6 +4373,8 @@ MonoBehaviour:
   cardContainerPrefab: {fileID: 4445628893480912193, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
     type: 3}
   contentPanel: {fileID: 225234669}
+  _scrolling: 0
+  _draggingCard: 0
 --- !u!222 &1092020363
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6336,11 +6339,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4502d0dd55a5344a594d47b2a76b352d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedCards: []
-  matchPrefab: {fileID: 4031254262428589365, guid: 3a28ce96f97e3fd4f9107ecc217d5158,
-    type: 3}
-  matchPointsPrefab: {fileID: 5801631464807042985, guid: 614ce32a7efa12342824cb70c9aacc46,
-    type: 3}
   reactors:
   - {fileID: 1048323403}
   - {fileID: 283026417}
@@ -6362,7 +6360,19 @@ MonoBehaviour:
   - {fileID: 862624159679698549}
   - {fileID: 326742634}
   gameUI: {fileID: 2058941297}
-  score: {fileID: 533940917}
+  selectedCards: []
+  selectedCardsCopy: []
+  matchPrefab: {fileID: 4031254262428589365, guid: 3a28ce96f97e3fd4f9107ecc217d5158,
+    type: 3}
+  matchPointsPrefab: {fileID: 5801631464807042985, guid: 614ce32a7efa12342824cb70c9aacc46,
+    type: 3}
+  dragOn: 0
+  hoveringOver: {fileID: 0}
+  changedHologramColor: 0
+  changedSuitGlowColor: 0
+  hidFoodHologram: 0
+  _isNextCycle: 0
+  _inputStopped: 0
 --- !u!4 &1574574479
 Transform:
   m_ObjectHideFlags: 0
@@ -6673,11 +6683,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6020c812540158f4d970ba7614529759, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosionPrefab: {fileID: 4031254262428589365, guid: 3a28ce96f97e3fd4f9107ecc217d5158,
+    type: 3}
+  restartButton: {fileID: 276929625}
+  continueButton: {fileID: 1331260094}
   errorObject: {fileID: 1890860393}
   gameOverPanel: {fileID: 342374250}
   gameOverTextPanel: {fileID: 632587056}
-  restartButton: {fileID: 276929625}
-  continueButton: {fileID: 1331260094}
   gameOverText: {fileID: 1436273546}
   wonlostText: {fileID: 1668613965}
 --- !u!114 &1615020391

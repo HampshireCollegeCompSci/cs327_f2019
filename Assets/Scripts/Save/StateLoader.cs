@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class StateLoader : MonoBehaviour
 {
+    // Singleton instance.
+    public static StateLoader Instance;
+
     private List<SaveMove> saveMoveLog;
     private List<GameObject> origins;
     private int originsLength;
-
-    // Singleton instance.
-    public static StateLoader Instance;
 
     // Initialize the singleton instance.
     private void Awake()
@@ -24,7 +24,7 @@ public class StateLoader : MonoBehaviour
         }
     }
 
-    public void SetUp()
+    private void Start()
     {
         saveMoveLog = new();
         origins = new()
@@ -48,7 +48,7 @@ public class StateLoader : MonoBehaviour
     {
         SaveMove newSaveMove = new()
         {
-            c = newMove.card.GetComponent<CardScript>().cardID,
+            c = newMove.card.GetComponent<CardScript>().CardID,
             o = GetOriginIndex(newMove.origin),
             m = newMove.moveType,
             h = System.Convert.ToByte(newMove.nextCardWasHidden),
@@ -59,19 +59,6 @@ public class StateLoader : MonoBehaviour
         };
 
         saveMoveLog.Add(newSaveMove);
-    }
-
-    public int GetOriginIndex(GameObject origin)
-    {
-        for (int originIndex = 0; originIndex < originsLength; originIndex++)
-        {
-            if (origins[originIndex] == origin)
-            {
-                return originIndex;
-            }
-        }
-
-        throw new System.Exception($"the origin \"{origin.name}\" was not found");
     }
 
     public void RemoveMove()
@@ -101,16 +88,16 @@ public class StateLoader : MonoBehaviour
             };
 
             CardScript cardScript;
-            for (int i = foundationScript.cardList.Count - 1; i >= 0; i--)
+            for (int i = foundationScript.CardList.Count - 1; i >= 0; i--)
             {
-                cardScript = foundationScript.cardList[i].GetComponent<CardScript>();
+                cardScript = foundationScript.CardList[i].GetComponent<CardScript>();
                 if (cardScript.Hidden)
                 {
-                    foundationCards.hidden.Add(cardScript.cardID);
+                    foundationCards.hidden.Add(cardScript.CardID);
                 }
                 else
                 {
-                    foundationCards.unhidden.Add(cardScript.cardID);
+                    foundationCards.unhidden.Add(cardScript.CardID);
                 }
             }
 
@@ -122,19 +109,19 @@ public class StateLoader : MonoBehaviour
         {
             ReactorCards cardList = new()
             {
-                cards = ConvertCardListToStringList(reactorScript.cardList)
+                cards = ConvertCardListToStringList(reactorScript.CardList)
             };
             gameState.reactors.Add(cardList);
         }
 
         //save wastepile
-        gameState.wastePile = ConvertCardListToStringList(WastepileScript.Instance.cardList);
+        gameState.wastePile = ConvertCardListToStringList(WastepileScript.Instance.CardList);
 
         //save deck
-        gameState.deck = ConvertCardListToStringList(DeckScript.Instance.cardList);
+        gameState.deck = ConvertCardListToStringList(DeckScript.Instance.CardList);
 
         //save matches
-        gameState.matches = ConvertCardListToStringList(MatchedPileScript.Instance.cardList);
+        gameState.matches = ConvertCardListToStringList(MatchedPileScript.Instance.CardList);
 
         //save undo
         gameState.moveLog = saveMoveLog;
@@ -150,18 +137,6 @@ public class StateLoader : MonoBehaviour
         File.WriteAllText(SaveState.GetFilePath(), JsonUtility.ToJson(gameState, Constants.inEditor));
 
         //UnityEditor.AssetDatabase.Refresh();
-    }
-
-    private List<byte> ConvertCardListToStringList(List<GameObject> cardList)
-    {
-        List<byte> newCardList = new();
-        // go backwards through the list as the top cards are at index 0
-        for (int i = cardList.Count - 1; i >= 0; i--)
-        {
-            newCardList.Add(cardList[i].GetComponent<CardScript>().cardID);
-        }
-
-        return newCardList;
     }
 
     public void LoadSaveState()
@@ -185,7 +160,20 @@ public class StateLoader : MonoBehaviour
         UnpackTutorialState(tutorialState);
     }
 
-    public void UnpackGameState(GameState state)
+    private int GetOriginIndex(GameObject origin)
+    {
+        for (int originIndex = 0; originIndex < originsLength; originIndex++)
+        {
+            if (origins[originIndex] == origin)
+            {
+                return originIndex;
+            }
+        }
+
+        throw new System.Exception($"the origin \"{origin.name}\" was not found");
+    }
+
+    private void UnpackGameState(GameState state)
     {
         Debug.Log($"unpacking state");
 
@@ -197,13 +185,13 @@ public class StateLoader : MonoBehaviour
         // more is done at the end
 
         // if the tutorial isn't being loaded then we need to setup the move log
-        if (LoadPileScript.Instance.cardList.Count == 0)
+        if (LoadPileScript.Instance.CardList.Count == 0)
         {
             Debug.LogError("there are no cards in the load pile when starting to load the game");
             throw new System.Exception("there are no cards in the load pile when starting to load the game");
         }
-        
-        SetUpMoveLog(state.moveLog, LoadPileScript.Instance.cardList);
+
+        SetUpMoveLog(state.moveLog, LoadPileScript.Instance.CardList);
 
         // sharing the index variable for the foundations and reactors
         int index;
@@ -235,7 +223,7 @@ public class StateLoader : MonoBehaviour
         SetUpLocationWithCards(state.deck, DeckScript.Instance.gameObject);
 
         // if the game state has missing cards they will be leftover in the load pile cardlist
-        if (LoadPileScript.Instance.cardList.Count != 0)
+        if (LoadPileScript.Instance.CardList.Count != 0)
         {
             Debug.LogError("there are cards still in the load pile after loading the game");
             throw new System.Exception("there are cards still in the load pile after loading the game");
@@ -250,7 +238,7 @@ public class StateLoader : MonoBehaviour
         DeckScript.Instance.UpdateDeckCounter();
     }
 
-    public void UnpackTutorialState(TutorialState state)
+    private void UnpackTutorialState(TutorialState state)
     {
         Debug.Log($"unpacking tutorial state");
 
@@ -262,7 +250,7 @@ public class StateLoader : MonoBehaviour
         // more is done at the end
 
         // if the tutorial isn't being loaded then we need to setup the move log
-        if (LoadPileScript.Instance.cardList.Count == 0)
+        if (LoadPileScript.Instance.CardList.Count == 0)
         {
             throw new System.Exception("there are no cards in the load pile");
         }
@@ -295,10 +283,10 @@ public class StateLoader : MonoBehaviour
         SetUpLocationWithCards(state.matches, MatchedPileScript.Instance.gameObject);
 
         // during the tutorial the deck order doesn't matter
-        int cardCount = LoadPileScript.Instance.cardList.Count;
+        int cardCount = LoadPileScript.Instance.CardList.Count;
         while (cardCount != 0)
         {
-            LoadPileScript.Instance.cardList[0].GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, false, false, false);
+            LoadPileScript.Instance.CardList[0].GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, false, false, false);
             cardCount--;
         }
 
@@ -309,6 +297,18 @@ public class StateLoader : MonoBehaviour
 
         UtilsScript.Instance.UpdateActions(state.actions, startingGame: true);
         DeckScript.Instance.UpdateDeckCounter();
+    }
+
+    private List<byte> ConvertCardListToStringList(List<GameObject> cardList)
+    {
+        List<byte> newCardList = new();
+        // go backwards through the list as the top cards are at index 0
+        for (int i = cardList.Count - 1; i >= 0; i--)
+        {
+            newCardList.Add(cardList[i].GetComponent<CardScript>().CardID);
+        }
+
+        return newCardList;
     }
 
     private void SetUpMoveLog(List<SaveMove> moves, List<GameObject> cardList)
@@ -325,7 +325,7 @@ public class StateLoader : MonoBehaviour
             // looking for the card that the move is associated with
             foreach (GameObject card in cardList)
             {
-                if (card.GetComponent<CardScript>().cardID == saveMove.c)
+                if (card.GetComponent<CardScript>().CardID == saveMove.c)
                 {
                     newMove.card = card;
                     break;
@@ -367,10 +367,10 @@ public class StateLoader : MonoBehaviour
         {
             // looking for the card that needs to be moved
             foundCard = false;
-            foreach (GameObject card in LoadPileScript.Instance.cardList)
+            foreach (GameObject card in LoadPileScript.Instance.CardList)
             {
                 cardScriptRef = card.GetComponent<CardScript>();
-                if (cardScriptRef.cardID == cardID)
+                if (cardScriptRef.CardID == cardID)
                 {
                     cardScriptRef.MoveCard(newLocation, doLog: false, isAction: false);
                     if (isHidden)
@@ -400,7 +400,7 @@ public class StateLoader : MonoBehaviour
         {
             // looking for the card that needs to be moved
             foundCard = false;
-            foreach (GameObject card in LoadPileScript.Instance.cardList)
+            foreach (GameObject card in LoadPileScript.Instance.CardList)
             {
                 if (card.name == cardName)
                 {

@@ -2527,17 +2527,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   musicSlider: {fileID: 1203494561}
-  musicVolumeText: {fileID: 1203494560}
   soundEffectsSlider: {fileID: 8669265232741668949}
+  musicVolumeText: {fileID: 1203494560}
   soundEffectsVolumeText: {fileID: 8669265232741668948}
   vibrationToggle: {fileID: 1137054518350387597}
   foodSuitsToggle: {fileID: 1038788985}
   frameRateSlider: {fileID: 524746866}
   frameRateText: {fileID: 524746865}
   frameRateInfoObject: {fileID: 0}
+  suitArtNoticeObject: {fileID: 114116284}
   confirmObject: {fileID: 1580560438}
   confirmYesButton: {fileID: 7829983091686322349}
-  suitArtNoticeObject: {fileID: 114116284}
 --- !u!4 &2124440267
 Transform:
   m_ObjectHideFlags: 0
