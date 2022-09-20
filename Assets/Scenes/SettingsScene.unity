@@ -294,16 +294,13 @@ PrefabInstance:
     - target: {fileID: 7829983092241112929, guid: 91ec940a979982e47bcf8a7c38d4b331,
         type: 3}
       propertyPath: m_Text
-      value: 'The default frame rate is set by your device and is typically on the
-        lower end of the scale.
+      value: 'Higher frame rates will improve the smoothness of the game, with the
+        drawbacks of consuming more power and generating more heat.
 
 
-        Higher frame rates will consume more power
-        and will generate more heat.
-
-
-        If you want to conserve battery life
-        on mobile devices and avoid overheating, set the frame rate to a lower setting.'
+        The
+        default frame rate is set by your device and is typically on the lower end
+        of the scale for mobile devices.'
       objectReference: {fileID: 0}
     - target: {fileID: 7829983092241112929, guid: 91ec940a979982e47bcf8a7c38d4b331,
         type: 3}
@@ -314,6 +311,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_FontData.m_FontSize
       value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 7829983092241112935, guid: 91ec940a979982e47bcf8a7c38d4b331,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7829983092310510378, guid: 91ec940a979982e47bcf8a7c38d4b331,
         type: 3}
@@ -2120,7 +2122,7 @@ PrefabInstance:
     - target: {fileID: 7084158332299253295, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 25
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 7084158332299253295, guid: f9e4f3524d2da456180c2be002c8dfd4,
         type: 3}

@@ -288,7 +288,7 @@ public class MusicController : MonoBehaviour, ISound
         }
 
         // to prevent audio blips lower the volume first and then pause the music
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSecondsRealtime(0.1f);
         audioSource.Pause();
     }
 

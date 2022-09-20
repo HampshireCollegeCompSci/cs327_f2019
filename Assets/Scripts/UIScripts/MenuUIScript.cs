@@ -186,6 +186,7 @@ public class MenuUIScript : MonoBehaviour
         if (SceneManager.GetSceneByName(Constants.pauseScene).isLoaded)
         {
             SceneManager.UnloadSceneAsync(Constants.pauseScene);
+            Time.timeScale = 1;
         }
         MusicController.Instance.GameMusic();
         GameLoader.Instance.RestartGame();
@@ -200,6 +201,10 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI main menu");
         SoundEffectsController.Instance.ButtonPressSound();
+        if (SceneManager.GetSceneByName(Constants.pauseScene).isLoaded)
+        {
+            Time.timeScale = 1;
+        }
         SceneManager.LoadScene(Constants.mainMenuScene);
         MusicController.Instance.MainMenuMusic();
         if (MusicController.Instance.Paused)
@@ -233,7 +238,7 @@ public class MenuUIScript : MonoBehaviour
         Debug.Log("MenuUI pause game");
 
         if (UtilsScript.Instance.InputStopped || Config.Instance.gamePaused) return;
-
+        Time.timeScale = 0;
         Config.Instance.gamePaused = true;
         SoundEffectsController.Instance.PauseMenuButtonSound();
         MusicController.Instance.Paused = true;
@@ -244,7 +249,7 @@ public class MenuUIScript : MonoBehaviour
     private void ResumeGame()
     {
         Debug.Log("MenuUI resume game");
-
+        Time.timeScale = 1;
         SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.UnloadSceneAsync(Constants.pauseScene);
         Config.Instance.gamePaused = false;
