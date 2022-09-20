@@ -149,6 +149,7 @@ public class ActionCountScript : MonoBehaviour
     [SerializeField]
     private void PressKnob()
     {
+        if (UtilsScript.Instance.InputStopped) return;
         // the make actions max button calls this
         SoundEffectsController.Instance.VibrateMedium();
         buttonImage.sprite = buttonDown;

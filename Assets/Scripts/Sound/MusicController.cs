@@ -35,6 +35,14 @@ public class MusicController : MonoBehaviour, ISound
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            audioClips = new AudioClip[7]
+            {
+                menuMusic, themeMusic, transitionMusic, loseMusic, winMusic, aboutMusic, tutorialMusic
+            };
+            AudioSourcePlaying = 1;
+            _playingTrack = byte.MaxValue;
+            _muted = false;
+            _paused = false;
         }
         //If an instance already exists, destroy whatever this object is to enforce the singleton.
         else if (Instance != this)
@@ -45,15 +53,6 @@ public class MusicController : MonoBehaviour, ISound
 
     void Start()
     {
-        audioClips = new AudioClip[7]
-        {
-            menuMusic, themeMusic, transitionMusic, loseMusic, winMusic, aboutMusic, tutorialMusic
-        };
-        AudioSourcePlaying = 1;
-        _playingTrack = byte.MaxValue;
-        _muted = false;
-        _paused = false;
-
         audioMixer.SetFloat(Constants.audioMixerNameTrack1, -80);
         audioMixer.SetFloat(Constants.audioMixerNameTrack2, -80);
         UpdateMaxVolume(PlayerPrefKeys.GetMusicVolume());
@@ -145,7 +144,10 @@ public class MusicController : MonoBehaviour, ISound
             if (Muted) return;
             if (value)
             {
-                StopCoroutine(fadeInCoroutine);
+                if (fadeInCoroutine != null)
+                {
+                    StopCoroutine(fadeInCoroutine);
+                }
                 audioMixer.SetFloat(Constants.audioMixerNameMaster, -80);
                 pauseDelyCoroutine = StartCoroutine(PauseDelay());
                 Debug.Log("paused music");

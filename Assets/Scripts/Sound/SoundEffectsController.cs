@@ -206,7 +206,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
 
     private IEnumerator AlertVibration()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
         soundController.PlayOneShot(alertSound, 0.2f);
         yield return new WaitForSeconds(0.1f);
         VibrateMedium();

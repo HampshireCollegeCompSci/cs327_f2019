@@ -16,7 +16,10 @@ public class SplashScreen : MonoBehaviour
         {
             firstRun = false;
             splashScreen.SetActive(true);
-            splashScreenFade = StartCoroutine(DisplayLogo());
+            if (Application.platform != RuntimePlatform.WebGLPlayer)
+            {
+                splashScreenFade = StartCoroutine(DisplayLogo());
+            }
         }
     }
 
@@ -42,8 +45,10 @@ public class SplashScreen : MonoBehaviour
     private void SkipSplashScreen()
     {
         // the splash screen acts as a big button and clicking it calls this
-
-        StopCoroutine(splashScreenFade);
+        if (splashScreenFade != null)
+        {
+            StopCoroutine(splashScreenFade);
+        }
         splashScreen.SetActive(false);
         MusicController.Instance.MainMenuMusic();
     }
