@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class GameLoader : MonoBehaviour
 {
-    public GameObject cardPrefab;
-
-    public GameObject[] topSuitObjects, bottomSuitObjects;
-    public Sprite[] allSuitSprites;
-    private Sprite[] suitSpritesToUse;
-
-    public Sprite[] holograms;
-    public Sprite[] combinedHolograms;
-
     // Singleton instance.
-    public static GameLoader Instance = null;
+    public static GameLoader Instance;
+
+    [SerializeField]
+    private GameObject cardPrefab;
+    [SerializeField]
+    private GameObject[] topSuitObjects, bottomSuitObjects;
+    [SerializeField]
+    private Sprite[] allSuitSprites, suitSpritesToUse;
+    [SerializeField]
+    private Sprite[] holograms, combinedHolograms;
 
     private void Awake()
     {
@@ -31,7 +31,19 @@ public class GameLoader : MonoBehaviour
 
     public bool LoadGame()
     {
-        SetUpScene();
+        // suit sprites
+        suitSpritesToUse = GetSuitSprites();
+        SetRectorSuitSprites(suitSpritesToUse);
+
+        byte suitIndex = 0;
+        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        {
+            reactorScript.SetReactorSuitIndex(suitIndex);
+            suitIndex++;
+        }
+
+        Config.Instance.gameOver = false;
+        Config.Instance.gameWin = false;
 
         // Figure out what kinda game to start
         if (Config.Instance.tutorialOn)
@@ -40,6 +52,7 @@ public class GameLoader : MonoBehaviour
         }
         else if (Config.Instance.continuing)
         {
+            Config.Instance.continuing = false;
             Debug.Log("loading saved game");
             MoveCardsToLoadPile(GetNewCards());
 
@@ -62,26 +75,6 @@ public class GameLoader : MonoBehaviour
         return true;
     }
 
-    private void SetUpScene()
-    {
-        // suit sprites
-        suitSpritesToUse = GetSuitSprites();
-        SetRectorSuitSprites(suitSpritesToUse);
-
-        byte suitIndex = 0;
-        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
-        {
-            reactorScript.SetUp(suitIndex);
-            suitIndex++;
-        }
-        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
-        {
-            foundationScript.SetUp();
-        }
-
-        StateLoader.Instance.SetUp();
-    }
-
     public void LoadTutorial(string fileName, bool gameStart = false)
     {
         Debug.Log("loading tutorial");
@@ -91,7 +84,12 @@ public class GameLoader : MonoBehaviour
         }
         else
         {
-            MoveCardsToLoadPile(GetAllCards());
+            List<GameObject> cards = GetAllCards();
+            MoveCardsToLoadPile(cards);
+            foreach (GameObject card in cards)
+            {
+                card.GetComponent<CardScript>().SetValuesToDefault();
+            }
         }
 
         StateLoader.Instance.LoadTutorialState(fileName);
@@ -103,6 +101,10 @@ public class GameLoader : MonoBehaviour
 
         List<GameObject> cards = GetAllCards();
         MoveCardsToLoadPile(cards);
+        foreach (GameObject card in cards)
+        {
+            card.GetComponent<CardScript>().SetValuesToDefault();
+        }
         StartNewGame(cards);
 
         Config.Instance.gamePaused = false;
@@ -134,7 +136,7 @@ public class GameLoader : MonoBehaviour
                     hologramFoodSprite = holograms[hFSIndex];
                     hologramComboSprite = suit < 2 ? combinedHolograms[rank - 9] : combinedHolograms[rank - 4];
                 }
-                
+
                 newCard.GetComponent<CardScript>().SetUp(rank, suit, suitSpritesToUse[suit], hologramFoodSprite, hologramComboSprite);
                 newCards.Add(newCard);
             }
@@ -146,19 +148,19 @@ public class GameLoader : MonoBehaviour
 
     private List<GameObject> GetAllCards()
     {
-        List<GameObject> cards = new List<GameObject>();
+        List<GameObject> cards = new();
 
         foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
-            cards.AddRange(foundationScript.cardList);
+            cards.AddRange(foundationScript.CardList);
         }
         foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
         {
-            cards.AddRange(reactorScript.cardList);
+            cards.AddRange(reactorScript.CardList);
         }
-        cards.AddRange(DeckScript.Instance.cardList);
-        cards.AddRange(WastepileScript.Instance.cardList);
-        cards.AddRange(MatchedPileScript.Instance.cardList);
+        cards.AddRange(DeckScript.Instance.CardList);
+        cards.AddRange(WastepileScript.Instance.CardList);
+        cards.AddRange(MatchedPileScript.Instance.CardList);
 
         return cards;
     }
@@ -174,11 +176,9 @@ public class GameLoader : MonoBehaviour
         // reset game values
         Config.Instance.consecutiveMatches = 0;
         Config.Instance.moveCounter = 0;
-        Config.Instance.gameOver = false;
-        Config.Instance.gameWin = false;
 
         // these are updated visually as well
-        UtilsScript.Instance.UpdateScore(0, setAsValue: true);
+        ScoreScript.Instance.SetScore(0);
 
         Config.Instance.actions = 0;
         UtilsScript.Instance.UpdateActions(0, startingGame: true);
@@ -200,7 +200,7 @@ public class GameLoader : MonoBehaviour
 
     private List<GameObject> ShuffleCards(List<GameObject> cards)
     {
-        System.Random rand = new System.Random();
+        System.Random rand = new();
         int count = cards.Count;
         int length = count - 1;
         int j;
@@ -264,8 +264,7 @@ public class GameLoader : MonoBehaviour
     private Sprite[] GetSuitSprites()
     {
         // getting user setting
-        bool isOn;
-        if (System.Boolean.TryParse(PlayerPrefs.GetString(Constants.foodSuitsEnabledKey), out isOn))
+        if (bool.TryParse(PlayerPrefs.GetString(Constants.foodSuitsEnabledKey), out bool isOn))
         { }
         else
         {

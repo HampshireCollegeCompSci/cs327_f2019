@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class StartGame : MonoBehaviour
 {
-    public GameObject mainCameraObject;
-
     // Singleton instance.
-    public static StartGame Instance = null;
+    public static StartGame Instance;
+
+    [SerializeField]
+    private GameObject mainCameraObject;
 
     private void Awake()
     {
@@ -89,7 +90,10 @@ public class StartGame : MonoBehaviour
     {
         Image fadeInScreen = this.gameObject.GetComponent<Image>();
         fadeInScreen.enabled = true;
-        Color fadeColor = Color.black;
+        Color fadeColor = Config.GameValues.fadeDarkColor;
+        fadeColor.a = 1;
+        fadeInScreen.color = fadeColor;
+        yield return null;
 
         while (fadeColor.a > 0)
         {

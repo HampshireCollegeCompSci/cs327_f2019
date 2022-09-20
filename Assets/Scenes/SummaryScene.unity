@@ -606,6 +606,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdaa5cf7030de3a4a8e53553820636de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spaceBabyController: {fileID: 6961252161748064238}
   spaceShip: {fileID: 156626858}
   foodTarget: {fileID: 1201392783}
   babyPlanet: {fileID: 1237397012}
@@ -638,8 +639,12 @@ MonoBehaviour:
   cameraObject: {fileID: 85880915}
   sequencePanel: {fileID: 1490708313}
   LoadingTextObject: {fileID: 1093973098}
+  spaceShip: {fileID: 156626858}
   spaceBaby: {fileID: 6961252161748064237}
   spaceBabyPlanet: {fileID: 1237397012}
+  foodObjects: {fileID: 1201392782}
+  summaryTransition: {fileID: 581353410}
+  winSequence: {fileID: 581353408}
 --- !u!114 &581353410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2449,3 +2454,15 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6961252161748064236}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6961252161748064238 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6961252161525188822, guid: a54631a2b84024c439c98513f1f28bda,
+    type: 3}
+  m_PrefabInstance: {fileID: 6961252161748064236}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6961252161748064237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 756a9b591c0f943c0b71bb09e9315b51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

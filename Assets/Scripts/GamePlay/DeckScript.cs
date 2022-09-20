@@ -5,14 +5,28 @@ using UnityEngine.UI;
 
 public class DeckScript : MonoBehaviour, ICardContainer
 {
-    public List<GameObject> cardList;
-
-    public Image buttonImage;
-    public Text deckCounter;
-    public Sprite[] buttonAnimation;
+    private const string deckFlipText = "FLIP";
+    private const string deckEmptyText = "EMPTY";
 
     // Singleton instance.
-    public static DeckScript Instance = null;
+    public static DeckScript Instance;
+
+    [SerializeField]
+    private List<GameObject> cardList;
+
+    [SerializeField]
+    private Image buttonImage;
+    [SerializeField]
+    private Text deckCounter;
+    [SerializeField]
+    private Sprite[] buttonAnimation;
+
+    private Coroutine buttonCoroutine;
+
+    public DeckScript()
+    {
+        cardList = new();
+    }
 
     // Initialize the singleton instance.
     void Awake()
@@ -25,6 +39,11 @@ public class DeckScript : MonoBehaviour, ICardContainer
         {
             throw new System.ArgumentException("there should not already be an instance of this");
         }
+    }
+
+    public List<GameObject> CardList
+    {
+        get => cardList;
     }
 
     public void AddCard(GameObject card)
@@ -40,37 +59,34 @@ public class DeckScript : MonoBehaviour, ICardContainer
     {
         cardList.Remove(card);
         card.GetComponent<CardScript>().Enabled = true;
-        UpdateDeckCounter();
+        UpdateDeckCounter(dealed: true);
     }
 
     public void DealButton()
     {
         // don't allow dealing when other stuff is happening
-        if (UtilsScript.Instance.InputStopped)
-            return;
+        if (UtilsScript.Instance.InputStopped) return;
 
         if (cardList.Count != 0) // can the deck can be drawn from
         {
+            buttonCoroutine = StartCoroutine(ButtonDown());
             SoundEffectsController.Instance.DeckDeal();
             Deal();
-
-            StartCoroutine(ButtonDown());
         }
         // if it is possible to repopulate the deck
-        else if (WastepileScript.Instance.cardList.Count > Config.GameValues.cardsToDeal)
+        else if (WastepileScript.Instance.CardList.Count > Config.GameValues.cardsToDeal)
         {
+            buttonCoroutine = StartCoroutine(ButtonDown());
             DeckReset();
-            StartCoroutine(ButtonDown());
         }
     }
 
     public void Deal(bool doLog = true)
     {
-        List<GameObject> toMoveList = new List<GameObject>();
-        int cardCount = cardList.Count;
+        List<GameObject> toMoveList = new();
 
         // try to deal set number of cards
-        for (int i = 0; i < Config.GameValues.cardsToDeal && i < cardCount; i++)
+        for (int i = 0; i < Config.GameValues.cardsToDeal && i < cardList.Count; i++)
         {
             toMoveList.Add(cardList[i]);
         }
@@ -94,30 +110,14 @@ public class DeckScript : MonoBehaviour, ICardContainer
         SoundEffectsController.Instance.DeckReshuffle();
     }
 
-    IEnumerator ButtonDown()
-    {
-        foreach (Sprite button in buttonAnimation)
-        {
-            buttonImage.sprite = button;
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
-
     public void StartButtonUp()
     {
+        if (buttonCoroutine == null) return;
+        StopCoroutine(buttonCoroutine);
         StartCoroutine(ButtonUp());
     }
 
-    IEnumerator ButtonUp()
-    {
-        for (int i = buttonAnimation.Length - 2; i > 0; i--)
-        {
-            buttonImage.sprite = buttonAnimation[i];
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
-
-    public void UpdateDeckCounter()
+    public void UpdateDeckCounter(bool dealed = false)
     {
         if (cardList.Count != 0)
         {
@@ -126,15 +126,51 @@ public class DeckScript : MonoBehaviour, ICardContainer
         }
         else
         {
-            if (WastepileScript.Instance.cardList.Count > Config.GameValues.cardsToDeal)
+            // if there are enough cards that a deck flip will do something worthwhile
+            // notice: cards are removed from containers before they are added to a new one
+            if (WastepileScript.Instance.CardList.Count > Config.GameValues.cardsToDeal ||
+                (dealed && WastepileScript.Instance.CardList.Count == Config.GameValues.cardsToDeal))
             {
-                deckCounter.text = "FLIP";
+                deckCounter.text = deckFlipText;
             }
             else
             {
-                deckCounter.text = "EMPTY";
+                deckCounter.text = deckEmptyText;
             }
             deckCounter.fontSize = 18;
+        }
+    }
+
+    public void TryUpdateDeckCounter(bool canFlip)
+    {
+        if (cardList.Count == 0)
+        {
+            if (canFlip)
+            {
+                deckCounter.text = deckFlipText;
+            }
+            else
+            {
+                deckCounter.text = deckEmptyText;
+            }
+        }
+    }
+
+    private IEnumerator ButtonDown()
+    {
+        foreach (Sprite button in buttonAnimation)
+        {
+            buttonImage.sprite = button;
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    private IEnumerator ButtonUp()
+    {
+        for (int i = buttonAnimation.Length - 2; i > 0; i--)
+        {
+            buttonImage.sprite = buttonAnimation[i];
+            yield return new WaitForSeconds(0.1f);
         }
     }
 }

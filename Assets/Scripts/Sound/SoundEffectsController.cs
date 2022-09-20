@@ -3,22 +3,24 @@ using UnityEngine;
 
 public class SoundEffectsController : MonoBehaviour, ISound
 {
+    // Singleton instance.
+    public static SoundEffectsController Instance;
+
     // Audio players component
-    public AudioSource soundController;
+    [SerializeField]
+    private AudioSource soundController;
 
     // Sound files
-    public AudioClip buttonPressSound, undoPressSound, pauseButtonSound;
-    public AudioClip tokenSelectSoundA, tokenSelectSoundB, tokenSelectSoundC;
-    public AudioClip tokenInReactorSound, tokenStackSoundA, tokenStackSoundB, tokenStackSoundC, tokenStackSoundD;
-    public AudioClip deckDealSound, deckReshuffleSound;
-    public AudioClip winSound, loseSound, alertSound, winTransition;
-    public AudioClip mushroomSound, bugSound, fruitSound, rockSound;
-    public AudioClip explosionSound;
+    [SerializeField]
+    private AudioClip buttonPressSound, undoPressSound, pauseButtonSound,
+        tokenSelectSoundA, tokenSelectSoundB, tokenSelectSoundC,
+        tokenInReactorSound, tokenStackSoundA, tokenStackSoundB, tokenStackSoundC, tokenStackSoundD,
+        deckDealSound, deckReshuffleSound,
+        winSound, loseSound, alertSound, winTransition,
+        mushroomSound, bugSound, fruitSound, rockSound,
+        explosionSound;
 
     private bool vibrationEnabled;
-
-    // Singleton instance.
-    public static SoundEffectsController Instance = null;
 
     // Initialize the singleton instance.
     private void Awake()
@@ -38,7 +40,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
 
     private void Start()
     {
-        UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.soundEffectsVolumeKey));
+        UpdateMaxVolume(PlayerPrefKeys.GetSoundEffectsVolume());
         bool.TryParse(PlayerPrefs.GetString(Constants.vibrationEnabledKey), out vibrationEnabled);
     }
 
@@ -116,7 +118,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
     }
 
     public void DeckDeal()
-    {      
+    {
         soundController.PlayOneShot(deckDealSound, 0.6f);
         VibrateMedium();
     }
@@ -140,16 +142,6 @@ public class SoundEffectsController : MonoBehaviour, ISound
         StartCoroutine(AlertVibration());
     }
 
-    IEnumerator AlertVibration()
-    {
-        yield return new WaitForSeconds(0.5f);
-        soundController.PlayOneShot(alertSound, 0.2f);
-        yield return new WaitForSeconds(0.05f);
-        VibrateMedium();
-        yield return new WaitForSeconds(0.25f);
-        VibrateMedium();
-    }
-
     public void WinSound()
     {
         soundController.clip = winSound;
@@ -171,7 +163,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
     public void ExplosionSound()
     {
         soundController.PlayOneShot(explosionSound, 0.6f);
-        VibrateSmall();
+        VibrateMedium();
     }
 
     public void FoodMatch(byte suit)
@@ -210,5 +202,15 @@ public class SoundEffectsController : MonoBehaviour, ISound
     public void VibrateLarge()
     {
         if (vibrationEnabled) Vibration.Vibrate();
+    }
+
+    private IEnumerator AlertVibration()
+    {
+        yield return new WaitForSeconds(0.5f);
+        soundController.PlayOneShot(alertSound, 0.2f);
+        yield return new WaitForSeconds(0.1f);
+        VibrateMedium();
+        yield return new WaitForSeconds(0.3f);
+        VibrateMedium();
     }
 }

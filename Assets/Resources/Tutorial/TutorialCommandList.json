@@ -3,13 +3,13 @@
 		{
 			"argumentList": [
 				"ChangeTokenMoveability",
-				"off"
+				"OFF"
 			]
 		},
 		{
 			"argumentList": [
-				"ChangeReactorInteractable",
-				"off"
+				"ChangeReactorObstruction",
+				"ON"
 			]
 		},
 		{
@@ -54,34 +54,34 @@
 		{
 			"argumentList": [
 				"ChangeTokenMoveability",
-				"on"
+				"ON"
 			]
 		},
 		{
 			"argumentList": [
-				"ChangeTokenInteractable",
+				"ChangeTokenObstruction",
 				"foundation",
 				"2",
 				"0",
-				"Off"
+				"ON"
 			]
 		},
 		{
 			"argumentList": [
-				"ChangeTokenInteractable",
+				"ChangeTokenObstruction",
 				"foundation",
 				"3",
 				"0",
-				"Off"
+				"ON"
 			]
 		},
 		{
 			"argumentList": [
-				"ChangeTokenInteractable",
+				"ChangeTokenObstruction",
 				"wastepile",
 				"0",
 				"0",
-				"Off"
+				"ON"
 			]
 		},
 		{
@@ -98,7 +98,7 @@
 		{
 			"argumentList": [
 				"ChangeTokenMoveability",
-				"off"
+				"OFF"
 			]
 		},
 		{
@@ -111,7 +111,7 @@
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"Foundations",
-				"On"
+				"ON"
 			]
 		},
 		{
@@ -128,34 +128,34 @@
 		{
 			"argumentList": [
 				"ChangeTokenMoveability",
-				"on"
+				"ON"
 			]
 		},
 		{
 			"argumentList": [
-				"ChangeTokenInteractable",
+				"ChangeTokenObstruction",
 				"foundation",
 				"0",
 				"0",
-				"Off"
+				"ON"
 			]
 		},
 		{
 			"argumentList": [
-				"ChangeTokenInteractable",
+				"ChangeTokenObstruction",
 				"foundation",
 				"1",
 				"0",
-				"Off"
+				"ON"
 			]
 		},
 		{
 			"argumentList": [
-				"ChangeTokenInteractable",
+				"ChangeTokenObstruction",
 				"wastepile",
 				"0",
 				"0",
-				"Off"
+				"ON"
 			]
 		},
 		{
@@ -177,29 +177,29 @@
 		},
 		{
 			"argumentList": [
-				"ChangeTokenInteractable",
+				"ChangeTokenObstruction",
 				"foundation",
 				"0",
 				"0",
-				"Off"
+				"ON"
 			]
 		},
 		{
 			"argumentList": [
-				"ChangeTokenInteractable",
+				"ChangeTokenObstruction",
 				"foundation",
 				"1",
 				"0",
-				"Off"
+				"ON"
 			]
 		},
 		{
 			"argumentList": [
-				"ChangeTokenInteractable",
+				"ChangeTokenObstruction",
 				"wastepile",
 				"0",
 				"0",
-				"Off"
+				"ON"
 			]
 		},
 		{
@@ -222,14 +222,14 @@
 		{
 			"argumentList": [
 				"ChangeTokenMoveability",
-				"off"
+				"OFF"
 			]
 		},
 		{
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"Foundations",
-				"Off"
+				"OFF"
 			]
 		},
 
@@ -237,14 +237,14 @@
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"Wastepile",
-				"On"
+				"ON"
 			]
 		},
 		{
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"Deck",
-				"On"
+				"ON"
 			]
 		},
 		{
@@ -262,14 +262,14 @@
 			"argumentList": [
 				"ChangeButtonInteractable",
 				"deck",
-				"on"
+				"ON"
 			]
 		},
 		{
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"Wastepile",
-				"Off"
+				"OFF"
 			]
 		},
 		{
@@ -287,14 +287,14 @@
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"Deck",
-				"Off"
+				"OFF"
 			]
 		},
 		{
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"Wastepile",
-				"On"
+				"ON"
 			]
 		},
 		{
@@ -312,14 +312,14 @@
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"Wastepile",
-				"Off"
+				"OFF"
 			]
 		},
 		{
 			"argumentList": [
 				"ChangeButtonInteractable",
 				"Deck",
-				"Off"
+				"OFF"
 			]
 		},
 		{
@@ -332,7 +332,7 @@
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"reactors",
-				"On"
+				"ON"
 			]
 		},
 		{
@@ -350,46 +350,46 @@
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"reactors",
-				"off"
+				"OFF"
 			]
 		},
 		{
 			"argumentList": [
 				"ChangeTokenMoveability",
-				"on"
+				"ON"
 			]
 		},
 		{
 			"argumentList": [
-				"ChangeReactorInteractable",
-				"on"
+				"ChangeReactorObstruction",
+				"OFF"
 			]
 		},
 		{
 			"argumentList": [
-				"ChangeTokenInteractable",
+				"ChangeTokenObstruction",
 				"foundation",
 				"0",
 				"0",
-				"Off"
+				"ON"
 			]
 		},
 		{
 			"argumentList": [
-				"ChangeTokenInteractable",
+				"ChangeTokenObstruction",
 				"foundation",
 				"2",
 				"0",
-				"Off"
+				"ON"
 			]
 		},
 		{
 			"argumentList": [
-				"ChangeTokenInteractable",
+				"ChangeTokenObstruction",
 				"foundation",
 				"3",
 				"0",
-				"Off"
+				"ON"
 			]
 		},
 		{
@@ -411,14 +411,14 @@
 		},
 		{
 			"argumentList": [
-				"ChangeAllTokenInteractable"
+				"ChangeAllTokenObstruction"
 			]
 		},
 		{
 			"argumentList": [
 				"ChangeContainerHighlight",
 				"reactor",
-				"on",
+				"ON",
 				"0",
 				"3"
 			]
@@ -437,14 +437,14 @@
 		{
 			"argumentList": [
 				"ChangeTokenMoveability",
-				"off"
+				"OFF"
 			]
 		},
 		{
 			"argumentList": [
 				"ChangeContainerHighlight",
 				"reactor",
-				"off",
+				"OFF",
 				"0",
 				"0"
 			]
@@ -459,7 +459,7 @@
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"movecounter",
-				"on"
+				"ON"
 			]
 		},
 		{
@@ -477,7 +477,7 @@
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"Foundations",
-				"on"
+				"ON"
 			]
 		},
 		{
@@ -506,7 +506,7 @@
 			"argumentList": [
 				"ChangeButtonInteractable",
 				"timer",
-				"on"
+				"ON"
 			]
 		},
 		{
@@ -518,14 +518,14 @@
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"movecounter",
-				"off"
+				"OFF"
 			]
 		},
 		{
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"Foundations",
-				"off"
+				"OFF"
 			]
 		},
 		{
@@ -538,14 +538,14 @@
 			"argumentList": [
 				"ChangeButtonInteractable",
 				"timer",
-				"off"
+				"OFF"
 			]
 		},
 		{
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"undo",
-				"on"
+				"ON"
 			]
 		},
 		{
@@ -563,14 +563,14 @@
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"undo",
-				"off"
+				"OFF"
 			]
 		},
 		{
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"scoreboard",
-				"on"
+				"ON"
 			]
 		},
 		{
@@ -588,14 +588,14 @@
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"scoreboard",
-				"off"
+				"OFF"
 			]
 		},
 		{
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"pause",
-				"on"
+				"ON"
 			]
 		},
 		{
@@ -613,7 +613,7 @@
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"pause",
-				"off"
+				"OFF"
 			]
 		},
 		{

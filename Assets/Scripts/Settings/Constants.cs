@@ -29,10 +29,18 @@ public static class Constants
 
     // Settings
     public const string soundEffectsVolumeKey = "SoundEffectsVolume";
+    public const int soundEffectsVolumeDenominator = 20;
     public const string musicVolumeKey = "MusicVolume";
+    public const int musicVolumeDenominator = 20;
     public const string vibrationEnabledKey = "VibrationEnabled";
     public const string foodSuitsEnabledKey = "FoodSuitsEnabled";
+    public const string frameRateKey = "FrameRate";
     // End Keys
+
+    // Music Audio Mixer Exposed Parameters (name)
+    public const string audioMixerNameMaster = "MasterVolume";
+    public const string audioMixerNameTrack1 = "Track1Volume";
+    public const string audioMixerNameTrack2 = "Track2Volume";
 
     // Scenes
     public const string mainMenuScene = "MainMenuScene";
@@ -53,7 +61,7 @@ public static class Constants
     public const string deckTag = "Deck";
     public const string wastepileTag = "Wastepile";
     public const string matchedPileTag = "MatchedPile";
-    public const string loadPileTag= "LoadPile";
+    public const string loadPileTag = "LoadPile";
 
     // Card Suits
     public const byte spadesSuitIndex = 0;
@@ -80,4 +88,5 @@ public static class Constants
     public const byte matchHighlightColorLevel = 1;
     public const byte moveHighlightColorLevel = 2;
     public const byte overHighlightColorLevel = 3;
+    public const byte winHighlightColorLevel = 4;
 }

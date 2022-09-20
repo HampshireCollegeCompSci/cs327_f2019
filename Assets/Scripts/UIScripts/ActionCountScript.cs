@@ -4,26 +4,27 @@ using UnityEngine.UI;
 
 public class ActionCountScript : MonoBehaviour
 {
-    public Text actionText;
-    public GameObject screen;
-    public GameObject timerSiren;
-    public GameObject timerButton;
-    private Image screenImage;
-    private Image gameTimerImage;
-    private Image buttonImage;
-    private Image sirenImage;
-    public Sprite sirenOff, sirenOn, sirenAlert;
-    public Sprite gameTimerOff, gameTimerOn, gameTimerAlert;
-    public Sprite screenOn, screenAlert;
-    public Sprite buttonDown, buttonUp;
+    // Singleton instance.
+    public static ActionCountScript Instance;
+
+    [SerializeField]
+    private Text actionText;
+    [SerializeField]
+    private GameObject screen, timerSiren, timerButton;
+
+    [SerializeField]
+    private Sprite sirenOff, sirenOn, sirenAlert,
+        gameTimerOff, gameTimerOn, gameTimerAlert,
+        screenOn, screenAlert,
+        buttonDown, buttonUp;
+
+    private Image screenImage, gameTimerImage, buttonImage, sirenImage;
+
     private byte currentState;
 
     private Coroutine actionCoroutine;
     //private Coroutine fader;
-    private Coroutine flasher;
-
-    // Singleton instance.
-    public static ActionCountScript Instance = null;
+    private Coroutine flasherCoroutine;
 
     // Initialize the singleton instance.
     void Awake()
@@ -45,7 +46,7 @@ public class ActionCountScript : MonoBehaviour
         buttonImage = timerButton.GetComponent<Image>();
         sirenImage = timerSiren.GetComponent<Image>();
         currentState = 0;
-        flasher = null;
+        flasherCoroutine = null;
     }
 
     public void UpdateActionText(string setTo = null)
@@ -76,56 +77,40 @@ public class ActionCountScript : MonoBehaviour
         }
     }
 
-    IEnumerator AddToActionText(int currentValue, int newValue)
-    {
-        while (currentValue < newValue)
-        {
-            yield return new WaitForSeconds(0.05f);
-            currentValue++;
-            actionText.text = currentValue.ToString();
-        }
-
-        // just in case quick moves or undos occur
-        actionText.text = (Config.Instance.actionMax - Config.Instance.actions).ToString();
-    }
-
-    public void PressKnob()
-    {
-        SoundEffectsController.Instance.VibrateMedium();
-        buttonImage.sprite = buttonDown;
-        StartCoroutine(ButtonAnimTrans());
-    }
-
-    IEnumerator ButtonAnimTrans()
-    {
-        yield return new WaitForSeconds(0.3f);
-        buttonImage.sprite = buttonUp;
-    }
-
     public void TurnSirenOff()
     {
         //if (fader != null)
-            //StopCoroutine(fader);
-        if (flasher != null)
-            StopCoroutine(flasher);
+        //{
+        //  StopCoroutine(fader);
+        //}
+        if (flasherCoroutine != null)
+        {
+            StopCoroutine(flasherCoroutine);
+        }
 
         screen.SetActive(false);
         gameTimerImage.sprite = gameTimerOff;
         sirenImage.sprite = sirenOff;
         currentState = 0;
         //fader = null;
-        flasher = null;
+        flasherCoroutine = null;
     }
 
     public bool TurnSirenOn(byte alertLevel)
     {
         if (currentState == alertLevel)
+        {
             return false;
+        }
 
         //if (fader != null)
-            //StopCoroutine(fader);
-        if (flasher != null)
-            StopCoroutine(flasher);
+        //{
+        //StopCoroutine(fader);
+        //}
+        if (flasherCoroutine != null)
+        {
+            StopCoroutine(flasherCoroutine);
+        }
 
         currentState = alertLevel;
 
@@ -139,16 +124,45 @@ public class ActionCountScript : MonoBehaviour
         else
         {
             screenImage.sprite = screenAlert;
-            gameTimerImage.sprite = gameTimerAlert ;
+            gameTimerImage.sprite = gameTimerAlert;
             sirenImage.sprite = sirenAlert;
         }
 
         //fader = StartCoroutine(ScreenFade());
-        flasher = StartCoroutine(Flash());
+        flasherCoroutine = StartCoroutine(Flash());
         return true;
     }
 
-    IEnumerator ScreenFade()
+    private IEnumerator AddToActionText(int currentValue, int newValue)
+    {
+        while (currentValue < newValue)
+        {
+            yield return new WaitForSeconds(0.05f);
+            currentValue++;
+            actionText.text = currentValue.ToString();
+        }
+
+        // just in case quick moves or undos occur
+        actionText.text = (Config.Instance.actionMax - Config.Instance.actions).ToString();
+    }
+
+    [SerializeField]
+    private void PressKnob()
+    {
+        if (UtilsScript.Instance.InputStopped) return;
+        // the make actions max button calls this
+        SoundEffectsController.Instance.VibrateMedium();
+        buttonImage.sprite = buttonDown;
+        StartCoroutine(ButtonAnimTrans());
+    }
+
+    private IEnumerator ButtonAnimTrans()
+    {
+        yield return new WaitForSeconds(0.3f);
+        buttonImage.sprite = buttonUp;
+    }
+
+    private IEnumerator ScreenFade()
     {
         screenImage.color = Color.white;
         Color screenColor = Color.white;
@@ -170,7 +184,7 @@ public class ActionCountScript : MonoBehaviour
         }
     }
 
-    IEnumerator Flash()
+    private IEnumerator Flash()
     {
         Sprite currentSiren = sirenImage.sprite;
         while (true)

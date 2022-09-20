@@ -13,46 +13,10 @@ public static class CardTools
         if (checkIsTop && (!IsAtContainerTop(card1) || !IsAtContainerTop(card2)))
             return false;
 
-        if (card1.cardRank != card2.cardRank)
+        if (card1.CardRank != card2.CardRank)
             return false;
 
-        return CompareComplimentarySuits(card1.cardSuitIndex, card2.cardSuitIndex);
-    }
-
-    /// <summary>
-    /// Checks if the card is at the top of its container's cardList. Currently only works on foundation cards.
-    /// </summary>
-    private static bool IsAtContainerTop(CardScript card)
-    {
-        // hitboxes are disabled for all cards not on the top for the reactor, wastepile, and deck
-        // since they can't be picked up, only foundation cards need to be checked
-
-        if (card.container.CompareTag(Constants.foundationTag) &&
-            card.container.GetComponent<FoundationScript>().cardList[0].GetComponent<CardScript>() != card)
-        {
-            return false;
-        }
-
-        /*
-        if (card.container.CompareTag(Constants.reactorTag) &&
-            card.container.GetComponent<ReactorScript>().cardList[0].GetComponent<CardScript>() != card)
-        {
-            return false;
-        }
-
-        if (card.container.CompareTag(Constants.wastepileTag) &&
-            card.container.GetComponent<WastepileScript>().cardList[0].GetComponent<CardScript>() != card)
-        {
-            return false;
-        }
-
-        if (card.container.CompareTag(Constants.deckTag) &&
-            card.container.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>() != card)
-        {
-            return false;
-        }*/
-
-        return true;
+        return CompareComplimentarySuits(card1.CardSuitIndex, card2.CardSuitIndex);
     }
 
     /// <summary>
@@ -81,24 +45,70 @@ public static class CardTools
     /// </summary>
     public static bool CompareComplimentarySuits(byte suit1, byte suit2)
     {
-        // spades(0) + clubs(1) = 1, diamonds(2) + hearts(3) = 5
-        return (suit1 + suit2) switch
+        return suit1 == GetComplimentarySuit(suit2);
+    }
+
+    /// <summary>
+    /// Returns the complimentary suit to the given suit.
+    /// </summary>
+    public static byte GetComplimentarySuit(byte suit)
+    {
+        return suit switch
         {
-            1 or 5 => true,
-            _ => false,
+            Constants.spadesSuitIndex => Constants.clubsSuitIndex,
+            Constants.clubsSuitIndex => Constants.spadesSuitIndex,
+            Constants.diamondsSuitIndex => Constants.heartsSuitIndex,
+            Constants.heartsSuitIndex => Constants.diamondsSuitIndex,
+            _ => throw new System.ArgumentException("suit not found to be valid"),
         };
+    }
+
+    /// <summary>
+    /// Checks if the card is at the top of its container's cardList. Currently only works on foundation cards.
+    /// </summary>
+    private static bool IsAtContainerTop(CardScript card)
+    {
+        // hitboxes are disabled for all cards not on the top for the reactor, wastepile, and deck
+        // since they can't be picked up, only foundation cards need to be checked
+
+        if (card.Container.CompareTag(Constants.foundationTag) &&
+            card.Container.GetComponent<FoundationScript>().CardList[0].GetComponent<CardScript>() != card)
+        {
+            return false;
+        }
+
+        /*
+        if (card.container.CompareTag(Constants.reactorTag) &&
+            card.container.GetComponent<ReactorScript>().cardList[0].GetComponent<CardScript>() != card)
+        {
+            return false;
+        }
+
+        if (card.container.CompareTag(Constants.wastepileTag) &&
+            card.container.GetComponent<WastepileScript>().cardList[0].GetComponent<CardScript>() != card)
+        {
+            return false;
+        }
+
+        if (card.container.CompareTag(Constants.deckTag) &&
+            card.container.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>() != card)
+        {
+            return false;
+        }*/
+
+        return true;
     }
 
     private static byte GetSuit(GameObject suitObject)
     {
         if (suitObject.CompareTag(Constants.cardTag))
         {
-            return suitObject.GetComponent<CardScript>().cardSuitIndex;
+            return suitObject.GetComponent<CardScript>().CardSuitIndex;
         }
 
         if (suitObject.CompareTag(Constants.reactorTag))
         {
-            return suitObject.GetComponent<ReactorScript>().reactorSuitIndex;
+            return suitObject.GetComponent<ReactorScript>().ReactorSuitIndex;
         }
 
         throw new System.ArgumentException("suitObject must have a suit variable");

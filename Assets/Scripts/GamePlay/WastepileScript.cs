@@ -3,23 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WastepileScript : MonoBehaviour, ICardContainer
+public class WastepileScript : MonoBehaviour, ICardContainerHolo
 {
-    public List<GameObject> cardList;
+    // Singleton instance.
+    public static WastepileScript Instance;
 
-    public GameObject cardContainerPrefab;
+    [SerializeField]
+    private List<GameObject> cardList;
+
+    [SerializeField]
+    private GameObject cardContainerPrefab;
     private List<GameObject> cardContainers;
 
-    public GameObject contentPanel;
-    private int cardSpacing;
+    [SerializeField]
+    private GameObject contentPanel;
+    private float cardSpacing;
     private ScrollRect scrollRect;
     private RectTransform contentRectTransform;
 
-    // Singleton instance.
-    public static WastepileScript Instance = null;
+    [SerializeField]
+    private bool _scrolling, _draggingCard;
 
     // Initialize the singleton instance.
-    private void Awake()
+    void Awake()
     {
         if (Instance == null)
         {
@@ -27,7 +33,7 @@ public class WastepileScript : MonoBehaviour, ICardContainer
 
             cardContainers = new List<GameObject>();
 
-            cardSpacing = (int) contentPanel.GetComponent<HorizontalLayoutGroup>().spacing;
+            cardSpacing = contentPanel.GetComponent<HorizontalLayoutGroup>().spacing;
             scrollRect = this.gameObject.GetComponent<ScrollRect>();
             contentRectTransform = contentPanel.GetComponent<RectTransform>();
         }
@@ -37,61 +43,33 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         }
     }
 
+    public List<GameObject> CardList
+    {
+        get => cardList;
+    }
+
+    public bool DraggingCard
+    {
+        get => _draggingCard;
+        set
+        {
+            _draggingCard = value;
+            if (value)
+            {
+                scrollRect.horizontal = false;
+                //scrollRect.horizontalScrollbar.interactable = false;
+            }
+            else
+            {
+                scrollRect.horizontal = true;
+                //scrollRect.horizontalScrollbar.interactable = true;
+            }
+        }
+    }
+
     public void AddCards(List<GameObject> cards, bool doLog = true)
     {
         StartCoroutine(ScrollBarAdding(cards, doLog));
-    }
-
-    IEnumerator ScrollBarAdding(List<GameObject> cards, bool doLog)
-    {
-        if (!Scrolling)
-        {
-            Scrolling = true;
-        }
-
-        if (cardList.Count != 0) // hide the current top token now
-        {
-            cardList[0].GetComponent<CardScript>().Hologram = false;
-            cardList[0].GetComponent<CardScript>().Interactable = false;
-        }
-
-        Vector3 temp = contentRectTransform.anchoredPosition;
-
-        // if the contents have been moved from their default position scroll to the left
-        while (temp.x > 0)
-        {
-            yield return null;
-            temp.x -= Time.deltaTime * Config.GameValues.wastepileAnimationSpeedFast;
-            contentRectTransform.anchoredPosition = temp;
-        }
-
-        // add the new cards, for the non-top cards: don't try to show their hologram
-        for (int i = 0; i < cards.Count - 1; i++)
-        {
-            cards[i].GetComponent<CardScript>().MoveCard(this.gameObject, doLog, showHolo: false);
-        }
-        cards[^1].GetComponent<CardScript>().MoveCard(gameObject, doLog);
-
-        // move the scroll rect's content so that the new cards are hidden to the left side of the belt
-        temp.x = cards.Count * cardSpacing;
-        contentRectTransform.anchoredPosition = temp;
-
-        // scroll the tokens back into view
-        while (temp.x > 0)
-        {
-            yield return null;
-            temp.x -= Time.deltaTime * Config.GameValues.wastepileAnimationSpeedSlow;
-            contentRectTransform.anchoredPosition = temp;
-        }
-
-        DeckScript.Instance.StartButtonUp();
-
-        Scrolling = false;
-
-        if (doLog)
-        {
-            UtilsScript.Instance.UpdateActions(1);
-        }
     }
 
     public void AddCard(GameObject card, bool showHolo)
@@ -101,8 +79,13 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         if (showHolo)
         {
             CardScript cardScript = card.GetComponent<CardScript>();
-            cardScript.Interactable = true;
             cardScript.Hologram = true;
+            cardScript.HitBox = true;
+
+            if (cardList.Count == Config.GameValues.cardsToDeal + 1)
+            {
+                DeckScript.Instance.TryUpdateDeckCounter(true);
+            }
         }
     }
 
@@ -112,8 +95,8 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         if (cardList.Count != 0)
         {
             CardScript cardScript = cardList[0].GetComponent<CardScript>();
-            cardScript.Interactable = false;
             cardScript.Hologram = false;
+            cardScript.Obstructed = true;
         }
 
         cardList.Insert(0, card);
@@ -133,18 +116,39 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         card.transform.localPosition = new Vector3(0, 0, -1 - (cardList.Count * 0.01f));
     }
 
-    public void RemoveCard(GameObject card, bool undoingOrDeck = false, bool showHolo = true)
+    public void RemoveCard(GameObject card, bool showHolo)
+    {
+        RemoveCard(card, false, showHolo);
+    }
+
+    public void RemoveCard(GameObject card, bool undoingOrDeck, bool showHolo)
     {
         // get cards wastepile container before removal
         GameObject parentCardContainer = card.transform.parent.gameObject;
 
         RemoveCard(card);
 
-        if (!Config.Instance.tutorialOn && showHolo && cardList.Count != 0)
+        if (cardList.Count != 0)
         {
-            // the new top card will stay
-            cardList[0].GetComponent<CardScript>().Interactable = true;
-            cardList[0].GetComponent<CardScript>().Hologram = true;
+            CardScript cardScript = cardList[0].GetComponent<CardScript>();
+
+            // during the tutorial we don't want the next card avalible for user interaction
+            if (!Config.Instance.tutorialOn)
+            {
+                // set obstruction to false as it isn't accounted for elsewhere
+                cardScript.Obstructed = false;
+            }
+
+            // will the new top card stay
+            if (showHolo)
+            {
+                cardScript.Hologram = true;
+
+                if (cardList.Count == Config.GameValues.cardsToDeal)
+                {
+                    DeckScript.Instance.TryUpdateDeckCounter(false);
+                }
+            }
         }
 
         if (undoingOrDeck || cardList.Count == 0)
@@ -164,26 +168,7 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         // removing the cards wastepile container
         cardContainers.Remove(card.transform.parent.gameObject);
         card.transform.parent = null;
-
-        card.GetComponent<CardScript>().DefaultColor();
         cardList.Remove(card);
-    }
-
-    private IEnumerator ScrollBarRemoving(GameObject parentCardContainer)
-    {
-        Scrolling = true;
-
-        // Scrolls the conveyor belt back 1 token distance
-        Vector3 temp = contentRectTransform.anchoredPosition;
-        while (temp.x < cardSpacing)
-        {
-            temp.x += Time.deltaTime * Config.GameValues.wastepileAnimationSpeedSlow;
-            contentRectTransform.anchoredPosition = temp;
-            yield return null;
-        }
-
-        Destroy(parentCardContainer);
-        Scrolling = false;
     }
 
     public void StartDeckReset()
@@ -191,17 +176,84 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         StartCoroutine(DeckReset());
     }
 
+    private IEnumerator ScrollBarAdding(List<GameObject> cards, bool doLog)
+    {
+        SetScrolling(true);
+
+        if (cardList.Count != 0) // hide the current top token now
+        {
+            CardScript cardScript = cardList[0].GetComponent<CardScript>();
+            cardScript.Hologram = false;
+            cardScript.Obstructed = true;
+        }
+
+        Vector3 contentPosition = contentRectTransform.anchoredPosition;
+
+        // if the contents have been moved from their default position scroll to the left
+        while (contentPosition.x > 0)
+        {
+            yield return null;
+            contentPosition.x -= Time.deltaTime * Config.GameValues.wastepileAnimationSpeedFast;
+            contentRectTransform.anchoredPosition = contentPosition;
+        }
+
+        // add the new cards, for the non-top cards: don't try to show their hologram
+        for (int i = 0; i < cards.Count - 1; i++)
+        {
+            cards[i].GetComponent<CardScript>().MoveCard(this.gameObject, doLog, showHolo: false);
+        }
+        cards[^1].GetComponent<CardScript>().MoveCard(gameObject, doLog);
+
+        // move the scroll rect's content so that the new cards are hidden to the left side of the belt
+        contentPosition.x = cardSpacing * cards.Count;
+        contentRectTransform.anchoredPosition = contentPosition;
+
+        // scroll the tokens back into view
+        while (contentPosition.x > 0)
+        {
+            yield return null;
+            contentPosition.x -= Time.deltaTime * Config.GameValues.wastepileAnimationSpeedSlow;
+            contentRectTransform.anchoredPosition = contentPosition;
+        }
+
+        DeckScript.Instance.StartButtonUp();
+
+        SetScrolling(false);
+
+        if (doLog)
+        {
+            UtilsScript.Instance.UpdateActions(1);
+        }
+    }
+
+    private IEnumerator ScrollBarRemoving(GameObject parentCardContainer)
+    {
+        SetScrolling(true);
+
+        // Scrolls the conveyor belt back 1 token distance
+        Vector3 contentPosition = contentRectTransform.anchoredPosition;
+        while (contentPosition.x < cardSpacing)
+        {
+            contentPosition.x += Time.deltaTime * Config.GameValues.wastepileAnimationSpeedSlow;
+            contentRectTransform.anchoredPosition = contentPosition;
+            yield return null;
+        }
+
+        Destroy(parentCardContainer);
+        SetScrolling(false);
+    }
+
     private IEnumerator DeckReset()
     {
-        Scrolling = true;
+        SetScrolling(true);
 
         // move all the tokens in the conveyor belt to the left
-        Vector3 temp = contentRectTransform.anchoredPosition;
-        int xGoal = (cardList.Count + 1) * cardSpacing;
-        while (temp.x < xGoal)
+        Vector3 contentPosition = contentRectTransform.anchoredPosition;
+        float xGoal = cardSpacing * (cardList.Count + 1);
+        while (contentPosition.x < xGoal)
         {
-            temp.x += Time.deltaTime * Config.GameValues.wastepileAnimationSpeedFast;
-            contentRectTransform.anchoredPosition = temp;
+            contentPosition.x += Time.deltaTime * Config.GameValues.wastepileAnimationSpeedFast;
+            contentRectTransform.anchoredPosition = contentPosition;
             yield return null;
         }
 
@@ -211,59 +263,35 @@ public class WastepileScript : MonoBehaviour, ICardContainer
             cardList[0].GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, showHolo: false);
         }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
         DeckScript.Instance.Deal();
     }
 
-    private bool _scrolling;
-    private bool Scrolling
+    private void SetScrolling(bool value)
     {
-        get { return _scrolling; }
-        set
+        if (_scrolling == value) return;
+        _scrolling = value;
+        if (value)
         {
-            _scrolling = value;
-            if (value)
-            {
-                // disable scrolling
-                scrollRect.horizontal = false;
-                // if there was a scrollbar
-                //scrollRect.horizontalScrollbar.interactable = false;
+            // disable scrolling
+            scrollRect.horizontal = false;
+            // if there was a scrollbar
+            //scrollRect.horizontalScrollbar.interactable = false;
 
-                // we need unrestricted scroll for later shenanigans
-                scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
-                scrollRect.inertia = false;
-            }
-            else
-            {
-                contentRectTransform.anchoredPosition = Vector3.zero;
-
-                scrollRect.movementType = ScrollRect.MovementType.Clamped;
-                scrollRect.inertia = true;
-
-                scrollRect.horizontal = true;
-                //scrollRect.horizontalScrollbar.interactable = true;
-            }
-            UtilsScript.Instance.InputStopped = value;
+            // we need unrestricted scroll for later shenanigans
+            scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
+            scrollRect.inertia = false;
         }
-    }
-
-    private bool _draggingCard;
-    public bool DraggingCard
-    {
-        get { return _draggingCard; }
-        set
+        else
         {
-            _draggingCard = value;
-            if (value)
-            {
-                scrollRect.horizontal = false;
-                //scrollRect.horizontalScrollbar.interactable = false;
-            }
-            else
-            {
-                scrollRect.horizontal = true;
-                //scrollRect.horizontalScrollbar.interactable = true;
-            }
+            contentRectTransform.anchoredPosition = Vector3.zero;
+
+            scrollRect.movementType = ScrollRect.MovementType.Clamped;
+            scrollRect.inertia = true;
+
+            scrollRect.horizontal = true;
+            //scrollRect.horizontalScrollbar.interactable = true;
         }
+        UtilsScript.Instance.InputStopped = value;
     }
 }

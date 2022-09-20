@@ -1,17 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ButtonAnimScript : MonoBehaviour
 {
-    public GameObject pressAnimation;
+    [SerializeField]
+    private GameObject pressAnimation;
 
-    public void ButtonPressed()
+    [SerializeField]
+    private void ButtonPressed()
     {
         pressAnimation.SetActive(true);
     }
 
-    public void ButtonReleased()
+    [SerializeField]
+    private void ButtonReleased()
     {
         pressAnimation.SetActive(false);
     }

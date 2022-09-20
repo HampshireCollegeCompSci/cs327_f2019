@@ -3,10 +3,16 @@ using UnityEngine;
 
 public class LoadPileScript : MonoBehaviour, ICardContainer
 {
-    public List<GameObject> cardList;
-
     // Singleton instance.
-    public static LoadPileScript Instance = null;
+    public static LoadPileScript Instance;
+
+    [SerializeField]
+    private List<GameObject> cardList;
+
+    public LoadPileScript()
+    {
+        cardList = new();
+    }
 
     // Initialize the singleton instance.
     private void Awake()
@@ -19,6 +25,11 @@ public class LoadPileScript : MonoBehaviour, ICardContainer
         {
             throw new System.ArgumentException("there should not already be an instance of this");
         }
+    }
+
+    public List<GameObject> CardList
+    {
+        get => cardList;
     }
 
     public void AddCard(GameObject card)

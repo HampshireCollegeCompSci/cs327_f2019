@@ -23,21 +23,23 @@
 	"wastepileAnimationSpeedFast": 1000,
 	"cardsToReactorspeed": 10,
 
-	"musicFadeIn": 0.5,
-	"musicFadeOutFast": 0.7,
-	"musicFadeOutSlow": 0.2,
+	"musicFadeInDurationSec": 2.5,
+	"musicFadeOutDurationSec": 1,
+	"musicFadeOutSlowDurationSec": 2.5,
 
-	"musicDefaultVolume": 1,
-	"soundEffectsDefaultVolume": 1,
+	"musicDefaultVolume": 15,
+	"soundEffectsDefaultVolume": 15,
 	"vibrationEnabledDefault": true,
 	"foodSuitsEnabledDefault": false,
 
 	"fadeOutButtonsSpeed": 2,
 	"zoomFactor": 20,
 	"panAndZoomSpeed": 30,
-	"startGameFadeInSpeed": 5,
-	"endGameFadeOutSpeed": 0.45,
+	"startGameFadeInSpeed": 1,
+	"endGameFadeOutSpeed": 0.6,
 	"summaryTransitionSpeed": 0.7,
+
+	"reactorMeltDownSpeed": 0.4,
 
 	"difficulties": [ "EASY", "MEDIUM", "HARD" ],
 	"reactorLimits": [ 24, 21, 18 ],
@@ -53,6 +55,9 @@
 	"pointColorValues": [ 0, 1, 0, 1 ],
 
 	"tutorialObjectHighlightColorValues": [ 1, 1, 0, 0.35 ],
+
+	"fadeDarkColorValues": [ 0, 0, 0, 1],
+	"fadeLightColorValues": [ 0.5, 0.5, 0.5, 1 ],
 
 	"menuButtonsTxtEnglish": [ "PLAY", "TUTORIAL", "SETTINGS", "ABOUT" ],
 	"levelButtonsTxtEnglish": [ "CONTINUE", "EASY", "MEDIUM", "HARD" ],

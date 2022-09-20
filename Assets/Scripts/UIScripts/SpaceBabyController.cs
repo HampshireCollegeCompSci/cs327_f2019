@@ -1,16 +1,19 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class SpaceBabyController : MonoBehaviour
+public class SpaceBabyController : MonoBehaviour, ISound
 {
-    public AudioSource audioSource;
-    public Animator animator;
-    public AudioClip happySound, reactorHighSound, counterSound, eatSound, loseSound;
-
-    private bool idling, angry;
-
     // Singleton instance.
-    public static SpaceBabyController Instance = null;
+    public static SpaceBabyController Instance;
+
+    [SerializeField]
+    private AudioSource audioSource;
+    [SerializeField]
+    private Animator animator;
+    [SerializeField]
+    private AudioClip happySound, reactorHighSound, counterSound, eatSound, loseSound;
+
+    private Coroutine idleCoroutine;
 
     // Initialize the singleton instance.
     private void Awake()
@@ -29,10 +32,8 @@ public class SpaceBabyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        UpdateMaxVolume(PlayerPrefs.GetFloat(Constants.soundEffectsVolumeKey));
-        idling = true;
-        angry = false;
-        animator.Play("IdlingAnim");
+        UpdateMaxVolume(PlayerPrefKeys.GetSoundEffectsVolume());
+        BabyIdle();
     }
 
     public void UpdateMaxVolume(float newVolume)
@@ -41,26 +42,37 @@ public class SpaceBabyController : MonoBehaviour
         audioSource.volume = newVolume;
     }
 
+    public void ResetBaby()
+    {
+        if (idleCoroutine != null)
+        {
+            StopCoroutine(idleCoroutine);
+            idleCoroutine = null;
+        }
+        audioSource.Stop();
+        BabyIdle();
+    }
+
+    public void BabyIdle()
+    {
+        animator.Play("IdlingAnim");
+    }
+
     public void BabyHappy()
     {
         Debug.Log("SpaceBaby Happy");
 
-        if (idling)
-        {
-            audioSource.PlayOneShot(happySound, 0.4f);
-            idling = false;
-            animator.Play("HappyAnim");
-            StartCoroutine(BabyAnimTrans());
-        }
+        audioSource.PlayOneShot(happySound, 0.4f);
+        animator.Play("HappyAnim");
+        DelayIdle();
     }
 
     public void BabyEat()
     {
         Debug.Log("SpaceBaby Eat");
 
-        idling = false;
         animator.Play("EatingAnim");
-        StartCoroutine(BabyAnimTrans());
+        DelayIdle();
     }
 
     public void BabyReactorHigh()
@@ -75,15 +87,14 @@ public class SpaceBabyController : MonoBehaviour
     {
         Debug.Log("SpaceBaby Lose Transition");
         audioSource.PlayOneShot(loseSound, 1);
-        StopAllCoroutines();
-        animator.Play("AngryAnim", -1, 0);
-        StartCoroutine(LoseAnimTrans());
-    }
 
-    IEnumerator LoseAnimTrans()
-    {
-        yield return new WaitForSeconds(1.6f);
-        animator.Play("Lose");
+        if (idleCoroutine != null)
+        {
+            StopCoroutine(idleCoroutine);
+        }
+
+        animator.Play("AngryAnim", -1, 0);
+        idleCoroutine = StartCoroutine(LoseAnimTrans());
     }
 
     public void BabyActionCounter()
@@ -92,25 +103,6 @@ public class SpaceBabyController : MonoBehaviour
 
         audioSource.PlayOneShot(counterSound, 0.5f);
         AngryAnimation();
-    }
-
-    private void AngryAnimation()
-    {
-        if (!angry)
-        {
-            idling = false;
-            angry = true;
-            animator.Play("AngryAnim");
-            StartCoroutine(BabyAnimTrans());
-        }
-    }
-
-    IEnumerator BabyAnimTrans()
-    {
-        yield return new WaitForSeconds(2);
-        animator.Play("IdlingAnim");
-        idling = true;
-        angry = false;
     }
 
     public void PlayLoseAnimation()
@@ -128,5 +120,33 @@ public class SpaceBabyController : MonoBehaviour
     public void PlayEatSound()
     {
         audioSource.PlayOneShot(eatSound);
+    }
+
+    private IEnumerator LoseAnimTrans()
+    {
+        yield return new WaitForSeconds(1.6f);
+        animator.Play("Lose");
+    }
+
+    private void AngryAnimation()
+    {
+        animator.Play("AngryAnim");
+        DelayIdle();
+    }
+
+    private void DelayIdle()
+    {
+        if (idleCoroutine != null)
+        {
+            StopCoroutine(idleCoroutine);
+        }
+        idleCoroutine = StartCoroutine(BabyAnimTrans());
+    }
+
+    private IEnumerator BabyAnimTrans()
+    {
+        yield return new WaitForSeconds(2);
+        BabyIdle();
+        idleCoroutine = null;
     }
 }

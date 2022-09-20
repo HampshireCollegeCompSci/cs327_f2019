@@ -522,7 +522,7 @@ MonoBehaviour:
   _enabled: 0
   _hidden: 0
   _hitBox: 0
-  _interactable: 0
+  _obstructed: 0
   _hologram: 0
   _dragging: 0
   _hologramColorLevel: 0

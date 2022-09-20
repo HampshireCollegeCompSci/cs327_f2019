@@ -5,24 +5,31 @@ using UnityEngine.UI;
 public class MenuUIScript : MonoBehaviour
 {
     // MainMenuScene Main buttons
-    public GameObject mainButtons, playButton, tutorialButton, settingsButton, aboutButton;
+    [SerializeField]
+    private GameObject mainButtons, playButton, tutorialButton, settingsButton, aboutButton;
 
     // MainMenuScene Play buttons
-    public GameObject playButtons, continueButton, easyButton, normalButton, hardButton, backButton;
+    [SerializeField]
+    private GameObject playButtons, continueButton, easyButton, normalButton, hardButton, backButton;
 
     // LoadingScene text
-    public Text loadingText;
+    [SerializeField]
+    private Text loadingText;
 
     // PauseScene buttons
-    public GameObject resumeButton, restartButton;
+    [SerializeField]
+    private GameObject resumeButton, restartButton;
 
     // PauseScene and SummaryScene button
-    public GameObject mainMenuButton;
+    [SerializeField]
+    private GameObject mainMenuButton;
 
     // SummaryScene buttons
-    public GameObject playAgainButton;
+    [SerializeField]
+    private GameObject playAgainButton;
 
-    public Text scoreboard;
+    [SerializeField]
+    private Text scoreboard;
 
     private void Start()
     {
@@ -74,28 +81,23 @@ public class MenuUIScript : MonoBehaviour
         }
     }
 
-    private void UpdateButtonText(GameObject button, string text)
+    public void NewGame(bool isContinue = false, bool isTutorial = false)
     {
-        button.transform.GetChild(2).GetComponent<Text>().text = text;
-    }
-
-    public void ButtonPressEffect()
-    {
-        SoundEffectsController.Instance.ButtonPressSound();
-    }
-
-    public void Play()
-    {
-        Debug.Log("MenuUI play");
+        Debug.Log("MenuUI new game");
 
         SoundEffectsController.Instance.ButtonPressSound();
 
-        //Preprocessor Directive to make builds work
-        #if (UNITY_EDITOR)
-            UnityEditor.AssetDatabase.Refresh();
-        #endif
+        Config.Instance.continuing = isContinue;
+        Config.Instance.tutorialOn = isTutorial;
 
-        ToggleMainMenuButtons(false);
+        if (StartGameSequence.Instance != null)
+        {
+            StartGameSequence.Instance.StartLoadingGame();
+        }
+        else
+        {
+            throw new System.NullReferenceException("A sequence Instance does not exist!");
+        }
     }
 
     private void ToggleMainMenuButtons(bool showMain)
@@ -123,26 +125,34 @@ public class MenuUIScript : MonoBehaviour
         }
     }
 
-    public void NewGame(bool isContinue = false, bool isTutorial = false)
+    private void UpdateButtonText(GameObject button, string text)
     {
-        Debug.Log("MenuUI new game");
+        button.transform.GetChild(2).GetComponent<Text>().text = text;
+    }
+
+    [SerializeField]
+    private void ButtonPressEffect()
+    {
+        SoundEffectsController.Instance.ButtonPressSound();
+    }
+
+    [SerializeField]
+    private void Play()
+    {
+        Debug.Log("MenuUI play");
 
         SoundEffectsController.Instance.ButtonPressSound();
 
-        Config.Instance.continuing = isContinue;
-        Config.Instance.tutorialOn = isTutorial;
+        //Preprocessor Directive to make builds work
+#if (UNITY_EDITOR)
+        UnityEditor.AssetDatabase.Refresh();
+#endif
 
-        if (StartGameSequence.Instance != null)
-        {
-            StartGameSequence.Instance.StartLoadingGame();
-        }
-        else
-        {
-            throw new System.NullReferenceException("A sequence Instance does not exist!");
-        }
+        ToggleMainMenuButtons(false);
     }
 
-    public void UndoButton()
+    [SerializeField]
+    private void UndoButton()
     {
         Debug.Log("MenuUI undo button");
 
@@ -152,7 +162,8 @@ public class MenuUIScript : MonoBehaviour
         UndoScript.Instance.Undo();
     }
 
-    public void PlayAgain()
+    [SerializeField]
+    private void PlayAgain()
     {
         Debug.Log("MenuUI play again");
         SoundEffectsController.Instance.ButtonPressSound();
@@ -167,25 +178,43 @@ public class MenuUIScript : MonoBehaviour
         }
     }
 
-    public void Restart()
+    [SerializeField]
+    private void Restart()
     {
         Debug.Log("MenuUI restart");
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.UnloadSceneAsync(Constants.pauseScene);
+        if (SceneManager.GetSceneByName(Constants.pauseScene).isLoaded)
+        {
+            SceneManager.UnloadSceneAsync(Constants.pauseScene);
+            Time.timeScale = 1;
+        }
         MusicController.Instance.GameMusic();
         GameLoader.Instance.RestartGame();
+        if (MusicController.Instance.Paused)
+        {
+            MusicController.Instance.Paused = false;
+        }
     }
 
-    public void MainMenu()
+    [SerializeField]
+    private void MainMenu()
     {
         Debug.Log("MenuUI main menu");
         SoundEffectsController.Instance.ButtonPressSound();
+        if (SceneManager.GetSceneByName(Constants.pauseScene).isLoaded)
+        {
+            Time.timeScale = 1;
+        }
         SceneManager.LoadScene(Constants.mainMenuScene);
         MusicController.Instance.MainMenuMusic();
+        if (MusicController.Instance.Paused)
+        {
+            MusicController.Instance.Paused = false;
+        }
     }
 
-    //possibly be renamed to settings
-    public void Settings()
+    [SerializeField]
+    private void Settings()
     {
         Debug.Log("MenuUI settings");
 
@@ -193,7 +222,8 @@ public class MenuUIScript : MonoBehaviour
         SceneManager.LoadScene(Constants.settingsScene, LoadSceneMode.Additive);
     }
 
-    public void About()
+    [SerializeField]
+    private void About()
     {
         Debug.Log("MenuUI about");
 
@@ -202,36 +232,40 @@ public class MenuUIScript : MonoBehaviour
         MusicController.Instance.AboutMusic();
     }
 
-    public void PauseGame()
+    [SerializeField]
+    private void PauseGame()
     {
         Debug.Log("MenuUI pause game");
 
         if (UtilsScript.Instance.InputStopped || Config.Instance.gamePaused) return;
-        
+        Time.timeScale = 0;
         Config.Instance.gamePaused = true;
         SoundEffectsController.Instance.PauseMenuButtonSound();
-        MusicController.Instance.PauseMusic();
+        MusicController.Instance.Paused = true;
         SceneManager.LoadScene(Constants.pauseScene, LoadSceneMode.Additive);
     }
 
-    public void ResumeGame()
+    [SerializeField]
+    private void ResumeGame()
     {
         Debug.Log("MenuUI resume game");
-
+        Time.timeScale = 1;
         SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.UnloadSceneAsync(Constants.pauseScene);
         Config.Instance.gamePaused = false;
-        MusicController.Instance.PlayMusic();
+        MusicController.Instance.Paused = false;
     }
 
-    public void SettingsBackButton()
+    [SerializeField]
+    private void SettingsBackButton()
     {
         Debug.Log("MenuUI Settings Back");
         SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.UnloadSceneAsync(Constants.settingsScene);
     }
 
-    public void MainMenuBackButton()
+    [SerializeField]
+    private void MainMenuBackButton()
     {
         Debug.Log("MenuUI Main Menu Back");
         SoundEffectsController.Instance.ButtonPressSound();
@@ -239,51 +273,55 @@ public class MenuUIScript : MonoBehaviour
         ToggleMainMenuButtons(true);
     }
 
-    public void Tutorial()
+    [SerializeField]
+    private void Tutorial()
     {
         NewGame(isTutorial: true);
     }
 
-    public void HardDifficulty()
+    [SerializeField]
+    private void HardDifficulty()
     {
         Config.Instance.SetDifficulty(2);
         NewGame();
     }
 
-    public void MediumDifficulty()
+    [SerializeField]
+    private void MediumDifficulty()
     {
         Config.Instance.SetDifficulty(1);
         NewGame();
     }
 
-    public void EasyDifficulty()
+    [SerializeField]
+    private void EasyDifficulty()
     {
         Config.Instance.SetDifficulty(0);
         NewGame();
     }
 
-    public void Continue()
+    [SerializeField]
+    private void Continue()
     {
         if (SaveState.Exists())
         {
             if (Constants.inEditor)
             {
                 //Preprocessor Directive to make builds work
-                #if (UNITY_EDITOR)
-                   UnityEditor.AssetDatabase.Refresh();
-                #endif
+#if (UNITY_EDITOR)
+                UnityEditor.AssetDatabase.Refresh();
+#endif
             }
 
             NewGame(isContinue: true);
         }
     }
 
-    public void MakeActionsMax()
+    [SerializeField]
+    private void MakeActionsMax()
     {
-        Debug.Log("MenuUI make actions max");
-
         if (UtilsScript.Instance.InputStopped || Config.Instance.gamePaused) return;
-
+        Debug.Log("MenuUI make actions max");
         UtilsScript.Instance.StartNextCycle(manuallyTriggered: true);
     }
 }

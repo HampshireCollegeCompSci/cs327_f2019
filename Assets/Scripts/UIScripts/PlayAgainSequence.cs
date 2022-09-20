@@ -5,19 +5,23 @@ using UnityEngine.UI;
 
 public class PlayAgainSequence : MonoBehaviour
 {
-    public GameObject cameraObject;
+    // Singleton instance.
+    public static PlayAgainSequence Instance;
 
-    public GameObject sequencePanel;
-    public GameObject LoadingTextObject;
+    [SerializeField]
+    private GameObject cameraObject, sequencePanel, LoadingTextObject;
 
-    public GameObject spaceBaby;
-    public GameObject spaceBabyPlanet;
+    [SerializeField]
+    private GameObject spaceShip, spaceBaby, spaceBabyPlanet, foodObjects;
+
+    [SerializeField]
+    private SummaryTransition summaryTransition;
+
+    [SerializeField]
+    private WinSequence winSequence;
 
     private bool sequenceDone;
     private bool gameplayLoaded;
-
-    // Singleton instance.
-    public static PlayAgainSequence Instance = null;
 
     // Initialize the singleton instance.
     private void Awake()
@@ -39,40 +43,10 @@ public class PlayAgainSequence : MonoBehaviour
         sequenceDone = false;
         SpaceBabyController.Instance = null;
 
-        Config.Instance.tutorialOn = false;
-        Config.Instance.continuing = false;
         SceneManager.LoadSceneAsync(Constants.gameplayScene, LoadSceneMode.Additive);
 
         MusicController.Instance.FadeMusicOut();
         StartCoroutine(FadeOut());
-    }
-
-    private IEnumerator FadeOut()
-    {
-        sequencePanel.SetActive(true);
-        Image panelImage = sequencePanel.GetComponent<Image>();
-        Color panelColor = new(0, 0, 0, 0);
-        panelImage.color = panelColor;
-        yield return null;
-
-        while (panelColor.a < 1)
-        {
-            panelColor.a += Time.deltaTime * Config.GameValues.summaryTransitionSpeed;
-            panelImage.color = panelColor;
-            yield return null;
-        }
-
-        // they will flash on screen for one frame during the scene transition without this
-        spaceBaby.SetActive(false);
-        spaceBabyPlanet.SetActive(false);
-        //spaceBaby.GetComponent<SpaceBabyController>().StopAllCoroutines();
-
-        Debug.Log("play again sequence done");
-        sequenceDone = true;
-        if (!TryEndSequence())
-        {
-            LoadingTextObject.SetActive(true);
-        }
     }
 
     public void GameplayLoaded()
@@ -94,5 +68,39 @@ public class PlayAgainSequence : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    private IEnumerator FadeOut()
+    {
+        sequencePanel.SetActive(true);
+        Image panelImage = sequencePanel.GetComponent<Image>();
+        Color panelColor = Config.GameValues.fadeDarkColor;
+        panelColor.a = 0;
+        panelImage.color = panelColor;
+        yield return null;
+
+        while (panelColor.a < 1)
+        {
+            panelColor.a += Time.deltaTime * Config.GameValues.summaryTransitionSpeed;
+            panelImage.color = panelColor;
+            yield return null;
+        }
+
+        winSequence.StopAllCoroutines();
+        spaceBaby.GetComponent<SpaceBabyController>().StopAllCoroutines();
+        // these gameobject's images can flash on screen for one frame on scene transition if they aren't disabled
+        spaceBaby.SetActive(false);
+        spaceShip.SetActive(false);
+        spaceBabyPlanet.SetActive(false);
+        foodObjects.SetActive(false);
+        summaryTransition.StopExplosion();
+        yield return null;
+
+        Debug.Log("play again sequence done");
+        sequenceDone = true;
+        if (!TryEndSequence())
+        {
+            LoadingTextObject.SetActive(true);
+        }
     }
 }

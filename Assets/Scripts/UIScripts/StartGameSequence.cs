@@ -5,26 +5,31 @@ using UnityEngine.UI;
 
 public class StartGameSequence : MonoBehaviour
 {
-    public GameObject cameraObject;
+    // Singleton instance.
+    public static StartGameSequence Instance;
 
-    public GameObject popupWindow;
-    public Button popupContinueButton;
+    [SerializeField]
+    private GameObject cameraObject;
 
-    public GameObject mainButtons;
-    public GameObject playButtons;
+    [SerializeField]
+    private GameObject popupWindow;
+    [SerializeField]
+    private Button popupContinueButton;
 
-    public RectTransform panelTransform;
-    public GameObject spaceShipWindowObject;
+    [SerializeField]
+    private GameObject mainButtons, playButtons;
 
-    public GameObject startSequencePanel;
-    public GameObject loadingTextObject;
+    [SerializeField]
+    private RectTransform panelTransform;
+    [SerializeField]
+    private GameObject spaceShipWindowObject;
+
+    [SerializeField]
+    private GameObject startSequencePanel, loadingTextObject;
 
     private Vector3 originalPanelTransformPosition;
     private bool sequenceDone;
     private bool gameplayLoaded;
-
-    // Singleton instance.
-    public static StartGameSequence Instance = null;
 
     // Initialize the singleton instance.
     private void Awake()
@@ -48,69 +53,6 @@ public class StartGameSequence : MonoBehaviour
         originalPanelTransformPosition = panelTransform.position;
         StartCoroutine(FadeOutButtons());
         SceneManager.LoadSceneAsync(Constants.gameplayScene, LoadSceneMode.Additive);
-    }
-
-    private IEnumerator FadeOutButtons()
-    {
-        CanvasGroup buttonGroup;
-        if (mainButtons.activeSelf)
-        {
-            buttonGroup = mainButtons.GetComponent<CanvasGroup>();
-        }
-        else if (playButtons.activeSelf)
-        {
-            buttonGroup = playButtons.GetComponent<CanvasGroup>();
-        }
-        else
-        {
-            Debug.LogError("both button groups are inactive");
-            StartCoroutine(PanAndZoomTo(spaceShipWindowObject.transform.position, Config.GameValues.zoomFactor));
-            yield break;
-        }
-
-        buttonGroup.interactable = false;
-        while (buttonGroup.alpha > 0)
-        {
-            buttonGroup.alpha -= Time.deltaTime * Config.GameValues.fadeOutButtonsSpeed;
-            yield return null;
-        }
-
-        StartCoroutine(PanAndZoomTo(spaceShipWindowObject.transform.position, Config.GameValues.zoomFactor));
-    }
-
-    private IEnumerator PanAndZoomTo(Vector3 positionEnd, float zoomFactor)
-    {
-        startSequencePanel.SetActive(true);
-        Image sequenceImage = startSequencePanel.GetComponent<Image>();
-        Color startColor = new(0, 0, 0, 0);
-        Color endColor = Color.black;
-
-        positionEnd = new Vector3(-positionEnd.x * zoomFactor, -positionEnd.y * zoomFactor, positionEnd.z);
-        Vector3 zoomEnd = new(zoomFactor, zoomFactor, panelTransform.localScale.z);
-
-        float panDistance = Vector3.Distance(panelTransform.position, positionEnd);
-        float zoomDistance = Vector3.Distance(panelTransform.localScale, zoomEnd);
-        float zoomSpeed = panDistance > zoomDistance ? Config.GameValues.panAndZoomSpeed * zoomDistance / panDistance : Config.GameValues.panAndZoomSpeed;
-        float panSpeed = zoomDistance > panDistance ? Config.GameValues.panAndZoomSpeed * panDistance / zoomDistance : Config.GameValues.panAndZoomSpeed;
-
-        float startDistance = Vector3.Distance(panelTransform.localScale, zoomEnd);
-        float distanceToEnd = startDistance;
-
-        while (distanceToEnd > 0.001f)
-        {
-            sequenceImage.color = Color.Lerp(endColor, startColor, distanceToEnd / startDistance);
-            panelTransform.position = Vector3.MoveTowards(panelTransform.position, positionEnd, Time.deltaTime * panSpeed);
-            panelTransform.localScale = Vector3.MoveTowards(panelTransform.localScale, zoomEnd, Time.deltaTime * zoomSpeed);
-            distanceToEnd = Vector3.Distance(panelTransform.localScale, zoomEnd);
-            yield return null;
-        }
-
-        Debug.Log("start game sequence done");
-        sequenceDone = true;
-        if (!TryEndSequence())
-        {
-            loadingTextObject.SetActive(true);
-        }
     }
 
     public void GameplayLoaded()
@@ -163,6 +105,71 @@ public class StartGameSequence : MonoBehaviour
         popupContinueButton.interactable = false;
         popupWindow.SetActive(true);
         StartCoroutine(ButtonDelay());
+    }
+
+    private IEnumerator FadeOutButtons()
+    {
+        CanvasGroup buttonGroup;
+        if (mainButtons.activeSelf)
+        {
+            buttonGroup = mainButtons.GetComponent<CanvasGroup>();
+        }
+        else if (playButtons.activeSelf)
+        {
+            buttonGroup = playButtons.GetComponent<CanvasGroup>();
+        }
+        else
+        {
+            Debug.LogError("both button groups are inactive");
+            StartCoroutine(PanAndZoomTo(spaceShipWindowObject.transform.position, Config.GameValues.zoomFactor));
+            yield break;
+        }
+
+        buttonGroup.interactable = false;
+        while (buttonGroup.alpha > 0)
+        {
+            buttonGroup.alpha -= Time.deltaTime * Config.GameValues.fadeOutButtonsSpeed;
+            yield return null;
+        }
+
+        StartCoroutine(PanAndZoomTo(spaceShipWindowObject.transform.position, Config.GameValues.zoomFactor));
+    }
+
+    private IEnumerator PanAndZoomTo(Vector3 positionEnd, float zoomFactor)
+    {
+        startSequencePanel.SetActive(true);
+        Image sequenceImage = startSequencePanel.GetComponent<Image>();
+        Color startColor = Config.GameValues.fadeDarkColor;
+        startColor.a = 0;
+        Color endColor = startColor;
+        endColor.a = 1;
+
+        positionEnd = new Vector3(-positionEnd.x * zoomFactor, -positionEnd.y * zoomFactor, positionEnd.z);
+        Vector3 zoomEnd = new(zoomFactor, zoomFactor, panelTransform.localScale.z);
+
+        float panDistance = Vector3.Distance(panelTransform.position, positionEnd);
+        float zoomDistance = Vector3.Distance(panelTransform.localScale, zoomEnd);
+        float zoomSpeed = panDistance > zoomDistance ? Config.GameValues.panAndZoomSpeed * zoomDistance / panDistance : Config.GameValues.panAndZoomSpeed;
+        float panSpeed = zoomDistance > panDistance ? Config.GameValues.panAndZoomSpeed * panDistance / zoomDistance : Config.GameValues.panAndZoomSpeed;
+
+        float startDistance = Vector3.Distance(panelTransform.localScale, zoomEnd);
+        float distanceToEnd = startDistance;
+
+        while (distanceToEnd > 0.001f)
+        {
+            sequenceImage.color = Color.Lerp(endColor, startColor, distanceToEnd / startDistance);
+            panelTransform.position = Vector3.MoveTowards(panelTransform.position, positionEnd, Time.deltaTime * panSpeed);
+            panelTransform.localScale = Vector3.MoveTowards(panelTransform.localScale, zoomEnd, Time.deltaTime * zoomSpeed);
+            distanceToEnd = Vector3.Distance(panelTransform.localScale, zoomEnd);
+            yield return null;
+        }
+
+        Debug.Log("start game sequence done");
+        sequenceDone = true;
+        if (!TryEndSequence())
+        {
+            loadingTextObject.SetActive(true);
+        }
     }
 
     private IEnumerator ButtonDelay()

@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Config : MonoBehaviour
 {
-    // the undo log
-    public List<Move> moveLog = new List<Move>();
+    // Singleton instance.
+    public static Config Instance;
+    public static GameValues GameValues;
 
     // game settings
     public bool tutorialOn, nextCycleEnabled;
@@ -29,10 +29,6 @@ public class Config : MonoBehaviour
     public int moveCounter;
     public byte matchCounter;
 
-    // Singleton instance.
-    public static Config Instance = null;
-    public static GameValues GameValues = null;
-
     // Initialize the singleton instance.
     private void Awake()
     {
@@ -49,39 +45,13 @@ public class Config : MonoBehaviour
             Vibration.Init();
             // Check Player Preferences
             PlayerPrefKeys.CheckKeys();
+            // Set the application frame rate to what was saved
+            SetFrameRate();
         }
         else if (Instance != this)
         {
             Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
         }
-    }
-
-    private void LoadGameValues()
-    {
-        Debug.Log("loading gamevalues from json");
-        TextAsset jsonTextFile = Resources.Load<TextAsset>(Constants.gameValuesPath);
-        GameValues = JsonUtility.FromJson<GameValues>(jsonTextFile.ToString());
-
-        // Colors need to be reconstructed
-        GameValues.cardObstructedColor = CreateColor(GameValues.cardObstructedColorValues);
-
-        GameValues.matchHighlightColor = CreateColor(GameValues.matchHighlightColorValues);
-        GameValues.moveHighlightColor = CreateColor(GameValues.moveHighlightColorValues);
-        GameValues.overHighlightColor = CreateColor(GameValues.overHighlightColorValues);
-        GameValues.highlightColors = new Color[] {
-            Color.white,
-            GameValues.matchHighlightColor,
-            GameValues.moveHighlightColor,
-            GameValues.overHighlightColor
-        };
-
-        GameValues.pointColor = CreateColor(GameValues.pointColorValues);
-        GameValues.tutorialObjectHighlightColor = CreateColor(GameValues.tutorialObjectHighlightColorValues);
-    }
-
-    private Color CreateColor(float [] colorV)
-    {
-        return new Color(colorV[0], colorV[1], colorV[2], colorV[3]);
     }
 
     public void SetDifficulty(int dif)
@@ -103,5 +73,55 @@ public class Config : MonoBehaviour
         }
 
         throw new System.Exception($"The difficulty \"{dif}\" was not found.");
+    }
+
+    private void SetFrameRate()
+    {
+        int targetFrameRate = PlayerPrefs.GetInt(Constants.frameRateKey, -1);
+        // the screen refresh rate must be divisible by the targeted frame rate
+        if (targetFrameRate != -1 && (Screen.currentResolution.refreshRate % targetFrameRate != 0))
+        {
+            Debug.LogWarning($"the screen refresh rate of {Screen.currentResolution.refreshRate} doesn't support the saved target frame rate.");
+            targetFrameRate = -1;
+            PlayerPrefs.SetInt(Constants.frameRateKey, targetFrameRate);
+        }
+
+        Debug.Log($"setting target frame rate to: {targetFrameRate}");
+        Application.targetFrameRate = targetFrameRate;
+    }
+
+    private void LoadGameValues()
+    {
+        Debug.Log("loading gamevalues from json");
+        TextAsset jsonTextFile = Resources.Load<TextAsset>(Constants.gameValuesPath);
+        GameValues = JsonUtility.FromJson<GameValues>(jsonTextFile.ToString());
+
+        // Colors need to be reconstructed
+        GameValues.cardObstructedColor = CreateColor(GameValues.cardObstructedColorValues);
+
+        GameValues.matchHighlightColor = CreateColor(GameValues.matchHighlightColorValues);
+        GameValues.moveHighlightColor = CreateColor(GameValues.moveHighlightColorValues);
+        GameValues.overHighlightColor = CreateColor(GameValues.overHighlightColorValues);
+        GameValues.highlightColors = new Color[] {
+            Color.white,
+            GameValues.matchHighlightColor,
+            GameValues.moveHighlightColor,
+            GameValues.overHighlightColor,
+            Color.cyan
+        };
+
+        GameValues.pointColor = CreateColor(GameValues.pointColorValues);
+        GameValues.tutorialObjectHighlightColor = CreateColor(GameValues.tutorialObjectHighlightColorValues);
+        GameValues.fadeDarkColor = CreateColor(GameValues.fadeDarkColorValues);
+        GameValues.fadeLightColor = CreateColor(GameValues.fadeLightColorValues);
+    }
+
+    private Color CreateColor(float[] colorV)
+    {
+        if (colorV.Length != 4)
+        {
+            throw new System.ArgumentException("the array of color values is not a lenght of 4");
+        }
+        return new Color(colorV[0], colorV[1], colorV[2], colorV[3]);
     }
 }

@@ -26,12 +26,12 @@ public class GameValues
     public int wastepileAnimationSpeedFast;
     public int cardsToReactorspeed;
 
-    public float musicFadeIn;
-    public float musicFadeOutFast;
-    public float musicFadeOutSlow;
+    public float musicFadeInDurationSec;
+    public float musicFadeOutDurationSec;
+    public float musicFadeOutSlowDurationSec;
 
-    public float musicDefaultVolume;
-    public float soundEffectsDefaultVolume;
+    public int musicDefaultVolume;
+    public int soundEffectsDefaultVolume;
     public bool vibrationEnabledDefault;
     public bool foodSuitsEnabledDefault;
 
@@ -41,6 +41,8 @@ public class GameValues
     public float startGameFadeInSpeed;
     public float endGameFadeOutSpeed;
     public float summaryTransitionSpeed;
+
+    public float reactorMeltDownSpeed;
 
     public string[] difficulties;
     public int[] reactorLimits;
@@ -67,6 +69,12 @@ public class GameValues
 
     public float[] tutorialObjectHighlightColorValues;
     public Color tutorialObjectHighlightColor;
+
+    public float[] fadeDarkColorValues;
+    public Color fadeDarkColor;
+
+    public float[] fadeLightColorValues;
+    public Color fadeLightColor;
 
     public string[] menuButtonsTxtEnglish;
     public string[] levelButtonsTxtEnglish;
