@@ -189,6 +189,10 @@ public class MenuUIScript : MonoBehaviour
         }
         MusicController.Instance.GameMusic();
         GameLoader.Instance.RestartGame();
+        if (MusicController.Instance.Paused)
+        {
+            MusicController.Instance.Paused = false;
+        }
     }
 
     [SerializeField]
@@ -198,6 +202,10 @@ public class MenuUIScript : MonoBehaviour
         SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.LoadScene(Constants.mainMenuScene);
         MusicController.Instance.MainMenuMusic();
+        if (MusicController.Instance.Paused)
+        {
+            MusicController.Instance.Paused = false;
+        }
     }
 
     [SerializeField]
@@ -228,7 +236,7 @@ public class MenuUIScript : MonoBehaviour
 
         Config.Instance.gamePaused = true;
         SoundEffectsController.Instance.PauseMenuButtonSound();
-        MusicController.Instance.PauseMusic();
+        MusicController.Instance.Paused = true;
         SceneManager.LoadScene(Constants.pauseScene, LoadSceneMode.Additive);
     }
 
@@ -240,7 +248,7 @@ public class MenuUIScript : MonoBehaviour
         SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.UnloadSceneAsync(Constants.pauseScene);
         Config.Instance.gamePaused = false;
-        MusicController.Instance.PlayMusic();
+        MusicController.Instance.Paused = false;
     }
 
     [SerializeField]

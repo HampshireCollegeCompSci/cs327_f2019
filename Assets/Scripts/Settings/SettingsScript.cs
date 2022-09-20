@@ -30,6 +30,9 @@ public class SettingsScript : MonoBehaviour
 
     private bool lockout;
 
+    private int musicMultiplier;
+    private int soundEffectsMultiplier;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -38,14 +41,18 @@ public class SettingsScript : MonoBehaviour
         PlayerPrefKeys.CheckKeys();
 
         // music volume
+        musicSlider.maxValue = Constants.musicVolumeDenominator;
+        musicMultiplier = 100 / Constants.musicVolumeDenominator;
         int volume = PlayerPrefs.GetInt(Constants.musicVolumeKey);
         musicSlider.value = volume;
-        musicVolumeText.text = $"{volume}0%";
+        musicVolumeText.text = $"{volume * musicMultiplier}%";
 
         // sound effects volume
+        soundEffectsSlider.maxValue = Constants.soundEffectsVolumeDenominator;
+        soundEffectsMultiplier = 100 / Constants.soundEffectsVolumeDenominator;
         volume = PlayerPrefs.GetInt(Constants.soundEffectsVolumeKey);
         soundEffectsSlider.value = volume;
-        soundEffectsVolumeText.text = $"{volume}0%";
+        soundEffectsVolumeText.text = $"{volume * soundEffectsMultiplier}%";
 
         // boolean settings
         bool isOn;
@@ -170,7 +177,7 @@ public class SettingsScript : MonoBehaviour
             return;
 
         int volumeUpdate = (int)update;
-        musicVolumeText.text = $"{volumeUpdate}0%";
+        musicVolumeText.text = $"{volumeUpdate * musicMultiplier}%";
         PlayerPrefs.SetInt(Constants.musicVolumeKey, volumeUpdate);
         update /= Constants.musicVolumeDenominator;
         MusicController.Instance.UpdateMaxVolume(update);
@@ -182,7 +189,7 @@ public class SettingsScript : MonoBehaviour
             return;
 
         int volumeUpdate = (int)update;
-        soundEffectsVolumeText.text = $"{volumeUpdate}0%";
+        soundEffectsVolumeText.text = $"{volumeUpdate * soundEffectsMultiplier}%";
         PlayerPrefs.SetInt(Constants.soundEffectsVolumeKey, volumeUpdate);
         update /= Constants.soundEffectsVolumeDenominator;
         SoundEffectsController.Instance.UpdateMaxVolume(update);

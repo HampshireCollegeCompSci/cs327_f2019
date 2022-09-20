@@ -1598,7 +1598,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -143.99998, y: 0}
+  m_AnchoredPosition: {x: -144, y: 0}
   m_SizeDelta: {x: 288, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1141023922
@@ -2151,7 +2151,8 @@ AudioSource:
   m_GameObject: {fileID: 1692220246}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 8135237503847636737, guid: 392675477833f324eb18ae0efe1c324d,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -2247,7 +2248,8 @@ AudioSource:
   m_GameObject: {fileID: 1692220246}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -6146942968895372022, guid: 392675477833f324eb18ae0efe1c324d,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -2346,6 +2348,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b09e9f706e4944ff7a22f94080dcfb35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioMixer: {fileID: 24100000, guid: 392675477833f324eb18ae0efe1c324d, type: 2}
   audioSource_1: {fileID: 1692220249}
   audioSource_2: {fileID: 1692220248}
   menuMusic: {fileID: 8300000, guid: 007ad2cfb6bbf42b8b8b0dd5ab102c14, type: 3}
@@ -2355,7 +2358,7 @@ MonoBehaviour:
   winMusic: {fileID: 8300000, guid: 926f37829830840e68d2b4f9f683fe85, type: 3}
   aboutMusic: {fileID: 8300000, guid: e5f1e427424a04ce980aa075a920c590, type: 3}
   tutorialMusic: {fileID: 8300000, guid: 275556a99ff859b45b0e03eb68452bab, type: 3}
-  audioClips: []
+  multiplier: 30
 --- !u!1 &1722967935
 GameObject:
   m_ObjectHideFlags: 0

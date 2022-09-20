@@ -271,7 +271,6 @@ public class StateLoader : MonoBehaviour
         index = 0;
         foreach (TutorialReactorCards cardList in state.reactors)
         {
-            Debug.Log(index + " " + cardList.cards.Count);
             SetUpLocationWithCards(cardList.cards, UtilsScript.Instance.reactors[index]);
             index++;
         }

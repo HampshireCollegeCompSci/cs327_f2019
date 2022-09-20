@@ -23,12 +23,12 @@
 	"wastepileAnimationSpeedFast": 1000,
 	"cardsToReactorspeed": 10,
 
-	"musicFadeIn": 0.5,
-	"musicFadeOutFast": 0.7,
-	"musicFadeOutSlow": 0.2,
+	"musicFadeInDurationSec": 2.5,
+	"musicFadeOutDurationSec": 1,
+	"musicFadeOutSlowDurationSec": 2.5,
 
-	"musicDefaultVolume": 10,
-	"soundEffectsDefaultVolume": 10,
+	"musicDefaultVolume": 15,
+	"soundEffectsDefaultVolume": 15,
 	"vibrationEnabledDefault": true,
 	"foodSuitsEnabledDefault": false,
 

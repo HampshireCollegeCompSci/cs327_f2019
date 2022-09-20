@@ -29,13 +29,18 @@ public static class Constants
 
     // Settings
     public const string soundEffectsVolumeKey = "SoundEffectsVolume";
-    public const int soundEffectsVolumeDenominator = 10;
+    public const int soundEffectsVolumeDenominator = 20;
     public const string musicVolumeKey = "MusicVolume";
-    public const int musicVolumeDenominator = 10;
+    public const int musicVolumeDenominator = 20;
     public const string vibrationEnabledKey = "VibrationEnabled";
     public const string foodSuitsEnabledKey = "FoodSuitsEnabled";
     public const string frameRateKey = "FrameRate";
     // End Keys
+
+    // Music Audio Mixer Exposed Parameters (name)
+    public const string audioMixerNameMaster = "MasterVolume";
+    public const string audioMixerNameTrack1 = "Track1Volume";
+    public const string audioMixerNameTrack2 = "Track2Volume";
 
     // Scenes
     public const string mainMenuScene = "MainMenuScene";

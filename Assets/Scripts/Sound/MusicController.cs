@@ -1,10 +1,14 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class MusicController : MonoBehaviour, ISound
 {
     // Singleton instance.
     public static MusicController Instance;
+
+    [SerializeField]
+    private AudioMixer audioMixer;
 
     // Audio players components
     [SerializeField]
@@ -13,18 +17,15 @@ public class MusicController : MonoBehaviour, ISound
     // Music files
     [SerializeField]
     private AudioClip menuMusic, themeMusic, transitionMusic, loseMusic, winMusic, aboutMusic, tutorialMusic;
-    [SerializeField]
     private AudioClip[] audioClips;
 
-    private byte _playingTrack;
+    [SerializeField]
+    private byte _playingTrack, _audioSourcePlaying;
+    [SerializeField]
+    private bool _muted, _paused;
 
-    // Variables to keep track of the current playing song
-    private byte pausedAudioSource;
-
-    private float fadeInSpeed;
-    private float fadeOutSpeedFast;
-    private float fadeOutSpeedSlow;
     private float maxVolume;
+    private Coroutine muteDelyCoroutine, pauseDelyCoroutine, fadeInCoroutine, fadeOutCoroutine;
 
     // Initialize the singleton instance.
     void Awake()
@@ -48,7 +49,13 @@ public class MusicController : MonoBehaviour, ISound
         {
             menuMusic, themeMusic, transitionMusic, loseMusic, winMusic, aboutMusic, tutorialMusic
         };
+        AudioSourcePlaying = 1;
         _playingTrack = byte.MaxValue;
+        _muted = false;
+        _paused = false;
+
+        audioMixer.SetFloat(Constants.audioMixerNameTrack1, -80);
+        audioMixer.SetFloat(Constants.audioMixerNameTrack2, -80);
         UpdateMaxVolume(PlayerPrefKeys.GetMusicVolume());
     }
 
@@ -59,93 +66,169 @@ public class MusicController : MonoBehaviour, ISound
         {
             if (value == _playingTrack)
             {
-                PlayMusic();
+                //PlayMusic();
                 return;
             }
 
             _playingTrack = value;
-            Transition(audioClips[value]);
+            AudioClip newTrack = audioClips[value];
+            Debug.Log($"Music Transition to: {newTrack.name}");
+            if (Muted || Paused)
+            {
+                if (AudioSourcePlaying == 1)
+                {
+                    audioSource_1.clip = newTrack;
+                }
+                else
+                {
+                    audioSource_2.clip = newTrack;
+                }
+            }
+            else
+            {
+                StopAllCoroutines();
+                if (AudioSourcePlaying == 1)
+                {
+                    audioSource_2.clip = newTrack;
+                    StartFadeIn(Constants.audioMixerNameTrack2, Config.GameValues.musicFadeInDurationSec, audioSource_2);
+                    StartFadeOut(Constants.audioMixerNameTrack1, Config.GameValues.musicFadeOutDurationSec, audioSource_1);
+                    AudioSourcePlaying = 2;
+                }
+                else
+                {
+                    audioSource_1.clip = newTrack;
+                    StartFadeIn(Constants.audioMixerNameTrack1, Config.GameValues.musicFadeInDurationSec, audioSource_1);
+                    StartFadeOut(Constants.audioMixerNameTrack2, Config.GameValues.musicFadeOutDurationSec, audioSource_2);
+                    AudioSourcePlaying = 1;
+                }
+            }
+        }
+    }
+
+    private byte AudioSourcePlaying
+    {
+        get => _audioSourcePlaying;
+        set => _audioSourcePlaying = value;
+    }
+
+    private bool Muted
+    {
+        get => _muted;
+        set
+        {
+            _muted = value;
+            if (value)
+            {
+                if (fadeInCoroutine != null)
+                {
+                    StopCoroutine(fadeInCoroutine);
+                }
+                audioMixer.SetFloat(Constants.audioMixerNameMaster, -80);
+                muteDelyCoroutine = StartCoroutine(PauseDelay());
+                Debug.Log("muted music");
+            }
+            else
+            {
+                StopCoroutine(muteDelyCoroutine);
+                FadeMusicIn();
+                Debug.Log("unmuted music");
+            }
+        }
+    }
+
+    public bool Paused
+    {
+        get => _paused;
+        set
+        {
+            _paused = value;
+            if (Muted) return;
+            if (value)
+            {
+                StopCoroutine(fadeInCoroutine);
+                audioMixer.SetFloat(Constants.audioMixerNameMaster, -80);
+                pauseDelyCoroutine = StartCoroutine(PauseDelay());
+                Debug.Log("paused music");
+            }
+            else
+            {
+                audioMixer.SetFloat(Constants.audioMixerNameMaster, Mathf.Log10(maxVolume) * 20);
+                StopCoroutine(pauseDelyCoroutine);
+                // note: playing a track that is already playing starts it from the beginning
+                FadeMusicIn();
+                Debug.Log("unpaused music");
+            }
         }
     }
 
     public void UpdateMaxVolume(float newVolume)
     {
         Debug.Log($"setting music volume to: {newVolume}");
-        NormalizeFadeValues(newVolume);
-        maxVolume = newVolume;
-
-        //Debug.Log($"paused: {pausedAudioSource}, 1: {audioSource_1.isPlaying}, 2: {audioSource_2.isPlaying}");
-
-        if (audioSource_1.isPlaying || pausedAudioSource == 1)
+        //NormalizeFadeValues(newVolume);
+        if (newVolume != 0)
         {
-            audioSource_1.volume = maxVolume;
+            if (Muted)
+            {
+                Muted = false;
+            }
+
+            maxVolume = newVolume;
+            audioMixer.SetFloat(Constants.audioMixerNameMaster, Mathf.Log10(newVolume) * 20);
         }
-        else if (audioSource_2.isPlaying || pausedAudioSource == 2)
+        else
         {
-            audioSource_2.volume = maxVolume;
+            Muted = true;
         }
     }
 
     public void FadeMusicOut()
     {
-        StopAllCoroutines();
-        if (audioSource_1.isPlaying)
+        if (Muted || Paused) return;
+        StopCoroutine(fadeInCoroutine);
+        if (AudioSourcePlaying == 1)
         {
-            StartCoroutine(FadeOut(audioSource_1, fadeOutSpeedSlow));
+            StartFadeOut(Constants.audioMixerNameTrack1, Config.GameValues.musicFadeOutSlowDurationSec, audioSource_1);
         }
-        else if (audioSource_2.isPlaying)
+        else
         {
-            StartCoroutine(FadeOut(audioSource_2, fadeOutSpeedSlow));
+            StartFadeOut(Constants.audioMixerNameTrack2, Config.GameValues.musicFadeOutSlowDurationSec, audioSource_2);
         }
     }
 
+    /// <summary>
+    /// Fade the current music back in from its current state.
+    /// </summary>
     public void FadeMusicIn()
     {
-        StopAllCoroutines();
-        if (audioSource_1.isPlaying)
+        if (Muted || Paused) return;
+        if (AudioSourcePlaying == 1)
         {
-            StartCoroutine(FadeIn(audioSource_1));
-        }
-        else if (audioSource_2.isPlaying)
-        {
-            StartCoroutine(FadeIn(audioSource_2));
+            //audioMixer.SetFloat(Constants.audioMixerNameTrack1, 0.002f);
+            StartFadeIn(Constants.audioMixerNameTrack1, Config.GameValues.musicFadeInDurationSec, audioSource_1);
         }
         else
         {
-            Transition(audioClips[PlayingTrack]);
+            //audioMixer.SetFloat(Constants.audioMixerNameTrack2, 0.002f);
+            StartFadeIn(Constants.audioMixerNameTrack2, Config.GameValues.musicFadeInDurationSec, audioSource_2);
         }
-    }
-
-    public void PauseMusic()
-    {
-        if (audioSource_1.isPlaying)
-        {
-            pausedAudioSource = 1;
-            audioSource_1.Pause();
-        }
-        else if (audioSource_2.isPlaying)
-        {
-            pausedAudioSource = 2;
-            audioSource_2.Pause();
-        }
-        else
-        {
-            Debug.LogWarning("tried to pause no music");
-        }
+        //else
+        //{
+        //    Transition(audioClips[PlayingTrack]);
+        //}
     }
 
     public void PlayMusic()
     {
+        if (Muted) return;
         // playing a track that is already playing starts it from the beginning
-        if (pausedAudioSource == 1 && !audioSource_1.isPlaying)
+        if (AudioSourcePlaying == 1 && !audioSource_1.isPlaying)
         {
             audioSource_1.Play();
         }
-        else if (!audioSource_2.isPlaying)
+        else if (AudioSourcePlaying == 2 && !audioSource_2.isPlaying)
         {
             audioSource_2.Play();
         }
-        pausedAudioSource = 0;
     }
 
     public void MainMenuMusic()
@@ -190,64 +273,32 @@ public class MusicController : MonoBehaviour, ISound
         PlayingTrack = 6;
     }
 
-    private void NormalizeFadeValues(float newVolume)
+    private IEnumerator PauseDelay()
     {
-        // changing the music volume requires that the fade timings be updated as well 
-        float audioDifference = newVolume * 2;
-        fadeInSpeed = Config.GameValues.musicFadeIn * audioDifference;
-        fadeOutSpeedFast = Config.GameValues.musicFadeOutFast * audioDifference;
-        fadeOutSpeedSlow = Config.GameValues.musicFadeOutSlow * audioDifference;
-    }
-
-    private void Transition(AudioClip newTrack)
-    {
-        Debug.Log($"Music Transition to: {newTrack.name}");
-
-        StopAllCoroutines();
-        if (audioSource_1.isPlaying)
+        AudioSource audioSource;
+        if (AudioSourcePlaying == 1)
         {
-            audioSource_2.clip = newTrack;
-            StartCoroutine(FadeOut(audioSource_1));
-            StartCoroutine(FadeIn(audioSource_2));
+            audioSource = audioSource_1;
+            audioMixer.SetFloat(Constants.audioMixerNameTrack1, -80);
         }
         else
         {
-            audioSource_1.clip = newTrack;
-            StartCoroutine(FadeOut(audioSource_2));
-            StartCoroutine(FadeIn(audioSource_1));
+            audioSource = audioSource_2;
+            audioMixer.SetFloat(Constants.audioMixerNameTrack2, -80);
         }
+
+        // to prevent audio blips lower the volume first and then pause the music
+        yield return new WaitForSeconds(0.1f);
+        audioSource.Pause();
     }
 
-    private IEnumerator FadeOut(AudioSource audioSource, float fadeOutSpeed = 0)
+    private void StartFadeIn(string fadeInAudioMixerName, float duration, AudioSource audioSource)
     {
-        if (!audioSource.isPlaying)
-        {
-            yield break;
-        }
-
-        if (fadeOutSpeed == 0)
-        {
-            fadeOutSpeed = fadeOutSpeedFast;
-        }
-
-        while (audioSource.volume > 0)
-        {
-            audioSource.volume -= Time.deltaTime * fadeOutSpeed;
-            yield return null;
-        }
-        audioSource.Stop();
-        //audioSource.clip.UnloadAudioData();
+        fadeInCoroutine = StartCoroutine(FadeMixerGroup.StartFade(audioMixer, fadeInAudioMixerName, duration, 1, audioSource, false));
     }
 
-    private IEnumerator FadeIn(AudioSource audioSource)
+    private void StartFadeOut(string fadeOutAudioMixerName, float duration, AudioSource audioSource)
     {
-        audioSource.volume = 0;
-        audioSource.time = 0;
-        audioSource.Play();
-        while (audioSource.volume < maxVolume)
-        {
-            audioSource.volume += Time.deltaTime * fadeInSpeed;
-            yield return null;
-        }
+        fadeOutCoroutine = StartCoroutine(FadeMixerGroup.StartFade(audioMixer, fadeOutAudioMixerName, duration, 0, audioSource, true));
     }
 }

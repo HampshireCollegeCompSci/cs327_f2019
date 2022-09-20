@@ -26,9 +26,9 @@ public class GameValues
     public int wastepileAnimationSpeedFast;
     public int cardsToReactorspeed;
 
-    public float musicFadeIn;
-    public float musicFadeOutFast;
-    public float musicFadeOutSlow;
+    public float musicFadeInDurationSec;
+    public float musicFadeOutDurationSec;
+    public float musicFadeOutSlowDurationSec;
 
     public int musicDefaultVolume;
     public int soundEffectsDefaultVolume;
