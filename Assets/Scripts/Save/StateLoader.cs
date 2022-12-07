@@ -9,7 +9,6 @@ public class StateLoader : MonoBehaviour
 
     private List<SaveMove> saveMoveLog;
     private List<GameObject> origins;
-    private int originsLength;
 
     // Initialize the singleton instance.
     private void Awake()
@@ -27,7 +26,7 @@ public class StateLoader : MonoBehaviour
     private void Start()
     {
         saveMoveLog = new();
-        origins = new()
+        origins = new(11)
         {
             DeckScript.Instance.gameObject,
             WastepileScript.Instance.gameObject,
@@ -35,8 +34,6 @@ public class StateLoader : MonoBehaviour
         };
         origins.AddRange(UtilsScript.Instance.foundations);
         origins.AddRange(UtilsScript.Instance.reactors);
-
-        originsLength = origins.Count;
     }
 
     public void ClearSaveMoveLog()
@@ -74,8 +71,8 @@ public class StateLoader : MonoBehaviour
 
         GameState gameState = new()
         {
-            foundations = new(),
-            reactors = new()
+            foundations = new(4),
+            reactors = new(4)
         };
 
         //save foundations
@@ -83,14 +80,13 @@ public class StateLoader : MonoBehaviour
         {
             FoundationCards foundationCards = new()
             {
-                hidden = new(),
-                unhidden = new()
+                hidden = new(foundationScript.CardList.Count),
+                unhidden = new(foundationScript.CardList.Count)
             };
 
-            CardScript cardScript;
-            for (int i = foundationScript.CardList.Count - 1; i >= 0; i--)
+            foreach (GameObject card in foundationScript.CardList)
             {
-                cardScript = foundationScript.CardList[i].GetComponent<CardScript>();
+                CardScript cardScript = card.GetComponent<CardScript>();
                 if (cardScript.Hidden)
                 {
                     foundationCards.hidden.Add(cardScript.CardID);
@@ -162,14 +158,8 @@ public class StateLoader : MonoBehaviour
 
     private int GetOriginIndex(GameObject origin)
     {
-        for (int originIndex = 0; originIndex < originsLength; originIndex++)
-        {
-            if (origins[originIndex] == origin)
-            {
-                return originIndex;
-            }
-        }
-
+        int index = origins.IndexOf(origin);
+        if (index != -1) return index;
         throw new System.Exception($"the origin \"{origin.name}\" was not found");
     }
 
@@ -285,7 +275,7 @@ public class StateLoader : MonoBehaviour
         int cardCount = LoadPileScript.Instance.CardList.Count;
         while (cardCount != 0)
         {
-            LoadPileScript.Instance.CardList[0].GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, false, false, false);
+            LoadPileScript.Instance.CardList[^1].GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, false, false, false);
             cardCount--;
         }
 
@@ -300,13 +290,11 @@ public class StateLoader : MonoBehaviour
 
     private List<byte> ConvertCardListToStringList(List<GameObject> cardList)
     {
-        List<byte> newCardList = new();
-        // go backwards through the list as the top cards are at index 0
-        for (int i = cardList.Count - 1; i >= 0; i--)
+        List<byte> newCardList = new(cardList.Count);
+        foreach (GameObject card in cardList)
         {
-            newCardList.Add(cardList[i].GetComponent<CardScript>().CardID);
+            newCardList.Add(card.GetComponent<CardScript>().CardID);
         }
-
         return newCardList;
     }
 
@@ -319,36 +307,27 @@ public class StateLoader : MonoBehaviour
         // going backwards through all the saved moves and recreate them
         foreach (SaveMove saveMove in moves)
         {
-            Move newMove = new();
-
-            // looking for the card that the move is associated with
-            foreach (GameObject card in cardList)
+            if (saveMove.o < 0 || saveMove.o >= origins.Count)
             {
-                if (card.GetComponent<CardScript>().CardID == saveMove.c)
-                {
-                    newMove.card = card;
-                    break;
-                }
+                throw new System.NullReferenceException($"origin \"{saveMove.o}\" is invalid");
             }
 
-            newMove.origin = origins[saveMove.o];
+            Move newMove = new()
+            {
+                card = cardList.Find(card => card.GetComponent<CardScript>().CardID == saveMove.c),
+                origin = origins[saveMove.o],
+                moveType = saveMove.m,
+                nextCardWasHidden = System.Convert.ToBoolean(saveMove.h),
+                isAction = System.Convert.ToBoolean(saveMove.a),
+                remainingActions = saveMove.r,
+                score = saveMove.s,
+                moveNum = saveMove.n
+            };
 
             if (newMove.card == null)
             {
                 throw new System.NullReferenceException($"card \"{saveMove.c}\" was not found");
             }
-            if (newMove.origin == null)
-            {
-                throw new System.NullReferenceException($"origin \"{saveMove.o}\" was not found");
-            }
-
-            // other variables
-            newMove.moveType = saveMove.m;
-            newMove.nextCardWasHidden = System.Convert.ToBoolean(saveMove.h);
-            newMove.isAction = System.Convert.ToBoolean(saveMove.a);
-            newMove.remainingActions = saveMove.r;
-            newMove.score = saveMove.s;
-            newMove.moveNum = saveMove.n;
 
             newMoveLog.Push(newMove);
         }
@@ -359,32 +338,18 @@ public class StateLoader : MonoBehaviour
     private void SetUpLocationWithCards(List<byte> cardList, GameObject newLocation, bool isHidden = false)
     {
         // seting up the new location with cards using the given commands, and cards
-        bool foundCard;
-        CardScript cardScriptRef;
-
         foreach (byte cardID in cardList)
         {
-            // looking for the card that needs to be moved
-            foundCard = false;
-            foreach (GameObject card in LoadPileScript.Instance.CardList)
-            {
-                cardScriptRef = card.GetComponent<CardScript>();
-                if (cardScriptRef.CardID == cardID)
-                {
-                    cardScriptRef.MoveCard(newLocation, doLog: false, isAction: false);
-                    if (isHidden)
-                    {
-                        cardScriptRef.Hidden = true;
-                    }
-
-                    foundCard = true;
-                    break;
-                }
-            }
-
-            if (!foundCard)
+            GameObject card = LoadPileScript.Instance.CardList.Find(card => card.GetComponent<CardScript>().CardID == cardID);
+            if (card == null)
             {
                 throw new System.NullReferenceException($"the card \"{cardID}\" was not found");
+            }
+            CardScript cardScript = card.GetComponent<CardScript>();
+            cardScript.MoveCard(newLocation, doLog: false, isAction: false);
+            if (isHidden)
+            {
+                cardScript.Hidden = true;
             }
         }
     }
@@ -392,33 +357,18 @@ public class StateLoader : MonoBehaviour
     private void SetUpLocationWithCards(List<string> cardList, GameObject newLocation, bool isHidden = false)
     {
         // seting up the new location with cards using the given commands, and cards
-        bool foundCard;
-        CardScript cardScriptRef;
-
         foreach (string cardName in cardList)
         {
-            // looking for the card that needs to be moved
-            foundCard = false;
-            foreach (GameObject card in LoadPileScript.Instance.CardList)
-            {
-                if (card.name == cardName)
-                {
-                    cardScriptRef = card.GetComponent<CardScript>();
-
-                    cardScriptRef.MoveCard(newLocation, doLog: false, isAction: false);
-                    if (isHidden)
-                    {
-                        cardScriptRef.Hidden = true;
-                    }
-
-                    foundCard = true;
-                    break;
-                }
-            }
-
-            if (!foundCard)
+            GameObject card = LoadPileScript.Instance.CardList.Find(card => card.GetComponent<CardScript>().name == cardName);
+            if (card == null)
             {
                 throw new System.NullReferenceException($"the card \"{cardName}\" was not found");
+            }
+            CardScript cardScript = card.GetComponent<CardScript>();
+            cardScript.MoveCard(newLocation, doLog: false, isAction: false);
+            if (isHidden)
+            {
+                cardScript.Hidden = true;
             }
         }
     }

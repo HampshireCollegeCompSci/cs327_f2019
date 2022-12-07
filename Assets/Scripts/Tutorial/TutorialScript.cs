@@ -452,7 +452,7 @@ public class TutorialScript : MonoBehaviour
         {
             case sReactor:
                 List<GameObject> reactorCardList = UtilsScript.Instance.reactorScripts[containerIndex].CardList;
-                if (reactorCardList.Count < tokenIndex)
+                if (reactorCardList.Count < tokenIndex - 1)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
                         $"there are only {reactorCardList.Count} token(s) to choose from in reactor {containerIndex}");
@@ -460,31 +460,31 @@ public class TutorialScript : MonoBehaviour
 
                 if (highlightOn)
                 {
-                    reactorCardList[tokenIndex].GetComponent<CardScript>().GlowLevel = highlightColorLevel;
+                    reactorCardList[^tokenIndex].GetComponent<CardScript>().GlowLevel = highlightColorLevel;
                 }
                 else
                 {
-                    reactorCardList[tokenIndex].GetComponent<CardScript>().Glowing = false;
+                    reactorCardList[^tokenIndex].GetComponent<CardScript>().Glowing = false;
                 }
                 break;
             case sFoundation:
                 List<GameObject> foundationCardList = UtilsScript.Instance.foundationScripts[containerIndex].CardList;
-                if (foundationCardList.Count < tokenIndex)
+                if (foundationCardList.Count < tokenIndex - 1)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
                         $"there are only {foundationCardList.Count} token(s) to choose from in foundation {containerIndex}");
                 }
                 if (highlightOn)
                 {
-                    foundationCardList[tokenIndex].GetComponent<CardScript>().GlowLevel = highlightColorLevel;
+                    foundationCardList[^tokenIndex].GetComponent<CardScript>().GlowLevel = highlightColorLevel;
                 }
                 else
                 {
-                    foundationCardList[tokenIndex].GetComponent<CardScript>().Glowing = false;
+                    foundationCardList[^tokenIndex].GetComponent<CardScript>().Glowing = false;
                 }
                 break;
             case sWastepile:
-                if (WastepileScript.Instance.CardList.Count < tokenIndex)
+                if (WastepileScript.Instance.CardList.Count < tokenIndex - 1)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
                         $"there are only {WastepileScript.Instance.CardList.Count} token(s) to choose from in the waste pile");
@@ -492,11 +492,11 @@ public class TutorialScript : MonoBehaviour
 
                 if (highlightOn)
                 {
-                    WastepileScript.Instance.CardList[tokenIndex].GetComponent<CardScript>().GlowLevel = highlightColorLevel;
+                    WastepileScript.Instance.CardList[^tokenIndex].GetComponent<CardScript>().GlowLevel = highlightColorLevel;
                 }
                 else
                 {
-                    WastepileScript.Instance.CardList[tokenIndex].GetComponent<CardScript>().Glowing = false;
+                    WastepileScript.Instance.CardList[^tokenIndex].GetComponent<CardScript>().Glowing = false;
                 }
                 break;
             default:
@@ -531,29 +531,29 @@ public class TutorialScript : MonoBehaviour
         {
             case sReactor:
                 List<GameObject> reactorCardList = UtilsScript.Instance.reactorScripts[containerIndex].CardList;
-                if (reactorCardList.Count < tokenIndex)
+                if (reactorCardList.Count < tokenIndex - 1)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
                         $"there are only {reactorCardList.Count} token(s) to choose from in reactor {containerIndex}");
                 }
-                reactorCardList[tokenIndex].GetComponent<CardScript>().Obstructed = obstructed;
+                reactorCardList[^tokenIndex].GetComponent<CardScript>().Obstructed = obstructed;
                 break;
             case sFoundation:
                 List<GameObject> foundationCardList = UtilsScript.Instance.foundationScripts[containerIndex].CardList;
-                if (foundationCardList.Count < tokenIndex)
+                if (foundationCardList.Count < tokenIndex - 1)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
                         $"there are only {foundationCardList.Count} token(s) to choose from in foundation {containerIndex}");
                 }
-                foundationCardList[tokenIndex].GetComponent<CardScript>().Obstructed = obstructed;
+                foundationCardList[^tokenIndex].GetComponent<CardScript>().Obstructed = obstructed;
                 break;
             case sWastepile:
-                if (WastepileScript.Instance.CardList.Count < tokenIndex)
+                if (WastepileScript.Instance.CardList.Count < tokenIndex - 1)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
                         $"there are only {WastepileScript.Instance.CardList.Count} token(s) to choose from in the waste pile");
                 }
-                WastepileScript.Instance.CardList[tokenIndex].GetComponent<CardScript>().Obstructed = obstructed;
+                WastepileScript.Instance.CardList[^tokenIndex].GetComponent<CardScript>().Obstructed = obstructed;
                 break;
             default:
                 throw new FormatException("contains an invalid object that contains the token for command #1");
@@ -566,26 +566,27 @@ public class TutorialScript : MonoBehaviour
 
         foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
         {
-            // only the first reactor token/card is ever not obstructed
+            // only the top reactor token/card is ever not obstructed
             if (reactorScript.CardList.Count != 0)
             {
-                reactorScript.CardList[0].GetComponent<CardScript>().Obstructed = true;
+                reactorScript.CardList[^1].GetComponent<CardScript>().Obstructed = true;
             }
         }
 
         foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
-            foreach (GameObject card in foundationScript.CardList)
+            // from the top of the list downwards, obstruct until a hidden card is reached
+            for (int i = foundationScript.CardList.Count - 1; i >= 0; i--)
             {
-                if (card.GetComponent<CardScript>().Hidden) break;
-                card.GetComponent<CardScript>().Obstructed = true;
+                if (foundationScript.CardList[i].GetComponent<CardScript>().Hidden) break;
+                foundationScript.CardList[i].GetComponent<CardScript>().Obstructed = true;
             }
         }
 
-        // only the first wastepile token/card is ever not obstructed
+        // only the top wastepile token/card is ever not obstructed
         if (WastepileScript.Instance.CardList.Count != 0)
         {
-            WastepileScript.Instance.CardList[0].GetComponent<CardScript>().Obstructed = true;
+            WastepileScript.Instance.CardList[^1].GetComponent<CardScript>().Obstructed = true;
         }
     }
 
@@ -793,6 +794,9 @@ public class TutorialScript : MonoBehaviour
         {
             throw new FormatException($"contains a negative int for command #{index}");
         }
-        return tokenIndex;
+
+        // tutorial input index is based on the top index = 0, in-game it's the opposite
+        // this will used in list[list.Count - tokenIndex]
+        return tokenIndex + 1;
     }
 }

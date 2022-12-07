@@ -29,12 +29,14 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     private SpriteRenderer suitGlowSR;
     private SpriteRenderer glowSR;
+    private BoxCollider2D hitbox;
 
     void Awake()
     {
-        cardList = new();
+        cardList = new(52);
         suitGlowSR = suitGlow.GetComponent<SpriteRenderer>();
         glowSR = this.gameObject.GetComponent<SpriteRenderer>();
+        hitbox = this.gameObject.GetComponent<BoxCollider2D>();
 
         _glowing = false;
         _glowLevel = 0;
@@ -56,6 +58,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
                 _glowing = true;
                 suitGlowSR.enabled = true;
                 glowSR.enabled = true;
+                hitbox.enabled= true;
             }
             else if (!value && _glowing)
             {
@@ -63,6 +66,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
                 RevertSuitGlow();
                 suitGlowSR.enabled = false;
                 glowSR.enabled = false;
+                hitbox.enabled= false;
             }
         }
     }
@@ -117,10 +121,10 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
     {
         if (cardList.Count != 0)
         {
-            cardList[0].GetComponent<CardScript>().Obstructed = true;
+            cardList[^1].GetComponent<CardScript>().Obstructed = true;
         }
 
-        cardList.Insert(0, card);
+        cardList.Add(card);
         card.transform.SetParent(gameObject.transform);
         CardScript cardScript = card.GetComponent<CardScript>();
         cardScript.Hologram = false;
@@ -135,11 +139,11 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     public void RemoveCard(GameObject card)
     {
-        cardList.Remove(card);
+        cardList.RemoveAt(cardList.LastIndexOf(card));
 
         if (cardList.Count != 0)
         {
-            cardList[0].GetComponent<CardScript>().Obstructed = false;
+            cardList[^1].GetComponent<CardScript>().Obstructed = false;
         }
 
         SetCardPositions();
@@ -148,7 +152,17 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     public Vector3 GetNextCardPosition()
     {
-        return this.gameObject.transform.TransformPoint(GetCardPosition(0, cardList.Count + 1));
+        Vector3 nextPosition;
+        if (cardList.Count == 0)
+        {
+            nextPosition = new Vector3(xOffset, startingYOffset, 0);
+        }
+        else
+        {
+            nextPosition = cardList[^1].transform.localPosition;
+            nextPosition.y += largeYOffset;
+        }
+        return this.gameObject.transform.TransformPoint(nextPosition);
     }
 
     public int CountReactorCard()
@@ -230,33 +244,35 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     private void SetCardPositions()
     {
-        int cardCount = cardList.Count;
-        for (int i = 0; i < cardCount; i++)
+        for (int i = 0; i < cardList.Count; i++)
         {
-            Vector3 newPos = GetCardPosition(i, cardCount);
-            cardList[i].transform.localPosition = newPos;
+            cardList[i].transform.localPosition = GetCardPosition(i);
         }
     }
 
-    private Vector3 GetCardPosition(int index, int cardListCount)
+    private Vector3 GetCardPosition(int index)
     {
-        int reverseIndex = cardListCount - index - 1;
-        float zOffset = -0.05f * (reverseIndex + 1);
+        float zOffset = index * -0.05f;
 
-        if (cardListCount > maxFullReactorCards)
+        // if there are too many cards in the reactor to display them all in full
+        if (cardList.Count > maxFullReactorCards)
         {
-            if (index >= maxFullReactorCards)
+            int numSmallCards = cardList.Count - maxFullReactorCards;
+            // if this card is below the top number of maxFullReactorCards
+            if (index < numSmallCards)
             {
-                return new Vector3(xOffset, startingYOffset + smallYOffset * reverseIndex, zOffset);
+                // make the y-offset smaller
+                return new Vector3(xOffset, startingYOffset + smallYOffset * index, zOffset);
             }
             else
             {
-                return new Vector3(xOffset, startingYOffset + smallYOffset * (cardListCount - 1 - maxFullReactorCards) + largeYOffset * (maxFullReactorCards - index), zOffset);
+                // add the needed number of small y-offsets in addition to a number of large y-offsets
+                return new Vector3(xOffset, startingYOffset + smallYOffset * numSmallCards + largeYOffset * (index - numSmallCards), zOffset);
             }
         }
         else
         {
-            return new Vector3(xOffset, startingYOffset + largeYOffset * reverseIndex, zOffset);
+            return new Vector3(xOffset, startingYOffset + largeYOffset * index, zOffset);
         }
     }
 
@@ -267,7 +283,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         {
             if (foundationScript.CardList.Count != 0)
             {
-                CardScript topCardScript = foundationScript.CardList[0].GetComponent<CardScript>();
+                CardScript topCardScript = foundationScript.CardList[^1].GetComponent<CardScript>();
                 if (topCardScript.CardSuitIndex == reactorSuitIndex)
                 {
                     output += topCardScript.CardReactorValue;

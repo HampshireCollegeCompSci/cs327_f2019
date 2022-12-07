@@ -72,26 +72,26 @@ public static class CardTools
         // since they can't be picked up, only foundation cards need to be checked
 
         if (card.Container.CompareTag(Constants.foundationTag) &&
-            card.Container.GetComponent<FoundationScript>().CardList[0].GetComponent<CardScript>() != card)
+            card.Container.GetComponent<FoundationScript>().CardList[^1].GetComponent<CardScript>() != card)
         {
             return false;
         }
 
         /*
         if (card.container.CompareTag(Constants.reactorTag) &&
-            card.container.GetComponent<ReactorScript>().cardList[0].GetComponent<CardScript>() != card)
+            card.container.GetComponent<ReactorScript>().cardList[^1].GetComponent<CardScript>() != card)
         {
             return false;
         }
 
         if (card.container.CompareTag(Constants.wastepileTag) &&
-            card.container.GetComponent<WastepileScript>().cardList[0].GetComponent<CardScript>() != card)
+            card.container.GetComponent<WastepileScript>().cardList[^1].GetComponent<CardScript>() != card)
         {
             return false;
         }
 
         if (card.container.CompareTag(Constants.deckTag) &&
-            card.container.GetComponent<DeckScript>().cardList[0].GetComponent<CardScript>() != card)
+            card.container.GetComponent<DeckScript>().cardList[^1].GetComponent<CardScript>() != card)
         {
             return false;
         }*/

@@ -31,7 +31,8 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         {
             Instance = this;
 
-            cardContainers = new List<GameObject>();
+            cardList = new List<GameObject>(52);
+            cardContainers = new List<GameObject>(52);
 
             cardSpacing = contentPanel.GetComponent<HorizontalLayoutGroup>().spacing;
             scrollRect = this.gameObject.GetComponent<ScrollRect>();
@@ -94,24 +95,24 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         // obstructing the top
         if (cardList.Count != 0)
         {
-            CardScript cardScript = cardList[0].GetComponent<CardScript>();
+            CardScript cardScript = cardList[^1].GetComponent<CardScript>();
             cardScript.Hologram = false;
             cardScript.Obstructed = true;
         }
 
-        cardList.Insert(0, card);
+        cardList.Add(card);
 
         // making a container for the card so that it plays nice with the scroll view
-        cardContainers.Insert(0, Instantiate(cardContainerPrefab));
-        cardContainers[0].transform.SetParent(contentPanel.transform, false);
-        RectTransform cardContainerTransform = cardContainers[0].GetComponent<RectTransform>();
+        cardContainers.Add(Instantiate(cardContainerPrefab));
+        cardContainers[^1].transform.SetParent(contentPanel.transform, false);
+        RectTransform cardContainerTransform = cardContainers[^1].GetComponent<RectTransform>();
         cardContainerTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1);
         cardContainerTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1);
         //Debug.Log(cardContainerTransform.localPosition);
         //cardContainerTransform.localPosition = new Vector3(cardContainerTransform.localPosition.x + 100, cardContainerTransform.localPosition.y, cardContainerTransform.localPosition.z);
 
         // updating the card
-        card.transform.SetParent(cardContainers[0].transform);
+        card.transform.SetParent(cardContainers[^1].transform);
         //card.transform.position = card.transform.parent.position;
         card.transform.localPosition = new Vector3(0, 0, -1 - (cardList.Count * 0.01f));
     }
@@ -130,10 +131,11 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
 
         if (cardList.Count != 0)
         {
-            CardScript cardScript = cardList[0].GetComponent<CardScript>();
+            CardScript cardScript = cardList[^1].GetComponent<CardScript>();
 
             // during the tutorial we don't want the next card avalible for user interaction
-            if (!Config.Instance.tutorialOn)
+            // save for when the deck deal button is unlocked as that can cause a deck flip
+            if (undoingOrDeck || !Config.Instance.tutorialOn)
             {
                 // set obstruction to false as it isn't accounted for elsewhere
                 cardScript.Obstructed = false;
@@ -165,10 +167,8 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
 
     public void RemoveCard(GameObject card)
     {
-        // removing the cards wastepile container
-        cardContainers.Remove(card.transform.parent.gameObject);
         card.transform.parent = null;
-        cardList.Remove(card);
+        cardList.RemoveAt(cardList.LastIndexOf(card));
     }
 
     public void StartDeckReset()
@@ -182,7 +182,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
 
         if (cardList.Count != 0) // hide the current top token now
         {
-            CardScript cardScript = cardList[0].GetComponent<CardScript>();
+            CardScript cardScript = cardList[^1].GetComponent<CardScript>();
             cardScript.Hologram = false;
             cardScript.Obstructed = true;
         }
@@ -202,7 +202,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         {
             cards[i].GetComponent<CardScript>().MoveCard(this.gameObject, doLog, showHolo: false);
         }
-        cards[^1].GetComponent<CardScript>().MoveCard(gameObject, doLog);
+        cards[^1].GetComponent<CardScript>().MoveCard(this.gameObject, doLog);
 
         // move the scroll rect's content so that the new cards are hidden to the left side of the belt
         contentPosition.x = cardSpacing * cards.Count;
@@ -260,7 +260,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         // move all the tokens
         while (cardList.Count > 0)
         {
-            cardList[0].GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, showHolo: false);
+            cardList[^1].GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, showHolo: false);
         }
 
         yield return new WaitForSeconds(0.3f);

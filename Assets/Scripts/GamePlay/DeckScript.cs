@@ -25,7 +25,7 @@ public class DeckScript : MonoBehaviour, ICardContainer
 
     public DeckScript()
     {
-        cardList = new();
+        cardList = new(52);
     }
 
     // Initialize the singleton instance.
@@ -48,7 +48,7 @@ public class DeckScript : MonoBehaviour, ICardContainer
 
     public void AddCard(GameObject card)
     {
-        cardList.Insert(0, card);
+        cardList.Add(card);
         card.transform.SetParent(gameObject.transform);
         card.transform.localPosition = Vector3.zero;
         card.GetComponent<CardScript>().Enabled = false;
@@ -57,7 +57,8 @@ public class DeckScript : MonoBehaviour, ICardContainer
 
     public void RemoveCard(GameObject card)
     {
-        cardList.Remove(card);
+        cardList.RemoveAt(cardList.LastIndexOf(card));
+
         card.GetComponent<CardScript>().Enabled = true;
         UpdateDeckCounter(dealed: true);
     }
@@ -83,12 +84,12 @@ public class DeckScript : MonoBehaviour, ICardContainer
 
     public void Deal(bool doLog = true)
     {
-        List<GameObject> toMoveList = new();
+        List<GameObject> toMoveList = new(Config.GameValues.cardsToDeal);
 
-        // try to deal set number of cards
-        for (int i = 0; i < Config.GameValues.cardsToDeal && i < cardList.Count; i++)
+        // try to deal set number of cards, take them starting from the top, [^1], down
+        for (int i = 1; i <= Config.GameValues.cardsToDeal && i <= cardList.Count; i++)
         {
-            toMoveList.Add(cardList[i]);
+            toMoveList.Add(cardList[^i]);
         }
 
         if (toMoveList.Count != 0)

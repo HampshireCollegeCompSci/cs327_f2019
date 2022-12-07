@@ -15,7 +15,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
 
     void Awake()
     {
-        cardList = new();
+        cardList = new(52);
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
         _glowing = false;
@@ -78,10 +78,10 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
     {
         if (cardList.Count != 0)
         {
-            cardList[0].GetComponent<CardScript>().Hologram = false;
+            cardList[^1].GetComponent<CardScript>().Hologram = false;
         }
 
-        cardList.Insert(0, card);
+        cardList.Add(card);
         card.transform.SetParent(gameObject.transform);
 
         SetCardPositions();
@@ -90,38 +90,39 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
     public void RemoveCard(GameObject card, bool showHolo)
     {
         RemoveCard(card);
-        if (cardList.Count != 0 && showHolo)
-        {
-            cardList[0].GetComponent<CardScript>().Hologram = true;
-        }
-    }
-
-    public void RemoveCard(GameObject card)
-    {
-        cardList.Remove(card);
 
         if (cardList.Count != 0)
         {
-            CardScript cardScript = cardList[0].GetComponent<CardScript>();
+            CardScript topCardScript = cardList[^1].GetComponent<CardScript>();
 
-            if (cardScript.Hidden)
+            if (topCardScript.Hidden)
             {
-                cardScript.Hidden = false;
+                topCardScript.Hidden = false;
 
                 // when the tutorial is active, disable moving the next top card so that
                 // we don't need to deal with some user interactions
                 if (Config.Instance.tutorialOn)
                 {
-                    cardScript.Obstructed = true;
+                    topCardScript.Obstructed = true;
                 }
                 else
                 {
-                    cardScript.HitBox = true;
+                    topCardScript.HitBox = true;
                 }
+            }
+
+            if (showHolo)
+            {
+                topCardScript.Hologram = true;
             }
         }
 
         SetCardPositions();
+    }
+
+    public void RemoveCard(GameObject card)
+    {
+        cardList.RemoveAt(cardList.LastIndexOf(card));
     }
 
     public void SetCardPositions()
@@ -130,8 +131,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
         int hiddenCards = 0;
         float yOffset = 0;
 
-        int count = cardList.Count;
-        for (int i = count - 1; i >= 0; i--) // go backwards through the list
+        for (int i = 0; i < cardList.Count; i++)
         {
             // as we go through, place cards above and in-front the previous one
             cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, zOffset);
@@ -139,24 +139,18 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
             if (cardList[i].GetComponent<CardScript>().Hidden)  // don't show hidden cards as much
             {
                 hiddenCards++;
-                if (count > 12)
+                yOffset += cardList.Count switch
                 {
-                    yOffset += 0.02f;
-                }
-                else if (count > 10)
-                {
-                    yOffset += 0.07f;
-                }
-                else
-                {
-                    yOffset += 0.15f;
-                }
+                    >12 => 0.02f,
+                    >10 => 0.07f,
+                    _ => 0.15f
+                };
             }
-            else if (hiddenCards != 0 && count > 16)
+            else if (hiddenCards != 0 && cardList.Count > 16)
             {
                 yOffset += 0.30f;
             }
-            else if (count - hiddenCards > 11)
+            else if (cardList.Count - hiddenCards > 11)
             {
                 yOffset += 0.30f;
             }

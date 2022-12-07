@@ -112,7 +112,7 @@ public class GameLoader : MonoBehaviour
 
     private List<GameObject> GetNewCards()
     {
-        List<GameObject> newCards = new();
+        List<GameObject> newCards = new(52);
 
         // order: spade ace, 2, 3... 10, jack, queen, king, clubs... diamonds... hearts
         int hFSIndex = 0; // used for assigning holograms
@@ -148,7 +148,7 @@ public class GameLoader : MonoBehaviour
 
     private List<GameObject> GetAllCards()
     {
-        List<GameObject> cards = new();
+        List<GameObject> cards = new(52);
 
         foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
@@ -201,14 +201,10 @@ public class GameLoader : MonoBehaviour
     private List<GameObject> ShuffleCards(List<GameObject> cards)
     {
         System.Random rand = new();
-        int count = cards.Count;
-        int length = count - 1;
-        int j;
-        GameObject temp;
-        for (int i = 0; i < length; i++)
+        for (int i = 0; i < cards.Count; i++)
         {
-            j = rand.Next(i, count);
-            temp = cards[i];
+            int j = rand.Next(i, cards.Count);
+            GameObject temp = cards[i];
             cards[i] = cards[j];
             cards[j] = temp;
         }
@@ -222,24 +218,24 @@ public class GameLoader : MonoBehaviour
         {
             for (int i = 0; i < Config.GameValues.foundationStartingSize - 1; i++)
             {
-                currentCardScript = cards[0].GetComponent<CardScript>();
+                currentCardScript = cards[^1].GetComponent<CardScript>();
                 currentCardScript.MoveCard(foundationScript.gameObject, doLog: false, showHolo: false);
                 currentCardScript.Hidden = true;
-                cards.RemoveAt(0);
+                cards.RemoveAt(cards.Count - 1);
             }
 
             // adding and revealing the top card of the foundation
-            currentCardScript = cards[0].GetComponent<CardScript>();
+            currentCardScript = cards[^1].GetComponent<CardScript>();
             currentCardScript.MoveCard(foundationScript.gameObject, doLog: false);
-            cards.RemoveAt(0);
+            cards.RemoveAt(cards.Count - 1);
         }
 
         // for testing out max foundation stack size
         //for (int i = 0; i < 12; i++)
         //{
-        //    currentCardScript = cards[0].GetComponent<CardScript>();
+        //    currentCardScript = cards[^1].GetComponent<CardScript>();
         //    currentCardScript.MoveCard(UtilsScript.Instance.foundations[0], doLog: false);
-        //    cards.RemoveAt(0);
+        //    cards.RemoveAt(cards.Count - 1);
         //}
 
         return cards;

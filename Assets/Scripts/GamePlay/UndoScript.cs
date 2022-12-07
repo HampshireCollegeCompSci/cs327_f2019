@@ -71,38 +71,33 @@ public class UndoScript : MonoBehaviour
             switch (moveLog.Peek().moveType)
             {
                 case Constants.stackLogMove:
-                    // list goes from bottom token to top in original stack
-                    List<Move> undoList = new()
-                    {
-                        moveLog.Pop() // this is the top token of the stack
-                    };
+                    // the undoList is ordered such that [0] is the top of the stack
+                    Move topCardMove = moveLog.Pop();
+
+                    List<Move> undoList = new(13) { topCardMove };
                     StateLoader.Instance.RemoveMove();
 
-                    int moveNumber = undoList[0].moveNum;
+                    int moveNumber = topCardMove.moveNum;
                     while (moveLog.Count != 0 && moveLog.Peek().moveNum == moveNumber)
                     {
-                        undoList.Insert(0, moveLog.Pop());
+                        undoList.Add(moveLog.Pop());
                         StateLoader.Instance.RemoveMove();
                     }
 
-                    GameObject newFoundation = undoList[0].origin;
-
-                    // cards are removed bottom to top when moving stacks and
-                    // nextCardWasHidden expects that it's token was on the top (index 0) of the stack
-                    // therefore, the top of the stack is the only card that will know if the stack sat on a hidden card
-                    if (undoList[^1].nextCardWasHidden)
+                    GameObject newFoundation = topCardMove.origin;
+                    if (topCardMove.nextCardWasHidden)
                     {
-                        newFoundation.GetComponent<FoundationScript>().CardList[0].GetComponent<CardScript>().Hidden = true;
+                        newFoundation.GetComponent<FoundationScript>().CardList[^1].GetComponent<CardScript>().Hidden = true;
                     }
 
                     // move the tokens back
-                    for (int i = 0; i < undoList.Count - 1; i++)
+                    for (int i = undoList.Count - 1; i > 0; i--)
                     {
                         undoList[i].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false, showHolo: false);
                     }
-                    undoList[^1].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false);
+                    topCardMove.card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false);
 
-                    UtilsScript.Instance.UpdateActions(undoList[0].remainingActions, setAsValue: true);
+                    UtilsScript.Instance.UpdateActions(topCardMove.remainingActions, setAsValue: true);
                     break;
                 case Constants.moveLogMove:
                     // standard behavior, move a single token back where it was
@@ -179,7 +174,7 @@ public class UndoScript : MonoBehaviour
     {
         if (toMove.nextCardWasHidden)
         {
-            toMove.origin.GetComponent<FoundationScript>().CardList[0].GetComponent<CardScript>().Hidden = true;
+            toMove.origin.GetComponent<FoundationScript>().CardList[^1].GetComponent<CardScript>().Hidden = true;
         }
 
         toMove.card.GetComponent<CardScript>().MoveCard(toMove.origin, doLog: false);

@@ -11,7 +11,7 @@ public class LoadPileScript : MonoBehaviour, ICardContainer
 
     public LoadPileScript()
     {
-        cardList = new();
+        cardList = new(52);
     }
 
     // Initialize the singleton instance.
@@ -39,6 +39,6 @@ public class LoadPileScript : MonoBehaviour, ICardContainer
 
     public void RemoveCard(GameObject card)
     {
-        cardList.Remove(card);
+        cardList.RemoveAt(cardList.LastIndexOf(card));
     }
 }

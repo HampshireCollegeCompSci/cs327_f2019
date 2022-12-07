@@ -13,11 +13,24 @@ public class ShowPossibleMoves
 
     public ShowPossibleMoves()
     {
-        foundationMoves = new();
-        cardMoves = new();
-        cardMatches = new();
+        reactorMove = null;
+        foundationMoves = new(4);
+        cardMoves = new(4);
+        cardMatches = new(1);
         TokenMoveable = true;
         ReactorObstructed = false;
+    }
+
+    public bool TokenMoveable
+    {
+        get;
+        set;
+    }
+
+    public bool ReactorObstructed
+    {
+        get;
+        set;
     }
 
     public bool AreThingsGlowing()
@@ -67,7 +80,9 @@ public class ShowPossibleMoves
             // disable the top cards hitbox for the reactors hitbox to be on top
             // the top card can normally be clicked and dragged to match with other cards
             if (reactorMoveScript.CardList.Count != 0)
-                reactorMoveScript.CardList[0].GetComponent<CardScript>().HitBox = false;
+            {
+                reactorMoveScript.CardList[^1].GetComponent<CardScript>().HitBox = false;
+            }
 
             // if moving the card into the reactor will lose us the game
             if (reactorMoveScript.CountReactorCard() + selectedCard.GetComponent<CardScript>().CardReactorValue >
@@ -116,7 +131,7 @@ public class ShowPossibleMoves
             // the top card can normally be clicked and dragged to match with other cards
             if (reactorMoveScript.CardList.Count != 0)
             {
-                reactorMoveScript.CardList[0].GetComponent<CardScript>().HitBox = true;
+                reactorMoveScript.CardList[^1].GetComponent<CardScript>().HitBox = true;
             }
 
             reactorMoveScript.Glowing = false;
@@ -132,8 +147,8 @@ public class ShowPossibleMoves
 
         bool cardCanBeMatched = true;
         // if the card is in a foundation and not at the top of it
-        if (cardIsFromFoundation && selectedCard !=
-            selectedCardScript.Container.GetComponent<FoundationScript>().CardList[0])
+        if (cardIsFromFoundation &&
+            selectedCard != selectedCardScript.Container.GetComponent<FoundationScript>().CardList[^1])
         {
             cardCanBeMatched = false;
         }
@@ -141,16 +156,16 @@ public class ShowPossibleMoves
         // find moves that can only occur when dragging only one token/card
         if (cardCanBeMatched)
         {
+            // check if there is a card in a reactor that can be matched with
             ReactorScript complimentaryReactorScript = UtilsScript.Instance.reactorScripts[
                 CardTools.GetComplimentarySuit(selectedCardScript.CardSuitIndex)];
-
             if (complimentaryReactorScript.CardList.Count != 0)
             {
-                CardScript cardScript = complimentaryReactorScript.CardList[0].GetComponent<CardScript>();
+                CardScript topCardScript = complimentaryReactorScript.CardList[^1].GetComponent<CardScript>();
                 // during the tutorial, the top card may be obstructed at times
-                if (!cardScript.Obstructed && cardScript.CardRank == selectedCardScript.CardRank)
+                if (!topCardScript.Obstructed && CardTools.CanMatch(topCardScript, selectedCardScript, checkIsTop : false))
                 {
-                    cardMatches.Add(complimentaryReactorScript.CardList[0]);
+                    cardMatches.Add(complimentaryReactorScript.CardList[^1]);
                 }
             }
 
@@ -166,7 +181,7 @@ public class ShowPossibleMoves
         {
             if (foundationScript.CardList.Count != 0)
             {
-                CardScript topFoundationCardScript = foundationScript.CardList[0].GetComponent<CardScript>();
+                CardScript topFoundationCardScript = foundationScript.CardList[^1].GetComponent<CardScript>();
 
                 // during the tutorial, the top card may be obstructed at times
                 if (!topFoundationCardScript.Obstructed)
@@ -174,13 +189,13 @@ public class ShowPossibleMoves
                     // if the card can match and matches with the foundation top
                     if (cardCanBeMatched && CardTools.CanMatch(selectedCardScript, topFoundationCardScript, checkIsTop: false))
                     {
-                        cardMatches.Add(foundationScript.CardList[0]);
+                        cardMatches.Add(foundationScript.CardList[^1]);
                     }
                     // if the card is not from a reactor can it stack?
                     else if ((cardIsFromFoundation || cardIsFromWastepile) &&
                         topFoundationCardScript.CardRank == selectedCardScript.CardRank + 1)
                     {
-                        cardMoves.Add(foundationScript.CardList[0]);
+                        cardMoves.Add(foundationScript.CardList[^1]);
                     }
                 }
             }
@@ -193,7 +208,7 @@ public class ShowPossibleMoves
         // if the card can match and matches with the wastepile top
         if (cardCanBeMatched && WastepileScript.Instance.CardList.Count != 0)
         {
-            GameObject topWastepileCard = WastepileScript.Instance.CardList[0];
+            GameObject topWastepileCard = WastepileScript.Instance.CardList[^1];
             CardScript cardScript = topWastepileCard.GetComponent<CardScript>();
 
             // during the tutorial, the top card may be obstructed at times
@@ -202,17 +217,5 @@ public class ShowPossibleMoves
                 cardMatches.Add(topWastepileCard);
             }
         }
-    }
-
-    public bool TokenMoveable
-    {
-        get;
-        set;
-    }
-
-    public bool ReactorObstructed
-    {
-        get;
-        set;
     }
 }

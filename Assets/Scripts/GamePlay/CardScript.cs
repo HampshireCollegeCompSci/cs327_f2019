@@ -398,7 +398,7 @@ public class CardScript : MonoBehaviour, IGlow
                     if (doLog)
                     {
                         FoundationScript foundationScript = Container.GetComponent<FoundationScript>();
-                        if (foundationScript.CardList.Count > 1 && foundationScript.CardList[1].GetComponent<CardScript>().Hidden)
+                        if (foundationScript.CardList.Count > 1 && foundationScript.CardList[^2].GetComponent<CardScript>().Hidden)
                         {
                             nextCardWasHidden = true;
                         }

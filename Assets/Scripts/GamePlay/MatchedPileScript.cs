@@ -11,7 +11,7 @@ public class MatchedPileScript : MonoBehaviour, ICardContainer
 
     public MatchedPileScript()
     {
-        cardList = new();
+        cardList = new(52);
     }
 
     // Initialize the singleton instance.
@@ -34,7 +34,7 @@ public class MatchedPileScript : MonoBehaviour, ICardContainer
 
     public void AddCard(GameObject card)
     {
-        cardList.Insert(0, card);
+        cardList.Add(card);
         card.transform.SetParent(gameObject.transform);
         card.transform.localPosition = Vector3.zero;
         card.GetComponent<CardScript>().Enabled = false;
@@ -43,6 +43,6 @@ public class MatchedPileScript : MonoBehaviour, ICardContainer
     public void RemoveCard(GameObject card)
     {
         card.GetComponent<CardScript>().Enabled = true;
-        cardList.Remove(card);
+        cardList.RemoveAt(cardList.LastIndexOf(card));
     }
 }
