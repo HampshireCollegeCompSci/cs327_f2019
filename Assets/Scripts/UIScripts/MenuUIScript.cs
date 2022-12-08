@@ -115,7 +115,7 @@ public class MenuUIScript : MonoBehaviour
         {
             continueButton.SetActive(false);
         }
-        else if (SaveState.Exists())
+        else if (SaveFile.Exists())
         {
             continueButton.SetActive(true);
         }
@@ -303,7 +303,7 @@ public class MenuUIScript : MonoBehaviour
     [SerializeField]
     private void Continue()
     {
-        if (SaveState.Exists())
+        if (SaveFile.Exists())
         {
             if (Constants.inEditor)
             {

@@ -46,7 +46,7 @@ public class EndGame : MonoBehaviour
         Config.Instance.gamePaused = true;
         Config.Instance.gameWin = didWin;
 
-        SaveState.Delete();
+        SaveFile.Delete();
 
         if (Config.GameValues.enableBonusPoints)
         {

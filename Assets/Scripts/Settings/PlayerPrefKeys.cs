@@ -45,6 +45,16 @@ public static class PlayerPrefKeys
         }
     }
 
+    public static bool NewGameStateVersion()
+    {
+        if (PlayerPrefs.GetString(Constants.gameStateVersionKey, defaultValue : "NULL") != Constants.gameStateVersion)
+        {
+            PlayerPrefs.SetString(Constants.gameStateVersionKey, Constants.gameStateVersion);
+            return true;
+        }
+        return false;
+    }
+
     public static float GetMusicVolume()
     {
         return ((float)PlayerPrefs.GetInt(Constants.musicVolumeKey)) / Constants.musicVolumeDenominator;

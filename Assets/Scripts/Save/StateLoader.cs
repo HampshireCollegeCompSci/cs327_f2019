@@ -130,7 +130,7 @@ public class StateLoader : MonoBehaviour
         gameState.difficulty = Config.Instance.currentDifficulty;
 
         //saving to json, when in editor save it in human readable format
-        File.WriteAllText(SaveState.GetFilePath(), JsonUtility.ToJson(gameState, Constants.inEditor));
+        File.WriteAllText(SaveFile.GetPath(), JsonUtility.ToJson(gameState, Constants.inEditor));
 
         //UnityEditor.AssetDatabase.Refresh();
     }
@@ -140,7 +140,7 @@ public class StateLoader : MonoBehaviour
         Debug.Log("loading save state");
 
         // load the save file from the save path and unpack it
-        string jsonTextFile = File.ReadAllText(SaveState.GetFilePath());
+        string jsonTextFile = File.ReadAllText(SaveFile.GetPath());
         GameState gameState = JsonUtility.FromJson<GameState>(jsonTextFile);
         UnpackGameState(gameState);
     }

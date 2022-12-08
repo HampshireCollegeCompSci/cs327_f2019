@@ -45,6 +45,8 @@ public class Config : MonoBehaviour
             Vibration.Init();
             // Check Player Preferences
             PlayerPrefKeys.CheckKeys();
+            // Check if the game state version needs updating and if the save file needs deleting
+            SaveFile.CheckNewGameStateVersion();
             // Set the application frame rate to what was saved
             SetFrameRate();
         }

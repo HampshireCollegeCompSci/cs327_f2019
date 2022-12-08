@@ -23,6 +23,9 @@ public static class Constants
     public static readonly bool inEditor = Application.isEditor;
 
     // Begin Keys
+    public const string gameStateVersionKey = "GameStateVersion";
+    public const string gameStateVersion = "1";
+
     // Summary stats
     public const string highScoreKey = "HighScore";
     public const string leastMovesKey = "LeastMoves";

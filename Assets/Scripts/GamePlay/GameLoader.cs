@@ -63,7 +63,7 @@ public class GameLoader : MonoBehaviour
             catch
             {
                 Debug.LogError("failed to load the save state");
-                SaveState.Delete();
+                SaveFile.Delete();
                 return false;
             }
         }
@@ -171,7 +171,7 @@ public class GameLoader : MonoBehaviour
 
         // remove old stuff
         UndoScript.Instance.ClearMoveLog();
-        SaveState.Delete();
+        SaveFile.Delete();
 
         // reset game values
         Config.Instance.consecutiveMatches = 0;

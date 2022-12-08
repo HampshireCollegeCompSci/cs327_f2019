@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using UnityEngine;
 
-public static class SaveState
+public static class SaveFile
 {
-    public static string GetFilePath()
+    public static string GetPath()
     {
         if (Constants.inEditor)
         {
@@ -17,7 +17,19 @@ public static class SaveState
 
     public static bool Exists()
     {
-        return File.Exists(GetFilePath());
+        return File.Exists(GetPath());
+    }
+
+    public static void CheckNewGameStateVersion()
+    {
+        if(PlayerPrefKeys.NewGameStateVersion())
+        {
+            Debug.Log("a new game state version was detected");
+            if (Exists())
+            {
+                Delete();
+            }
+        }
     }
 
     public static void Delete()
