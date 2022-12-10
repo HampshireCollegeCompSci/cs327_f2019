@@ -69,45 +69,29 @@ public class StateLoader : MonoBehaviour
 
         Debug.Log("writing state");
 
-        GameState gameState = new()
-        {
-            foundations = new(4),
-            reactors = new(4)
-        };
+        GameState<byte> gameState = new();
 
         //save foundations
-        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+        for (int i = 0; i < UtilsScript.Instance.foundationScripts.Length; i++)
         {
-            FoundationCards foundationCards = new()
-            {
-                hidden = new(foundationScript.CardList.Count),
-                unhidden = new(foundationScript.CardList.Count)
-            };
-
-            foreach (GameObject card in foundationScript.CardList)
+            foreach (GameObject card in UtilsScript.Instance.foundationScripts[i].CardList)
             {
                 CardScript cardScript = card.GetComponent<CardScript>();
                 if (cardScript.Hidden)
                 {
-                    foundationCards.hidden.Add(cardScript.CardID);
+                    gameState.foundations[i].hidden.Add(cardScript.CardID);
                 }
                 else
                 {
-                    foundationCards.unhidden.Add(cardScript.CardID);
+                    gameState.foundations[i].unhidden.Add(cardScript.CardID);
                 }
             }
-
-            gameState.foundations.Add(foundationCards);
         }
 
         //save reactors
-        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        for (int i = 0; i < UtilsScript.Instance.reactorScripts.Length; i++)
         {
-            ReactorCards cardList = new()
-            {
-                cards = ConvertCardListToStringList(reactorScript.CardList)
-            };
-            gameState.reactors.Add(cardList);
+            gameState.reactors[i].cards = ConvertCardListToStringList(UtilsScript.Instance.reactorScripts[i].CardList);
         }
 
         //save wastepile
@@ -141,8 +125,8 @@ public class StateLoader : MonoBehaviour
 
         // load the save file from the save path and unpack it
         string jsonTextFile = File.ReadAllText(SaveFile.GetPath());
-        GameState gameState = JsonUtility.FromJson<GameState>(jsonTextFile);
-        UnpackGameState(gameState);
+        GameState<byte> saveState = JsonUtility.FromJson<GameState<byte>>(jsonTextFile);
+        UnpackGameState(saveState);
     }
 
     public void LoadTutorialState(string fileName)
@@ -152,8 +136,8 @@ public class StateLoader : MonoBehaviour
 
         // load the asset from resources and unpack it
         string jsonTextFile = Resources.Load<TextAsset>(filePath).ToString();
-        TutorialState tutorialState = JsonUtility.FromJson<TutorialState>(jsonTextFile);
-        UnpackTutorialState(tutorialState);
+        GameState<string> tutorialState = JsonUtility.FromJson<GameState<string>>(jsonTextFile);
+        UnpackGameState(tutorialState, isTutorial : true);
     }
 
     private int GetOriginIndex(GameObject origin)
@@ -163,7 +147,7 @@ public class StateLoader : MonoBehaviour
         throw new System.Exception($"the origin \"{origin.name}\" was not found");
     }
 
-    private void UnpackGameState(GameState state)
+    private void UnpackGameState<T>(GameState<T> state, bool isTutorial = false)
     {
         Debug.Log($"unpacking state");
 
@@ -181,14 +165,17 @@ public class StateLoader : MonoBehaviour
             throw new System.Exception("there are no cards in the load pile when starting to load the game");
         }
 
-        SetUpMoveLog(state.moveLog, LoadPileScript.Instance.CardList);
+        if (!isTutorial)
+        {
+            SetUpMoveLog(state.moveLog, LoadPileScript.Instance.CardList);
+        }
 
         // sharing the index variable for the foundations and reactors
         int index;
 
         //set up foundations
         index = 0;
-        foreach (FoundationCards foundationCards in state.foundations)
+        foreach (var foundationCards in state.foundations)
         {
             SetUpLocationWithCards(foundationCards.hidden, UtilsScript.Instance.foundations[index], isHidden: true);
             SetUpLocationWithCards(foundationCards.unhidden, UtilsScript.Instance.foundations[index]);
@@ -197,7 +184,7 @@ public class StateLoader : MonoBehaviour
 
         //set up reactors
         index = 0;
-        foreach (ReactorCards cardList in state.reactors)
+        foreach (var cardList in state.reactors)
         {
             SetUpLocationWithCards(cardList.cards, UtilsScript.Instance.reactors[index]);
             index++;
@@ -210,73 +197,27 @@ public class StateLoader : MonoBehaviour
         SetUpLocationWithCards(state.matches, MatchedPileScript.Instance.gameObject);
 
         //set up deck
-        SetUpLocationWithCards(state.deck, DeckScript.Instance.gameObject);
+        if (isTutorial)
+        {
+            // during the tutorial the deck order doesn't matter
+            int cardCount = LoadPileScript.Instance.CardList.Count;
+            while (cardCount != 0)
+            {
+                // move from top down for efficiency, LoadPileScript.Remove() takes advantage of this
+                LoadPileScript.Instance.CardList[^1].GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, false, false, false);
+                cardCount--;
+            }
+        }
+        else
+        {
+            SetUpLocationWithCards(state.deck, DeckScript.Instance.gameObject);
+        }
 
         // if the game state has missing cards they will be leftover in the load pile cardlist
         if (LoadPileScript.Instance.CardList.Count != 0)
         {
             Debug.LogError("there are cards still in the load pile after loading the game");
             throw new System.Exception("there are cards still in the load pile after loading the game");
-        }
-
-        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
-        {
-            reactorScript.SetReactorScore();
-        }
-
-        UtilsScript.Instance.UpdateActions(state.actions, startingGame: true);
-        DeckScript.Instance.UpdateDeckCounter();
-    }
-
-    private void UnpackTutorialState(TutorialState state)
-    {
-        Debug.Log($"unpacking tutorial state");
-
-        //set up simple variables
-        Config.Instance.SetDifficulty(state.difficulty);
-        ScoreScript.Instance.SetScore(state.score);
-        Config.Instance.consecutiveMatches = state.consecutiveMatches;
-        Config.Instance.moveCounter = state.moveCounter;
-        // more is done at the end
-
-        // if the tutorial isn't being loaded then we need to setup the move log
-        if (LoadPileScript.Instance.CardList.Count == 0)
-        {
-            throw new System.Exception("there are no cards in the load pile");
-        }
-
-        // sharing the index variable for the foundations and reactors
-        int index;
-
-        //set up foundations
-        index = 0;
-        foreach (TutorialFoundationCards foundationCards in state.foundations)
-        {
-            SetUpLocationWithCards(foundationCards.hidden, UtilsScript.Instance.foundations[index], isHidden: true);
-            SetUpLocationWithCards(foundationCards.unhidden, UtilsScript.Instance.foundations[index]);
-            index++;
-        }
-
-        //set up reactors
-        index = 0;
-        foreach (TutorialReactorCards cardList in state.reactors)
-        {
-            SetUpLocationWithCards(cardList.cards, UtilsScript.Instance.reactors[index]);
-            index++;
-        }
-
-        //set up wastepile
-        SetUpLocationWithCards(state.wastePile, WastepileScript.Instance.gameObject);
-
-        //set up matches
-        SetUpLocationWithCards(state.matches, MatchedPileScript.Instance.gameObject);
-
-        // during the tutorial the deck order doesn't matter
-        int cardCount = LoadPileScript.Instance.CardList.Count;
-        while (cardCount != 0)
-        {
-            LoadPileScript.Instance.CardList[^1].GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, false, false, false);
-            cardCount--;
         }
 
         foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
@@ -304,17 +245,12 @@ public class StateLoader : MonoBehaviour
 
         Stack<Move> newMoveLog = new();
 
-        // going backwards through all the saved moves and recreate them
+        // going through all the saved moves and recreate them
         foreach (SaveMove saveMove in moves)
         {
-            if (saveMove.o < 0 || saveMove.o >= origins.Count)
-            {
-                throw new System.NullReferenceException($"origin \"{saveMove.o}\" is invalid");
-            }
-
             Move newMove = new()
             {
-                card = cardList.Find(card => card.GetComponent<CardScript>().CardID == saveMove.c),
+                card = cardList[saveMove.c - 1],
                 origin = origins[saveMove.o],
                 moveType = saveMove.m,
                 nextCardWasHidden = System.Convert.ToBoolean(saveMove.h),
@@ -324,46 +260,32 @@ public class StateLoader : MonoBehaviour
                 moveNum = saveMove.n
             };
 
-            if (newMove.card == null)
-            {
-                throw new System.NullReferenceException($"card \"{saveMove.c}\" was not found");
-            }
-
             newMoveLog.Push(newMove);
         }
 
         UndoScript.Instance.SetMoveLog(newMoveLog);
     }
 
-    private void SetUpLocationWithCards(List<byte> cardList, GameObject newLocation, bool isHidden = false)
+    private void SetUpLocationWithCards<T>(List<T> cardList, GameObject newLocation, bool isHidden = false)
     {
-        // seting up the new location with cards using the given commands, and cards
-        foreach (byte cardID in cardList)
+        foreach (T cardID in cardList)
         {
-            GameObject card = LoadPileScript.Instance.CardList.Find(card => card.GetComponent<CardScript>().CardID == cardID);
+            GameObject card = cardID switch
+            {
+                byte ID => LoadPileScript.Instance.CardList.Find(card => card.GetComponent<CardScript>().CardID == ID),
+                string name => LoadPileScript.Instance.CardList.Find(card => card.GetComponent<CardScript>().name == name),
+                _ => null
+            };
+
+
+            // byte ID => LoadPileScript.Instance.CardList.BinarySearch(ID, Comparer<GameObject>.Create((x, y) =>
+            // x.GetComponent<CardScript>().CardID.CompareTo(y.GetComponent<CardScript>().CardID))),
+
             if (card == null)
             {
                 throw new System.NullReferenceException($"the card \"{cardID}\" was not found");
             }
-            CardScript cardScript = card.GetComponent<CardScript>();
-            cardScript.MoveCard(newLocation, doLog: false, isAction: false);
-            if (isHidden)
-            {
-                cardScript.Hidden = true;
-            }
-        }
-    }
 
-    private void SetUpLocationWithCards(List<string> cardList, GameObject newLocation, bool isHidden = false)
-    {
-        // seting up the new location with cards using the given commands, and cards
-        foreach (string cardName in cardList)
-        {
-            GameObject card = LoadPileScript.Instance.CardList.Find(card => card.GetComponent<CardScript>().name == cardName);
-            if (card == null)
-            {
-                throw new System.NullReferenceException($"the card \"{cardName}\" was not found");
-            }
             CardScript cardScript = card.GetComponent<CardScript>();
             cardScript.MoveCard(newLocation, doLog: false, isAction: false);
             if (isHidden)
