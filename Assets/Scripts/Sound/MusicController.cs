@@ -55,7 +55,7 @@ public class MusicController : MonoBehaviour, ISound
     {
         audioMixer.SetFloat(Constants.AudioMixerNames.track1, -80);
         audioMixer.SetFloat(Constants.AudioMixerNames.track2, -80);
-        UpdateMaxVolume(PlayerPrefKeys.GetMusicVolume());
+        UpdateMaxVolume(PersistentSettings.MusicVolume);
     }
 
     private byte PlayingTrack
@@ -163,7 +163,7 @@ public class MusicController : MonoBehaviour, ISound
         }
     }
 
-    public void UpdateMaxVolume(float newVolume)
+    public void UpdateMaxVolume(int newVolume)
     {
         Debug.Log($"setting music volume to: {newVolume}");
         //NormalizeFadeValues(newVolume);
@@ -174,8 +174,8 @@ public class MusicController : MonoBehaviour, ISound
                 Muted = false;
             }
 
-            maxVolume = newVolume;
-            audioMixer.SetFloat(Constants.AudioMixerNames.master, Mathf.Log10(newVolume) * 20);
+            maxVolume = ((float)newVolume) / Constants.Settings.musicVolumeDenominator;
+            audioMixer.SetFloat(Constants.AudioMixerNames.master, Mathf.Log10(maxVolume) * 20);
         }
         else
         {

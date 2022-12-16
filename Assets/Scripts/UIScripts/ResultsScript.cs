@@ -19,15 +19,11 @@ public class ResultsScript : MonoBehaviour
     private void SetScoreBoard()
     {
         // game won or lost text
-        if (Config.Instance.gameWin)
+        stateText.text = Config.Instance.gameWin switch
         {
-            stateText.text = Config.GameValues.gameStateTxtEnglish[0];
-        }
-        else
-        {
-            stateText.text = Config.GameValues.gameStateTxtEnglish[1];
-        }
-
+            true => Config.GameValues.gameStateTxtEnglish[0],
+            false => Config.GameValues.gameStateTxtEnglish[1]
+        };
         difficultyText.text = Config.Instance.currentDifficulty.ToUpper();
 
         SetScore();
@@ -36,7 +32,7 @@ public class ResultsScript : MonoBehaviour
 
     private void SetScore()
     {
-        string highScoreKey = PlayerPrefKeys.GetHighScoreKey(Config.Instance.currentDifficulty);
+        string highScoreKey = PersistentSettings.GetHighScoreKey(Config.Instance.currentDifficulty);
 
         // Set the current score
         int currentScoreNum = Config.Instance.score;
@@ -66,7 +62,7 @@ public class ResultsScript : MonoBehaviour
 
     private void SetMoves()
     {
-        string leastMovesKey = PlayerPrefKeys.GetLeastMovesKey(Config.Instance.currentDifficulty);
+        string leastMovesKey = PersistentSettings.GetLeastMovesKey(Config.Instance.currentDifficulty);
 
         // Set the current moves
         int currentMovesNum = Config.Instance.moveCounter;

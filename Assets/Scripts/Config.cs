@@ -44,11 +44,11 @@ public class Config : MonoBehaviour
             // Setup the Vibration Package
             Vibration.Init();
             // Check Player Preferences
-            PlayerPrefKeys.CheckKeys();
+            PersistentSettings.CheckKeys();
             // Check if the game state version needs updating and if the save file needs deleting
             SaveFile.CheckNewGameStateVersion();
             // Set the application frame rate to what was saved
-            SetFrameRate();
+            Application.targetFrameRate = PersistentSettings.FrameRate;
         }
         else if (Instance != this)
         {
@@ -75,21 +75,6 @@ public class Config : MonoBehaviour
         }
 
         throw new System.Exception($"The difficulty \"{dif}\" was not found.");
-    }
-
-    private void SetFrameRate()
-    {
-        int targetFrameRate = PlayerPrefs.GetInt(Constants.Settings.frameRateKey, -1);
-        // the screen refresh rate must be divisible by the targeted frame rate
-        if (targetFrameRate != -1 && (Screen.currentResolution.refreshRate % targetFrameRate != 0))
-        {
-            Debug.LogWarning($"the screen refresh rate of {Screen.currentResolution.refreshRate} doesn't support the saved target frame rate.");
-            targetFrameRate = -1;
-            PlayerPrefs.SetInt(Constants.Settings.frameRateKey, targetFrameRate);
-        }
-
-        Debug.Log($"setting target frame rate to: {targetFrameRate}");
-        Application.targetFrameRate = targetFrameRate;
     }
 
     private void LoadGameValues()

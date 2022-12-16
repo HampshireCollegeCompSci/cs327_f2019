@@ -22,7 +22,7 @@ public static class SaveFile
 
     public static void CheckNewGameStateVersion()
     {
-        if(PlayerPrefKeys.NewGameStateVersion())
+        if(PersistentSettings.NewGameStateVersion())
         {
             Debug.Log("a new game state version was detected");
             if (Exists())

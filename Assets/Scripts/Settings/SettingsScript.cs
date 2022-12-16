@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Newtonsoft.Json.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -38,38 +39,23 @@ public class SettingsScript : MonoBehaviour
     {
         lockout = true;
 
-        PlayerPrefKeys.CheckKeys();
-
         // music volume
         musicSlider.maxValue = Constants.Settings.musicVolumeDenominator;
         musicMultiplier = 100 / Constants.Settings.musicVolumeDenominator;
-        int volume = PlayerPrefs.GetInt(Constants.Settings.musicVolumeKey);
+        int volume = PersistentSettings.MusicVolume;
         musicSlider.value = volume;
         musicVolumeText.text = $"{volume * musicMultiplier}%";
 
         // sound effects volume
         soundEffectsSlider.maxValue = Constants.Settings.soundEffectsVolumeDenominator;
         soundEffectsMultiplier = 100 / Constants.Settings.soundEffectsVolumeDenominator;
-        volume = PlayerPrefs.GetInt(Constants.Settings.soundEffectsVolumeKey);
+        volume = PersistentSettings.SoundEffectsVolume;
         soundEffectsSlider.value = volume;
         soundEffectsVolumeText.text = $"{volume * soundEffectsMultiplier}%";
 
-        // boolean settings
-        bool isOn;
-
         if (Vibration.HasVibrator())
         {
-            // vibration enabled
-            if (bool.TryParse(PlayerPrefs.GetString(Constants.Settings.vibrationEnabledKey), out isOn))
-            {
-                vibrationToggle.isOn = isOn;
-            }
-            else
-            {
-                // unable to parse
-                PlayerPrefs.SetString(Constants.Settings.vibrationEnabledKey, false.ToString());
-                vibrationToggle.isOn = false;
-            }
+            vibrationToggle.isOn = PersistentSettings.VibrationEnabled;
         }
         else
         {
@@ -78,18 +64,102 @@ public class SettingsScript : MonoBehaviour
             vibrationToggle.isOn = false;
         }
 
-        // food suits enabled
-        if (bool.TryParse(PlayerPrefs.GetString(Constants.Settings.foodSuitsEnabledKey), out isOn))
+        foodSuitsToggle.isOn = PersistentSettings.VibrationEnabled;
+
+        SetupFrameRateSettings();
+
+        lockout = false;
+    }
+
+    [SerializeField]
+    private void MusicVolumeChange(float update)
+    {
+        if (lockout) return;
+
+        int volumeUpdate = (int)update;
+        musicVolumeText.text = $"{volumeUpdate * musicMultiplier}%";
+        PersistentSettings.MusicVolume = volumeUpdate;
+        MusicController.Instance.UpdateMaxVolume(volumeUpdate);
+    }
+
+    [SerializeField]
+    private void SoundEffectsVolumeChange(float update)
+    {
+        if (lockout) return;
+
+        int volumeUpdate = (int)update;
+        soundEffectsVolumeText.text = $"{volumeUpdate * soundEffectsMultiplier}%";
+        PersistentSettings.SoundEffectsVolume = volumeUpdate;
+        SoundEffectsController.Instance.UpdateMaxVolume(volumeUpdate);
+        SoundEffectsController.Instance.ButtonPressSound(vibrate: false);
+
+        if (SpaceBabyController.Instance != null)
         {
-            foodSuitsToggle.isOn = isOn;
+            SpaceBabyController.Instance.UpdateMaxVolume(volumeUpdate);
         }
-        else
+    }
+
+    [SerializeField]
+    private void VibrationEnabledOnToggle(bool update)
+    {
+        if (lockout) return;
+        
+        PersistentSettings.VibrationEnabled = update;
+        SoundEffectsController.Instance.ButtonPressSound();
+    }
+
+    [SerializeField]
+    private void FoodSuitsEnabledOnToggle(bool update)
+    {
+        if (lockout) return;
+
+        PersistentSettings.FoodSuitsEnabled = update;
+        SoundEffectsController.Instance.ButtonPressSound();
+
+        if (SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
         {
-            // unable to parse
-            PlayerPrefs.SetString(Constants.Settings.foodSuitsEnabledKey, false.ToString());
-            foodSuitsToggle.isOn = false;
+            suitArtNoticeObject.SetActive(true);
+        }
+    }
+
+    [SerializeField]
+    private void TryToClearRecordsButton()
+    {
+        if (lockout) return;
+
+        confirmYesButton.interactable = false;
+        confirmObject.SetActive(true);
+        StartCoroutine(ButtonDelay());
+    }
+
+    [SerializeField]
+    private void ClearRecordsConfirmationButton()
+    {
+        Debug.Log("clearing saved records");
+        PersistentSettings.ClearScores();
+    }
+
+    [SerializeField]
+    private void FrameRateChange(float update)
+    {
+        if (lockout) return;
+
+        int frameRateIndex = (int)update;
+        if (frameRateIndex < 0 || frameRateIndex >= frameRates.Count)
+        {
+            Debug.LogError($"an invalid frame rate index update of {frameRateIndex} was inputted.");
+            frameRateIndex = 0;
         }
 
+        int frameRateSetting = frameRates[frameRateIndex];
+        Debug.Log($"seting the targetFrameRate to: {frameRateSetting}");
+        Application.targetFrameRate = frameRateSetting;
+        PersistentSettings.FrameRate = frameRateSetting;
+        UpdateFrameRateText(frameRateSetting);
+    }
+
+    private void SetupFrameRateSettings()
+    {
         // target frame rate settings
         // https://docs.unity3d.com/ScriptReference/Application-targetFrameRate.html
         // make a list of most of the supported target frame rates
@@ -107,40 +177,28 @@ public class SettingsScript : MonoBehaviour
         };
 
         // -1 is the default for the platform
-        int frameRateSetting = PlayerPrefs.GetInt(Constants.Settings.frameRateKey, -1);
+        int frameRateSetting = PersistentSettings.FrameRate;
 
         // figure out if the frame rate setting exists in our list of target frame rates
         int frameRateIndex = frameRates.IndexOf(frameRateSetting);
         if (frameRateIndex == -1)
         {
-            // if the setting is valid add it to the list
-            if (frameRateSetting > 0 && maxFrameRate % frameRateSetting == 0)
+            Debug.LogWarning($"the frame rate of {frameRateSetting} was not found in our list of target frame rates, adding it to them now.");
+            bool addedToList = false;
+            for (int i = 1; i < frameRates.Count; i++)
             {
-                Debug.LogWarning($"the valid frame rate of {frameRateSetting} was not found in our list of target frame rates, adding it to them now.");
-                bool addedToList = false;
-                for (int i = 1; i < frameRates.Count; i++)
+                if (frameRateSetting < frameRates[i])
                 {
-                    if (frameRateSetting < frameRates[i])
-                    {
-                        frameRates.Insert(i, frameRateSetting);
-                        frameRateIndex = i;
-                        addedToList = true;
-                        break;
-                    }
-                }
-                if (!addedToList)
-                {
-                    frameRates.Add(frameRateSetting);
-                    frameRateIndex = frameRates.Count - 1;
+                    frameRates.Insert(i, frameRateSetting);
+                    frameRateIndex = i;
+                    addedToList = true;
+                    break;
                 }
             }
-            else
+            if (!addedToList)
             {
-                Debug.LogError($"the an unsupported frame rate of {frameRateSetting} was saved, defaulting to our minimum");
-                frameRateSetting = frameRates[0];
-                Application.targetFrameRate = frameRateSetting;
-                PlayerPrefs.SetInt(Constants.Settings.frameRateKey, frameRateSetting);
-                frameRateIndex = 0;
+                frameRates.Add(frameRateSetting);
+                frameRateIndex = frameRates.Count - 1;
             }
         }
 
@@ -148,118 +206,16 @@ public class SettingsScript : MonoBehaviour
         frameRateSlider.maxValue = frameRates.Count - 1;
         frameRateSlider.value = frameRateIndex;
 
-        if (frameRateSetting == -1)
-        {
-            frameRateText.text = "DEFAULT";
-        }
-        else
-        {
-            frameRateText.text = frameRateSetting.ToString();
-        }
-        
-        lockout = false;
+        UpdateFrameRateText(frameRateSetting);
     }
 
-    public void MusicVolumeChange(float update)
+    private void UpdateFrameRateText(int frameRate)
     {
-        if (lockout)
-            return;
-
-        int volumeUpdate = (int)update;
-        musicVolumeText.text = $"{volumeUpdate * musicMultiplier}%";
-        PlayerPrefs.SetInt(Constants.Settings.musicVolumeKey, volumeUpdate);
-        update /= Constants.Settings.musicVolumeDenominator;
-        MusicController.Instance.UpdateMaxVolume(update);
-    }
-
-    public void SoundEffectsVolumeChange(float update)
-    {
-        if (lockout)
-            return;
-
-        int volumeUpdate = (int)update;
-        soundEffectsVolumeText.text = $"{volumeUpdate * soundEffectsMultiplier}%";
-        PlayerPrefs.SetInt(Constants.Settings.soundEffectsVolumeKey, volumeUpdate);
-        update /= Constants.Settings.soundEffectsVolumeDenominator;
-        SoundEffectsController.Instance.UpdateMaxVolume(update);
-        SoundEffectsController.Instance.ButtonPressSound(vibrate: false);
-
-        if (SpaceBabyController.Instance != null)
+        frameRateText.text = frameRate switch
         {
-            SpaceBabyController.Instance.UpdateMaxVolume(update);
-        }
-
-    }
-
-    public void VibrationEnabledOnToggle(bool update)
-    {
-        if (lockout)
-            return;
-
-        PlayerPrefs.SetString(Constants.Settings.vibrationEnabledKey, update.ToString());
-        SoundEffectsController.Instance.UpdateVibration(update);
-        SoundEffectsController.Instance.ButtonPressSound();
-    }
-
-    public void FoodSuitsEnabledOnToggle(bool update)
-    {
-        if (lockout)
-            return;
-
-        PlayerPrefs.SetString(Constants.Settings.foodSuitsEnabledKey, update.ToString());
-        SoundEffectsController.Instance.ButtonPressSound();
-
-        if (SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
-        {
-            suitArtNoticeObject.SetActive(true);
-        }
-    }
-
-    public void TryToClearRecordsButton()
-    {
-        if (lockout)
-            return;
-
-        confirmYesButton.interactable = false;
-        confirmObject.SetActive(true);
-        StartCoroutine(ButtonDelay());
-    }
-
-    public void ClearRecordsConfirmationButton()
-    {
-        Debug.Log("clearing saved records");
-
-        // since ResultsScript.cs detects and auto fills the very first records this is how it must be done
-        foreach (string difficulty in Config.GameValues.difficulties)
-        {
-            PlayerPrefs.DeleteKey(PlayerPrefKeys.GetHighScoreKey(difficulty));
-            PlayerPrefs.DeleteKey(PlayerPrefKeys.GetLeastMovesKey(difficulty));
-        }
-    }
-
-    public void FrameRateChange(float update)
-    {
-        if (lockout) return;
-
-        int frameRateIndex = (int)update;
-        if (frameRateIndex < 0 || frameRateIndex >= frameRates.Count)
-        {
-            Debug.LogError($"an invalid frame rate index update of {frameRateIndex} was inputted.");
-            frameRateIndex = 0;
-        }
-
-        int frameRateSetting = frameRates[frameRateIndex];
-        PlayerPrefs.SetInt(Constants.Settings.frameRateKey, frameRateSetting);
-        Debug.Log($"seting the targetFrameRate to: {frameRateSetting}");
-        Application.targetFrameRate = frameRateSetting;
-        if (frameRateSetting == -1)
-        {
-            frameRateText.text = "DEFAULT";
-        }
-        else
-        {
-            frameRateText.text = frameRateSetting.ToString();
-        }
+            -1 => "DEFAULT",
+            _ => frameRate.ToString()
+        };
     }
 
     private IEnumerator ButtonDelay()

@@ -20,8 +20,6 @@ public class SoundEffectsController : MonoBehaviour, ISound
         mushroomSound, bugSound, fruitSound, rockSound,
         explosionSound;
 
-    private bool vibrationEnabled;
-
     // Initialize the singleton instance.
     private void Awake()
     {
@@ -40,19 +38,13 @@ public class SoundEffectsController : MonoBehaviour, ISound
 
     private void Start()
     {
-        UpdateMaxVolume(PlayerPrefKeys.GetSoundEffectsVolume());
-        bool.TryParse(PlayerPrefs.GetString(Constants.Settings.vibrationEnabledKey), out vibrationEnabled);
+        UpdateMaxVolume(PersistentSettings.SoundEffectsVolume);
     }
 
-    public void UpdateMaxVolume(float newVolume)
+    public void UpdateMaxVolume(int newVolume)
     {
         Debug.Log($"updating sound effects volume to: {newVolume}");
-        soundController.volume = newVolume;
-    }
-
-    public void UpdateVibration(bool vibrationEnabled)
-    {
-        this.vibrationEnabled = vibrationEnabled;
+        soundController.volume = ((float)newVolume) / Constants.Settings.soundEffectsVolumeDenominator;
     }
 
     public void ButtonPressSound(bool vibrate = true)
@@ -191,17 +183,17 @@ public class SoundEffectsController : MonoBehaviour, ISound
 
     public void VibrateSmall()
     {
-        if (vibrationEnabled) Vibration.VibratePop();
+        if (PersistentSettings.VibrationEnabled) Vibration.VibratePop();
     }
 
     public void VibrateMedium()
     {
-        if (vibrationEnabled) Vibration.VibratePeek();
+        if (PersistentSettings.VibrationEnabled) Vibration.VibratePeek();
     }
 
     public void VibrateLarge()
     {
-        if (vibrationEnabled) Vibration.Vibrate();
+        if (PersistentSettings.VibrationEnabled) Vibration.Vibrate();
     }
 
     private IEnumerator AlertVibration()

@@ -259,17 +259,8 @@ public class GameLoader : MonoBehaviour
 
     private Sprite[] GetSuitSprites()
     {
-        // getting user setting
-        if (bool.TryParse(PlayerPrefs.GetString(Constants.Settings.foodSuitsEnabledKey), out bool isOn))
-        { }
-        else
-        {
-            // unable to parse
-            isOn = false;
-        }
-
         // the food sprites start at index 0, classic at 4
-        int suitSpritesIndex = isOn ? 0 : 4;
+        int suitSpritesIndex = PersistentSettings.FoodSuitsEnabled ? 0 : 4;
 
         // getting a subset list of suit sprites to use for the token/cards
         Sprite[] suitSpritesSubset = new Sprite[4];

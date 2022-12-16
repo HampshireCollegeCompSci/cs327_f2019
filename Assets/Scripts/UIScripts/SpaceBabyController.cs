@@ -32,14 +32,14 @@ public class SpaceBabyController : MonoBehaviour, ISound
     // Start is called before the first frame update
     void Start()
     {
-        UpdateMaxVolume(PlayerPrefKeys.GetSoundEffectsVolume());
+        UpdateMaxVolume(PersistentSettings.SoundEffectsVolume);
         BabyIdle();
     }
 
-    public void UpdateMaxVolume(float newVolume)
+    public void UpdateMaxVolume(int newVolume)
     {
         Debug.Log($"updating space baby volume to: {newVolume}");
-        audioSource.volume = newVolume;
+        audioSource.volume = ((float)newVolume) / Constants.Settings.soundEffectsVolumeDenominator;
     }
 
     public void ResetBaby()
