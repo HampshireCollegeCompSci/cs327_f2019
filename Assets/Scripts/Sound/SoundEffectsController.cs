@@ -41,7 +41,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
     private void Start()
     {
         UpdateMaxVolume(PlayerPrefKeys.GetSoundEffectsVolume());
-        bool.TryParse(PlayerPrefs.GetString(Constants.vibrationEnabledKey), out vibrationEnabled);
+        bool.TryParse(PlayerPrefs.GetString(Constants.Settings.vibrationEnabledKey), out vibrationEnabled);
     }
 
     public void UpdateMaxVolume(float newVolume)
@@ -170,16 +170,16 @@ public class SoundEffectsController : MonoBehaviour, ISound
     {
         switch (suit)
         {
-            case Constants.heartsSuitIndex:
+            case Constants.Suits.Hearts.index:
                 soundController.PlayOneShot(mushroomSound, 1);
                 break;
-            case Constants.diamondsSuitIndex:
+            case Constants.Suits.Diamonds.index:
                 soundController.PlayOneShot(bugSound, 1);
                 break;
-            case Constants.spadesSuitIndex:
+            case Constants.Suits.Spades.index:
                 soundController.PlayOneShot(rockSound, 1);
                 break;
-            case Constants.clubsSuitIndex:
+            case Constants.Suits.Clubs.index:
                 soundController.PlayOneShot(fruitSound, 1);
                 break;
             default:

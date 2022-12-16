@@ -221,11 +221,11 @@ public class CardScript : MonoBehaviour, IGlow
             SpriteRenderer hologramFoodSP = hologramFood.GetComponent<SpriteRenderer>();
             hologramFoodSP.color = Config.GameValues.highlightColors[value];
 
-            if (value == Constants.matchHighlightColorLevel)
+            if (value == Constants.HighlightColorLevel.match)
             {
                 hologramFoodSP.sprite = hologramComboSprite;
             }
-            else if (_hologramColorLevel == Constants.matchHighlightColorLevel)
+            else if (_hologramColorLevel == Constants.HighlightColorLevel.match)
             {
                 hologramFoodSP.sprite = hologramFoodSprite;
             }
@@ -273,7 +273,7 @@ public class CardScript : MonoBehaviour, IGlow
         cardSuitIndex = suitIndex;
 
         cardID = (byte)(rank + suitIndex * 13);
-        this.name = $"{Constants.suits[cardSuitIndex]}_{cardRank}";
+        this.name = $"{Constants.Suits.names[cardSuitIndex]}_{cardRank}";
 
         // reactor values, all face cards have a value of 10
         cardReactorValue = (byte)(rank < 10 ? rank : 10);
@@ -394,7 +394,7 @@ public class CardScript : MonoBehaviour, IGlow
         {
             switch (Container.tag)
             {
-                case Constants.foundationTag:
+                case Constants.Tags.foundation:
                     if (doLog)
                     {
                         FoundationScript foundationScript = Container.GetComponent<FoundationScript>();
@@ -405,11 +405,11 @@ public class CardScript : MonoBehaviour, IGlow
                     }
                     Container.GetComponent<FoundationScript>().RemoveCard(gameObject, showHolo: showHolo);
                     break;
-                case Constants.reactorTag:
+                case Constants.Tags.reactor:
                     Container.GetComponent<ReactorScript>().RemoveCard(gameObject);
                     break;
-                case Constants.wastepileTag:
-                    if (!doLog || destination.CompareTag(Constants.deckTag))
+                case Constants.Tags.wastepile:
+                    if (!doLog || destination.CompareTag(Constants.Tags.deck))
                     {
                         WastepileScript.Instance.RemoveCard(gameObject, undoingOrDeck: true, showHolo: showHolo);
                     }
@@ -418,13 +418,13 @@ public class CardScript : MonoBehaviour, IGlow
                         WastepileScript.Instance.RemoveCard(gameObject, showHolo: showHolo);
                     }
                     break;
-                case Constants.deckTag:
+                case Constants.Tags.deck:
                     DeckScript.Instance.RemoveCard(gameObject);
                     break;
-                case Constants.matchedPileTag:
+                case Constants.Tags.matchedPile:
                     MatchedPileScript.Instance.RemoveCard(gameObject);
                     break;
-                case Constants.loadPileTag:
+                case Constants.Tags.loadPile:
                     LoadPileScript.Instance.RemoveCard(gameObject);
                     break;
                 default:
@@ -434,68 +434,68 @@ public class CardScript : MonoBehaviour, IGlow
 
         switch (destination.tag)
         {
-            case Constants.foundationTag:
+            case Constants.Tags.foundation:
                 if (doLog)
                 {
                     if (isStack)
                     {
-                        UndoScript.Instance.LogMove(gameObject, Constants.stackLogMove, isAction, nextCardWasHidden);
+                        UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.stack, isAction, nextCardWasHidden);
                     }
                     else
                     {
-                        UndoScript.Instance.LogMove(gameObject, Constants.moveLogMove, isAction, nextCardWasHidden);
+                        UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.move, isAction, nextCardWasHidden);
                     }
                 }
                 destination.GetComponent<FoundationScript>().AddCard(gameObject, showHolo: showHolo);
                 break;
-            case Constants.reactorTag:
+            case Constants.Tags.reactor:
                 if (doLog)
                 {
                     if (isCycle)
                     {
-                        UndoScript.Instance.LogMove(gameObject, Constants.cycleLogMove, true, nextCardWasHidden);
+                        UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.cycle, true, nextCardWasHidden);
                     }
                     else
                     {
-                        UndoScript.Instance.LogMove(gameObject, Constants.moveLogMove, isAction, nextCardWasHidden);
+                        UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.move, isAction, nextCardWasHidden);
                     }
                 }
                 destination.GetComponent<ReactorScript>().AddCard(gameObject);
                 break;
-            case Constants.wastepileTag:
+            case Constants.Tags.wastepile:
                 if (doLog)
                 {
                     // for undoing a match that goes into the wastepile
-                    if (Container.CompareTag(Constants.foundationTag))
+                    if (Container.CompareTag(Constants.Tags.foundation))
                     {
-                        UndoScript.Instance.LogMove(gameObject, Constants.moveLogMove, isAction, nextCardWasHidden);
+                        UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.move, isAction, nextCardWasHidden);
                     }
                     else
                     {
-                        UndoScript.Instance.LogMove(gameObject, Constants.drawLogMove, isAction);
+                        UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.draw, isAction);
                     }
                 }
 
                 WastepileScript.Instance.AddCard(gameObject, showHolo: showHolo);
                 break;
-            case Constants.deckTag:
+            case Constants.Tags.deck:
                 if (doLog)
                 {
-                    UndoScript.Instance.LogMove(gameObject, Constants.deckresetLogMove, isAction);
+                    UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.deckreset, isAction);
                 }
                 DeckScript.Instance.AddCard(gameObject);
                 break;
-            case Constants.matchedPileTag:
+            case Constants.Tags.matchedPile:
                 if (doLog)
                 {
-                    UndoScript.Instance.LogMove(gameObject, Constants.matchLogMove, isAction, nextCardWasHidden);
+                    UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.match, isAction, nextCardWasHidden);
                 }
                 MatchedPileScript.Instance.AddCard(gameObject);
                 break;
-            case Constants.loadPileTag:
+            case Constants.Tags.loadPile:
                 if (doLog)
                 {
-                    UndoScript.Instance.LogMove(gameObject, Constants.matchLogMove, isAction, nextCardWasHidden);
+                    UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.match, isAction, nextCardWasHidden);
                 }
                 LoadPileScript.Instance.AddCard(gameObject);
                 break;

@@ -79,13 +79,13 @@ public class Config : MonoBehaviour
 
     private void SetFrameRate()
     {
-        int targetFrameRate = PlayerPrefs.GetInt(Constants.frameRateKey, -1);
+        int targetFrameRate = PlayerPrefs.GetInt(Constants.Settings.frameRateKey, -1);
         // the screen refresh rate must be divisible by the targeted frame rate
         if (targetFrameRate != -1 && (Screen.currentResolution.refreshRate % targetFrameRate != 0))
         {
             Debug.LogWarning($"the screen refresh rate of {Screen.currentResolution.refreshRate} doesn't support the saved target frame rate.");
             targetFrameRate = -1;
-            PlayerPrefs.SetInt(Constants.frameRateKey, targetFrameRate);
+            PlayerPrefs.SetInt(Constants.Settings.frameRateKey, targetFrameRate);
         }
 
         Debug.Log($"setting target frame rate to: {targetFrameRate}");

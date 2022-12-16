@@ -79,7 +79,7 @@ public class TutorialScript : MonoBehaviour
     {
         Debug.Log("creating list from JSON");
 
-        TextAsset jsonTextFile = Resources.Load<TextAsset>(Constants.tutorialCommandListFilePath);
+        TextAsset jsonTextFile = Resources.Load<TextAsset>(Constants.Tutorial.tutorialCommandListFilePath);
         TutorialCommands commandFile = JsonUtility.FromJson<TutorialCommands>(jsonTextFile.ToString());
         return commandFile.commands;
     }
@@ -240,7 +240,7 @@ public class TutorialScript : MonoBehaviour
     {
         Debug.Log("exit tutorial requested");
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.LoadScene(Constants.mainMenuScene);
+        SceneManager.LoadScene(Constants.ScenesNames.mainMenu);
         MusicController.Instance.MainMenuMusic();
     }
 
@@ -380,7 +380,7 @@ public class TutorialScript : MonoBehaviour
                 if (highlightOn)
                 {
                     UtilsScript.Instance.reactorScripts[index].GlowLevel = highlightColorLevel;
-                    if (highlightColorLevel == Constants.overHighlightColorLevel)
+                    if (highlightColorLevel == Constants.HighlightColorLevel.over)
                     {
                         UtilsScript.Instance.reactorScripts[index].Alert = true;
                     }

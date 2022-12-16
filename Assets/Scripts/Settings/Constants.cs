@@ -1,95 +1,123 @@
-﻿using UnityEngine;
-
-public static class Constants
+﻿public static class Constants
 {
     // Game Values
     public const string gameValuesPath = "GameConfigurations/gameValues";
 
-    // Save States
-    public const string saveStatePathInEditor = "Assets/Resources/GameStates/";
-    public const string saveStateFileName = "saveState";
+    public static class GameStates
+    {
+        public const string versionKey = "GameStateVersion";
+        public const string version = "1";
 
-    public const string saveStateFileNameJson = saveStateFileName + ".json";
-    public const string saveStateFilePathJsonInEditor = saveStatePathInEditor + saveStateFileNameJson;
-    public const string saveStateFileNameMeta = saveStateFileNameJson + ".meta";
-    public const string saveStateFilePathMetaInEditor = saveStatePathInEditor + saveStateFileNameMeta;
+        public const string saveStatePathInEditor = "Assets/Resources/GameStates/";
+        public const string saveStateFileName = "saveState";
 
-    // Tutorial
-    public const string tutorialResourcePath = "Tutorial/";
-    public const string tutorialCommandListFilePath = tutorialResourcePath + "TutorialCommandList";
-    public const string tutorialStateStartFileName = "tutorialState_default";
+        public const string saveStateFileNameJson = saveStateFileName + ".json";
+        public const string saveStateFilePathJsonInEditor = saveStatePathInEditor + saveStateFileNameJson;
+        public const string saveStateFileNameMeta = saveStateFileNameJson + ".meta";
+        public const string saveStateFilePathMetaInEditor = saveStatePathInEditor + saveStateFileNameMeta;
+    }
 
-    // Other
-    public static readonly bool inEditor = Application.isEditor;
+    public static class Tutorial
+    {
+        public const string tutorialResourcePath = "Tutorial/";
+        public const string tutorialCommandListFilePath = tutorialResourcePath + "TutorialCommandList";
+        public const string tutorialStateStartFileName = "tutorialState_default";
+    }
 
-    // Begin Keys
-    public const string gameStateVersionKey = "GameStateVersion";
-    public const string gameStateVersion = "1";
+    public static class Summary
+    {
+        public const string highScoreKey = "HighScore";
+        public const string leastMovesKey = "LeastMoves";
+    }
 
-    // Summary stats
-    public const string highScoreKey = "HighScore";
-    public const string leastMovesKey = "LeastMoves";
-
-    // Settings
-    public const string soundEffectsVolumeKey = "SoundEffectsVolume";
-    public const int soundEffectsVolumeDenominator = 20;
-    public const string musicVolumeKey = "MusicVolume";
-    public const int musicVolumeDenominator = 20;
-    public const string vibrationEnabledKey = "VibrationEnabled";
-    public const string foodSuitsEnabledKey = "FoodSuitsEnabled";
-    public const string frameRateKey = "FrameRate";
-    // End Keys
+    public static class Settings
+    {
+        public const string soundEffectsVolumeKey = "SoundEffectsVolume";
+        public const int soundEffectsVolumeDenominator = 20;
+        public const string musicVolumeKey = "MusicVolume";
+        public const int musicVolumeDenominator = 20;
+        public const string vibrationEnabledKey = "VibrationEnabled";
+        public const string foodSuitsEnabledKey = "FoodSuitsEnabled";
+        public const string frameRateKey = "FrameRate";
+    }
 
     // Music Audio Mixer Exposed Parameters (name)
-    public const string audioMixerNameMaster = "MasterVolume";
-    public const string audioMixerNameTrack1 = "Track1Volume";
-    public const string audioMixerNameTrack2 = "Track2Volume";
+    public static class AudioMixerNames
+    {
+        public const string master = "MasterVolume";
+        public const string track1 = "Track1Volume";
+        public const string track2 = "Track2Volume";
+    }
 
-    // Scenes
-    public const string mainMenuScene = "MainMenuScene";
-    public const string aboutScene = "AboutScene";
-    public const string settingsScene = "SettingsScene";
-    public const string gameplayScene = "GameplayScene";
-    public const string pauseScene = "PauseScene";
-    public const string summaryScene = "SummaryScene";
+    public static class ScenesNames
+    {
+        public const string mainMenu = "MainMenuScene";
+        public const string about = "AboutScene";
+        public const string settings = "SettingsScene";
+        public const string gameplay = "GameplayScene";
+        public const string pause = "PauseScene";
+        public const string summary = "SummaryScene";
+    }
 
-    // Sorting Layers
-    public const string selectedCardsSortingLayer = "SelectedCards";
-    public const string gameplaySortingLayer = "Gameplay";
+    public static class SortingLayers
+    {
+        public const string selectedCards = "SelectedCards";
+        public const string gameplay = "Gameplay";
+    }
+    
+    public static class Tags
+    {
+        public const string card = "Card";
+        public const string reactor = "Reactor";
+        public const string foundation = "Foundation";
+        public const string deck = "Deck";
+        public const string wastepile = "Wastepile";
+        public const string matchedPile = "MatchedPile";
+        public const string loadPile = "LoadPile";
+    }
 
-    // Tags
-    public const string cardTag = "Card";
-    public const string reactorTag = "Reactor";
-    public const string foundationTag = "Foundation";
-    public const string deckTag = "Deck";
-    public const string wastepileTag = "Wastepile";
-    public const string matchedPileTag = "MatchedPile";
-    public const string loadPileTag = "LoadPile";
+    public static class Suits
+    {
+        public static class Spades
+        {
+            public const byte index = 0;
+            public const string name = "spades";
+        }
+        public static class Clubs
+        {
+            public const byte index = 1;
+            public const string name = "clubs";
+        }
+        public static class Diamonds
+        {
+            public const byte index = 2;
+            public const string name = "diamonds";
+        }
+        public static class Hearts
+        {
+            public const byte index = 3;
+            public const string name = "hearts";
+        }
 
-    // Card Suits
-    public const byte spadesSuitIndex = 0;
-    public const byte clubsSuitIndex = 1;
-    public const byte diamondsSuitIndex = 2;
-    public const byte heartsSuitIndex = 3;
+        public static readonly string[] names = { Spades.name, Clubs.name, Diamonds.name, Hearts.name };
+    }
 
-    public const string spadesSuit = "spades";
-    public const string clubsSuit = "clubs";
-    public const string diamondsSuit = "diamonds";
-    public const string heartsSuit = "hearts";
-    public static readonly string[] suits = { spadesSuit, clubsSuit, diamondsSuit, heartsSuit };
+    public static class LogMoveTypes
+    {
+        public const byte move = 0;
+        public const byte stack = 1;
+        public const byte match = 3;
+        public const byte draw = 4;
+        public const byte cycle = 5;
+        public const byte deckreset = 6;
+    }
 
-    // Log moves
-    public const byte moveLogMove = 0;
-    public const byte stackLogMove = 1;
-    public const byte matchLogMove = 3;
-    public const byte drawLogMove = 4;
-    public const byte cycleLogMove = 5;
-    public const byte deckresetLogMove = 6;
-
-    // Card Levels
-    public const byte defaultHighlightColorLevel = 0;
-    public const byte matchHighlightColorLevel = 1;
-    public const byte moveHighlightColorLevel = 2;
-    public const byte overHighlightColorLevel = 3;
-    public const byte winHighlightColorLevel = 4;
+    public static class HighlightColorLevel
+    {
+        public const byte normal = 0;
+        public const byte match = 1;
+        public const byte move = 2;
+        public const byte over = 3;
+        public const byte win = 4;
+    }
 }

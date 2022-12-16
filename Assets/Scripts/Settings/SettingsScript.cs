@@ -41,16 +41,16 @@ public class SettingsScript : MonoBehaviour
         PlayerPrefKeys.CheckKeys();
 
         // music volume
-        musicSlider.maxValue = Constants.musicVolumeDenominator;
-        musicMultiplier = 100 / Constants.musicVolumeDenominator;
-        int volume = PlayerPrefs.GetInt(Constants.musicVolumeKey);
+        musicSlider.maxValue = Constants.Settings.musicVolumeDenominator;
+        musicMultiplier = 100 / Constants.Settings.musicVolumeDenominator;
+        int volume = PlayerPrefs.GetInt(Constants.Settings.musicVolumeKey);
         musicSlider.value = volume;
         musicVolumeText.text = $"{volume * musicMultiplier}%";
 
         // sound effects volume
-        soundEffectsSlider.maxValue = Constants.soundEffectsVolumeDenominator;
-        soundEffectsMultiplier = 100 / Constants.soundEffectsVolumeDenominator;
-        volume = PlayerPrefs.GetInt(Constants.soundEffectsVolumeKey);
+        soundEffectsSlider.maxValue = Constants.Settings.soundEffectsVolumeDenominator;
+        soundEffectsMultiplier = 100 / Constants.Settings.soundEffectsVolumeDenominator;
+        volume = PlayerPrefs.GetInt(Constants.Settings.soundEffectsVolumeKey);
         soundEffectsSlider.value = volume;
         soundEffectsVolumeText.text = $"{volume * soundEffectsMultiplier}%";
 
@@ -60,14 +60,14 @@ public class SettingsScript : MonoBehaviour
         if (Vibration.HasVibrator())
         {
             // vibration enabled
-            if (bool.TryParse(PlayerPrefs.GetString(Constants.vibrationEnabledKey), out isOn))
+            if (bool.TryParse(PlayerPrefs.GetString(Constants.Settings.vibrationEnabledKey), out isOn))
             {
                 vibrationToggle.isOn = isOn;
             }
             else
             {
                 // unable to parse
-                PlayerPrefs.SetString(Constants.vibrationEnabledKey, false.ToString());
+                PlayerPrefs.SetString(Constants.Settings.vibrationEnabledKey, false.ToString());
                 vibrationToggle.isOn = false;
             }
         }
@@ -79,14 +79,14 @@ public class SettingsScript : MonoBehaviour
         }
 
         // food suits enabled
-        if (bool.TryParse(PlayerPrefs.GetString(Constants.foodSuitsEnabledKey), out isOn))
+        if (bool.TryParse(PlayerPrefs.GetString(Constants.Settings.foodSuitsEnabledKey), out isOn))
         {
             foodSuitsToggle.isOn = isOn;
         }
         else
         {
             // unable to parse
-            PlayerPrefs.SetString(Constants.foodSuitsEnabledKey, false.ToString());
+            PlayerPrefs.SetString(Constants.Settings.foodSuitsEnabledKey, false.ToString());
             foodSuitsToggle.isOn = false;
         }
 
@@ -107,7 +107,7 @@ public class SettingsScript : MonoBehaviour
         };
 
         // -1 is the default for the platform
-        int frameRateSetting = PlayerPrefs.GetInt(Constants.frameRateKey, -1);
+        int frameRateSetting = PlayerPrefs.GetInt(Constants.Settings.frameRateKey, -1);
 
         // figure out if the frame rate setting exists in our list of target frame rates
         int frameRateIndex = frameRates.IndexOf(frameRateSetting);
@@ -139,7 +139,7 @@ public class SettingsScript : MonoBehaviour
                 Debug.LogError($"the an unsupported frame rate of {frameRateSetting} was saved, defaulting to our minimum");
                 frameRateSetting = frameRates[0];
                 Application.targetFrameRate = frameRateSetting;
-                PlayerPrefs.SetInt(Constants.frameRateKey, frameRateSetting);
+                PlayerPrefs.SetInt(Constants.Settings.frameRateKey, frameRateSetting);
                 frameRateIndex = 0;
             }
         }
@@ -167,8 +167,8 @@ public class SettingsScript : MonoBehaviour
 
         int volumeUpdate = (int)update;
         musicVolumeText.text = $"{volumeUpdate * musicMultiplier}%";
-        PlayerPrefs.SetInt(Constants.musicVolumeKey, volumeUpdate);
-        update /= Constants.musicVolumeDenominator;
+        PlayerPrefs.SetInt(Constants.Settings.musicVolumeKey, volumeUpdate);
+        update /= Constants.Settings.musicVolumeDenominator;
         MusicController.Instance.UpdateMaxVolume(update);
     }
 
@@ -179,8 +179,8 @@ public class SettingsScript : MonoBehaviour
 
         int volumeUpdate = (int)update;
         soundEffectsVolumeText.text = $"{volumeUpdate * soundEffectsMultiplier}%";
-        PlayerPrefs.SetInt(Constants.soundEffectsVolumeKey, volumeUpdate);
-        update /= Constants.soundEffectsVolumeDenominator;
+        PlayerPrefs.SetInt(Constants.Settings.soundEffectsVolumeKey, volumeUpdate);
+        update /= Constants.Settings.soundEffectsVolumeDenominator;
         SoundEffectsController.Instance.UpdateMaxVolume(update);
         SoundEffectsController.Instance.ButtonPressSound(vibrate: false);
 
@@ -196,7 +196,7 @@ public class SettingsScript : MonoBehaviour
         if (lockout)
             return;
 
-        PlayerPrefs.SetString(Constants.vibrationEnabledKey, update.ToString());
+        PlayerPrefs.SetString(Constants.Settings.vibrationEnabledKey, update.ToString());
         SoundEffectsController.Instance.UpdateVibration(update);
         SoundEffectsController.Instance.ButtonPressSound();
     }
@@ -206,10 +206,10 @@ public class SettingsScript : MonoBehaviour
         if (lockout)
             return;
 
-        PlayerPrefs.SetString(Constants.foodSuitsEnabledKey, update.ToString());
+        PlayerPrefs.SetString(Constants.Settings.foodSuitsEnabledKey, update.ToString());
         SoundEffectsController.Instance.ButtonPressSound();
 
-        if (SceneManager.GetActiveScene().name.Equals(Constants.gameplayScene))
+        if (SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
         {
             suitArtNoticeObject.SetActive(true);
         }
@@ -249,7 +249,7 @@ public class SettingsScript : MonoBehaviour
         }
 
         int frameRateSetting = frameRates[frameRateIndex];
-        PlayerPrefs.SetInt(Constants.frameRateKey, frameRateSetting);
+        PlayerPrefs.SetInt(Constants.Settings.frameRateKey, frameRateSetting);
         Debug.Log($"seting the targetFrameRate to: {frameRateSetting}");
         Application.targetFrameRate = frameRateSetting;
         if (frameRateSetting == -1)

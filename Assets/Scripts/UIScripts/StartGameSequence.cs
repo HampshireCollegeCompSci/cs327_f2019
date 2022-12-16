@@ -52,7 +52,7 @@ public class StartGameSequence : MonoBehaviour
         MusicController.Instance.FadeMusicOut();
         originalPanelTransformPosition = panelTransform.position;
         StartCoroutine(FadeOutButtons());
-        SceneManager.LoadSceneAsync(Constants.gameplayScene, LoadSceneMode.Additive);
+        SceneManager.LoadSceneAsync(Constants.ScenesNames.gameplay, LoadSceneMode.Additive);
     }
 
     public void GameplayLoaded()
@@ -67,10 +67,10 @@ public class StartGameSequence : MonoBehaviour
         if (gameplayLoaded && sequenceDone)
         {
             Debug.Log("unloading gameplay scene");
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.gameplayScene));
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.ScenesNames.gameplay));
             cameraObject.SetActive(false);
             StartGame.Instance.TransitionToGamePlay();
-            SceneManager.UnloadSceneAsync(Constants.mainMenuScene);
+            SceneManager.UnloadSceneAsync(Constants.ScenesNames.mainMenu);
             return true;
         }
         return false;
@@ -79,7 +79,7 @@ public class StartGameSequence : MonoBehaviour
     public void FailedToLoadGame()
     {
         StopAllCoroutines();
-        SceneManager.UnloadSceneAsync(Constants.gameplayScene);
+        SceneManager.UnloadSceneAsync(Constants.ScenesNames.gameplay);
         loadingTextObject.SetActive(false);
 
         CanvasGroup buttonGroup;

@@ -114,7 +114,7 @@ public class StateLoader : MonoBehaviour
         gameState.difficulty = Config.Instance.currentDifficulty;
 
         //saving to json, when in editor save it in human readable format
-        File.WriteAllText(SaveFile.GetPath(), JsonUtility.ToJson(gameState, Constants.inEditor));
+        File.WriteAllText(SaveFile.GetPath(), JsonUtility.ToJson(gameState, Application.isEditor));
 
         //UnityEditor.AssetDatabase.Refresh();
     }
@@ -132,7 +132,7 @@ public class StateLoader : MonoBehaviour
     public void LoadTutorialState(string fileName)
     {
         Debug.Log($"loading tutorial state: {fileName}");
-        string filePath = Constants.tutorialResourcePath + fileName;
+        string filePath = Constants.Tutorial.tutorialResourcePath + fileName;
 
         // load the asset from resources and unpack it
         string jsonTextFile = Resources.Load<TextAsset>(filePath).ToString();

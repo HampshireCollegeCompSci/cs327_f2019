@@ -12,44 +12,44 @@ public static class PlayerPrefKeys
     {
         Debug.Log("checking keys");
 
-        if (!PlayerPrefs.HasKey(Constants.soundEffectsVolumeKey))
+        if (!PlayerPrefs.HasKey(Constants.Settings.soundEffectsVolumeKey))
         {
-            PlayerPrefs.SetInt(Constants.soundEffectsVolumeKey, Config.GameValues.soundEffectsDefaultVolume);
+            PlayerPrefs.SetInt(Constants.Settings.soundEffectsVolumeKey, Config.GameValues.soundEffectsDefaultVolume);
         }
 
-        if (!PlayerPrefs.HasKey(Constants.musicVolumeKey))
+        if (!PlayerPrefs.HasKey(Constants.Settings.musicVolumeKey))
         {
-            PlayerPrefs.SetInt(Constants.musicVolumeKey, Config.GameValues.musicDefaultVolume);
+            PlayerPrefs.SetInt(Constants.Settings.musicVolumeKey, Config.GameValues.musicDefaultVolume);
         }
 
-        if (!PlayerPrefs.HasKey(Constants.vibrationEnabledKey))
+        if (!PlayerPrefs.HasKey(Constants.Settings.vibrationEnabledKey))
         {
             if (Vibration.HasVibrator())
             {
-                PlayerPrefs.SetString(Constants.vibrationEnabledKey, Config.GameValues.vibrationEnabledDefault.ToString());
+                PlayerPrefs.SetString(Constants.Settings.vibrationEnabledKey, Config.GameValues.vibrationEnabledDefault.ToString());
             }
             else
             {
-                PlayerPrefs.SetString(Constants.vibrationEnabledKey, false.ToString());
+                PlayerPrefs.SetString(Constants.Settings.vibrationEnabledKey, false.ToString());
             }
         }
 
-        if (!PlayerPrefs.HasKey(Constants.foodSuitsEnabledKey))
+        if (!PlayerPrefs.HasKey(Constants.Settings.foodSuitsEnabledKey))
         {
-            PlayerPrefs.SetString(Constants.foodSuitsEnabledKey, Config.GameValues.foodSuitsEnabledDefault.ToString());
+            PlayerPrefs.SetString(Constants.Settings.foodSuitsEnabledKey, Config.GameValues.foodSuitsEnabledDefault.ToString());
         }
 
-        if (!PlayerPrefs.HasKey(Constants.frameRateKey))
+        if (!PlayerPrefs.HasKey(Constants.Settings.frameRateKey))
         {
-            PlayerPrefs.SetInt(Constants.frameRateKey, -1);
+            PlayerPrefs.SetInt(Constants.Settings.frameRateKey, -1);
         }
     }
 
     public static bool NewGameStateVersion()
     {
-        if (PlayerPrefs.GetString(Constants.gameStateVersionKey, defaultValue : "NULL") != Constants.gameStateVersion)
+        if (PlayerPrefs.GetString(Constants.GameStates.versionKey, defaultValue : "NULL") != Constants.GameStates.version)
         {
-            PlayerPrefs.SetString(Constants.gameStateVersionKey, Constants.gameStateVersion);
+            PlayerPrefs.SetString(Constants.GameStates.versionKey, Constants.GameStates.version);
             return true;
         }
         return false;
@@ -57,12 +57,12 @@ public static class PlayerPrefKeys
 
     public static float GetMusicVolume()
     {
-        return ((float)PlayerPrefs.GetInt(Constants.musicVolumeKey)) / Constants.musicVolumeDenominator;
+        return ((float)PlayerPrefs.GetInt(Constants.Settings.musicVolumeKey)) / Constants.Settings.musicVolumeDenominator;
     }
 
     public static float GetSoundEffectsVolume()
     {
-        return ((float)PlayerPrefs.GetInt(Constants.soundEffectsVolumeKey)) / Constants.soundEffectsVolumeDenominator;
+        return ((float)PlayerPrefs.GetInt(Constants.Settings.soundEffectsVolumeKey)) / Constants.Settings.soundEffectsVolumeDenominator;
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ public static class PlayerPrefKeys
     /// <returns>Difficulty + HighScoreKey</returns>
     public static string GetHighScoreKey(string difficulty)
     {
-        return difficulty + Constants.highScoreKey;
+        return difficulty + Constants.Summary.highScoreKey;
     }
 
     /// <summary>
@@ -102,7 +102,7 @@ public static class PlayerPrefKeys
     /// <returns>Difficulty + LeastMovesKey</returns>
     public static string GetLeastMovesKey(string difficulty)
     {
-        return difficulty + Constants.leastMovesKey;
+        return difficulty + Constants.Summary.leastMovesKey;
     }
 
     /// <summary>

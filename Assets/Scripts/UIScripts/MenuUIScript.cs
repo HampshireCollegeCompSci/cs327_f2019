@@ -40,7 +40,7 @@ public class MenuUIScript : MonoBehaviour
         // Update Button text from gameValues
         switch (activeScene)
         {
-            case Constants.mainMenuScene:
+            case Constants.ScenesNames.mainMenu:
                 Debug.Log("updating main menu buttons");
                 // Main buttons
                 UpdateButtonText(playButton, Config.GameValues.menuButtonsTxtEnglish[0]);
@@ -54,7 +54,7 @@ public class MenuUIScript : MonoBehaviour
                 UpdateButtonText(hardButton, Config.GameValues.levelButtonsTxtEnglish[3]);
                 UpdateButtonText(backButton, Config.GameValues.backButtonTxtEnglish);
                 break;
-            case Constants.pauseScene:
+            case Constants.ScenesNames.pause:
                 Debug.Log("updating pause scene buttons");
                 UpdateButtonText(resumeButton, Config.GameValues.pauseButtonsTxtEnglish[0]);
                 UpdateButtonText(restartButton, Config.GameValues.pauseButtonsTxtEnglish[1]);
@@ -62,16 +62,16 @@ public class MenuUIScript : MonoBehaviour
                 UpdateButtonText(mainMenuButton, Config.GameValues.pauseButtonsTxtEnglish[3]);
                 scoreboard.text = Config.Instance.score.ToString();
                 break;
-            case Constants.summaryScene:
+            case Constants.ScenesNames.summary:
                 Debug.Log("updating summary scene buttons");
                 UpdateButtonText(mainMenuButton, Config.GameValues.summaryButtonsTxtEnglish[0]);
                 UpdateButtonText(playAgainButton, Config.GameValues.summaryButtonsTxtEnglish[1]);
                 break;
-            case Constants.settingsScene:
+            case Constants.ScenesNames.settings:
                 Debug.Log("updating settings scene buttons");
                 UpdateButtonText(backButton, Config.GameValues.backButtonTxtEnglish);
                 break;
-            case Constants.aboutScene:
+            case Constants.ScenesNames.about:
                 Debug.Log("updating about button text");
                 UpdateButtonText(backButton, Config.GameValues.backButtonTxtEnglish);
                 break;
@@ -183,9 +183,9 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI restart");
         SoundEffectsController.Instance.ButtonPressSound();
-        if (SceneManager.GetSceneByName(Constants.pauseScene).isLoaded)
+        if (SceneManager.GetSceneByName(Constants.ScenesNames.pause).isLoaded)
         {
-            SceneManager.UnloadSceneAsync(Constants.pauseScene);
+            SceneManager.UnloadSceneAsync(Constants.ScenesNames.pause);
             Time.timeScale = 1;
         }
         MusicController.Instance.GameMusic();
@@ -201,11 +201,11 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI main menu");
         SoundEffectsController.Instance.ButtonPressSound();
-        if (SceneManager.GetSceneByName(Constants.pauseScene).isLoaded)
+        if (SceneManager.GetSceneByName(Constants.ScenesNames.pause).isLoaded)
         {
             Time.timeScale = 1;
         }
-        SceneManager.LoadScene(Constants.mainMenuScene);
+        SceneManager.LoadScene(Constants.ScenesNames.mainMenu);
         MusicController.Instance.MainMenuMusic();
         if (MusicController.Instance.Paused)
         {
@@ -219,7 +219,7 @@ public class MenuUIScript : MonoBehaviour
         Debug.Log("MenuUI settings");
 
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.LoadScene(Constants.settingsScene, LoadSceneMode.Additive);
+        SceneManager.LoadScene(Constants.ScenesNames.settings, LoadSceneMode.Additive);
     }
 
     [SerializeField]
@@ -228,7 +228,7 @@ public class MenuUIScript : MonoBehaviour
         Debug.Log("MenuUI about");
 
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.LoadScene(Constants.aboutScene);
+        SceneManager.LoadScene(Constants.ScenesNames.about);
         MusicController.Instance.AboutMusic();
     }
 
@@ -242,7 +242,7 @@ public class MenuUIScript : MonoBehaviour
         Config.Instance.gamePaused = true;
         SoundEffectsController.Instance.PauseMenuButtonSound();
         MusicController.Instance.Paused = true;
-        SceneManager.LoadScene(Constants.pauseScene, LoadSceneMode.Additive);
+        SceneManager.LoadScene(Constants.ScenesNames.pause, LoadSceneMode.Additive);
     }
 
     [SerializeField]
@@ -251,7 +251,7 @@ public class MenuUIScript : MonoBehaviour
         Debug.Log("MenuUI resume game");
         Time.timeScale = 1;
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.UnloadSceneAsync(Constants.pauseScene);
+        SceneManager.UnloadSceneAsync(Constants.ScenesNames.pause);
         Config.Instance.gamePaused = false;
         MusicController.Instance.Paused = false;
     }
@@ -261,7 +261,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("MenuUI Settings Back");
         SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.UnloadSceneAsync(Constants.settingsScene);
+        SceneManager.UnloadSceneAsync(Constants.ScenesNames.settings);
     }
 
     [SerializeField]
@@ -305,7 +305,7 @@ public class MenuUIScript : MonoBehaviour
     {
         if (SaveFile.Exists())
         {
-            if (Constants.inEditor)
+            if (Application.isEditor)
             {
                 //Preprocessor Directive to make builds work
                 #if (UNITY_EDITOR)

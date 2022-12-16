@@ -55,10 +55,10 @@ public static class CardTools
     {
         return suit switch
         {
-            Constants.spadesSuitIndex => Constants.clubsSuitIndex,
-            Constants.clubsSuitIndex => Constants.spadesSuitIndex,
-            Constants.diamondsSuitIndex => Constants.heartsSuitIndex,
-            Constants.heartsSuitIndex => Constants.diamondsSuitIndex,
+            Constants.Suits.Spades.index => Constants.Suits.Clubs.index,
+            Constants.Suits.Clubs.index => Constants.Suits.Spades.index,
+            Constants.Suits.Diamonds.index => Constants.Suits.Hearts.index,
+            Constants.Suits.Hearts.index => Constants.Suits.Diamonds.index,
             _ => throw new System.ArgumentException("suit not found to be valid"),
         };
     }
@@ -71,7 +71,7 @@ public static class CardTools
         // hitboxes are disabled for all cards not on the top for the reactor, wastepile, and deck
         // since they can't be picked up, only foundation cards need to be checked
 
-        if (card.Container.CompareTag(Constants.foundationTag) &&
+        if (card.Container.CompareTag(Constants.Tags.foundation) &&
             card.Container.GetComponent<FoundationScript>().CardList[^1].GetComponent<CardScript>() != card)
         {
             return false;
@@ -101,12 +101,12 @@ public static class CardTools
 
     private static byte GetSuit(GameObject suitObject)
     {
-        if (suitObject.CompareTag(Constants.cardTag))
+        if (suitObject.CompareTag(Constants.Tags.card))
         {
             return suitObject.GetComponent<CardScript>().CardSuitIndex;
         }
 
-        if (suitObject.CompareTag(Constants.reactorTag))
+        if (suitObject.CompareTag(Constants.Tags.reactor))
         {
             return suitObject.GetComponent<ReactorScript>().ReactorSuitIndex;
         }

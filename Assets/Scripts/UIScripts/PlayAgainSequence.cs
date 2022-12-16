@@ -43,7 +43,7 @@ public class PlayAgainSequence : MonoBehaviour
         sequenceDone = false;
         SpaceBabyController.Instance = null;
 
-        SceneManager.LoadSceneAsync(Constants.gameplayScene, LoadSceneMode.Additive);
+        SceneManager.LoadSceneAsync(Constants.ScenesNames.gameplay, LoadSceneMode.Additive);
 
         MusicController.Instance.FadeMusicOut();
         StartCoroutine(FadeOut());
@@ -61,10 +61,10 @@ public class PlayAgainSequence : MonoBehaviour
         if (gameplayLoaded && sequenceDone)
         {
             Debug.Log("unloading summary scene");
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.gameplayScene));
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.ScenesNames.gameplay));
             cameraObject.SetActive(false);
             StartGame.Instance.TransitionToGamePlay();
-            SceneManager.UnloadSceneAsync(Constants.summaryScene);
+            SceneManager.UnloadSceneAsync(Constants.ScenesNames.summary);
             return true;
         }
         return false;

@@ -207,7 +207,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
             if (CountReactorCard() > Config.Instance.reactorLimit)
             {
                 Glowing = true;
-                GlowLevel = Constants.overHighlightColorLevel;
+                GlowLevel = Constants.HighlightColorLevel.over;
                 _glowing = false;
                 Alert = true;
                 ChangeSuitGlow(3);

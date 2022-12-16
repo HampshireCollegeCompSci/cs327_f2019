@@ -48,7 +48,7 @@ public class GameLoader : MonoBehaviour
         // Figure out what kinda game to start
         if (Config.Instance.tutorialOn)
         {
-            LoadTutorial(Constants.tutorialStateStartFileName, gameStart: true);
+            LoadTutorial(Constants.Tutorial.tutorialStateStartFileName, gameStart: true);
         }
         else if (Config.Instance.continuing)
         {
@@ -260,7 +260,7 @@ public class GameLoader : MonoBehaviour
     private Sprite[] GetSuitSprites()
     {
         // getting user setting
-        if (bool.TryParse(PlayerPrefs.GetString(Constants.foodSuitsEnabledKey), out bool isOn))
+        if (bool.TryParse(PlayerPrefs.GetString(Constants.Settings.foodSuitsEnabledKey), out bool isOn))
         { }
         else
         {

@@ -56,19 +56,19 @@ public class ShowPossibleMoves
 
         foreach (GameObject card in cardMoves)
         {
-            card.GetComponent<CardScript>().GlowLevel = Constants.moveHighlightColorLevel;
+            card.GetComponent<CardScript>().GlowLevel = Constants.HighlightColorLevel.move;
             moveTokensAreGlowing = true;
         }
 
         foreach (GameObject card in cardMatches)
         {
-            card.GetComponent<CardScript>().GlowLevel = Constants.matchHighlightColorLevel;
+            card.GetComponent<CardScript>().GlowLevel = Constants.HighlightColorLevel.match;
             matchTokensAreGlowing = true;
         }
 
         foreach (GameObject foundation in foundationMoves)
         {
-            foundation.GetComponent<FoundationScript>().GlowLevel = Constants.moveHighlightColorLevel;
+            foundation.GetComponent<FoundationScript>().GlowLevel = Constants.HighlightColorLevel.move;
             foundationIsGlowing = true;
         }
 
@@ -88,11 +88,11 @@ public class ShowPossibleMoves
             if (reactorMoveScript.CountReactorCard() + selectedCard.GetComponent<CardScript>().CardReactorValue >
                 Config.Instance.reactorLimit)
             {
-                reactorMoveScript.GlowLevel = Constants.overHighlightColorLevel;
+                reactorMoveScript.GlowLevel = Constants.HighlightColorLevel.over;
             }
             else
             {
-                reactorMoveScript.GlowLevel = Constants.moveHighlightColorLevel;
+                reactorMoveScript.GlowLevel = Constants.HighlightColorLevel.move;
             }
         }
 
@@ -142,8 +142,8 @@ public class ShowPossibleMoves
     {
         CardScript selectedCardScript = selectedCard.GetComponent<CardScript>();
 
-        bool cardIsFromFoundation = selectedCardScript.Container.CompareTag(Constants.foundationTag);
-        bool cardIsFromWastepile = selectedCardScript.Container.CompareTag(Constants.wastepileTag);
+        bool cardIsFromFoundation = selectedCardScript.Container.CompareTag(Constants.Tags.foundation);
+        bool cardIsFromWastepile = selectedCardScript.Container.CompareTag(Constants.Tags.wastepile);
 
         bool cardCanBeMatched = true;
         // if the card is in a foundation and not at the top of it
@@ -171,7 +171,7 @@ public class ShowPossibleMoves
 
             // if the reactor is not obstructed (tutorial setting)
             // and the card is not in the reactor, get the reactor that we can move into
-            if (!ReactorObstructed && !selectedCardScript.Container.CompareTag(Constants.reactorTag))
+            if (!ReactorObstructed && !selectedCardScript.Container.CompareTag(Constants.Tags.reactor))
             {
                 reactorMove = UtilsScript.Instance.reactorScripts[selectedCardScript.CardSuitIndex].gameObject;
             }

@@ -39,7 +39,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
             else if (!value && _glowing)
             {
                 _glowing = false;
-                GlowLevel = Constants.defaultHighlightColorLevel;
+                GlowLevel = Constants.HighlightColorLevel.normal;
             }
         }
     }
@@ -55,7 +55,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
                 spriteRenderer.color = Config.GameValues.highlightColors[value];
             }
 
-            if (value != Constants.defaultHighlightColorLevel)
+            if (value != Constants.HighlightColorLevel.normal)
             {
                 Glowing = true;
             }
@@ -169,7 +169,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
         {
             // will turn glowing on but not set the flag for it
             // so that it will not be turned off later
-            GlowLevel = Constants.winHighlightColorLevel;
+            GlowLevel = Constants.HighlightColorLevel.win;
             _glowing = false;
         }
         else

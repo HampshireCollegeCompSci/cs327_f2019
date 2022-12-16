@@ -53,8 +53,8 @@ public class MusicController : MonoBehaviour, ISound
 
     void Start()
     {
-        audioMixer.SetFloat(Constants.audioMixerNameTrack1, -80);
-        audioMixer.SetFloat(Constants.audioMixerNameTrack2, -80);
+        audioMixer.SetFloat(Constants.AudioMixerNames.track1, -80);
+        audioMixer.SetFloat(Constants.AudioMixerNames.track2, -80);
         UpdateMaxVolume(PlayerPrefKeys.GetMusicVolume());
     }
 
@@ -89,15 +89,15 @@ public class MusicController : MonoBehaviour, ISound
                 if (AudioSourcePlaying == 1)
                 {
                     audioSource_2.clip = newTrack;
-                    StartFadeIn(Constants.audioMixerNameTrack2, Config.GameValues.musicFadeInDurationSec, audioSource_2);
-                    StartFadeOut(Constants.audioMixerNameTrack1, Config.GameValues.musicFadeOutDurationSec, audioSource_1);
+                    StartFadeIn(Constants.AudioMixerNames.track2, Config.GameValues.musicFadeInDurationSec, audioSource_2);
+                    StartFadeOut(Constants.AudioMixerNames.track1, Config.GameValues.musicFadeOutDurationSec, audioSource_1);
                     AudioSourcePlaying = 2;
                 }
                 else
                 {
                     audioSource_1.clip = newTrack;
-                    StartFadeIn(Constants.audioMixerNameTrack1, Config.GameValues.musicFadeInDurationSec, audioSource_1);
-                    StartFadeOut(Constants.audioMixerNameTrack2, Config.GameValues.musicFadeOutDurationSec, audioSource_2);
+                    StartFadeIn(Constants.AudioMixerNames.track1, Config.GameValues.musicFadeInDurationSec, audioSource_1);
+                    StartFadeOut(Constants.AudioMixerNames.track2, Config.GameValues.musicFadeOutDurationSec, audioSource_2);
                     AudioSourcePlaying = 1;
                 }
             }
@@ -122,7 +122,7 @@ public class MusicController : MonoBehaviour, ISound
                 {
                     StopCoroutine(fadeInCoroutine);
                 }
-                audioMixer.SetFloat(Constants.audioMixerNameMaster, -80);
+                audioMixer.SetFloat(Constants.AudioMixerNames.master, -80);
                 muteDelyCoroutine = StartCoroutine(PauseDelay());
                 Debug.Log("muted music");
             }
@@ -148,13 +148,13 @@ public class MusicController : MonoBehaviour, ISound
                 {
                     StopCoroutine(fadeInCoroutine);
                 }
-                audioMixer.SetFloat(Constants.audioMixerNameMaster, -80);
+                audioMixer.SetFloat(Constants.AudioMixerNames.master, -80);
                 pauseDelyCoroutine = StartCoroutine(PauseDelay());
                 Debug.Log("paused music");
             }
             else
             {
-                audioMixer.SetFloat(Constants.audioMixerNameMaster, Mathf.Log10(maxVolume) * 20);
+                audioMixer.SetFloat(Constants.AudioMixerNames.master, Mathf.Log10(maxVolume) * 20);
                 StopCoroutine(pauseDelyCoroutine);
                 // note: playing a track that is already playing starts it from the beginning
                 FadeMusicIn();
@@ -175,7 +175,7 @@ public class MusicController : MonoBehaviour, ISound
             }
 
             maxVolume = newVolume;
-            audioMixer.SetFloat(Constants.audioMixerNameMaster, Mathf.Log10(newVolume) * 20);
+            audioMixer.SetFloat(Constants.AudioMixerNames.master, Mathf.Log10(newVolume) * 20);
         }
         else
         {
@@ -189,11 +189,11 @@ public class MusicController : MonoBehaviour, ISound
         StopCoroutine(fadeInCoroutine);
         if (AudioSourcePlaying == 1)
         {
-            StartFadeOut(Constants.audioMixerNameTrack1, Config.GameValues.musicFadeOutSlowDurationSec, audioSource_1);
+            StartFadeOut(Constants.AudioMixerNames.track1, Config.GameValues.musicFadeOutSlowDurationSec, audioSource_1);
         }
         else
         {
-            StartFadeOut(Constants.audioMixerNameTrack2, Config.GameValues.musicFadeOutSlowDurationSec, audioSource_2);
+            StartFadeOut(Constants.AudioMixerNames.track2, Config.GameValues.musicFadeOutSlowDurationSec, audioSource_2);
         }
     }
 
@@ -206,12 +206,12 @@ public class MusicController : MonoBehaviour, ISound
         if (AudioSourcePlaying == 1)
         {
             //audioMixer.SetFloat(Constants.audioMixerNameTrack1, 0.002f);
-            StartFadeIn(Constants.audioMixerNameTrack1, Config.GameValues.musicFadeInDurationSec, audioSource_1);
+            StartFadeIn(Constants.AudioMixerNames.track1, Config.GameValues.musicFadeInDurationSec, audioSource_1);
         }
         else
         {
             //audioMixer.SetFloat(Constants.audioMixerNameTrack2, 0.002f);
-            StartFadeIn(Constants.audioMixerNameTrack2, Config.GameValues.musicFadeInDurationSec, audioSource_2);
+            StartFadeIn(Constants.AudioMixerNames.track2, Config.GameValues.musicFadeInDurationSec, audioSource_2);
         }
         //else
         //{
@@ -281,12 +281,12 @@ public class MusicController : MonoBehaviour, ISound
         if (AudioSourcePlaying == 1)
         {
             audioSource = audioSource_1;
-            audioMixer.SetFloat(Constants.audioMixerNameTrack1, -80);
+            audioMixer.SetFloat(Constants.AudioMixerNames.track1, -80);
         }
         else
         {
             audioSource = audioSource_2;
-            audioMixer.SetFloat(Constants.audioMixerNameTrack2, -80);
+            audioMixer.SetFloat(Constants.AudioMixerNames.track2, -80);
         }
 
         // to prevent audio blips lower the volume first and then pause the music

@@ -5,13 +5,13 @@ public static class SaveFile
 {
     public static string GetPath()
     {
-        if (Constants.inEditor)
+        if (Application.isEditor)
         {
-            return Constants.saveStatePathInEditor + Constants.saveStateFileNameJson;
+            return Constants.GameStates.saveStatePathInEditor + Constants.GameStates.saveStateFileNameJson;
         }
         else
         {
-            return Application.persistentDataPath + Constants.saveStateFileNameJson;
+            return Application.persistentDataPath + Constants.GameStates.saveStateFileNameJson;
         }
     }
 
@@ -35,15 +35,15 @@ public static class SaveFile
     public static void Delete()
     {
         Debug.Log("deleting save state");
-        if (Constants.inEditor)
+        if (Application.isEditor)
         {
-            File.Delete(Constants.saveStateFilePathJsonInEditor);
-            File.Delete(Constants.saveStateFilePathMetaInEditor);
+            File.Delete(Constants.GameStates.saveStateFilePathJsonInEditor);
+            File.Delete(Constants.GameStates.saveStateFilePathMetaInEditor);
         }
         else
         {
-            File.Delete(Application.persistentDataPath + Constants.saveStateFileNameJson);
-            File.Delete(Application.persistentDataPath + Constants.saveStateFileNameMeta);
+            File.Delete(Application.persistentDataPath + Constants.GameStates.saveStateFileNameJson);
+            File.Delete(Application.persistentDataPath + Constants.GameStates.saveStateFileNameMeta);
         }
     }
 }
