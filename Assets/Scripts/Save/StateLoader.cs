@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -111,7 +112,7 @@ public class StateLoader : MonoBehaviour
         gameState.consecutiveMatches = Config.Instance.consecutiveMatches;
         gameState.moveCounter = Config.Instance.moveCounter;
         gameState.actions = Config.Instance.actions;
-        gameState.difficulty = Config.Instance.currentDifficulty;
+        gameState.difficulty = Config.Instance.CurrentDifficulty.Name;
 
         //saving to json, when in editor save it in human readable format
         File.WriteAllText(SaveFile.GetPath(), JsonUtility.ToJson(gameState, Application.isEditor));
@@ -144,7 +145,7 @@ public class StateLoader : MonoBehaviour
     {
         int index = origins.IndexOf(origin);
         if (index != -1) return index;
-        throw new System.Exception($"the origin \"{origin.name}\" was not found");
+        throw new KeyNotFoundException($"the origin \"{origin.name}\" was not found");
     }
 
     private void UnpackGameState<T>(GameState<T> state, bool isTutorial = false)
@@ -161,8 +162,7 @@ public class StateLoader : MonoBehaviour
         // if the tutorial isn't being loaded then we need to setup the move log
         if (LoadPileScript.Instance.CardList.Count == 0)
         {
-            Debug.LogError("there are no cards in the load pile when starting to load the game");
-            throw new System.Exception("there are no cards in the load pile when starting to load the game");
+            throw new NullReferenceException("there are no cards in the load pile when starting to load the game");
         }
 
         if (!isTutorial)
@@ -217,7 +217,7 @@ public class StateLoader : MonoBehaviour
         if (LoadPileScript.Instance.CardList.Count != 0)
         {
             Debug.LogError("there are cards still in the load pile after loading the game");
-            throw new System.Exception("there are cards still in the load pile after loading the game");
+            throw new NullReferenceException("there are cards still in the load pile after loading the game");
         }
 
         foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
@@ -283,7 +283,7 @@ public class StateLoader : MonoBehaviour
 
             if (card == null)
             {
-                throw new System.NullReferenceException($"the card \"{cardID}\" was not found");
+                throw new KeyNotFoundException($"the card \"{cardID}\" was not found");
             }
 
             CardScript cardScript = card.GetComponent<CardScript>();

@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using System.IO;
+using System.Collections.Generic;
+using UnityEngine;
+
 
 public class Config : MonoBehaviour
 {
@@ -11,10 +15,6 @@ public class Config : MonoBehaviour
     public bool continuing;
 
     public bool prettyColors;
-
-    public string currentDifficulty;
-    public int reactorLimit;
-    public int actionMax;
 
     // game values
     public bool gamePaused;
@@ -56,25 +56,30 @@ public class Config : MonoBehaviour
         }
     }
 
+    private Difficulty _currentDifficulty;
+    public Difficulty CurrentDifficulty => _currentDifficulty;
+
     public void SetDifficulty(int dif)
     {
-        currentDifficulty = GameValues.difficulties[dif];
-        reactorLimit = GameValues.reactorLimits[dif];
-        actionMax = GameValues.moveLimits[dif];
+        if (dif < 0 || dif > GameValues.difficulties.Length)
+        {
+            throw new IndexOutOfRangeException($"the difficulties index of \"{dif}\" did not fall in the range of 0-{GameValues.difficulties.Length}");
+        }
+        _currentDifficulty = GameValues.difficulties[dif];
     }
 
     public void SetDifficulty(string dif)
     {
         for (int i = 0; i < GameValues.difficulties.Length; i++)
         {
-            if (dif.Equals(GameValues.difficulties[i]))
+            if (dif == GameValues.difficulties[i].Name)
             {
                 SetDifficulty(i);
                 return;
             }
         }
 
-        throw new System.Exception($"The difficulty \"{dif}\" was not found.");
+        throw new KeyNotFoundException($"the difficulty \"{dif}\" was not found");
     }
 
     private void LoadGameValues()
@@ -82,13 +87,6 @@ public class Config : MonoBehaviour
         Debug.Log("loading gamevalues from json");
         TextAsset jsonTextFile = Resources.Load<TextAsset>(Constants.gameValuesPath);
         GameValues = JsonUtility.FromJson<GameValues>(jsonTextFile.ToString());
-
-        // Colors need to be reconstructed
-        GameValues.cardObstructedColor = CreateColor(GameValues.cardObstructedColorValues);
-
-        GameValues.matchHighlightColor = CreateColor(GameValues.matchHighlightColorValues);
-        GameValues.moveHighlightColor = CreateColor(GameValues.moveHighlightColorValues);
-        GameValues.overHighlightColor = CreateColor(GameValues.overHighlightColorValues);
         GameValues.highlightColors = new Color[] {
             Color.white,
             GameValues.matchHighlightColor,
@@ -96,19 +94,5 @@ public class Config : MonoBehaviour
             GameValues.overHighlightColor,
             Color.cyan
         };
-
-        GameValues.pointColor = CreateColor(GameValues.pointColorValues);
-        GameValues.tutorialObjectHighlightColor = CreateColor(GameValues.tutorialObjectHighlightColorValues);
-        GameValues.fadeDarkColor = CreateColor(GameValues.fadeDarkColorValues);
-        GameValues.fadeLightColor = CreateColor(GameValues.fadeLightColorValues);
-    }
-
-    private Color CreateColor(float[] colorV)
-    {
-        if (colorV.Length != 4)
-        {
-            throw new System.ArgumentException("the array of color values is not a lenght of 4");
-        }
-        return new Color(colorV[0], colorV[1], colorV[2], colorV[3]);
     }
 }

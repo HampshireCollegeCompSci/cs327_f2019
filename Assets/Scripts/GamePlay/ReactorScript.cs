@@ -179,7 +179,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     public bool OverLimitSoon()
     {
-        if (CountReactorCard() + GetIncreaseOnNextCycle() > Config.Instance.reactorLimit)
+        if (CountReactorCard() + GetIncreaseOnNextCycle() > Config.Instance.CurrentDifficulty.ReactorLimit)
         {
             Alert = true;
             return true;
@@ -195,7 +195,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     public void SetReactorScore(int cardValCount)
     {
-        reactorScore.text = $"{cardValCount}/{Config.Instance.reactorLimit}";
+        reactorScore.text = $"{cardValCount}/{Config.Instance.CurrentDifficulty.ReactorLimit}";
     }
 
     public void TryHighlightOverloaded(bool turnOn)
@@ -204,7 +204,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         {
             // will turn glowing on but not set the flag for it
             // so that it will not be turned off later
-            if (CountReactorCard() > Config.Instance.reactorLimit)
+            if (CountReactorCard() > Config.Instance.CurrentDifficulty.ReactorLimit)
             {
                 Glowing = true;
                 GlowLevel = Constants.HighlightColorLevel.over;
@@ -236,7 +236,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
     {
         if (Config.Instance.tutorialOn || Config.Instance.gameOver) return;
 
-        if (cardValCount > Config.Instance.reactorLimit)
+        if (cardValCount > Config.Instance.CurrentDifficulty.ReactorLimit)
         {
             EndGame.Instance.GameOver(false);
         }

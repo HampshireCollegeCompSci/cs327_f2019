@@ -53,7 +53,7 @@ public class ActionCountScript : MonoBehaviour
     {
         if (setTo == null)
         {
-            int newValue = Config.Instance.actionMax - Config.Instance.actions;
+            int newValue = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions;
             int oldValue;
             if (int.TryParse(actionText.text, out oldValue) &&
                 oldValue + 1 < newValue)
@@ -143,7 +143,7 @@ public class ActionCountScript : MonoBehaviour
         }
 
         // just in case quick moves or undos occur
-        actionText.text = (Config.Instance.actionMax - Config.Instance.actions).ToString();
+        actionText.text = (Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions).ToString();
     }
 
     [SerializeField]

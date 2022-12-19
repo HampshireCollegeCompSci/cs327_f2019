@@ -1,5 +1,7 @@
-﻿using UnityEngine;
-[System.Serializable]
+﻿using System;
+using UnityEngine;
+
+[Serializable]
 public class GameValues
 {
     public bool enableCheat;
@@ -44,45 +46,51 @@ public class GameValues
 
     public float reactorMeltDownSpeed;
 
-    public string[] difficulties;
-    public int[] reactorLimits;
-    public int[] moveLimits;
+    public Difficulty[] difficulties;
 
     public float selectedCardOpacity;
 
-    public float[] cardObstructedColorValues;
     public Color cardObstructedColor;
 
-    public float[] matchHighlightColorValues;
     public Color matchHighlightColor;
-
-    public float[] moveHighlightColorValues;
     public Color moveHighlightColor;
-
-    public float[] overHighlightColorValues;
     public Color overHighlightColor;
-
     public Color[] highlightColors;
 
-    public float[] pointColorValues;
     public Color pointColor;
 
-    public float[] tutorialObjectHighlightColorValues;
     public Color tutorialObjectHighlightColor;
 
-    public float[] fadeDarkColorValues;
     public Color fadeDarkColor;
 
-    public float[] fadeLightColorValues;
     public Color fadeLightColor;
 
-    public string[] menuButtonsTxtEnglish;
-    public string[] levelButtonsTxtEnglish;
-    public string backButtonTxtEnglish;
-    public string loadingTxtEnglish;
-    public string[] pauseButtonsTxtEnglish;
-    public string[] summaryButtonsTxtEnglish;
-    public string[] scoreActionLabelsTxtEnglish;
-    public string[] gameStateTxtEnglish;
+    public MenuText menuText;
 
+    [Serializable]
+    public class MenuText
+    {
+        public string[] menuButtons;
+        public string[] levelButtons;
+        public string backButton;
+        public string loading;
+        public string[] pauseButtons;
+        public string[] summaryButtons;
+        public string[] scoreActionLabels;
+        public string[] gameState;
+    }
+}
+
+[Serializable]
+public struct Difficulty
+{
+    [SerializeField]
+    private string name;
+    public string Name { get => name; }
+    [SerializeField]
+    private int reactorLimit;
+    public int ReactorLimit { get => reactorLimit; }
+    [SerializeField]
+    private int moveLimit;
+    public int MoveLimit { get => moveLimit; }
 }

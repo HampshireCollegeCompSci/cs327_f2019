@@ -43,37 +43,37 @@ public class MenuUIScript : MonoBehaviour
             case Constants.ScenesNames.mainMenu:
                 Debug.Log("updating main menu buttons");
                 // Main buttons
-                UpdateButtonText(playButton, Config.GameValues.menuButtonsTxtEnglish[0]);
-                UpdateButtonText(tutorialButton, Config.GameValues.menuButtonsTxtEnglish[1]);
-                UpdateButtonText(settingsButton, Config.GameValues.menuButtonsTxtEnglish[2]);
-                UpdateButtonText(aboutButton, Config.GameValues.menuButtonsTxtEnglish[3]);
+                UpdateButtonText(playButton, Config.GameValues.menuText.menuButtons[0]);
+                UpdateButtonText(tutorialButton, Config.GameValues.menuText.menuButtons[1]);
+                UpdateButtonText(settingsButton, Config.GameValues.menuText.menuButtons[2]);
+                UpdateButtonText(aboutButton, Config.GameValues.menuText.menuButtons[3]);
                 // Play buttons
-                UpdateButtonText(continueButton, Config.GameValues.levelButtonsTxtEnglish[0]);
-                UpdateButtonText(easyButton, Config.GameValues.levelButtonsTxtEnglish[1]);
-                UpdateButtonText(normalButton, Config.GameValues.levelButtonsTxtEnglish[2]);
-                UpdateButtonText(hardButton, Config.GameValues.levelButtonsTxtEnglish[3]);
-                UpdateButtonText(backButton, Config.GameValues.backButtonTxtEnglish);
+                UpdateButtonText(continueButton, Config.GameValues.menuText.levelButtons[0]);
+                UpdateButtonText(easyButton, Config.GameValues.menuText.levelButtons[1]);
+                UpdateButtonText(normalButton, Config.GameValues.menuText.levelButtons[2]);
+                UpdateButtonText(hardButton, Config.GameValues.menuText.levelButtons[3]);
+                UpdateButtonText(backButton, Config.GameValues.menuText.backButton);
                 break;
             case Constants.ScenesNames.pause:
                 Debug.Log("updating pause scene buttons");
-                UpdateButtonText(resumeButton, Config.GameValues.pauseButtonsTxtEnglish[0]);
-                UpdateButtonText(restartButton, Config.GameValues.pauseButtonsTxtEnglish[1]);
-                UpdateButtonText(settingsButton, Config.GameValues.pauseButtonsTxtEnglish[2]);
-                UpdateButtonText(mainMenuButton, Config.GameValues.pauseButtonsTxtEnglish[3]);
+                UpdateButtonText(resumeButton, Config.GameValues.menuText.pauseButtons[0]);
+                UpdateButtonText(restartButton, Config.GameValues.menuText.pauseButtons[1]);
+                UpdateButtonText(settingsButton, Config.GameValues.menuText.pauseButtons[2]);
+                UpdateButtonText(mainMenuButton, Config.GameValues.menuText.pauseButtons[3]);
                 scoreboard.text = Config.Instance.score.ToString();
                 break;
             case Constants.ScenesNames.summary:
                 Debug.Log("updating summary scene buttons");
-                UpdateButtonText(mainMenuButton, Config.GameValues.summaryButtonsTxtEnglish[0]);
-                UpdateButtonText(playAgainButton, Config.GameValues.summaryButtonsTxtEnglish[1]);
+                UpdateButtonText(mainMenuButton, Config.GameValues.menuText.summaryButtons[0]);
+                UpdateButtonText(playAgainButton, Config.GameValues.menuText.summaryButtons[1]);
                 break;
             case Constants.ScenesNames.settings:
                 Debug.Log("updating settings scene buttons");
-                UpdateButtonText(backButton, Config.GameValues.backButtonTxtEnglish);
+                UpdateButtonText(backButton, Config.GameValues.menuText.backButton);
                 break;
             case Constants.ScenesNames.about:
                 Debug.Log("updating about button text");
-                UpdateButtonText(backButton, Config.GameValues.backButtonTxtEnglish);
+                UpdateButtonText(backButton, Config.GameValues.menuText.backButton);
                 break;
             default:
                 Debug.Log($"no buttons updated for scene: {activeScene}");

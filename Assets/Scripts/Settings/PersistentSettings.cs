@@ -122,12 +122,57 @@ public static class PersistentSettings
         return false;
     }
 
+    public static int GetHighScore(Difficulty difficulty)
+    {
+        return PlayerPrefs.GetInt(GetHighScoreKey(difficulty), 0);
+    }
+
+    public static int GetLeastMoves(Difficulty difficulty)
+    {
+        return PlayerPrefs.GetInt(GetLeastMovesKey(difficulty), 0);
+    }
+
+    public static void SetHighScore(Difficulty difficulty, int value)
+    {
+        PlayerPrefs.SetInt(GetHighScoreKey(difficulty), value);
+    }
+
+    public static void SetLeastMoves(Difficulty difficulty, int value)
+    {
+        PlayerPrefs.SetInt(GetLeastMovesKey(difficulty), value);
+    }
+
     public static void ClearScores()
     {
-        foreach (string difficulty in Config.GameValues.difficulties)
+        foreach (Difficulty difficulty in Config.GameValues.difficulties)
         {
-            PlayerPrefs.DeleteKey(GetHighScoreKey(difficulty));
-            PlayerPrefs.DeleteKey(GetLeastMovesKey(difficulty));
+            SetHighScore(difficulty, 0);
+            SetLeastMoves(difficulty, 0);
+        }
+    }
+
+    /// <summary>
+    /// Tries to updates the HighScore key corresponding to the given difficulty with the given update value.
+    /// The value will only be updated if the key is blank (0) or if the new value is greater than the current.
+    /// </summary>
+    public static void TrySetHighScore(Difficulty difficulty, int newScore)
+    {
+        int oldHighScore = GetHighScore(difficulty);
+        if (oldHighScore == 0 || oldHighScore < newScore)
+        {
+            SetHighScore(difficulty, newScore);
+        }
+    }
+    /// <summary>
+    /// Tries to updates the LeastMoves key corresponding to the given difficulty with the given update value.
+    /// The value will only be updated if the key is blank (0) or if the new value is greater than the current.
+    /// </summary>
+    public static void TrySetLeastMoves(Difficulty difficulty, int newMoves)
+    {
+        int oldLeastMoves= GetLeastMoves(difficulty);
+        if (oldLeastMoves == 0 || oldLeastMoves < newMoves)
+        {
+            SetLeastMoves(difficulty, newMoves);
         }
     }
 
@@ -135,58 +180,19 @@ public static class PersistentSettings
     /// Returns the correct HighScore key corresponding to the given difficulty.
     /// </summary>
     /// <param name="difficulty">The difficulty you want the key for.</param>
-    /// <returns>Difficulty + HighScoreKey</returns>
-    public static string GetHighScoreKey(string difficulty)
+    /// <returns>Difficulty name + HighScoreKey</returns>
+    private static string GetHighScoreKey(Difficulty difficulty)
     {
-        return difficulty + Constants.Summary.highScoreKey;
-    }
-
-    /// <summary>
-    /// Tries to updates the HighScore key corresponding to the given difficulty with the given update value.
-    /// The value will only be updated if the key is empty or the new value is greater than the current.
-    /// </summary>
-    public static void TrySetHighScore(string difficulty, int update)
-    {
-        string highScoreKey = GetHighScoreKey(difficulty);
-        if (PlayerPrefs.HasKey(highScoreKey))
-        {
-            if (update > PlayerPrefs.GetInt(highScoreKey))
-            {
-                PlayerPrefs.SetInt(highScoreKey, update);
-            }
-        }
-        else
-        {
-            PlayerPrefs.SetInt(highScoreKey, update);
-        }
+        return difficulty.Name + Constants.Summary.highScoreKey;
     }
 
     /// <summary>
     /// Returns the correct LeastMove key corresponding to the given difficulty.
     /// </summary>
     /// <param name="difficulty">The difficulty you want the key for.</param>
-    /// <returns>Difficulty + LeastMovesKey</returns>
-    public static string GetLeastMovesKey(string difficulty)
+    /// <returns>Difficulty name + LeastMovesKey</returns>
+    private static string GetLeastMovesKey(Difficulty difficulty)
     {
-        return difficulty + Constants.Summary.leastMovesKey;
-    }
-
-    /// <summary>
-    /// Updates the LeastMoves key corresponding to the given difficulty with the given update value.
-    /// </summary>
-    public static void TrySetLeastMoves(string difficulty, int update)
-    {
-        string leastMovesKey = GetLeastMovesKey(difficulty);
-        if (PlayerPrefs.HasKey(leastMovesKey))
-        {
-            if (update < PlayerPrefs.GetInt(leastMovesKey))
-            {
-                PlayerPrefs.SetInt(leastMovesKey, update);
-            }
-        }
-        else
-        {
-            PlayerPrefs.SetInt(leastMovesKey, update);
-        }
+        return difficulty.Name + Constants.Summary.leastMovesKey;
     }
 }

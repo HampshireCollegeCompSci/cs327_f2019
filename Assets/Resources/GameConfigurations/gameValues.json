@@ -41,30 +41,86 @@
 
 	"reactorMeltDownSpeed": 0.4,
 
-	"difficulties": [ "EASY", "MEDIUM", "HARD" ],
-	"reactorLimits": [ 24, 21, 18 ],
-	"moveLimits": [ 24, 21, 18 ],
+	"difficulties": [
+		{
+			"name": "EASY",
+			"reactorLimit": 24,
+			"moveLimit": 24
+		},
+		{
+			"name": "MEDIUM",
+			"reactorLimit": 21,
+			"moveLimit": 21
+		},
+		{
+			"name": "HARD",
+			"reactorLimit": 18,
+			"moveLimit": 18
+		}
+	],
 
 	"selectedCardOpacity": 0.25,
-	"cardObstructedColorValues": [ 0.6, 0.6, 0.6, 1 ],
+	"cardObstructedColor": {
+        "r": 0.6,
+        "g": 0.6,
+        "b": 0.6,
+        "a": 1
+    },
 
-	"matchHighlightColorValues": [ 0, 1, 0, 1 ],
-	"moveHighlightColorValues": [ 1, 1, 0, 1 ],
-	"overHighlightColorValues": [ 1, 0, 0, 1 ],
+	"matchHighlightColor": {
+        "r": 0,
+        "g": 1,
+        "b": 0,
+        "a": 1
+    },
+	"moveHighlightColor": {
+        "r": 1,
+        "g": 1,
+        "b": 0,
+        "a": 1
+    },
+	"overHighlightColor": {
+        "r": 1,
+        "g": 0,
+        "b": 0,
+        "a": 1
+    },
 
-	"pointColorValues": [ 0, 1, 0, 1 ],
+	"pointColor": {
+        "r": 0,
+        "g": 1,
+        "b": 0,
+        "a": 1
+    },
 
-	"tutorialObjectHighlightColorValues": [ 1, 1, 0, 0.35 ],
+	"tutorialObjectHighlightColor": {
+        "r": 1,
+        "g": 1,
+        "b": 0,
+        "a": 0.35
+    },
 
-	"fadeDarkColorValues": [ 0, 0, 0, 1],
-	"fadeLightColorValues": [ 0.5, 0.5, 0.5, 1 ],
+	"fadeDarkColor": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 1
+    },
+	"fadeLightColor": {
+        "r": 0.6,
+        "g": 0.6,
+        "b": 0.6,
+        "a": 1
+    },
 
-	"menuButtonsTxtEnglish": [ "PLAY", "TUTORIAL", "SETTINGS", "ABOUT" ],
-	"levelButtonsTxtEnglish": [ "CONTINUE", "EASY", "MEDIUM", "HARD" ],
-	"backButtonTxtEnglish": "BACK",
-	"loadingTxtEnglish": "LOADING...",
-	"pauseButtonsTxtEnglish": [ "RESUME", "RESTART", "SETTINGS", "MAIN\nMENU" ],
-	"summaryButtonsTxtEnglish": [ "MAIN\nMENU", "PLAY\nAGAIN" ],
-	"scoreActionLabelsTxtEnglish": [ "Score", "Action" ],
-	"gameStateTxtEnglish": [ "YOU WON", "YOU LOST" ]
+	"menuText": {
+		"menuButtons": [ "PLAY", "TUTORIAL", "SETTINGS", "ABOUT" ],
+		"levelButtons": [ "CONTINUE", "EASY", "MEDIUM", "HARD" ],
+		"backButton": "BACK",
+		"loading": "LOADING...",
+		"pauseButtons": [ "RESUME", "RESTART", "SETTINGS", "MAIN\nMENU" ],
+		"summaryButtons": [ "MAIN\nMENU", "PLAY\nAGAIN" ],
+		"scoreActionLabels": [ "Score", "Action" ],
+		"gameState": [ "YOU WON", "YOU LOST" ]
+	}
 }

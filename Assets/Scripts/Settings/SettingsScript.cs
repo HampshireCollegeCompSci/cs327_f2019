@@ -172,6 +172,7 @@ public class SettingsScript : MonoBehaviour
             120 => new List<int>(5) { -1, 30, 40, 60, 120 },
             90 => new List<int>(4) { -1, 30, 45, 90 },
             60 => new List<int>(3) { -1, 30, 60 },
+            48 => new List<int>(3) { -1, 24, 48},
             30 => new List<int>(3) { -1, 15, 30 },
             _ => new List<int>(2) { -1, maxFrameRate },
         };

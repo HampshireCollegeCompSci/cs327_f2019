@@ -153,7 +153,7 @@ public class UtilsScript : MonoBehaviour
         bool doSaveState = true;
 
         // detecting if the game is starting or if a nextcycle will be triggered
-        if (startingGame || (!setAsValue && ((Config.Instance.actions + actionUpdate) >= Config.Instance.actionMax)))
+        if (startingGame || (!setAsValue && ((Config.Instance.actions + actionUpdate) >= Config.Instance.CurrentDifficulty.MoveLimit)))
         {
             doSaveState = false;
         }
@@ -162,7 +162,7 @@ public class UtilsScript : MonoBehaviour
             Config.Instance.moveCounter++;
         }
 
-        bool wasInAlertThreshold = Config.Instance.actionMax - Config.Instance.actions <= Config.GameValues.turnAlertThreshold;
+        bool wasInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= Config.GameValues.turnAlertThreshold;
 
         // loading a saved game triggers this
         if (startingGame)
@@ -219,7 +219,7 @@ public class UtilsScript : MonoBehaviour
         }
 
         // time to determine if the alert should be turned on
-        bool isInAlertThreshold = Config.Instance.actionMax - Config.Instance.actions <= Config.GameValues.turnAlertThreshold;
+        bool isInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= Config.GameValues.turnAlertThreshold;
         if (!wasInAlertThreshold && !isInAlertThreshold)
         {
             // do nothing
@@ -727,7 +727,7 @@ public class UtilsScript : MonoBehaviour
         }
 
         // if there is one move left
-        if (turnOnAlert || (checkAgain && !matchRelated && Config.Instance.actionMax - Config.Instance.actions == 1))
+        if (turnOnAlert || (checkAgain && !matchRelated && Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions == 1))
         {
             SoundEffectsController.Instance.AlertSound();
         }
@@ -739,7 +739,7 @@ public class UtilsScript : MonoBehaviour
             // or if the alert is already on and there is only 1 move left,
             // have the baby be angry and play the alert sound
             if (ActionCountScript.Instance.TurnSirenOn(2) ||
-                (!matchRelated && Config.Instance.actionMax - Config.Instance.actions == 1))
+                (!matchRelated && Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions == 1))
             {
                 SpaceBabyController.Instance.BabyReactorHigh();
             }
@@ -756,7 +756,7 @@ public class UtilsScript : MonoBehaviour
 
     private bool CheckNextCycle()
     {
-        if (Config.Instance.actions >= Config.Instance.actionMax)
+        if (Config.Instance.actions >= Config.Instance.CurrentDifficulty.MoveLimit)
         {
             StartNextCycle();
             return true;

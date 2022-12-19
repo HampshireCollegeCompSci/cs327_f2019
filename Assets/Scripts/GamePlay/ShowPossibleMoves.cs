@@ -86,7 +86,7 @@ public class ShowPossibleMoves
 
             // if moving the card into the reactor will lose us the game
             if (reactorMoveScript.CountReactorCard() + selectedCard.GetComponent<CardScript>().CardReactorValue >
-                Config.Instance.reactorLimit)
+                Config.Instance.CurrentDifficulty.ReactorLimit)
             {
                 reactorMoveScript.GlowLevel = Constants.HighlightColorLevel.over;
             }

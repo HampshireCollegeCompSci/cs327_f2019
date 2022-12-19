@@ -162,8 +162,8 @@ public class EndGame : MonoBehaviour
         if (Config.Instance.gameWin)
         {
             // save the results
-            PersistentSettings.TrySetHighScore(Config.Instance.currentDifficulty, Config.Instance.score);
-            PersistentSettings.TrySetLeastMoves(Config.Instance.currentDifficulty, Config.Instance.moveCounter);
+            PersistentSettings.TrySetHighScore(Config.Instance.CurrentDifficulty, Config.Instance.score);
+            PersistentSettings.TrySetLeastMoves(Config.Instance.CurrentDifficulty, Config.Instance.moveCounter);
 
             foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
             {

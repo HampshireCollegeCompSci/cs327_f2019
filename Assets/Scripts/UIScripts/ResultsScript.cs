@@ -21,10 +21,10 @@ public class ResultsScript : MonoBehaviour
         // game won or lost text
         stateText.text = Config.Instance.gameWin switch
         {
-            true => Config.GameValues.gameStateTxtEnglish[0],
-            false => Config.GameValues.gameStateTxtEnglish[1]
+            true => Config.GameValues.menuText.gameState[0],
+            false => Config.GameValues.menuText.gameState[1]
         };
-        difficultyText.text = Config.Instance.currentDifficulty.ToUpper();
+        difficultyText.text = Config.Instance.CurrentDifficulty.Name.ToUpper();
 
         SetScore();
         SetMoves();
@@ -32,75 +32,62 @@ public class ResultsScript : MonoBehaviour
 
     private void SetScore()
     {
-        string highScoreKey = PersistentSettings.GetHighScoreKey(Config.Instance.currentDifficulty);
-
         // Set the current score
         int currentScoreNum = Config.Instance.score;
         currentScoreStatText.text = currentScoreNum.ToString();
 
-        if (PlayerPrefs.HasKey(highScoreKey))
-        {
-            // Set the old high score text
-            int oldHighScoreStatNum = PlayerPrefs.GetInt(highScoreKey);
-            oldHighScoreStatText.text = oldHighScoreStatNum.ToString();
-
-            // Check for a new high score and update if need be
-            if (currentScoreNum > oldHighScoreStatNum)
-            {
-                UpdateHigh(currentScoreText, currentScoreStatText, oldHighScoreText, oldHighScoreStatText, highScoreKey, currentScoreNum);
-            }
-        }
-        else
+        int oldHighScoreNum = PersistentSettings.GetHighScore(Config.Instance.CurrentDifficulty);
+        if (oldHighScoreNum == 0)
         {
             // Set the text to indicate no saved high scores
             oldHighScoreStatText.fontSize = oldHighScoreText.fontSize;
             oldHighScoreStatText.text = "NONE";
+        }
+        else
+        {
+            oldHighScoreStatText.text = oldHighScoreNum.ToString();
+        }
 
-            UpdateHigh(currentScoreText, currentScoreStatText, oldHighScoreText, oldHighScoreStatText, highScoreKey, currentScoreNum);
+        // Check for a new high score and update if need be
+        if (currentScoreNum > oldHighScoreNum)
+        {
+            UpdateHigh(currentScoreText, currentScoreStatText, oldHighScoreText, oldHighScoreStatText);
+            PersistentSettings.SetHighScore(Config.Instance.CurrentDifficulty, currentScoreNum);
         }
     }
 
     private void SetMoves()
     {
-        string leastMovesKey = PersistentSettings.GetLeastMovesKey(Config.Instance.currentDifficulty);
-
         // Set the current moves
         int currentMovesNum = Config.Instance.moveCounter;
         currentMovesStatText.text = currentMovesNum.ToString();
 
-        if (PlayerPrefs.HasKey(leastMovesKey))
-        {
-            // Set the old least moves text
-            int oldLeastMovesNum = PlayerPrefs.GetInt(leastMovesKey);
-            oldLeastMovesStatText.text = oldLeastMovesNum.ToString();
-
-            // If game won, check for a new least moves and update if need be
-            if (Config.Instance.gameWin && currentMovesNum < oldLeastMovesNum)
-            {
-                UpdateHigh(currentMovesText, currentMovesStatText, oldLeastMovesText, oldLeastMovesStatText, leastMovesKey, currentMovesNum);
-            }
-        }
-        else
+        int oldLeastMovesNum = PersistentSettings.GetLeastMoves(Config.Instance.CurrentDifficulty);
+        if (oldLeastMovesNum == 0)
         {
             // Set the text to indicate no saved least moves
             oldLeastMovesStatText.fontSize = oldLeastMovesText.fontSize;
             oldLeastMovesStatText.text = "NONE";
+        }
+        else
+        {
+            oldLeastMovesStatText.text = oldLeastMovesNum.ToString();
+        }
 
-            if (Config.Instance.gameWin)
-            {
-                UpdateHigh(currentMovesText, currentMovesStatText, oldLeastMovesText, oldLeastMovesStatText, leastMovesKey, currentMovesNum);
-            }
+        // If game won, check for a new least moves and update if need be
+        if (Config.Instance.gameWin && (oldLeastMovesNum == 0 || currentMovesNum < oldLeastMovesNum))
+        {
+            UpdateHigh(currentMovesText, currentMovesStatText, oldLeastMovesText, oldLeastMovesStatText);
+            PersistentSettings.SetLeastMoves(Config.Instance.CurrentDifficulty, currentMovesNum);
         }
     }
 
-    private void UpdateHigh(Text newTitle, Text newStat, Text oldTitle, Text oldStat, string key, int update)
+    private void UpdateHigh(Text newTitle, Text newStat, Text oldTitle, Text oldStat)
     {
         newTitle.color = Color.cyan;
         newStat.color = Color.cyan;
 
         oldTitle.color = Color.red;
         oldStat.color = Color.red;
-
-        PlayerPrefs.SetInt(key, update);
     }
 }
