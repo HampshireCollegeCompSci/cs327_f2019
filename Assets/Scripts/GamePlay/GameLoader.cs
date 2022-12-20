@@ -35,11 +35,9 @@ public class GameLoader : MonoBehaviour
         suitSpritesToUse = GetSuitSprites();
         SetRectorSuitSprites(suitSpritesToUse);
 
-        byte suitIndex = 0;
-        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        for (int i = 0; i < 4; i++)
         {
-            reactorScript.SetReactorSuitIndex(suitIndex);
-            suitIndex++;
+            UtilsScript.Instance.reactorScripts[i].SetReactorSuit(Config.Instance.Suits[i]);
         }
 
         Config.Instance.gameOver = false;
@@ -116,28 +114,28 @@ public class GameLoader : MonoBehaviour
 
         // order: spade ace, 2, 3... 10, jack, queen, king, clubs... diamonds... hearts
         int hFSIndex = 0; // used for assigning holograms
-        for (byte suit = 0; suit < 4; suit++) // order: spades, clubs, diamonds, hearts
+        foreach (Suit suit in Config.Instance.Suits)
         {
-            for (byte rank = 1; rank < 14; rank++) // card num: 1 - 13
+            foreach (Rank rank in Config.Instance.Ranks)
             {
                 GameObject newCard = Instantiate(cardPrefab, this.gameObject.transform);
 
                 Sprite hologramFoodSprite, hologramComboSprite;
                 // setting up the cards reactor value, in-game appearance, and hologram sprites
-                if (rank < 10)
+                if (rank.Value < 10)
                 {
                     hologramFoodSprite = holograms[hFSIndex];
-                    hologramComboSprite = suit < 2 ? combinedHolograms[0] : combinedHolograms[5];
+                    hologramComboSprite = suit.Index < 2 ? combinedHolograms[0] : combinedHolograms[5];
                 }
                 else
                 {
                     hFSIndex++;
                     // all cards >10 have fancy holograms, this is a complex way of assigning them
                     hologramFoodSprite = holograms[hFSIndex];
-                    hologramComboSprite = suit < 2 ? combinedHolograms[rank - 9] : combinedHolograms[rank - 4];
+                    hologramComboSprite = suit.Index < 2 ? combinedHolograms[rank.Value - 9] : combinedHolograms[rank.Value - 4];
                 }
 
-                newCard.GetComponent<CardScript>().SetUp(rank, suit, suitSpritesToUse[suit], hologramFoodSprite, hologramComboSprite);
+                newCard.GetComponent<CardScript>().SetUp(new Card(suit, rank), suitSpritesToUse[suit.Index], hologramFoodSprite, hologramComboSprite);
                 newCards.Add(newCard);
             }
             hFSIndex++;

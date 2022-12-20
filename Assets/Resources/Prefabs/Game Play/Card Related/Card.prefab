@@ -504,27 +504,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff4ebf0a934f24ddd9bea9eb2f8f7888, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  container: {fileID: 0}
-  cardRank: 0
-  cardSuitIndex: 0
-  cardID: 0
-  cardReactorValue: 0
   cardFrontSprite: {fileID: 21300000, guid: d7429ac0871f26d42813ea0e65d2b6b4, type: 3}
   cardBackSprite: {fileID: 21300000, guid: b2acde3c6f5c55a4298f960e500a2e80, type: 3}
+  hologramFoodSprite: {fileID: 0}
+  hologramComboSprite: {fileID: 0}
   values: {fileID: 5024974454964163682}
   suitObject: {fileID: 2382183122799814861}
   rankObject: {fileID: 8513407764132339850}
-  hologramFood: {fileID: 1869234980773205396}
-  hologram: {fileID: 2950253550288827638}
-  hologramFoodSprite: {fileID: 0}
-  hologramComboSprite: {fileID: 0}
   glow: {fileID: 1699734583824506818}
+  hologram: {fileID: 2950253550288827638}
+  hologramFood: {fileID: 1869234980773205396}
+  _cardID: 0
   _enabled: 0
   _hidden: 0
   _hitBox: 0
   _obstructed: 0
-  _hologram: 0
   _dragging: 0
+  _hologram: 0
   _hologramColorLevel: 0
   _glowing: 0
   _glowLevel: 0
@@ -540,7 +536,7 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_UsedByComposite: 1
+  m_UsedByComposite: 0
   m_Offset: {x: 0, y: 1}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}

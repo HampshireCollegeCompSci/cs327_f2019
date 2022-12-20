@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class SoundEffectsController : MonoBehaviour, ISound
@@ -13,12 +14,13 @@ public class SoundEffectsController : MonoBehaviour, ISound
     // Sound files
     [SerializeField]
     private AudioClip buttonPressSound, undoPressSound, pauseButtonSound,
-        tokenSelectSoundA, tokenSelectSoundB, tokenSelectSoundC,
-        tokenInReactorSound, tokenStackSoundA, tokenStackSoundB, tokenStackSoundC, tokenStackSoundD,
+        tokenInReactorSound,
         deckDealSound, deckReshuffleSound,
         winSound, loseSound, alertSound, winTransition,
-        mushroomSound, bugSound, fruitSound, rockSound,
         explosionSound;
+
+    [SerializeField]
+    private AudioClip[] tokenSelectSounds, tokenStackSounds, foodMatchSounds;
 
     // Initialize the singleton instance.
     private void Awake()
@@ -65,19 +67,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
 
     public void CardPressSound()
     {
-        int randomNo = Random.Range(0, 3);
-        if (randomNo == 0)
-        {
-            soundController.PlayOneShot(tokenSelectSoundA, 0.3f);
-        }
-        else if (randomNo == 1)
-        {
-            soundController.PlayOneShot(tokenSelectSoundB, 0.3f);
-        }
-        else
-        {
-            soundController.PlayOneShot(tokenSelectSoundC, 0.3f);
-        }
+        soundController.PlayOneShot(tokenSelectSounds[UnityEngine.Random.Range(0, tokenSelectSounds.Length)], 0.3f);
         VibrateSmall();
     }
 
@@ -89,23 +79,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
 
     public void CardStackSound()
     {
-        int randomNo = Random.Range(0, 4);
-        if (randomNo == 0)
-        {
-            soundController.PlayOneShot(tokenStackSoundA, 0.7f);
-        }
-        else if (randomNo == 1)
-        {
-            soundController.PlayOneShot(tokenStackSoundB, 0.7f);
-        }
-        else if (randomNo == 2)
-        {
-            soundController.PlayOneShot(tokenStackSoundC, 0.7f);
-        }
-        else
-        {
-            soundController.PlayOneShot(tokenStackSoundD, 0.7f);
-        }
+        soundController.PlayOneShot(tokenStackSounds[UnityEngine.Random.Range(0, tokenStackSounds.Length)], 0.7f);
         VibrateSmall();
     }
 
@@ -158,26 +132,13 @@ public class SoundEffectsController : MonoBehaviour, ISound
         VibrateMedium();
     }
 
-    public void FoodMatch(byte suit)
+    public void FoodMatch(Suit suit)
     {
-        switch (suit)
+        if (suit.Index < 0 || suit.Index > foodMatchSounds.Length)
         {
-            case Constants.Suits.Hearts.index:
-                soundController.PlayOneShot(mushroomSound, 1);
-                break;
-            case Constants.Suits.Diamonds.index:
-                soundController.PlayOneShot(bugSound, 1);
-                break;
-            case Constants.Suits.Spades.index:
-                soundController.PlayOneShot(rockSound, 1);
-                break;
-            case Constants.Suits.Clubs.index:
-                soundController.PlayOneShot(fruitSound, 1);
-                break;
-            default:
-                throw new System.Exception($"{suit} isn't a suit!");
+            throw new IndexOutOfRangeException($"the suit {suit}'s index is not between 0-{foodMatchSounds.Length}");
         }
-
+        soundController.PlayOneShot(foodMatchSounds[suit.Index], 1);
         VibrateMedium();
     }
 

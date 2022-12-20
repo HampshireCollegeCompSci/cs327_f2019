@@ -258,7 +258,7 @@ public class UtilsScript : MonoBehaviour
         int points = Config.GameValues.matchPoints + (Config.Instance.consecutiveMatches * Config.GameValues.scoreMultiplier);
         ScoreScript.Instance.UpdateScore(points);
 
-        SoundEffectsController.Instance.FoodMatch(card1Script.CardSuitIndex);
+        SoundEffectsController.Instance.FoodMatch(card1Script.Card.Suit);
         SpaceBabyController.Instance.BabyEat();
 
         StartCoroutine(FoodComboMove(comboHologram, matchExplosion));
@@ -778,50 +778,41 @@ public class UtilsScript : MonoBehaviour
 
             GameObject topFoundationCard = foundationScript.CardList[^1];
             CardScript topCardScript = topFoundationCard.GetComponent<CardScript>();
+            ReactorScript reactorScript = reactorScripts[topCardScript.Card.Suit.Index];
 
-            foreach (ReactorScript reactorScript in reactorScripts)
+            topCardScript.Hologram = false;
+            topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = SelectedCardsLayer;
+            topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = SelectedCardsLayer;
+
+            // immediately unhide the next possible top foundation card and start its hologram
+            if (foundationScript.CardList.Count > 1)
             {
-                if (topCardScript.CardSuitIndex != reactorScript.ReactorSuitIndex)
+                CardScript nextTopFoundationCard = foundationScript.CardList[^2].GetComponent<CardScript>();
+                if (nextTopFoundationCard.Hidden)
                 {
-                    continue;
+                    nextTopFoundationCard.NextCycleReveal();
                 }
+            }
 
-                topCardScript.Hologram = false;
-                topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = SelectedCardsLayer;
-                topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = SelectedCardsLayer;
+            Vector3 target = reactorScript.GetNextCardPosition();
+            while (topFoundationCard.transform.position != target)
+            {
+                topFoundationCard.transform.position = Vector3.MoveTowards(topFoundationCard.transform.position, target,
+                    Time.deltaTime * Config.GameValues.cardsToReactorspeed);
+                yield return null;
+            }
 
-                // immediately unhide the next possible top foundation card and start its hologram
-                if (foundationScript.CardList.Count > 1)
-                {
-                    CardScript nextTopFoundationCard = foundationScript.CardList[^2].GetComponent<CardScript>();
-                    if (nextTopFoundationCard.Hidden)
-                    {
-                        nextTopFoundationCard.NextCycleReveal();
-                    }
-                }
+            topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = GameplayLayer;
+            topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = GameplayLayer;
 
-                Vector3 target = reactorScript.GetNextCardPosition();
-                while (topFoundationCard.transform.position != target)
-                {
-                    topFoundationCard.transform.position = Vector3.MoveTowards(topFoundationCard.transform.position, target,
-                        Time.deltaTime * Config.GameValues.cardsToReactorspeed);
-                    yield return null;
-                }
+            SoundEffectsController.Instance.CardToReactorSound();
+            topCardScript.MoveCard(reactorScript.gameObject, isCycle: true);
 
-                topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = GameplayLayer;
-                topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = GameplayLayer;
-
-                SoundEffectsController.Instance.CardToReactorSound();
-                topCardScript.MoveCard(reactorScript.gameObject, isCycle: true);
-
-                if (Config.Instance.gameOver)
-                {
-                    Config.Instance.moveCounter += 1;
-                    IsNextCycle = false;
-                    yield break;
-                }
-
-                break;
+            if (Config.Instance.gameOver)
+            {
+                Config.Instance.moveCounter += 1;
+                IsNextCycle = false;
+                yield break;
             }
         }
 

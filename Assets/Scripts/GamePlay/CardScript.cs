@@ -9,13 +9,7 @@ public class CardScript : MonoBehaviour, IGlow
     private GameObject values, suitObject, rankObject, glow, hologram, hologramFood;
 
     [SerializeField]
-    private byte cardRank; // the number on the card, ace is 1 jack is 11 queen is 12 king is 13
-    [SerializeField]
-    private byte cardSuitIndex;
-    [SerializeField]
-    private byte cardID;
-    [SerializeField]
-    private byte cardReactorValue; // what the card is worth to the reactor jack, queen, king are all 10
+    private byte _cardID;
 
     [SerializeField]
     private bool _enabled, _hidden, _hitBox, _obstructed, _dragging;
@@ -32,25 +26,11 @@ public class CardScript : MonoBehaviour, IGlow
     private Color originalColor;
     private GameObject container;
 
-    public byte CardRank
-    {
-        get => cardRank;
-    }
+    [SerializeField]
+    private Card _card;
+    public Card Card => _card;
 
-    public byte CardSuitIndex
-    {
-        get => cardSuitIndex;
-    }
-
-    public byte CardID
-    {
-        get => cardID;
-    }
-
-    public byte CardReactorValue
-    {
-        get => cardReactorValue;
-    }
+    public byte CardID => _cardID;
 
     public GameObject Container
     {
@@ -267,16 +247,12 @@ public class CardScript : MonoBehaviour, IGlow
         }
     }
 
-    public void SetUp(byte rank, byte suitIndex, Sprite suitSprite, Sprite hologramFoodSprite, Sprite hologramComboSprite)
+    public void SetUp(Card card, Sprite suitSprite, Sprite hologramFoodSprite, Sprite hologramComboSprite)
     {
-        cardRank = rank;
-        cardSuitIndex = suitIndex;
+        _card = card;
 
-        cardID = (byte)(rank + suitIndex * 13);
-        this.name = $"{Constants.Suits.names[cardSuitIndex]}_{cardRank}";
-
-        // reactor values, all face cards have a value of 10
-        cardReactorValue = (byte)(rank < 10 ? rank : 10);
+        _cardID = (byte) (card.Rank.Value + card.Suit.Index * 13);
+        this.name = $"{card.Suit.Name}_{card.Rank.Value}";
 
         hologramFood.GetComponent<SpriteRenderer>().sprite = hologramFoodSprite;
         this.hologramFoodSprite = hologramFoodSprite;
@@ -284,15 +260,8 @@ public class CardScript : MonoBehaviour, IGlow
 
         // in-game appearance of the card's rank
         TextMesh rankText = rankObject.GetComponent<TextMesh>();
-        rankText.color = suitIndex > 1 ? Color.red : Color.black;
-        rankText.text = rank switch
-        {
-            1 => "A",
-            11 => "J",
-            12 => "Q",
-            13 => "K",
-            _ => rank.ToString()
-        };
+        rankText.color = card.Suit.Color;
+        rankText.text = card.Rank.Name;
 
         // setting up the in-game appearance of the card's suit
         suitObject.GetComponent<SpriteRenderer>().sprite = suitSprite;
@@ -300,6 +269,7 @@ public class CardScript : MonoBehaviour, IGlow
         if (Config.Instance.prettyColors)
         {
             originalColor = new Color(Random.Range(0.4f, 1), Random.Range(0.4f, 1f), Random.Range(0.4f, 1f), 1);
+                1);
             // TODO: this needs to change
             SetColor(originalColor);
         }
@@ -514,7 +484,7 @@ public class CardScript : MonoBehaviour, IGlow
         hologramFood.SetActive(true);
 
         // start the animation at a random frame
-        hologram.GetComponent<Animator>().Play(0, -1, Random.Range(0.0f, 1.0f));
+        hologram.GetComponent<Animator>().Play(0, -1, UnityEngine.Random.Range(0.0f, 1.0f));
 
         SpriteRenderer holoSR = hologram.GetComponent<SpriteRenderer>();
         SpriteRenderer objectSR = hologramFood.GetComponent<SpriteRenderer>();

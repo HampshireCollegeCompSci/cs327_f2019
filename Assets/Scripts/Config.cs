@@ -29,6 +29,10 @@ public class Config : MonoBehaviour
     public int moveCounter;
     public byte matchCounter;
 
+    private Difficulty _currentDifficulty;
+    private Suit[] _suits;
+    private Rank[] _ranks;
+
     // Initialize the singleton instance.
     private void Awake()
     {
@@ -40,7 +44,7 @@ public class Config : MonoBehaviour
 
             // These must be done in this order
             // Load the game values from the file
-            LoadGameValues();
+            LoadValues();
             // Setup the Vibration Package
             Vibration.Init();
             // Check Player Preferences
@@ -56,8 +60,10 @@ public class Config : MonoBehaviour
         }
     }
 
-    private Difficulty _currentDifficulty;
     public Difficulty CurrentDifficulty => _currentDifficulty;
+
+    public Suit[] Suits => _suits;
+    public Rank[] Ranks => _ranks;
 
     public void SetDifficulty(int dif)
     {
@@ -82,7 +88,7 @@ public class Config : MonoBehaviour
         throw new KeyNotFoundException($"the difficulty \"{dif}\" was not found");
     }
 
-    private void LoadGameValues()
+    private void LoadValues()
     {
         Debug.Log("loading gamevalues from json");
         TextAsset jsonTextFile = Resources.Load<TextAsset>(Constants.gameValuesPath);
@@ -94,5 +100,23 @@ public class Config : MonoBehaviour
             GameValues.overHighlightColor,
             Color.cyan
         };
+
+        _suits = new Suit[4]
+        {
+            new Suit("spades", 0, Color.black),
+            new Suit("clubs", 1 , Color.black),
+            new Suit("diamonds", 2, Color.red),
+            new Suit("hearts", 3, Color.red)
+        };
+
+        _ranks = new Rank[13];
+        _ranks[0] = new Rank("A", 1, 1);
+        _ranks[10] = new Rank("J", 11, 10);
+        _ranks[11] = new Rank("Q", 12, 10);
+        _ranks[12] = new Rank("K", 13, 10);
+        for (int i = 2; i < 11; i++)
+        {
+            _ranks[i - 1] = new Rank(i.ToString(), i, i);
+        }
     }
 }

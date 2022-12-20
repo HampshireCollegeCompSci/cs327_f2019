@@ -85,7 +85,7 @@ public class ShowPossibleMoves
             }
 
             // if moving the card into the reactor will lose us the game
-            if (reactorMoveScript.CountReactorCard() + selectedCard.GetComponent<CardScript>().CardReactorValue >
+            if (reactorMoveScript.CountReactorCard() + selectedCard.GetComponent<CardScript>().Card.Rank.ReactorValue >
                 Config.Instance.CurrentDifficulty.ReactorLimit)
             {
                 reactorMoveScript.GlowLevel = Constants.HighlightColorLevel.over;
@@ -158,12 +158,12 @@ public class ShowPossibleMoves
         {
             // check if there is a card in a reactor that can be matched with
             ReactorScript complimentaryReactorScript = UtilsScript.Instance.reactorScripts[
-                CardTools.GetComplimentarySuit(selectedCardScript.CardSuitIndex)];
+                Suit.GetComplementaryIndex(selectedCardScript.Card.Suit)];
             if (complimentaryReactorScript.CardList.Count != 0)
             {
                 CardScript topCardScript = complimentaryReactorScript.CardList[^1].GetComponent<CardScript>();
                 // during the tutorial, the top card may be obstructed at times
-                if (!topCardScript.Obstructed && CardTools.CanMatch(topCardScript, selectedCardScript, checkIsTop : false))
+                if (!topCardScript.Obstructed && Card.CanMatch(topCardScript.Card, selectedCardScript.Card))
                 {
                     cardMatches.Add(complimentaryReactorScript.CardList[^1]);
                 }
@@ -173,7 +173,7 @@ public class ShowPossibleMoves
             // and the card is not in the reactor, get the reactor that we can move into
             if (!ReactorObstructed && !selectedCardScript.Container.CompareTag(Constants.Tags.reactor))
             {
-                reactorMove = UtilsScript.Instance.reactorScripts[selectedCardScript.CardSuitIndex].gameObject;
+                reactorMove = UtilsScript.Instance.reactorScripts[selectedCardScript.Card.Suit.Index].gameObject;
             }
         }
 
@@ -187,13 +187,13 @@ public class ShowPossibleMoves
                 if (!topFoundationCardScript.Obstructed)
                 {
                     // if the card can match and matches with the foundation top
-                    if (cardCanBeMatched && CardTools.CanMatch(selectedCardScript, topFoundationCardScript, checkIsTop: false))
+                    if (cardCanBeMatched && Card.CanMatch(selectedCardScript.Card, topFoundationCardScript.Card))
                     {
                         cardMatches.Add(foundationScript.CardList[^1]);
                     }
                     // if the card is not from a reactor can it stack?
                     else if ((cardIsFromFoundation || cardIsFromWastepile) &&
-                        topFoundationCardScript.CardRank == selectedCardScript.CardRank + 1)
+                        topFoundationCardScript.Card.Rank.Value == selectedCardScript.Card.Rank.Value + 1)
                     {
                         cardMoves.Add(foundationScript.CardList[^1]);
                     }
@@ -212,7 +212,7 @@ public class ShowPossibleMoves
             CardScript cardScript = topWastepileCard.GetComponent<CardScript>();
 
             // during the tutorial, the top card may be obstructed at times
-            if (!cardScript.Obstructed && CardTools.CanMatch(cardScript, selectedCardScript, checkIsTop: false))
+            if (!cardScript.Obstructed && Card.CanMatch(cardScript.Card, selectedCardScript.Card))
             {
                 cardMatches.Add(topWastepileCard);
             }

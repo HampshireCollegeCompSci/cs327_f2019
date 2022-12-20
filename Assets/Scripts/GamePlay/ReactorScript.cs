@@ -14,7 +14,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
     private List<GameObject> cardList;
 
     [SerializeField]
-    private byte reactorSuitIndex;
+    private Suit suit;
     [SerializeField]
     private Text reactorScore;
     [SerializeField]
@@ -107,14 +107,11 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         }
     }
 
-    public byte ReactorSuitIndex
-    {
-        get => reactorSuitIndex;
-    }
+    public Suit ReactorSuit => suit;
 
-    public void SetReactorSuitIndex(byte reactorSuitIndex)
+    public void SetReactorSuit(Suit suit)
     {
-        this.reactorSuitIndex = reactorSuitIndex;
+        this.suit = suit;
     }
 
     public void AddCard(GameObject card)
@@ -171,7 +168,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         int cardListVal = cardList.Count;
         for (int i = 0; i < cardListVal; i++)
         {
-            totalSum += cardList[i].GetComponent<CardScript>().CardReactorValue;
+            totalSum += cardList[i].GetComponent<CardScript>().Card.Rank.ReactorValue;
         }
 
         return totalSum;
@@ -284,9 +281,9 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
             if (foundationScript.CardList.Count != 0)
             {
                 CardScript topCardScript = foundationScript.CardList[^1].GetComponent<CardScript>();
-                if (topCardScript.CardSuitIndex == reactorSuitIndex)
+                if (topCardScript.Card.Suit.Equals(ReactorSuit))
                 {
-                    output += topCardScript.CardReactorValue;
+                    output += topCardScript.Card.Rank.ReactorValue;
                 }
             }
         }

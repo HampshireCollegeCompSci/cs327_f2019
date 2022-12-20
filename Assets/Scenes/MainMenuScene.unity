@@ -1687,25 +1687,28 @@ MonoBehaviour:
   buttonPressSound: {fileID: 8300000, guid: 34ed478bbbcfe724ba5b88616341ecba, type: 3}
   undoPressSound: {fileID: 8300000, guid: 5325705503cfe8f43b7d3e63bb133618, type: 3}
   pauseButtonSound: {fileID: 8300000, guid: ba15e855626b48044895a57434db0fa9, type: 3}
-  tokenSelectSoundA: {fileID: 8300000, guid: 212692e81ff51b54cab0cf55e7d64bc5, type: 3}
-  tokenSelectSoundB: {fileID: 8300000, guid: f950caf6c16483b4c8ed03d015bebea9, type: 3}
-  tokenSelectSoundC: {fileID: 8300000, guid: 2bc4dbf393ca2d34da0a30ba75542d82, type: 3}
   tokenInReactorSound: {fileID: 8300000, guid: 1b2e6dca67a0f5b41bb5c3edb6d4cdec, type: 3}
-  tokenStackSoundA: {fileID: 8300000, guid: df7bc6be8f67f7144901ec57e773d6aa, type: 3}
-  tokenStackSoundB: {fileID: 8300000, guid: f63127cf10ef9d14d8c5b9e1940ddf27, type: 3}
-  tokenStackSoundC: {fileID: 8300000, guid: e67b80efe1a1e334f8f31187663a056b, type: 3}
-  tokenStackSoundD: {fileID: 8300000, guid: 8152b8da3e2e6114992de169a66b596b, type: 3}
   deckDealSound: {fileID: 8300000, guid: ed2e65bc4a8cb8c41a05fd9d643eb156, type: 3}
   deckReshuffleSound: {fileID: 8300000, guid: 6b04e724c719a1949a8020f46201a09c, type: 3}
   winSound: {fileID: 8300000, guid: 8bbf4512d419ead46830bd1062c6fafe, type: 3}
   loseSound: {fileID: 8300000, guid: ba41c84e8ee1195438a876cfff7a7c6f, type: 3}
   alertSound: {fileID: 8300000, guid: 2418f3d0f2e889642a4271259699c938, type: 3}
   winTransition: {fileID: 8300000, guid: cb16d367a7831494481670b741a4caca, type: 3}
-  mushroomSound: {fileID: 8300000, guid: 500d74ce5d37147da9bd54ba50cfde21, type: 3}
-  bugSound: {fileID: 8300000, guid: 75dfa90a26ab04a3397012f42a1e7329, type: 3}
-  fruitSound: {fileID: 8300000, guid: 9df40cdb76cca4e2cab06d66a2f5b56d, type: 3}
-  rockSound: {fileID: 8300000, guid: eb59a86103aed0541a40042ebc110d46, type: 3}
   explosionSound: {fileID: 8300000, guid: a267165a944a94bdbaca11eb7050a845, type: 3}
+  tokenSelectSounds:
+  - {fileID: 8300000, guid: 212692e81ff51b54cab0cf55e7d64bc5, type: 3}
+  - {fileID: 8300000, guid: f950caf6c16483b4c8ed03d015bebea9, type: 3}
+  - {fileID: 8300000, guid: 2bc4dbf393ca2d34da0a30ba75542d82, type: 3}
+  tokenStackSounds:
+  - {fileID: 8300000, guid: df7bc6be8f67f7144901ec57e773d6aa, type: 3}
+  - {fileID: 8300000, guid: f63127cf10ef9d14d8c5b9e1940ddf27, type: 3}
+  - {fileID: 8300000, guid: e67b80efe1a1e334f8f31187663a056b, type: 3}
+  - {fileID: 8300000, guid: 8152b8da3e2e6114992de169a66b596b, type: 3}
+  foodMatchSounds:
+  - {fileID: 8300000, guid: eb59a86103aed0541a40042ebc110d46, type: 3}
+  - {fileID: 8300000, guid: 9df40cdb76cca4e2cab06d66a2f5b56d, type: 3}
+  - {fileID: 8300000, guid: 75dfa90a26ab04a3397012f42a1e7329, type: 3}
+  - {fileID: 8300000, guid: 500d74ce5d37147da9bd54ba50cfde21, type: 3}
 --- !u!4 &1182164522
 Transform:
   m_ObjectHideFlags: 0
@@ -1915,6 +1918,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -2358,7 +2362,10 @@ MonoBehaviour:
   winMusic: {fileID: 8300000, guid: 926f37829830840e68d2b4f9f683fe85, type: 3}
   aboutMusic: {fileID: 8300000, guid: e5f1e427424a04ce980aa075a920c590, type: 3}
   tutorialMusic: {fileID: 8300000, guid: 275556a99ff859b45b0e03eb68452bab, type: 3}
-  multiplier: 30
+  _playingTrack: 0
+  _audioSourcePlaying: 0
+  _muted: 0
+  _paused: 0
 --- !u!1 &1722967935
 GameObject:
   m_ObjectHideFlags: 0
@@ -2599,9 +2606,6 @@ MonoBehaviour:
   nextCycleEnabled: 0
   continuing: 0
   prettyColors: 0
-  currentDifficulty: 
-  reactorLimit: 0
-  actionMax: 0
   gamePaused: 0
   gameOver: 0
   gameWin: 0

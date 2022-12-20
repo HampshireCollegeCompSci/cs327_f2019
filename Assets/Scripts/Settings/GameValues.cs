@@ -94,3 +94,89 @@ public struct Difficulty
     private int moveLimit;
     public int MoveLimit { get => moveLimit; }
 }
+
+[Serializable]
+public struct Card
+{
+    public Card(Suit suit, Rank rank)
+    {
+        _suit = suit;
+        _rank = rank;
+    }
+
+    [SerializeField]
+    private Suit _suit;
+    public Suit Suit { get => _suit; }
+
+    [SerializeField]
+    private Rank _rank;
+    public Rank Rank { get => _rank; }
+
+    public static bool CanMatch(Card card1, Card card2)
+    {
+        return card1.Rank.Equals(card2.Rank) && Suit.IsComplementary(card1.Suit, card2.Suit);
+    }
+}
+
+[Serializable]
+public struct Suit
+{
+    public Suit(string name, int index, Color color)
+    {
+        _name = name;
+        _index = index;
+        _color = color;
+    }
+
+    [SerializeField]
+    private string _name;
+    public string Name { get => _name; }
+
+    [SerializeField]
+    private int _index;
+    public int Index { get => _index; }
+
+    [SerializeField]
+    private Color _color;
+    public Color Color { get => _color; }
+
+    public static bool IsComplementary(Suit suit1, Suit suit2)
+    {
+        return suit1.Index == GetComplementaryIndex(suit2);
+    }
+
+    public static int GetComplementaryIndex(Suit suit)
+    {
+        return suit.Index switch
+        {
+            0 => 1,
+            1 => 0,
+            2 => 3,
+            3 => 2,
+            _ => throw new ArgumentException()
+        };
+    }
+}
+
+[Serializable]
+public struct Rank
+{
+    public Rank(string name, int value, int reactorValue)
+    {
+        _name = name;
+        _value = value;
+        _reactorValue = reactorValue;
+    }
+
+    [SerializeField]
+    private string _name;
+    public string Name { get => _name; }
+
+    [SerializeField]
+    private int _value;
+    public int Value { get => _value; }
+
+    [SerializeField]
+    private int _reactorValue;
+    public int ReactorValue { get => _reactorValue; }
+}

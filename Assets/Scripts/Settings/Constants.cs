@@ -76,32 +76,6 @@
         public const string loadPile = "LoadPile";
     }
 
-    public static class Suits
-    {
-        public static class Spades
-        {
-            public const byte index = 0;
-            public const string name = "spades";
-        }
-        public static class Clubs
-        {
-            public const byte index = 1;
-            public const string name = "clubs";
-        }
-        public static class Diamonds
-        {
-            public const byte index = 2;
-            public const string name = "diamonds";
-        }
-        public static class Hearts
-        {
-            public const byte index = 3;
-            public const string name = "hearts";
-        }
-
-        public static readonly string[] names = { Spades.name, Clubs.name, Diamonds.name, Hearts.name };
-    }
-
     public static class LogMoveTypes
     {
         public const byte move = 0;
