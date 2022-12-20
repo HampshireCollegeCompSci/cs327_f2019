@@ -23,11 +23,11 @@ public class Config : MonoBehaviour
 
     public int actions;
     public int score;
-    public byte consecutiveMatches;
+    public int consecutiveMatches;
 
     // long term tracking
     public int moveCounter;
-    public byte matchCounter;
+    public int matchCounter;
 
     private Difficulty _currentDifficulty;
     private Suit[] _suits;

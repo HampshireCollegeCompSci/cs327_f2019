@@ -44,10 +44,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         }
     }
 
-    public List<GameObject> CardList
-    {
-        get => cardList;
-    }
+    public List<GameObject> CardList => cardList;
 
     public bool DraggingCard
     {

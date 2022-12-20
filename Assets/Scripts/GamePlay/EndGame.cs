@@ -54,7 +54,7 @@ public class EndGame : MonoBehaviour
         }
 
         // overwritten when manually won (cheated)
-        Config.Instance.matchCounter = (byte)(MatchedPileScript.Instance.CardList.Count / 2);
+        Config.Instance.matchCounter = MatchedPileScript.Instance.CardList.Count / 2;
 
         if (didWin)
         {

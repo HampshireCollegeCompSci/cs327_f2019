@@ -8,7 +8,7 @@ public class GameState<T>
     public int moveCounter;
     public int actions;
     public int score;
-    public byte consecutiveMatches;
+    public int consecutiveMatches;
     public ReactorCards[] reactors;
     public FoundationCards[] foundations;
     public List<T> wastePile;

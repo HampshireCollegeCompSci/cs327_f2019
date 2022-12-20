@@ -9,7 +9,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
     [SerializeField]
     private bool _glowing;
     [SerializeField]
-    private byte _glowLevel;
+    private int _glowLevel;
 
     private SpriteRenderer spriteRenderer;
 
@@ -22,10 +22,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
         _glowLevel = 0;
     }
 
-    public List<GameObject> CardList
-    {
-        get => cardList;
-    }
+    public List<GameObject> CardList => cardList;
 
     public bool Glowing
     {
@@ -44,7 +41,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
         }
     }
 
-    public byte GlowLevel
+    public int GlowLevel
     {
         get => _glowLevel;
         set

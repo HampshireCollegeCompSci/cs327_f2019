@@ -23,7 +23,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
     [SerializeField]
     private bool _glowing;
     [SerializeField]
-    private byte _glowLevel;
+    private int _glowLevel;
     [SerializeField]
     private bool _alert;
 
@@ -43,10 +43,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         _alert = false;
     }
 
-    public List<GameObject> CardList
-    {
-        get => cardList;
-    }
+    public List<GameObject> CardList => cardList;
 
     public bool Glowing
     {
@@ -71,7 +68,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         }
     }
 
-    public byte GlowLevel
+    public int GlowLevel
     {
         get => _glowLevel;
         set
@@ -222,7 +219,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         ChangeSuitGlow(GlowLevel);
     }
 
-    public void ChangeSuitGlow(byte level)
+    public void ChangeSuitGlow(int level)
     {
         Color newColor = Config.GameValues.highlightColors[level];
         newColor.a = 0.3f;

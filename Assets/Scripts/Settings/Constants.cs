@@ -88,10 +88,10 @@
 
     public static class HighlightColorLevel
     {
-        public const byte normal = 0;
-        public const byte match = 1;
-        public const byte move = 2;
-        public const byte over = 3;
-        public const byte win = 4;
+        public const int normal = 0;
+        public const int match = 1;
+        public const int move = 2;
+        public const int over = 3;
+        public const int win = 4;
     }
 }

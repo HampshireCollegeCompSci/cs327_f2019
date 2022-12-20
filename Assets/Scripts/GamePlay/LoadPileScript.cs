@@ -27,10 +27,7 @@ public class LoadPileScript : MonoBehaviour, ICardContainer
         }
     }
 
-    public List<GameObject> CardList
-    {
-        get => cardList;
-    }
+    public List<GameObject> CardList => cardList;
 
     public void AddCard(GameObject card)
     {

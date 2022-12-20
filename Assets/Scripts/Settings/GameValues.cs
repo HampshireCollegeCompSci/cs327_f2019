@@ -7,7 +7,7 @@ public class GameValues
     public bool enableCheat;
 
     public int foundationStartingSize;
-    public byte cardsToDeal;
+    public int cardsToDeal;
 
     public float relativeCardScale;
     public float matchExplosionScale;

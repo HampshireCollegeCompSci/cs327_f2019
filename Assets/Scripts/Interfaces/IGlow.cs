@@ -6,7 +6,7 @@
         set;
     }
 
-    byte GlowLevel
+    int GlowLevel
     {
         get;
         set;

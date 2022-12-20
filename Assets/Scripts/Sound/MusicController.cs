@@ -20,7 +20,7 @@ public class MusicController : MonoBehaviour, ISound
     private AudioClip[] audioClips;
 
     [SerializeField]
-    private byte _playingTrack, _audioSourcePlaying;
+    private int _playingTrack, _audioSourcePlaying;
     [SerializeField]
     private bool _muted, _paused;
 
@@ -40,7 +40,7 @@ public class MusicController : MonoBehaviour, ISound
                 menuMusic, themeMusic, transitionMusic, loseMusic, winMusic, aboutMusic, tutorialMusic
             };
             AudioSourcePlaying = 1;
-            _playingTrack = byte.MaxValue;
+            _playingTrack = -1;
             _muted = false;
             _paused = false;
         }
@@ -58,7 +58,7 @@ public class MusicController : MonoBehaviour, ISound
         UpdateMaxVolume(PersistentSettings.MusicVolume);
     }
 
-    private byte PlayingTrack
+    private int PlayingTrack
     {
         get => _playingTrack;
         set
@@ -104,7 +104,7 @@ public class MusicController : MonoBehaviour, ISound
         }
     }
 
-    private byte AudioSourcePlaying
+    private int AudioSourcePlaying
     {
         get => _audioSourcePlaying;
         set => _audioSourcePlaying = value;

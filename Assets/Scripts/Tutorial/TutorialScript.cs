@@ -352,10 +352,10 @@ public class TutorialScript : MonoBehaviour
         bool highlightOn = ParseOnOrOff(command, 2);
 
         // get the containers index
-        byte index = ParseContainerIndex(command, 3);
+        int index = ParseContainerIndex(command, 3);
 
         // get the highlight color level
-        byte highlightColorLevel = ParseHighlightColorLevel(command, 4);
+        int highlightColorLevel = ParseHighlightColorLevel(command, 4);
 
         // find the container
         switch (command[1].ToUpper())
@@ -445,7 +445,7 @@ public class TutorialScript : MonoBehaviour
         bool highlightOn = ParseOnOrOff(command, 4);
 
         // get the highlight color level
-        byte highlightColorLevel = ParseHighlightColorLevel(command, 5);
+        int highlightColorLevel = ParseHighlightColorLevel(command, 5);
 
         // find the desired token's location
         switch (command[1].ToUpper())
@@ -717,7 +717,7 @@ public class TutorialScript : MonoBehaviour
     /// Parses the given command index for "on" or "off" and returns the bool result.
     /// Ignores case and throws a FormatException if the command is not valid.
     /// </summary>
-    private bool ParseOnOrOff(List<string> command, byte index)
+    private bool ParseOnOrOff(List<string> command, int index)
     {
         if (command[index].Equals("on", StringComparison.OrdinalIgnoreCase))
         {
@@ -735,16 +735,16 @@ public class TutorialScript : MonoBehaviour
     /// <summary>
     /// Parses the given command's index for a reactor alert level and returns it.
     /// </summary>
-    private byte ParseHighlightColorLevel(List<string> command, byte index)
+    private int ParseHighlightColorLevel(List<string> command, int index)
     {
-        byte colorLevel;
+        int colorLevel;
         try
         {
-            colorLevel = byte.Parse(command[index]);
+            colorLevel = int.Parse(command[index]);
         }
         catch (FormatException)
         {
-            throw new FormatException($"does not contain a byte for command #{index}");
+            throw new FormatException($"does not contain a int for command #{index}");
         }
         if (colorLevel > 3) // there are only three color levels available
         {
@@ -757,16 +757,16 @@ public class TutorialScript : MonoBehaviour
     /// <summary>
     /// Parses the given command's index for a container game object (where tokens/cards reside) index and returns it.
     /// </summary>
-    private byte ParseContainerIndex(List<string> command, byte index)
+    private int ParseContainerIndex(List<string> command, int index)
     {
-        byte parsedIndex;
+        int parsedIndex;
         try
         {
-            parsedIndex = byte.Parse(command[index]);
+            parsedIndex = int.Parse(command[index]);
         }
         catch (FormatException)
         {
-            throw new FormatException($"does not contain a byte for command #{index}");
+            throw new FormatException($"does not contain a int for command #{index}");
         }
         if (index < 0 || index > 3) // there are only 4 reactors and 4 foundations
         {
@@ -779,12 +779,12 @@ public class TutorialScript : MonoBehaviour
     /// <summary>
     /// Parses the given command's index for a token/card index and returns it.
     /// </summary>
-    private int ParseTokenIndex(List<string> command, byte index)
+    private int ParseTokenIndex(List<string> command, int index)
     {
         int tokenIndex;
         try
         {
-            tokenIndex = Int32.Parse(command[index]);
+            tokenIndex = int.Parse(command[index]);
         }
         catch (FormatException)
         {

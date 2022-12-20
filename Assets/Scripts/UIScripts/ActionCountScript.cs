@@ -20,7 +20,7 @@ public class ActionCountScript : MonoBehaviour
 
     private Image screenImage, gameTimerImage, buttonImage, sirenImage;
 
-    private byte currentState;
+    private int currentState;
 
     private Coroutine actionCoroutine;
     //private Coroutine fader;
@@ -96,7 +96,7 @@ public class ActionCountScript : MonoBehaviour
         flasherCoroutine = null;
     }
 
-    public bool TurnSirenOn(byte alertLevel)
+    public bool TurnSirenOn(int alertLevel)
     {
         if (currentState == alertLevel)
         {

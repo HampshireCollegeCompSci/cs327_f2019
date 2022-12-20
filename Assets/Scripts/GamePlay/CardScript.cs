@@ -16,11 +16,11 @@ public class CardScript : MonoBehaviour, IGlow
     [SerializeField]
     private bool _hologram;
     [SerializeField]
-    private byte _hologramColorLevel;
+    private int _hologramColorLevel;
     [SerializeField]
     private bool _glowing;
     [SerializeField]
-    private byte _glowLevel;
+    private int _glowLevel;
 
     private Coroutine holoCoroutine;
     private Color originalColor;
@@ -189,7 +189,7 @@ public class CardScript : MonoBehaviour, IGlow
     /// <summary>
     /// The color level (translates to rgb color) of the card's hologram.
     /// </summary>
-    public byte HologramColorLevel
+    public int HologramColorLevel
     {
         get => _hologramColorLevel;
         set
@@ -232,7 +232,7 @@ public class CardScript : MonoBehaviour, IGlow
     /// <summary>
     /// The color level (translates to rgb color) of the card's glow.
     /// </summary>
-    public byte GlowLevel
+    public int GlowLevel
     {
         get => _glowLevel;
         set

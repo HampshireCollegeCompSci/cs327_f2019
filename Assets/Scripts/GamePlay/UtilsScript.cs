@@ -545,7 +545,7 @@ public class UtilsScript : MonoBehaviour
                 hoveringOver.GetComponent<CardScript>().Glowing)
             {
                 // change the dragged card hologram color to what it's hovering over
-                byte hoverOverGlowLevel = hoveringOver.GetComponent<CardScript>().GlowLevel;
+                int hoverOverGlowLevel = hoveringOver.GetComponent<CardScript>().GlowLevel;
                 selectedCardsCopy[^1].GetComponent<CardScript>().HologramColorLevel = hoverOverGlowLevel;
                 // if it's a match
                 if (hoverOverGlowLevel == 1)

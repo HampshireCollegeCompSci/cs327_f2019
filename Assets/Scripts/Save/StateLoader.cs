@@ -49,8 +49,8 @@ public class StateLoader : MonoBehaviour
             c = newMove.card.GetComponent<CardScript>().CardID,
             o = GetOriginIndex(newMove.origin),
             m = newMove.moveType,
-            h = System.Convert.ToByte(newMove.nextCardWasHidden),
-            a = System.Convert.ToByte(newMove.isAction),
+            h = Convert.ToByte(newMove.nextCardWasHidden),
+            a = Convert.ToByte(newMove.isAction),
             r = newMove.remainingActions,
             s = newMove.score,
             n = newMove.moveNum
@@ -70,7 +70,7 @@ public class StateLoader : MonoBehaviour
 
         Debug.Log("writing state");
 
-        GameState<byte> gameState = new();
+        GameState<int> gameState = new();
 
         //save foundations
         for (int i = 0; i < UtilsScript.Instance.foundationScripts.Length; i++)
@@ -126,7 +126,7 @@ public class StateLoader : MonoBehaviour
 
         // load the save file from the save path and unpack it
         string jsonTextFile = File.ReadAllText(SaveFile.GetPath());
-        GameState<byte> saveState = JsonUtility.FromJson<GameState<byte>>(jsonTextFile);
+        GameState<int> saveState = JsonUtility.FromJson<GameState<int>>(jsonTextFile);
         UnpackGameState(saveState);
     }
 
@@ -229,9 +229,9 @@ public class StateLoader : MonoBehaviour
         DeckScript.Instance.UpdateDeckCounter();
     }
 
-    private List<byte> ConvertCardListToStringList(List<GameObject> cardList)
+    private List<int> ConvertCardListToStringList(List<GameObject> cardList)
     {
-        List<byte> newCardList = new(cardList.Count);
+        List<int> newCardList = new(cardList.Count);
         foreach (GameObject card in cardList)
         {
             newCardList.Add(card.GetComponent<CardScript>().CardID);
@@ -272,13 +272,12 @@ public class StateLoader : MonoBehaviour
         {
             GameObject card = cardID switch
             {
-                byte ID => LoadPileScript.Instance.CardList.Find(card => card.GetComponent<CardScript>().CardID == ID),
+                int ID => LoadPileScript.Instance.CardList.Find(card => card.GetComponent<CardScript>().CardID == ID),
                 string name => LoadPileScript.Instance.CardList.Find(card => card.GetComponent<CardScript>().name == name),
                 _ => null
             };
 
-
-            // byte ID => LoadPileScript.Instance.CardList.BinarySearch(ID, Comparer<GameObject>.Create((x, y) =>
+            // int ID => LoadPileScript.Instance.CardList.BinarySearch(ID, Comparer<GameObject>.Create((x, y) =>
             // x.GetComponent<CardScript>().CardID.CompareTo(y.GetComponent<CardScript>().CardID))),
 
             if (card == null)

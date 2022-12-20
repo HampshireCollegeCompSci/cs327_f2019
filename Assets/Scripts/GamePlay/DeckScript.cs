@@ -41,10 +41,7 @@ public class DeckScript : MonoBehaviour, ICardContainer
         }
     }
 
-    public List<GameObject> CardList
-    {
-        get => cardList;
-    }
+    public List<GameObject> CardList => cardList;
 
     public void AddCard(GameObject card)
     {
