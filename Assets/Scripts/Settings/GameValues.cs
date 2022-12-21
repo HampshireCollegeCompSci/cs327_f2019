@@ -79,6 +79,14 @@ public class GameValues
         public string[] scoreActionLabels;
         public string[] gameState;
     }
+
+    public static class AlertLevels
+    {
+        public static readonly AlertLevel none = new(new Color(0.725f, 0.725f, 0.725f), Color.white);
+        public static readonly AlertLevel low = new(new Color(0.941f, 0.706f, 0.055f), new Color(0.6f, 0.45f, 0.039f));
+        public static readonly AlertLevel high = new(new Color(0.835f, 0.2f, 0.098f), new Color(0.56f, 0.141f, 0.11f));
+    }
+
 }
 
 [Serializable]
@@ -179,4 +187,16 @@ public struct Rank
     [SerializeField]
     private int _reactorValue;
     public int ReactorValue { get => _reactorValue; }
+}
+
+public readonly struct AlertLevel
+{
+    public AlertLevel(Color lightColor, Color screenColor)
+    {
+        this.lightColor = lightColor;
+        this.screenColor = screenColor;
+    }
+
+    public readonly Color lightColor;
+    public readonly Color screenColor;
 }

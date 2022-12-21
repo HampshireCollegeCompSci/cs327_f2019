@@ -281,8 +281,9 @@ public class UtilsScript : MonoBehaviour
         }
 
         if (!(manuallyTriggered && InputStopped)) // stops 2 NextCycles from happening at once
-        {
+        { 
             IsNextCycle = true;
+            ActionCountScript.Instance.PressKnob();
             StartCoroutine(NextCycle());
         }
     }
@@ -738,7 +739,7 @@ public class UtilsScript : MonoBehaviour
             // if the alert was not already on turn it on
             // or if the alert is already on and there is only 1 move left,
             // have the baby be angry and play the alert sound
-            if (ActionCountScript.Instance.TurnSirenOn(2) ||
+            if (ActionCountScript.Instance.TurnSirenOn(GameValues.AlertLevels.high) ||
                 (!matchRelated && Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions == 1))
             {
                 SpaceBabyController.Instance.BabyReactorHigh();
@@ -746,7 +747,7 @@ public class UtilsScript : MonoBehaviour
         }
         else if (turnOnAlert || checkAgain)
         {
-            ActionCountScript.Instance.TurnSirenOn(1);
+            ActionCountScript.Instance.TurnSirenOn(GameValues.AlertLevels.low);
         }
         else // the action counter is not low so turn stuff off
         {

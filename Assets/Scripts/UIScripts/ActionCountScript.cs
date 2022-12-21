@@ -10,20 +10,15 @@ public class ActionCountScript : MonoBehaviour
     [SerializeField]
     private Text actionText;
     [SerializeField]
-    private GameObject screen, timerSiren, timerButton;
+    private Image screenImage, lightsImage, sirenImage, buttonImage;
 
     [SerializeField]
-    private Sprite sirenOff, sirenOn, sirenAlert,
-        gameTimerOff, gameTimerOn, gameTimerAlert,
-        screenOn, screenAlert,
-        buttonDown, buttonUp;
+    private Sprite buttonDown, buttonUp;
 
-    private Image screenImage, gameTimerImage, buttonImage, sirenImage;
-
-    private int currentState;
+    private Color originalScreenColor;
+    private AlertLevel currentAlertLevel;
 
     private Coroutine actionCoroutine;
-    //private Coroutine fader;
     private Coroutine flasherCoroutine;
 
     // Initialize the singleton instance.
@@ -41,11 +36,8 @@ public class ActionCountScript : MonoBehaviour
 
     private void Start()
     {
-        screenImage = screen.GetComponent<Image>();
-        gameTimerImage = gameObject.GetComponent<Image>();
-        buttonImage = timerButton.GetComponent<Image>();
-        sirenImage = timerSiren.GetComponent<Image>();
-        currentState = 0;
+        originalScreenColor = screenImage.color;
+        currentAlertLevel = GameValues.AlertLevels.none;
         flasherCoroutine = null;
     }
 
@@ -79,57 +71,23 @@ public class ActionCountScript : MonoBehaviour
 
     public void TurnSirenOff()
     {
-        //if (fader != null)
-        //{
-        //  StopCoroutine(fader);
-        //}
-        if (flasherCoroutine != null)
-        {
-            StopCoroutine(flasherCoroutine);
-        }
-
-        screen.SetActive(false);
-        gameTimerImage.sprite = gameTimerOff;
-        sirenImage.sprite = sirenOff;
-        currentState = 0;
-        //fader = null;
-        flasherCoroutine = null;
+        TryStopFlashing();
+        screenImage.color = originalScreenColor;
+        lightsImage.color = GameValues.AlertLevels.none.lightColor;
+        currentAlertLevel = GameValues.AlertLevels.none;
     }
 
-    public bool TurnSirenOn(int alertLevel)
+    public bool TurnSirenOn(AlertLevel newAlertLevel)
     {
-        if (currentState == alertLevel)
-        {
-            return false;
-        }
+        if (currentAlertLevel.Equals(newAlertLevel)) return false;
 
-        //if (fader != null)
-        //{
-        //StopCoroutine(fader);
-        //}
-        if (flasherCoroutine != null)
-        {
-            StopCoroutine(flasherCoroutine);
-        }
+        currentAlertLevel = newAlertLevel;
+        TryStopFlashing();
 
-        currentState = alertLevel;
+        screenImage.color = currentAlertLevel.screenColor;
+        lightsImage.color = currentAlertLevel.lightColor;
 
-        screen.SetActive(true);
-        if (alertLevel == 1)
-        {
-            screenImage.sprite = screenOn;
-            gameTimerImage.sprite = gameTimerOn;
-            sirenImage.sprite = sirenOn;
-        }
-        else
-        {
-            screenImage.sprite = screenAlert;
-            gameTimerImage.sprite = gameTimerAlert;
-            sirenImage.sprite = sirenAlert;
-        }
-
-        //fader = StartCoroutine(ScreenFade());
-        flasherCoroutine = StartCoroutine(Flash());
+        flasherCoroutine = StartCoroutine(Flash(currentAlertLevel));
         return true;
     }
 
@@ -146,8 +104,7 @@ public class ActionCountScript : MonoBehaviour
         actionText.text = (Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions).ToString();
     }
 
-    [SerializeField]
-    private void PressKnob()
+    public void PressKnob()
     {
         if (UtilsScript.Instance.InputStopped) return;
         // the make actions max button calls this
@@ -162,37 +119,37 @@ public class ActionCountScript : MonoBehaviour
         buttonImage.sprite = buttonUp;
     }
 
-    private IEnumerator ScreenFade()
+    private void TryStopFlashing()
     {
-        screenImage.color = Color.white;
-        Color screenColor = Color.white;
-        while (true)
+        if (flasherCoroutine != null)
         {
-            while (screenColor.a > 0)
-            {
-                screenColor.a -= 0.02f;
-                screenImage.color = screenColor;
-                yield return new WaitForSeconds(0.05f);
-            }
-
-            while (screenColor.a < 1)
-            {
-                screenColor.a += 0.02f;
-                screenImage.color = screenColor;
-                yield return new WaitForSeconds(0.05f);
-            }
+            StopCoroutine(flasherCoroutine);
+            flasherCoroutine = null;
+            sirenImage.color = GameValues.AlertLevels.none.lightColor;
         }
     }
 
-    private IEnumerator Flash()
+    private IEnumerator Flash(AlertLevel alertLevel)
     {
-        Sprite currentSiren = sirenImage.sprite;
+        float timeElapsed = 0;
+        float duration = 1.5f;
+
+        bool turnOn = true;
+        Color startColor = GameValues.AlertLevels.none.lightColor;
+        Color endColor = alertLevel.lightColor;
+
         while (true)
         {
-            yield return new WaitForSeconds(1);
-            sirenImage.sprite = sirenOff;
-            yield return new WaitForSeconds(1);
-            sirenImage.sprite = currentSiren;
+            while (timeElapsed < duration)
+            {
+                sirenImage.color = Color.Lerp(startColor, endColor, timeElapsed / duration);
+                timeElapsed += Time.deltaTime;
+                yield return null;
+            }
+            timeElapsed = 0;
+            startColor = sirenImage.color;
+            endColor = turnOn ? GameValues.AlertLevels.none.lightColor : alertLevel.lightColor;
+            turnOn = !turnOn;
         }
     }
 }
