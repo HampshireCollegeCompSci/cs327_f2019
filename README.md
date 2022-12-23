@@ -1,16 +1,14 @@
 <!-- PROJECT LOGO -->
-<br />
 <div align="center">
-  
-  <a href="">
-    <img style="margin-bottom: -50px;" src="Assets/Sprites/UI/Main Menu UI/logo.png" alt="App Name Logo" height="200">
+  <a href="#">
+    <img src="Assets/Sprites/UI/Main Menu UI/logo.png" alt="App Name Logo" height="200">
   </a>
   
   <div align="center">
     <a href="https://www.hampshire.edu/">
       <img align="center" src="Assets/Sprites/UI/Main Menu UI/Hampshire_Logo.png" alt="Hampshire College Logo" height="60">
     </a>
-    <a href="">
+    <a href="http://irafay.com/">
       <img align="center" src="Assets/Sprites/UI/Main Menu UI/FayGames_Logo.png" alt="Fay Games Logo" height="120">
     </a>
   </div>
@@ -22,21 +20,20 @@
     <br />
     <br />
     ·
-    <a href="https://simmer.io/@JLAW/cosmia"> Play WebGL Version</a>
+    <a href="https://simmer.io/@JLAW/cosmia"> Play in Web Browser</a>
     ·
     <a href="https://github.com/HampshireCollegeCompSci/cs327_f2019/releases">View Latest Releases</a>
     ·
   </p>
 </div>
-<br/>
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-This project is the result of the course of CS327 at Hampshire College during the Spring of 2019. Teams from different disciplines were formed to create a new solitare like game that could be published on the mobile app stores. After the end of the semester, the project was over halfway completed.
+This project is the result of the course of CS327 at Hampshire College during the Fall of 2019. Teams from different disciplines were formed to create a new solitare like game that could be published on the mobile app stores. At the end of the semester, the project was over halfway completed.
 
-During the 2019 Fall semester, a small group of developers consiting of members from various teams formed to finish the project. These members are indicated by a ⭐ in the credits section. They managed to get the project near completion, save for a few critical issues and missing features.
+During the 2020 Spring semester, a small group of developers consiting of members from various teams stayed to finish the project. These members are indicated by a ⭐ in the credits section. They managed to get the project near completion.
 
-Afterwards in 2021, the programmer Jona began work to finalize the game. This undertaking consisted of improving existing systems, fixing issues on discovery, and adding a plethora of features. In early 2022, the project was stable and feature rich enough to begin the distribution of builds for final playtesting.
+Afterwards in 2021, the programmer Jona began work to hopefully finalize the game. In early 2022, the project was stable and feature rich enough to begin the distribution of builds for final playtesting.
 
 <details>
   <summary><b>CREDITS</b> (click to expand)</summary>
@@ -87,19 +84,22 @@ Afterwards in 2021, the programmer Jona began work to finalize the game. This un
 <!-- USAGE EXAMPLES -->
 ## Gameplay Preview
 <div align="center">
-  <img align="center" src="Images/stack.png" alt="Logo" height="420">
-  <img align="center" src="Images/highlight.png" alt="Logo" height="420">
-  <img align="center" src="Images/combo.png" alt="Logo" height="420">
-  </div>
+  <a href="#">
+    <img align="center" src="Images/stack.png" alt="Logo" height="420">
+    <img align="center" src="Images/highlight.png" alt="Logo" height="420">
+    <img align="center" src="Images/combo.png" alt="Logo" height="420">
+    </a>
+</div>
 <br/><br/>
 
 <!-- ROADMAP -->
 ## Roadmap
 
 - [x] Add Interactability to the Tutorial
+- [ ] Add More Settings Options
 - [ ] Address Aspect Ratio Issues
-- [ ] Launch On App Stores
 - [ ] Multi-language Support
+- [ ] Launch On App Stores
 
 See the [open issues](https://github.com/HampshireCollegeCompSci/cs327_f2019/issues) for a full list of proposed features (and known issues).
 <br/><br/>
