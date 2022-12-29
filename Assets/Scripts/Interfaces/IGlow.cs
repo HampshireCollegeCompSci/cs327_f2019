@@ -6,7 +6,7 @@
         set;
     }
 
-    int GlowLevel
+    HighLightColor GlowColor
     {
         get;
         set;

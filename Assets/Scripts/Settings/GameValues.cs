@@ -1,95 +1,129 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using UnityEngine;
 
-[Serializable]
-public class GameValues
+public static class GameValues
 {
-    public bool enableCheat;
-
-    public int foundationStartingSize;
-    public int cardsToDeal;
-
-    public float relativeCardScale;
-    public float matchExplosionScale;
-
-    public float draggedCardScale;
-    public float draggedCardOffset;
-
-    public int turnAlertSmallThreshold;
-    public int turnAlertThreshold;
-
-    public int matchPoints;
-    public int scoreMultiplier;
-    public bool enableBonusPoints;
-    public int emptyReactorPoints;
-    public int perfectGamePoints;
-
-    public int wastepileAnimationSpeedSlow;
-    public int wastepileAnimationSpeedFast;
-    public int cardsToReactorspeed;
-
-    public float musicFadeInDurationSec;
-    public float musicFadeOutDurationSec;
-    public float musicFadeOutSlowDurationSec;
-
-    public int musicDefaultVolume;
-    public int soundEffectsDefaultVolume;
-    public bool vibrationEnabledDefault;
-    public bool foodSuitsEnabledDefault;
-
-    public float fadeOutButtonsSpeed;
-    public int zoomFactor;
-    public float panAndZoomSpeed;
-    public float startGameFadeInSpeed;
-    public float endGameFadeOutSpeed;
-    public float summaryTransitionSpeed;
-
-    public float reactorMeltDownSpeed;
-
-    public Difficulty[] difficulties;
-
-    public float selectedCardOpacity;
-
-    public Color cardObstructedColor;
-
-    public Color matchHighlightColor;
-    public Color moveHighlightColor;
-    public Color overHighlightColor;
-    public Color[] highlightColors;
-
-    public Color pointColor;
-
-    public Color tutorialObjectHighlightColor;
-
-    public Color fadeDarkColor;
-
-    public Color fadeLightColor;
-
-    public MenuText menuText;
-
-    [Serializable]
-    public class MenuText
+    public static class GamePlay
     {
-        public string[] menuButtons;
-        public string[] levelButtons;
-        public string backButton;
-        public string loading;
-        public string[] pauseButtons;
-        public string[] summaryButtons;
-        public string[] scoreActionLabels;
-        public string[] gameState;
+        public const bool enableCheat = false;
+        public const int foundationStartingSize = 7;
+        public const int cardsToDeal = 3;
+        public const int turnAlertThreshold = 5;
+
+        public static readonly ReadOnlyCollection<Difficulty> difficulties = Array.AsReadOnly(new Difficulty[3]
+        {
+            new Difficulty("EASY", 24, 24),
+            new Difficulty("MEDIUM", 21, 21),
+            new Difficulty("HARD", 18, 18),
+        });
+
+        public static readonly ReadOnlyCollection<Suit> suits = Array.AsReadOnly(new Suit[4]
+        {
+            new Suit("spades", 0, Color.black),
+            new Suit("clubs", 1 , Color.black),
+            new Suit("diamonds", 2, Color.red),
+            new Suit("hearts", 3, Color.red)
+        });
+
+        public static readonly ReadOnlyCollection<Rank> ranks = Array.AsReadOnly(new Rank[13]
+        {
+            new Rank("A", 1, 1),
+            new Rank("2", 2, 2),
+            new Rank("3", 3, 3),
+            new Rank("4", 4, 4),
+            new Rank("5", 5, 5),
+            new Rank("6", 6, 6),
+            new Rank("7", 7, 7),
+            new Rank("8", 8, 8),
+            new Rank("9", 9, 9),
+            new Rank("10", 10, 10),
+            new Rank("J", 11, 10),
+            new Rank("Q", 12, 10),
+            new Rank("K", 13, 10)
+        });
+    }
+
+    public static class Transforms
+    {
+        public const float matchExplosionScale = 0.3f;
+
+        public const float draggedCardScale = 0.15f;
+        public const float draggedCardYOffset = 0.4f;
+
+        public const int zoomFactor = 20;
+        public const float panAndZoomSpeed = 30;
+    }
+
+    public static class Points
+    {
+        public const int matchPoints = 200;
+        public const int scoreMultiplier = 50;
+        public const bool enableBonusPoints = false;
+        public const int emptyReactorPoints = 1000;
+        public const int perfectGamePoints = 2800;
+    }
+
+    public static class Music
+    {
+        public const float musicFadeInDurationSec = 2.5f;
+        public const float musicFadeOutDurationSec = 1;
+        public const float musicFadeOutSlowDurationSec = 2.5f;
+    }
+
+    public static class Settings
+    {
+        public const int musicDefaultVolume = 15;
+        public const int musicVolumeDenominator = 20;
+
+        public const int soundEffectsDefaultVolume = 15;
+        public const int soundEffectsVolumeDenominator = 20;
+
+        public const bool vibrationEnabledDefault = true;
+        public const bool foodSuitsEnabledDefault = false;
+    }
+
+    public static class MenuText
+    {
+        public static readonly string[] menuButtons = new string[] { "PLAY", "TUTORIAL", "SETTINGS", "ABOUT" };
+        public static readonly string[] levelButtons = new string[] { "CONTINUE", "EASY", "MEDIUM", "HARD" };
+        public static readonly string backButton = "BACK";
+        public static readonly string loading = "LOADING...";
+        public static readonly string[] pauseButtons = new string[] { "RESUME", "RESTART", "SETTINGS", "MAIN\nMENU" };
+        public static readonly string[] summaryButtons = new string[] { "MAIN\nMENU", "PLAY\nAGAIN" };
+        public static readonly string[] scoreActionLabels = new string[] { "Score", "Action" };
+        public static readonly string[] gameState = new string[] { "YOU WON", "YOU LOST" };
     }
 
     public static class Colors
     {
+        public const float selectedCardOpacity = 0.25f;
+        public static readonly Color cardObstructedColor = new(0.6f, 0.6f, 0.6f);
+
+        public static readonly Color pointColor = Color.green;
+
+        public static readonly Color tutorialObjectHighlightColor = new(1, 1, 0, 0.35f);
+
         public static readonly Color gameOverWin = Color.cyan;
         public static readonly Color gameOverLose = Color.red;
-    }
 
-    public static class Text
-    {
-        public static readonly string gameOverWin = "YOU WON!";
-        public static readonly string gameOverLose = "YOU LOST!";
+        public static class Highlight
+        {
+            public static readonly HighLightColor none = new(Color.white);
+            public static readonly HighLightColor match = new(Color.green);
+            public static readonly HighLightColor move = new(Color.yellow);
+            public static readonly HighLightColor over = new(Color.red);
+            public static readonly HighLightColor win = new(Color.cyan);
+
+            public static readonly ReadOnlyCollection<HighLightColor> colors = Array.AsReadOnly(new HighLightColor[]
+            {
+                none,
+                match,
+                move,
+                over,
+                win
+            });
+        }
     }
 
     public static class AlertLevels
@@ -145,128 +179,4 @@ public class GameValues
         public static readonly FadeColorPair grayFadeIn = new(grayA0, grayA1);
         public static readonly FadeColorPair grayFadeOut = new(grayA1, grayA0);
     }
-}
-
-[Serializable]
-public struct Difficulty
-{
-    [SerializeField]
-    private string name;
-    public string Name { get => name; }
-    [SerializeField]
-    private int reactorLimit;
-    public int ReactorLimit { get => reactorLimit; }
-    [SerializeField]
-    private int moveLimit;
-    public int MoveLimit { get => moveLimit; }
-}
-
-[Serializable]
-public struct Card
-{
-    public Card(Suit suit, Rank rank)
-    {
-        _suit = suit;
-        _rank = rank;
-    }
-
-    [SerializeField]
-    private Suit _suit;
-    public Suit Suit { get => _suit; }
-
-    [SerializeField]
-    private Rank _rank;
-    public Rank Rank { get => _rank; }
-
-    public static bool CanMatch(Card card1, Card card2)
-    {
-        return card1.Rank.Equals(card2.Rank) && Suit.IsComplementary(card1.Suit, card2.Suit);
-    }
-}
-
-[Serializable]
-public struct Suit
-{
-    public Suit(string name, int index, Color color)
-    {
-        _name = name;
-        _index = index;
-        _color = color;
-    }
-
-    [SerializeField]
-    private string _name;
-    public string Name { get => _name; }
-
-    [SerializeField]
-    private int _index;
-    public int Index { get => _index; }
-
-    [SerializeField]
-    private Color _color;
-    public Color Color { get => _color; }
-
-    public static bool IsComplementary(Suit suit1, Suit suit2)
-    {
-        return suit1.Index == GetComplementaryIndex(suit2);
-    }
-
-    public static int GetComplementaryIndex(Suit suit)
-    {
-        return suit.Index switch
-        {
-            0 => 1,
-            1 => 0,
-            2 => 3,
-            3 => 2,
-            _ => throw new ArgumentException()
-        };
-    }
-}
-
-[Serializable]
-public struct Rank
-{
-    public Rank(string name, int value, int reactorValue)
-    {
-        _name = name;
-        _value = value;
-        _reactorValue = reactorValue;
-    }
-
-    [SerializeField]
-    private string _name;
-    public string Name { get => _name; }
-
-    [SerializeField]
-    private int _value;
-    public int Value { get => _value; }
-
-    [SerializeField]
-    private int _reactorValue;
-    public int ReactorValue { get => _reactorValue; }
-}
-
-public readonly struct AlertLevel
-{
-    public AlertLevel(Color lightColor, Color screenColor)
-    {
-        this.lightColor = lightColor;
-        this.screenColor = screenColor;
-    }
-
-    public readonly Color lightColor;
-    public readonly Color screenColor;
-}
-
-public readonly struct FadeColorPair
-{
-    public FadeColorPair(Color startColor, Color endColor)
-    {
-        this.startColor = startColor;
-        this.endColor = endColor;
-    }
-
-    public readonly Color startColor;
-    public readonly Color endColor;
 }

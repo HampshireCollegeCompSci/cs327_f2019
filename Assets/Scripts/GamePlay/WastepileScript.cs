@@ -80,7 +80,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
             cardScript.Hologram = true;
             cardScript.HitBox = true;
 
-            if (cardList.Count == Config.GameValues.cardsToDeal + 1)
+            if (cardList.Count == GameValues.GamePlay.cardsToDeal + 1)
             {
                 DeckScript.Instance.TryUpdateDeckCounter(true);
             }
@@ -143,7 +143,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
             {
                 cardScript.Hologram = true;
 
-                if (cardList.Count == Config.GameValues.cardsToDeal)
+                if (cardList.Count == GameValues.GamePlay.cardsToDeal)
                 {
                     DeckScript.Instance.TryUpdateDeckCounter(false);
                 }

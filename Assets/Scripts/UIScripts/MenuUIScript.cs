@@ -43,37 +43,37 @@ public class MenuUIScript : MonoBehaviour
             case Constants.ScenesNames.mainMenu:
                 Debug.Log("updating main menu buttons");
                 // Main buttons
-                UpdateButtonText(playButton, Config.GameValues.menuText.menuButtons[0]);
-                UpdateButtonText(tutorialButton, Config.GameValues.menuText.menuButtons[1]);
-                UpdateButtonText(settingsButton, Config.GameValues.menuText.menuButtons[2]);
-                UpdateButtonText(aboutButton, Config.GameValues.menuText.menuButtons[3]);
+                UpdateButtonText(playButton, GameValues.MenuText.menuButtons[0]);
+                UpdateButtonText(tutorialButton, GameValues.MenuText.menuButtons[1]);
+                UpdateButtonText(settingsButton, GameValues.MenuText.menuButtons[2]);
+                UpdateButtonText(aboutButton, GameValues.MenuText.menuButtons[3]);
                 // Play buttons
-                UpdateButtonText(continueButton, Config.GameValues.menuText.levelButtons[0]);
-                UpdateButtonText(easyButton, Config.GameValues.menuText.levelButtons[1]);
-                UpdateButtonText(normalButton, Config.GameValues.menuText.levelButtons[2]);
-                UpdateButtonText(hardButton, Config.GameValues.menuText.levelButtons[3]);
-                UpdateButtonText(backButton, Config.GameValues.menuText.backButton);
+                UpdateButtonText(continueButton, GameValues.MenuText.levelButtons[0]);
+                UpdateButtonText(easyButton, GameValues.MenuText.levelButtons[1]);
+                UpdateButtonText(normalButton, GameValues.MenuText.levelButtons[2]);
+                UpdateButtonText(hardButton, GameValues.MenuText.levelButtons[3]);
+                UpdateButtonText(backButton, GameValues.MenuText.backButton);
                 break;
             case Constants.ScenesNames.pause:
                 Debug.Log("updating pause scene buttons");
-                UpdateButtonText(resumeButton, Config.GameValues.menuText.pauseButtons[0]);
-                UpdateButtonText(restartButton, Config.GameValues.menuText.pauseButtons[1]);
-                UpdateButtonText(settingsButton, Config.GameValues.menuText.pauseButtons[2]);
-                UpdateButtonText(mainMenuButton, Config.GameValues.menuText.pauseButtons[3]);
+                UpdateButtonText(resumeButton, GameValues.MenuText.pauseButtons[0]);
+                UpdateButtonText(restartButton, GameValues.MenuText.pauseButtons[1]);
+                UpdateButtonText(settingsButton, GameValues.MenuText.pauseButtons[2]);
+                UpdateButtonText(mainMenuButton, GameValues.MenuText.pauseButtons[3]);
                 scoreboard.text = Config.Instance.score.ToString();
                 break;
             case Constants.ScenesNames.summary:
                 Debug.Log("updating summary scene buttons");
-                UpdateButtonText(mainMenuButton, Config.GameValues.menuText.summaryButtons[0]);
-                UpdateButtonText(playAgainButton, Config.GameValues.menuText.summaryButtons[1]);
+                UpdateButtonText(mainMenuButton, GameValues.MenuText.summaryButtons[0]);
+                UpdateButtonText(playAgainButton, GameValues.MenuText.summaryButtons[1]);
                 break;
             case Constants.ScenesNames.settings:
                 Debug.Log("updating settings scene buttons");
-                UpdateButtonText(backButton, Config.GameValues.menuText.backButton);
+                UpdateButtonText(backButton, GameValues.MenuText.backButton);
                 break;
             case Constants.ScenesNames.about:
                 Debug.Log("updating about button text");
-                UpdateButtonText(backButton, Config.GameValues.menuText.backButton);
+                UpdateButtonText(backButton, GameValues.MenuText.backButton);
                 break;
             default:
                 Debug.Log($"no buttons updated for scene: {activeScene}");

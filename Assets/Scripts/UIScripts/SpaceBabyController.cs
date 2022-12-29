@@ -39,7 +39,7 @@ public class SpaceBabyController : MonoBehaviour, ISound
     public void UpdateMaxVolume(int newVolume)
     {
         Debug.Log($"updating space baby volume to: {newVolume}");
-        audioSource.volume = ((float)newVolume) / Constants.Settings.soundEffectsVolumeDenominator;
+        audioSource.volume = ((float)newVolume) / GameValues.Settings.soundEffectsVolumeDenominator;
     }
 
     public void ResetBaby()

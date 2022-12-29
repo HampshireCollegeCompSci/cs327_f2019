@@ -31,7 +31,7 @@ public class EndGame : MonoBehaviour
 
     public void ManualGameWin()
     {
-        if (!Config.GameValues.enableCheat || Config.Instance.gamePaused) return;
+        if (!GameValues.GamePlay.enableCheat || Config.Instance.gamePaused) return;
 
         GameOver(true);
         // to ensure that the full win animation plays for debug
@@ -48,7 +48,7 @@ public class EndGame : MonoBehaviour
 
         SaveFile.Delete();
 
-        if (Config.GameValues.enableBonusPoints)
+        if (GameValues.Points.enableBonusPoints)
         {
             AddExtraEndGameScore();
         }
@@ -79,14 +79,14 @@ public class EndGame : MonoBehaviour
         int extraScore = 0;
         if (MatchedPileScript.Instance.CardList.Count == 52)
         {
-            extraScore += Config.GameValues.perfectGamePoints;
+            extraScore += GameValues.Points.perfectGamePoints;
         }
 
         foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
             if (foundationScript.CardList.Count == 0)
             {
-                extraScore += Config.GameValues.emptyReactorPoints;
+                extraScore += GameValues.Points.emptyReactorPoints;
             }
         }
 
@@ -108,7 +108,7 @@ public class EndGame : MonoBehaviour
             SoundEffectsController.Instance.WinSound();
             gameOverText.color = GameValues.Colors.gameOverWin;
             wonlostText.color = GameValues.Colors.gameOverWin;
-            wonlostText.text = GameValues.Text.gameOverWin;
+            wonlostText.text = GameValues.MenuText.gameState[0];
         }
         else
         {
@@ -117,7 +117,7 @@ public class EndGame : MonoBehaviour
             SoundEffectsController.Instance.LoseSound();
             gameOverText.color = GameValues.Colors.gameOverLose;
             wonlostText.color = GameValues.Colors.gameOverLose;
-            wonlostText.text = GameValues.Text.gameOverLose;
+            wonlostText.text = GameValues.MenuText.gameState[1];
         }
 
         fadeInScreen.enabled = true;
@@ -213,7 +213,7 @@ public class EndGame : MonoBehaviour
             if (reactorScript.CardList.Count != 0)
             {
                 StartCoroutine(ReactorMeltdown(reactorScript));
-                yield return new WaitForSeconds(Config.GameValues.reactorMeltDownSpeed);
+                yield return new WaitForSeconds(0.4f);
             }
         }
 
@@ -225,7 +225,7 @@ public class EndGame : MonoBehaviour
         foreach (GameObject card in reactorScript.CardList)
         {
             GameObject matchExplosion = Instantiate(explosionPrefab, card.transform.position, Quaternion.identity);
-            matchExplosion.transform.localScale = new Vector3(Config.GameValues.matchExplosionScale, Config.GameValues.matchExplosionScale);
+            matchExplosion.transform.localScale = new Vector3(GameValues.Transforms.matchExplosionScale, GameValues.Transforms.matchExplosionScale);
         }
         yield return new WaitForSeconds(0.2f);
         foreach (GameObject card in reactorScript.CardList)
@@ -235,7 +235,7 @@ public class EndGame : MonoBehaviour
         SoundEffectsController.Instance.ExplosionSound();
 
         GameObject reactorExplosion = Instantiate(explosionPrefab, reactorScript.gameObject.transform.position, Quaternion.identity);
-        reactorExplosion.transform.localScale = new Vector3(Config.GameValues.matchExplosionScale / 2, Config.GameValues.matchExplosionScale / 2);
+        reactorExplosion.transform.localScale = new Vector3(GameValues.Transforms.matchExplosionScale / 2, GameValues.Transforms.matchExplosionScale / 2);
         reactorExplosion.GetComponent<Animator>().Play("LoseExplosionAnim");
     }
 

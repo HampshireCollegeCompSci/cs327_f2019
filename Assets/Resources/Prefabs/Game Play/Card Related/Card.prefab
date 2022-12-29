@@ -504,6 +504,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff4ebf0a934f24ddd9bea9eb2f8f7888, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _card:
+    suit:
+      name: 
+      index: 0
+      color: {r: 0, g: 0, b: 0, a: 0}
+    rank:
+      name: 
+      value: 0
+      reactorValue: 0
   cardFrontSprite: {fileID: 21300000, guid: d7429ac0871f26d42813ea0e65d2b6b4, type: 3}
   cardBackSprite: {fileID: 21300000, guid: b2acde3c6f5c55a4298f960e500a2e80, type: 3}
   hologramFoodSprite: {fileID: 0}
@@ -521,9 +530,11 @@ MonoBehaviour:
   _obstructed: 0
   _dragging: 0
   _hologram: 0
-  _hologramColorLevel: 0
+  _hologramColor:
+    color: {r: 0, g: 0, b: 0, a: 0}
   _glowing: 0
-  _glowLevel: 0
+  _glowColor:
+    color: {r: 0, g: 0, b: 0, a: 0}
 --- !u!61 &5589543899514788396
 BoxCollider2D:
   m_ObjectHideFlags: 0

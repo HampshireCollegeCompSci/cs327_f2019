@@ -37,7 +37,7 @@ public class GameLoader : MonoBehaviour
 
         for (int i = 0; i < 4; i++)
         {
-            UtilsScript.Instance.reactorScripts[i].SetReactorSuit(Config.Instance.Suits[i]);
+            UtilsScript.Instance.reactorScripts[i].SetReactorSuit(GameValues.GamePlay.suits[i]);
         }
 
         Config.Instance.gameOver = false;
@@ -114,9 +114,9 @@ public class GameLoader : MonoBehaviour
 
         // order: spade ace, 2, 3... 10, jack, queen, king, clubs... diamonds... hearts
         int hFSIndex = 0; // used for assigning holograms
-        foreach (Suit suit in Config.Instance.Suits)
+        foreach (Suit suit in GameValues.GamePlay.suits)
         {
-            foreach (Rank rank in Config.Instance.Ranks)
+            foreach (Rank rank in GameValues.GamePlay.ranks)
             {
                 GameObject newCard = Instantiate(cardPrefab, this.gameObject.transform);
 
@@ -214,7 +214,7 @@ public class GameLoader : MonoBehaviour
         CardScript currentCardScript;
         foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
-            for (int i = 0; i < Config.GameValues.foundationStartingSize - 1; i++)
+            for (int i = 0; i < GameValues.GamePlay.foundationStartingSize - 1; i++)
             {
                 currentCardScript = cards[^1].GetComponent<CardScript>();
                 currentCardScript.MoveCard(foundationScript.gameObject, doLog: false, showHolo: false);

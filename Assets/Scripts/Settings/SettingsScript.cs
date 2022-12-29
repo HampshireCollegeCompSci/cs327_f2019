@@ -40,15 +40,15 @@ public class SettingsScript : MonoBehaviour
         lockout = true;
 
         // music volume
-        musicSlider.maxValue = Constants.Settings.musicVolumeDenominator;
-        musicMultiplier = 100 / Constants.Settings.musicVolumeDenominator;
+        musicSlider.maxValue = GameValues.Settings.musicVolumeDenominator;
+        musicMultiplier = 100 / GameValues.Settings.musicVolumeDenominator;
         int volume = PersistentSettings.MusicVolume;
         musicSlider.value = volume;
         musicVolumeText.text = $"{volume * musicMultiplier}%";
 
         // sound effects volume
-        soundEffectsSlider.maxValue = Constants.Settings.soundEffectsVolumeDenominator;
-        soundEffectsMultiplier = 100 / Constants.Settings.soundEffectsVolumeDenominator;
+        soundEffectsSlider.maxValue = GameValues.Settings.soundEffectsVolumeDenominator;
+        soundEffectsMultiplier = 100 / GameValues.Settings.soundEffectsVolumeDenominator;
         volume = PersistentSettings.SoundEffectsVolume;
         soundEffectsSlider.value = volume;
         soundEffectsVolumeText.text = $"{volume * soundEffectsMultiplier}%";

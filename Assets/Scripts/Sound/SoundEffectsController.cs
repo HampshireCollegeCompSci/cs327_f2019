@@ -46,7 +46,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
     public void UpdateMaxVolume(int newVolume)
     {
         Debug.Log($"updating sound effects volume to: {newVolume}");
-        soundController.volume = ((float)newVolume) / Constants.Settings.soundEffectsVolumeDenominator;
+        soundController.volume = ((float)newVolume) / GameValues.Settings.soundEffectsVolumeDenominator;
     }
 
     public void ButtonPressSound(bool vibrate = true)

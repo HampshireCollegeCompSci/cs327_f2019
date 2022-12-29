@@ -19,6 +19,7 @@ public class UtilsScript : MonoBehaviour
 
     [SerializeField]
     private List<GameObject> selectedCards, selectedCardsCopy;
+    private CardScript topSelectedCopyCardScript;
 
     [SerializeField]
     private GameObject matchPrefab, matchPointsPrefab;
@@ -75,7 +76,7 @@ public class UtilsScript : MonoBehaviour
                 }
                 else
                 {
-                    DragSelectedTokens(GetClick());
+                    DragSelectedCards(GetClick());
                 }
             }
             else if (Input.GetMouseButtonDown(0))
@@ -86,7 +87,7 @@ public class UtilsScript : MonoBehaviour
 
                 if (dragOn)
                 {
-                    DragSelectedTokens(GetClick());
+                    DragSelectedCards(GetClick());
                 }
             }
         }
@@ -153,7 +154,7 @@ public class UtilsScript : MonoBehaviour
             Config.Instance.moveCounter++;
         }
 
-        bool wasInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= Config.GameValues.turnAlertThreshold;
+        bool wasInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= GameValues.GamePlay.turnAlertThreshold;
 
         // loading a saved game triggers this
         if (startingGame)
@@ -210,7 +211,7 @@ public class UtilsScript : MonoBehaviour
         }
 
         // time to determine if the alert should be turned on
-        bool isInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= Config.GameValues.turnAlertThreshold;
+        bool isInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= GameValues.GamePlay.turnAlertThreshold;
         if (!wasInAlertThreshold && !isInAlertThreshold)
         {
             // do nothing
@@ -261,62 +262,26 @@ public class UtilsScript : MonoBehaviour
 
         GameObject hitGameObject = hit.collider.gameObject;
         if (!hitGameObject.CompareTag(Constants.Tags.card)) return;
+        selectedCards.Add(hitGameObject);
 
         CardScript hitCardScript = hitGameObject.GetComponent<CardScript>();
 
         //if we click a card in the wastepile select it
         if (hitCardScript.Container.CompareTag(Constants.Tags.wastepile))
         {
-            // all non-top wastepile tokens have their hitboxes disabled
-            SelectCard(hitGameObject);
-        }
-        else if (hitCardScript.Container.CompareTag(Constants.Tags.reactor) &&
-                 hitCardScript.Container.GetComponent<ReactorScript>().CardList[^1] == hitGameObject)
-        {
-            //if we click a card in a reactor
-            SelectCard(hitGameObject);
+            // all non-top wastepile cards have their hitboxes disabled
+            WastepileScript.Instance.DraggingCard = true;
         }
         else if (hitCardScript.Container.CompareTag(Constants.Tags.foundation))
         {
             //if we click a card in a foundation
-            //if (!hitCardScript.isHidden()) return; // hidden cards have their hitboxes disabled
-            SelectMultipleCards(hitGameObject);
+            List<GameObject> cardListREF = hitCardScript.Container.GetComponent<FoundationScript>().CardList;
+            // select any cards above the hit one
+            for (int i = cardListREF.LastIndexOf(hitGameObject) + 1; i < cardListREF.Count; i++)
+            {
+                selectedCards.Add(cardListREF[i]);
+            }
         }
-    }
-
-    private void SelectCard(GameObject inputCard)
-    {
-        CardScript inputCardScript = inputCard.GetComponent<CardScript>();
-        if (inputCardScript == null)
-        {
-            throw new System.ArgumentException("inputCard must be a gameObject that contains a CardScript");
-        }
-
-        if (inputCardScript.Container.CompareTag(Constants.Tags.wastepile))
-        {
-            WastepileScript.Instance.DraggingCard = true;
-        }
-
-        selectedCards.Add(inputCard);
-
-        StartDragging();
-    }
-
-    private void SelectMultipleCards(GameObject inputCard)
-    {
-        CardScript inputCardScript = inputCard.GetComponent<CardScript>();
-        if (inputCardScript == null || !inputCardScript.Container.CompareTag(Constants.Tags.foundation))
-        {
-            throw new System.ArgumentException("inputCard must be a gameObject that contains a CardScript that is from a foundation");
-        }
-
-        List<GameObject> cardList = inputCardScript.Container.GetComponent<FoundationScript>().CardList;
-
-        for (int i = cardList.LastIndexOf(inputCard); i < cardList.Count; i++)
-        {
-            selectedCards.Add(cardList[i]);
-        }
-
         StartDragging();
     }
 
@@ -336,14 +301,12 @@ public class UtilsScript : MonoBehaviour
             card.GetComponent<CardScript>().Dragging = true;
         }
 
-        // enable dragged reactor tokens holograms
-        if (selectedCards.Count == 1)
-        {
-            selectedCardsCopy[0].GetComponent<CardScript>().Hologram = true;
-        }
+        topSelectedCopyCardScript = selectedCardsCopy[^1].GetComponent<CardScript>();
+        // potentially enable dragged reactor tokens holograms
+        topSelectedCopyCardScript.Hologram = true;
 
         // show any tokens (and reactors) that we can interact with
-        showPossibleMoves.ShowMoves(selectedCards[0]);
+        showPossibleMoves.ShowMoves(selectedCards[0].GetComponent<CardScript>());
 
         changedHologramColor = false;
         changedSuitGlowColor = false;
@@ -373,7 +336,7 @@ public class UtilsScript : MonoBehaviour
                 CardScript hitCardScript = newContainer.GetComponent<CardScript>();
                 if (hitCardScript.Glowing)
                 {
-                    if (hitCardScript.GlowLevel == Constants.HighlightColorLevel.match)
+                    if (hitCardScript.GlowColor.Equals(GameValues.Colors.Highlight.match))
                     {
                         Match(selectedCards[0].GetComponent<CardScript>(), hitCardScript);
                         OtherActions(oldContainer.tag, hitCardScript.Container.tag, isMatch: true);
@@ -464,6 +427,7 @@ public class UtilsScript : MonoBehaviour
             Destroy(card);
         }
         selectedCardsCopy.Clear();
+        topSelectedCopyCardScript = null;
 
         dragOn = false;
         InputStopped = false;
@@ -471,7 +435,7 @@ public class UtilsScript : MonoBehaviour
         showPossibleMoves.HideMoves();
     }
 
-    private void DragSelectedTokens(RaycastHit2D hit)
+    private void DragSelectedCards(RaycastHit2D hit)
     {
         Vector3 cardPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
                                                                           Input.mousePosition.y,
@@ -479,7 +443,7 @@ public class UtilsScript : MonoBehaviour
         foreach (GameObject card in selectedCardsCopy)
         {
             card.transform.position = cardPosition;
-            cardPosition.y += Config.GameValues.draggedCardOffset;
+            cardPosition.y += GameValues.Transforms.draggedCardYOffset;
             cardPosition.z -= 0.05f;
         }
 
@@ -501,41 +465,45 @@ public class UtilsScript : MonoBehaviour
 
             // if we are hovering over a glowing card
             if (showPossibleMoves.AreCardsGlowing() &&
-                hoveringOver.CompareTag(Constants.Tags.card) &&
-                hoveringOver.GetComponent<CardScript>().Glowing)
+                hoveringOver.CompareTag(Constants.Tags.card))
             {
+                CardScript hoveringOverCS = hoveringOver.GetComponent<CardScript>();
+                if (!hoveringOverCS.Glowing) return;
+
                 // change the dragged card hologram color to what it's hovering over
-                int hoverOverGlowLevel = hoveringOver.GetComponent<CardScript>().GlowLevel;
-                selectedCardsCopy[^1].GetComponent<CardScript>().HologramColorLevel = hoverOverGlowLevel;
+                topSelectedCopyCardScript.HologramColor = hoveringOverCS.GlowColor;
+                changedHologramColor = true;
                 // if it's a match
-                if (hoverOverGlowLevel == 1)
+                if (hoveringOverCS.GlowColor.Equals(GameValues.Colors.Highlight.match))
                 {
                     // if the hovering over card is not in the reactor
-                    if (!hoveringOver.transform.parent.CompareTag(Constants.Tags.reactor))
+                    if (!hoveringOverCS.Container.CompareTag(Constants.Tags.reactor))
                     {
                         // hide the hover over card food hologram
-                        hoveringOver.GetComponent<CardScript>().Hologram = false;
+                        hoveringOverCS.Hologram = false;
                         hidFoodHologram = true;
                     }
                 }
-
-                changedHologramColor = true;
             }
             // else if we are hovering over a glowing reactor
             else if (showPossibleMoves.reactorIsGlowing &&
-                hoveringOver.CompareTag(Constants.Tags.reactor) &&
-                hoveringOver.GetComponent<ReactorScript>().Glowing)
+                hoveringOver.CompareTag(Constants.Tags.reactor))
             {
-                selectedCardsCopy[0].GetComponent<CardScript>().HologramColorLevel = hoveringOver.GetComponent<ReactorScript>().GlowLevel;
+                ReactorScript hoveringOverRS = hoveringOver.GetComponent<ReactorScript>();
+                if (!hoveringOverRS.Glowing) return;
+
+                topSelectedCopyCardScript.HologramColor = hoveringOverRS.GlowColor;
                 changedHologramColor = true;
 
-                hoveringOver.GetComponent<ReactorScript>().ChangeSuitGlow(1);
+                hoveringOverRS.ChangeSuitGlow(GameValues.Colors.Highlight.match);
                 changedSuitGlowColor = true;
             }
-            else if (showPossibleMoves.foundationIsGlowing && hoveringOver.CompareTag(Constants.Tags.foundation) &&
-                hoveringOver.GetComponent<FoundationScript>().Glowing)
+            else if (showPossibleMoves.foundationIsGlowing && hoveringOver.CompareTag(Constants.Tags.foundation))
             {
-                selectedCardsCopy[^1].GetComponent<CardScript>().HologramColorLevel = hoveringOver.GetComponent<FoundationScript>().GlowLevel;
+                FoundationScript hoveringOverFS = hoveringOver.GetComponent<FoundationScript>();
+                if (!hoveringOverFS.Glowing) return;
+
+                topSelectedCopyCardScript.HologramColor = hoveringOverFS.GlowColor;
                 changedHologramColor = true;
             }
         }
@@ -558,7 +526,7 @@ public class UtilsScript : MonoBehaviour
         // if we where hovering over a glowing token
         if (changedHologramColor)
         {
-            selectedCardsCopy[^1].GetComponent<CardScript>().HologramColorLevel = 0;
+            topSelectedCopyCardScript.HologramColor = GameValues.Colors.Highlight.none;
             changedHologramColor = false;
         }
 
@@ -576,7 +544,7 @@ public class UtilsScript : MonoBehaviour
         card1Script.StopAllCoroutines();
         card2Script.StopAllCoroutines();
 
-        int points = Config.GameValues.matchPoints + (Config.Instance.consecutiveMatches * Config.GameValues.scoreMultiplier);
+        int points = GameValues.Points.matchPoints + (Config.Instance.consecutiveMatches * GameValues.Points.scoreMultiplier);
         StartCoroutine(MatchEffect(points));
 
         card2Script.MoveCard(MatchedPileScript.Instance.gameObject);
@@ -599,7 +567,7 @@ public class UtilsScript : MonoBehaviour
         // instantiate the explosion that is z-offset and scaled
         position.z += 2;
         GameObject matchExplosion = Instantiate(matchPrefab, position, Quaternion.identity);
-        matchExplosion.transform.localScale = new Vector3(Config.GameValues.matchExplosionScale, Config.GameValues.matchExplosionScale);
+        matchExplosion.transform.localScale = new Vector3(GameValues.Transforms.matchExplosionScale, GameValues.Transforms.matchExplosionScale);
 
         // instantiate the points with even more offset
         position.y += 0.25f;
@@ -619,8 +587,8 @@ public class UtilsScript : MonoBehaviour
         };
 
         // set the color of the points and combo
-        pointText.color = Config.GameValues.pointColor;
-        comboText.color = Config.GameValues.pointColor;
+        pointText.color = GameValues.Colors.pointColor;
+        comboText.color = GameValues.Colors.pointColor;
 
         // get the start and end values for the points
         Color pointFadeColor = pointText.color;

@@ -72,7 +72,7 @@ public class DeckScript : MonoBehaviour, ICardContainer
             Deal();
         }
         // if it is possible to repopulate the deck
-        else if (WastepileScript.Instance.CardList.Count > Config.GameValues.cardsToDeal)
+        else if (WastepileScript.Instance.CardList.Count > GameValues.GamePlay.cardsToDeal)
         {
             buttonCoroutine = StartCoroutine(ButtonDown());
             DeckReset();
@@ -81,10 +81,10 @@ public class DeckScript : MonoBehaviour, ICardContainer
 
     public void Deal(bool doLog = true)
     {
-        List<GameObject> toMoveList = new(Config.GameValues.cardsToDeal);
+        List<GameObject> toMoveList = new(GameValues.GamePlay.cardsToDeal);
 
         // try to deal set number of cards, take them starting from the top, [^1], down
-        for (int i = 1; i <= Config.GameValues.cardsToDeal && i <= cardList.Count; i++)
+        for (int i = 1; i <= GameValues.GamePlay.cardsToDeal && i <= cardList.Count; i++)
         {
             toMoveList.Add(cardList[^i]);
         }
@@ -126,8 +126,8 @@ public class DeckScript : MonoBehaviour, ICardContainer
         {
             // if there are enough cards that a deck flip will do something worthwhile
             // notice: cards are removed from containers before they are added to a new one
-            if (WastepileScript.Instance.CardList.Count > Config.GameValues.cardsToDeal ||
-                (dealed && WastepileScript.Instance.CardList.Count == Config.GameValues.cardsToDeal))
+            if (WastepileScript.Instance.CardList.Count > GameValues.GamePlay.cardsToDeal ||
+                (dealed && WastepileScript.Instance.CardList.Count == GameValues.GamePlay.cardsToDeal))
             {
                 deckCounter.text = deckFlipText;
             }

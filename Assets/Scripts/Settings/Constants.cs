@@ -33,9 +33,7 @@
     public static class Settings
     {
         public const string soundEffectsVolumeKey = "SoundEffectsVolume";
-        public const int soundEffectsVolumeDenominator = 20;
         public const string musicVolumeKey = "MusicVolume";
-        public const int musicVolumeDenominator = 20;
         public const string vibrationEnabledKey = "VibrationEnabled";
         public const string foodSuitsEnabledKey = "FoodSuitsEnabled";
         public const string frameRateKey = "FrameRate";
@@ -84,14 +82,5 @@
         public const byte draw = 4;
         public const byte cycle = 5;
         public const byte deckreset = 6;
-    }
-
-    public static class HighlightColorLevel
-    {
-        public const int normal = 0;
-        public const int match = 1;
-        public const int move = 2;
-        public const int over = 3;
-        public const int win = 4;
     }
 }

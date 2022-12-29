@@ -9,7 +9,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
     [SerializeField]
     private bool _glowing;
     [SerializeField]
-    private int _glowLevel;
+    private HighLightColor _glowColor;
 
     private SpriteRenderer spriteRenderer;
 
@@ -19,7 +19,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
         _glowing = false;
-        _glowLevel = 0;
+        _glowColor = GameValues.Colors.Highlight.none;
     }
 
     public List<GameObject> CardList => cardList;
@@ -36,23 +36,23 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
             else if (!value && _glowing)
             {
                 _glowing = false;
-                GlowLevel = Constants.HighlightColorLevel.normal;
+                GlowColor = GameValues.Colors.Highlight.none;
             }
         }
     }
 
-    public int GlowLevel
+    public HighLightColor GlowColor
     {
-        get => _glowLevel;
+        get => _glowColor;
         set
         {
-            if (value != _glowLevel)
+            if (!_glowColor.Equals(value))
             {
-                _glowLevel = value;
-                spriteRenderer.color = Config.GameValues.highlightColors[value];
+                _glowColor = value;
+                spriteRenderer.color = value.Color;
             }
 
-            if (value != Constants.HighlightColorLevel.normal)
+            if (!value.Equals(GameValues.Colors.Highlight.none))
             {
                 Glowing = true;
             }
@@ -166,7 +166,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
         {
             // will turn glowing on but not set the flag for it
             // so that it will not be turned off later
-            GlowLevel = Constants.HighlightColorLevel.win;
+            GlowColor = GameValues.Colors.Highlight.win;
             _glowing = false;
         }
         else

@@ -47,7 +47,7 @@ public class TutorialScript : MonoBehaviour
         // start the tutorial
         tutorialUIPanel.SetActive(true);
         // update colors via script instead of having to do it in editor each time
-        UpdateHighlightObjectsColor(Config.GameValues.tutorialObjectHighlightColor);
+        UpdateHighlightObjectsColor(GameValues.Colors.tutorialObjectHighlightColor);
 
         // get the tutorial commands ready
         commandQueue = CommandEnqueuer(CreateFromJSON());
@@ -355,7 +355,7 @@ public class TutorialScript : MonoBehaviour
         int index = ParseContainerIndex(command, 3);
 
         // get the highlight color level
-        int highlightColorLevel = ParseHighlightColorLevel(command, 4);
+        HighLightColor highlightColor = ParseHighlightColor(command, 4);
 
         // find the container
         switch (command[1].ToUpper())
@@ -365,7 +365,7 @@ public class TutorialScript : MonoBehaviour
                 {
                     foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
                     {
-                        reactorScript.GlowLevel = highlightColorLevel;
+                        reactorScript.GlowColor = highlightColor;
                     }
                 }
                 else
@@ -379,8 +379,8 @@ public class TutorialScript : MonoBehaviour
             case sReactor:
                 if (highlightOn)
                 {
-                    UtilsScript.Instance.reactorScripts[index].GlowLevel = highlightColorLevel;
-                    if (highlightColorLevel == Constants.HighlightColorLevel.over)
+                    UtilsScript.Instance.reactorScripts[index].GlowColor = highlightColor;
+                    if (highlightColor.Equals(GameValues.Colors.Highlight.over))
                     {
                         UtilsScript.Instance.reactorScripts[index].Alert = true;
                     }
@@ -396,7 +396,7 @@ public class TutorialScript : MonoBehaviour
                 {
                     foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
                     {
-                        foundationScript.GlowLevel = highlightColorLevel;
+                        foundationScript.GlowColor = highlightColor;
                     }
                 }
                 else
@@ -410,7 +410,7 @@ public class TutorialScript : MonoBehaviour
             case sFoundation:
                 if (highlightOn)
                 {
-                    UtilsScript.Instance.foundationScripts[index].GlowLevel = highlightColorLevel;
+                    UtilsScript.Instance.foundationScripts[index].GlowColor = highlightColor;
                 }
                 else
                 {
@@ -445,7 +445,7 @@ public class TutorialScript : MonoBehaviour
         bool highlightOn = ParseOnOrOff(command, 4);
 
         // get the highlight color level
-        int highlightColorLevel = ParseHighlightColorLevel(command, 5);
+        HighLightColor highlightColor = ParseHighlightColor(command, 5);
 
         // find the desired token's location
         switch (command[1].ToUpper())
@@ -460,7 +460,7 @@ public class TutorialScript : MonoBehaviour
 
                 if (highlightOn)
                 {
-                    reactorCardList[^tokenIndex].GetComponent<CardScript>().GlowLevel = highlightColorLevel;
+                    reactorCardList[^tokenIndex].GetComponent<CardScript>().GlowColor = highlightColor;
                 }
                 else
                 {
@@ -476,7 +476,7 @@ public class TutorialScript : MonoBehaviour
                 }
                 if (highlightOn)
                 {
-                    foundationCardList[^tokenIndex].GetComponent<CardScript>().GlowLevel = highlightColorLevel;
+                    foundationCardList[^tokenIndex].GetComponent<CardScript>().GlowColor = highlightColor;
                 }
                 else
                 {
@@ -492,7 +492,7 @@ public class TutorialScript : MonoBehaviour
 
                 if (highlightOn)
                 {
-                    WastepileScript.Instance.CardList[^tokenIndex].GetComponent<CardScript>().GlowLevel = highlightColorLevel;
+                    WastepileScript.Instance.CardList[^tokenIndex].GetComponent<CardScript>().GlowColor = highlightColor;
                 }
                 else
                 {
@@ -735,7 +735,7 @@ public class TutorialScript : MonoBehaviour
     /// <summary>
     /// Parses the given command's index for a reactor alert level and returns it.
     /// </summary>
-    private int ParseHighlightColorLevel(List<string> command, int index)
+    private HighLightColor ParseHighlightColor(List<string> command, int index)
     {
         int colorLevel;
         try
@@ -746,12 +746,12 @@ public class TutorialScript : MonoBehaviour
         {
             throw new FormatException($"does not contain a int for command #{index}");
         }
-        if (colorLevel > 3) // there are only three color levels available
+        if (colorLevel < 0 || colorLevel >= GameValues.Colors.Highlight.colors.Count)
         {
-            throw new FormatException($"does not properly specify between \"0\" to \"3\" (inclusive) for command #{index}");
+            throw new FormatException($"does not properly specify between \"0\" to \"{GameValues.Colors.Highlight.colors.Count - 1}\" (inclusive) for command #{index}");
         }
 
-        return colorLevel;
+        return GameValues.Colors.Highlight.colors[colorLevel];
     }
 
     /// <summary>

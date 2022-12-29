@@ -121,31 +121,29 @@ public class StartGameSequence : MonoBehaviour
         else
         {
             Debug.LogError("both button groups are inactive");
-            StartCoroutine(PanAndZoomTo(spaceShipWindowObject.transform.position, Config.GameValues.zoomFactor));
+            StartCoroutine(PanAndZoomTo(spaceShipWindowObject.transform.position, GameValues.Transforms.zoomFactor));
             yield break;
         }
 
         buttonGroup.interactable = false;
         yield return Animate.FadeCanvasGroup(buttonGroup, 1, 0, GameValues.AnimationDurataions.buttonFadeOut);
-        StartCoroutine(PanAndZoomTo(spaceShipWindowObject.transform.position, Config.GameValues.zoomFactor));
+        StartCoroutine(PanAndZoomTo(spaceShipWindowObject.transform.position, GameValues.Transforms.zoomFactor));
     }
 
     private IEnumerator PanAndZoomTo(Vector3 positionEnd, float zoomFactor)
     {
         startSequencePanel.SetActive(true);
         Image sequenceImage = startSequencePanel.GetComponent<Image>();
-        Color startColor = Config.GameValues.fadeDarkColor;
-        startColor.a = 0;
-        Color endColor = startColor;
-        endColor.a = 1;
+        Color startColor = GameValues.FadeColors.blackA0;
+        Color endColor = GameValues.FadeColors.blackA1;
 
         positionEnd = new Vector3(-positionEnd.x * zoomFactor, -positionEnd.y * zoomFactor, positionEnd.z);
         Vector3 zoomEnd = new(zoomFactor, zoomFactor, panelTransform.localScale.z);
 
         float panDistance = Vector3.Distance(panelTransform.position, positionEnd);
         float zoomDistance = Vector3.Distance(panelTransform.localScale, zoomEnd);
-        float zoomSpeed = panDistance > zoomDistance ? Config.GameValues.panAndZoomSpeed * zoomDistance / panDistance : Config.GameValues.panAndZoomSpeed;
-        float panSpeed = zoomDistance > panDistance ? Config.GameValues.panAndZoomSpeed * panDistance / zoomDistance : Config.GameValues.panAndZoomSpeed;
+        float zoomSpeed = panDistance > zoomDistance ? GameValues.Transforms.panAndZoomSpeed * zoomDistance / panDistance : GameValues.Transforms.panAndZoomSpeed;
+        float panSpeed = zoomDistance > panDistance ? GameValues.Transforms.panAndZoomSpeed * panDistance / zoomDistance : GameValues.Transforms.panAndZoomSpeed;
 
         float startDistance = Vector3.Distance(panelTransform.localScale, zoomEnd);
         float distanceToEnd = startDistance;

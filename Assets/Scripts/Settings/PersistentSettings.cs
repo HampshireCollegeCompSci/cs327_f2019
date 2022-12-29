@@ -14,15 +14,15 @@ public static class PersistentSettings
         Debug.Log("checking keys");
 
         _soundEffectsVolume = PlayerPrefs.GetInt(Constants.Settings.soundEffectsVolumeKey,
-            Config.GameValues.soundEffectsDefaultVolume);
+            GameValues.Settings.soundEffectsDefaultVolume);
 
         _musicVolume = PlayerPrefs.GetInt(Constants.Settings.musicVolumeKey,
-            Config.GameValues.musicDefaultVolume);
+            GameValues.Settings.musicDefaultVolume);
 
         if (Vibration.HasVibrator())
         {
             _vibrationEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.vibrationEnabledKey,
-                Convert.ToInt32(Config.GameValues.vibrationEnabledDefault)));
+                Convert.ToInt32(GameValues.Settings.vibrationEnabledDefault)));
         }
         else
         {
@@ -30,7 +30,7 @@ public static class PersistentSettings
         }
 
         _foodSuitsEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.foodSuitsEnabledKey,
-                Convert.ToInt32(Config.GameValues.foodSuitsEnabledDefault)));
+                Convert.ToInt32(GameValues.Settings.foodSuitsEnabledDefault)));
 
         _frameRate = PlayerPrefs.GetInt(Constants.Settings.frameRateKey, -1);
         if (FrameRate == 0 || FrameRate < -1 || Screen.currentResolution.refreshRate % FrameRate != 0)
@@ -144,7 +144,7 @@ public static class PersistentSettings
 
     public static void ClearScores()
     {
-        foreach (Difficulty difficulty in Config.GameValues.difficulties)
+        foreach (Difficulty difficulty in GameValues.GamePlay.difficulties)
         {
             SetHighScore(difficulty, 0);
             SetLeastMoves(difficulty, 0);

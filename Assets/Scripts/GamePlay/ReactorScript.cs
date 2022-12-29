@@ -23,7 +23,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
     [SerializeField]
     private bool _glowing;
     [SerializeField]
-    private int _glowLevel;
+    private HighLightColor _glowColor;
     [SerializeField]
     private bool _alert;
 
@@ -39,7 +39,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         hitbox = this.gameObject.GetComponent<BoxCollider2D>();
 
         _glowing = false;
-        _glowLevel = 0;
+        _glowColor = GameValues.Colors.Highlight.none;
         _alert = false;
     }
 
@@ -68,18 +68,16 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         }
     }
 
-    public int GlowLevel
+    public HighLightColor GlowColor
     {
-        get => _glowLevel;
+        get => _glowColor;
         set
         {
-            if (value != _glowLevel)
+            if (!value.Equals(_glowColor))
             {
-                _glowLevel = value;
-                Color glowColor = Config.GameValues.highlightColors[value];
-                glowColor.a = 0.3f;
-                glowSR.color = glowColor;
-                ChangeSuitGlow(glowColor);
+                _glowColor = value;
+                glowSR.color = value.glowColor;
+                ChangeSuitGlow(value);
             }
 
             Glowing = true;
@@ -201,10 +199,9 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
             if (CountReactorCard() > Config.Instance.CurrentDifficulty.ReactorLimit)
             {
                 Glowing = true;
-                GlowLevel = Constants.HighlightColorLevel.over;
+                GlowColor = GameValues.Colors.Highlight.over;
                 _glowing = false;
                 Alert = true;
-                ChangeSuitGlow(3);
             }
         }
         else
@@ -216,14 +213,12 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     public void RevertSuitGlow()
     {
-        ChangeSuitGlow(GlowLevel);
+        ChangeSuitGlow(GlowColor);
     }
 
-    public void ChangeSuitGlow(int level)
+    public void ChangeSuitGlow(HighLightColor highLightColor)
     {
-        Color newColor = Config.GameValues.highlightColors[level];
-        newColor.a = 0.3f;
-        ChangeSuitGlow(newColor);
+        suitGlowSR.color = highLightColor.glowColor;
     }
 
     private void CheckGameOver(int cardValCount)
@@ -286,10 +281,5 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         }
 
         return output;
-    }
-
-    private void ChangeSuitGlow(Color newColor)
-    {
-        suitGlowSR.color = newColor;
     }
 }

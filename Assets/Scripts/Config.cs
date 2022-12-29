@@ -1,14 +1,11 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
-
 
 public class Config : MonoBehaviour
 {
     // Singleton instance.
     public static Config Instance;
-    public static GameValues GameValues;
 
     // game settings
     public bool tutorialOn, nextCycleEnabled;
@@ -30,8 +27,6 @@ public class Config : MonoBehaviour
     public int matchCounter;
 
     private Difficulty _currentDifficulty;
-    private Suit[] _suits;
-    private Rank[] _ranks;
 
     // Initialize the singleton instance.
     private void Awake()
@@ -43,8 +38,6 @@ public class Config : MonoBehaviour
             Instance = this;
 
             // These must be done in this order
-            // Load the game values from the file
-            LoadValues();
             // Setup the Vibration Package
             Vibration.Init();
             // Check Player Preferences
@@ -62,23 +55,20 @@ public class Config : MonoBehaviour
 
     public Difficulty CurrentDifficulty => _currentDifficulty;
 
-    public Suit[] Suits => _suits;
-    public Rank[] Ranks => _ranks;
-
     public void SetDifficulty(int dif)
     {
-        if (dif < 0 || dif > GameValues.difficulties.Length)
+        if (dif < 0 || dif > GameValues.GamePlay.difficulties.Count)
         {
-            throw new IndexOutOfRangeException($"the difficulties index of \"{dif}\" did not fall in the range of 0-{GameValues.difficulties.Length}");
+            throw new IndexOutOfRangeException($"the difficulties index of \"{dif}\" did not fall in the range of 0-{GameValues.GamePlay.difficulties.Count}");
         }
-        _currentDifficulty = GameValues.difficulties[dif];
+        _currentDifficulty = GameValues.GamePlay.difficulties[dif];
     }
 
     public void SetDifficulty(string dif)
     {
-        for (int i = 0; i < GameValues.difficulties.Length; i++)
+        for (int i = 0; i < GameValues.GamePlay.difficulties.Count; i++)
         {
-            if (dif == GameValues.difficulties[i].Name)
+            if (dif == GameValues.GamePlay.difficulties[i].Name)
             {
                 SetDifficulty(i);
                 return;
@@ -86,37 +76,5 @@ public class Config : MonoBehaviour
         }
 
         throw new KeyNotFoundException($"the difficulty \"{dif}\" was not found");
-    }
-
-    private void LoadValues()
-    {
-        Debug.Log("loading gamevalues from json");
-        TextAsset jsonTextFile = Resources.Load<TextAsset>(Constants.gameValuesPath);
-        GameValues = JsonUtility.FromJson<GameValues>(jsonTextFile.ToString());
-        GameValues.highlightColors = new Color[] {
-            Color.white,
-            GameValues.matchHighlightColor,
-            GameValues.moveHighlightColor,
-            GameValues.overHighlightColor,
-            Color.cyan
-        };
-
-        _suits = new Suit[4]
-        {
-            new Suit("spades", 0, Color.black),
-            new Suit("clubs", 1 , Color.black),
-            new Suit("diamonds", 2, Color.red),
-            new Suit("hearts", 3, Color.red)
-        };
-
-        _ranks = new Rank[13];
-        _ranks[0] = new Rank("A", 1, 1);
-        _ranks[10] = new Rank("J", 11, 10);
-        _ranks[11] = new Rank("Q", 12, 10);
-        _ranks[12] = new Rank("K", 13, 10);
-        for (int i = 2; i < 11; i++)
-        {
-            _ranks[i - 1] = new Rank(i.ToString(), i, i);
-        }
     }
 }
