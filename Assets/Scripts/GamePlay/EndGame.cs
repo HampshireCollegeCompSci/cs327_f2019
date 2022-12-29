@@ -104,36 +104,39 @@ public class EndGame : MonoBehaviour
 
         if (Config.Instance.gameWin)
         {
-            fadeColor = Config.GameValues.fadeLightColor;
+            fadeColor = GameValues.FadeColors.grayA1;
             SoundEffectsController.Instance.WinSound();
-            gameOverText.color = Color.cyan;
-            wonlostText.color = Color.cyan;
-            wonlostText.text = "YOU WON";
+            gameOverText.color = GameValues.Colors.gameOverWin;
+            wonlostText.color = GameValues.Colors.gameOverWin;
+            wonlostText.text = GameValues.Text.gameOverWin;
         }
         else
         {
-            fadeColor = Config.GameValues.fadeDarkColor;
+            fadeColor = GameValues.FadeColors.blackA1;
             errorObject.SetActive(true);
             SoundEffectsController.Instance.LoseSound();
-            gameOverText.color = Color.red;
-            wonlostText.color = Color.red;
-            wonlostText.text = "YOU LOST";
+            gameOverText.color = GameValues.Colors.gameOverLose;
+            wonlostText.color = GameValues.Colors.gameOverLose;
+            wonlostText.text = GameValues.Text.gameOverLose;
         }
 
-        fadeColor.a = 0;
-        fadeInScreen.color = fadeColor;
         fadeInScreen.enabled = true;
-        textGroup.alpha = 0;
         gameOverTextPanel.SetActive(true);
-        yield return null;
 
-        while (textGroup.alpha < 1)
+        float duration = GameValues.AnimationDurataions.gameOverFade;
+        float timeElapsed = 0;
+        while (timeElapsed < duration)
         {
-            fadeColor.a += Time.deltaTime * 0.3f;
+            float t = timeElapsed / duration;
+            fadeColor.a = Mathf.Lerp(0, 0.4f, t);
             fadeInScreen.color = fadeColor;
-            textGroup.alpha += Time.deltaTime;
+            textGroup.alpha = Mathf.Lerp(0, 1, t);
+            timeElapsed += Time.deltaTime;
             yield return null;
         }
+        fadeColor.a = 0.4f;
+        fadeInScreen.color = fadeColor;
+        textGroup.alpha = 1;
 
         if (Config.Instance.gameWin)
         {
@@ -241,15 +244,22 @@ public class EndGame : MonoBehaviour
         Image fadeInScreen = this.gameObject.GetComponent<Image>();
         Color fadeColor = fadeInScreen.color;
         CanvasGroup textGroup = gameOverTextPanel.GetComponent<CanvasGroup>();
-        float alphaChange;
-        while (textGroup.alpha > 0)
+
+        float startingAlpha = fadeColor.a; 
+        float duration = GameValues.AnimationDurataions.gameEndFade;
+        float timeElapsed = 0;
+        while (timeElapsed < duration)
         {
-            alphaChange = Time.deltaTime * Config.GameValues.endGameFadeOutSpeed;
-            fadeColor.a += alphaChange;
+            float t = timeElapsed / duration;
+            fadeColor.a = Mathf.Lerp(startingAlpha, 1, t);
             fadeInScreen.color = fadeColor;
-            textGroup.alpha -= alphaChange;
+            textGroup.alpha = Mathf.Lerp(1, 0, t);
+            timeElapsed += Time.deltaTime;
             yield return null;
         }
+        fadeColor.a = 1;
+        fadeInScreen.color = fadeColor;
+        textGroup.alpha = 0;
 
         TransitionToSummaryScene();
     }

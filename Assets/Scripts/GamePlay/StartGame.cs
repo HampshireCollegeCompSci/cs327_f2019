@@ -87,21 +87,10 @@ public class StartGame : MonoBehaviour
     }
 
     private IEnumerator FadeGameplayIn()
-    {
+    {        
         Image fadeInScreen = this.gameObject.GetComponent<Image>();
         fadeInScreen.enabled = true;
-        Color fadeColor = Config.GameValues.fadeDarkColor;
-        fadeColor.a = 1;
-        fadeInScreen.color = fadeColor;
-        yield return null;
-
-        while (fadeColor.a > 0)
-        {
-            fadeColor.a -= Time.deltaTime * Config.GameValues.startGameFadeInSpeed;
-            fadeInScreen.color = fadeColor;
-            yield return null;
-        }
-
+        yield return Animate.FadeImage(fadeInScreen, GameValues.FadeColors.blackFadeOut, GameValues.AnimationDurataions.startGameFadeIn);
         fadeInScreen.enabled = false;
         Config.Instance.gamePaused = false;
     }

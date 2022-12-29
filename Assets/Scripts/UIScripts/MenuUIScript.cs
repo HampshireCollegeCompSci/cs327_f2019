@@ -322,6 +322,6 @@ public class MenuUIScript : MonoBehaviour
     {
         if (UtilsScript.Instance.InputStopped || Config.Instance.gamePaused) return;
         Debug.Log("MenuUI make actions max");
-        UtilsScript.Instance.StartNextCycle(manuallyTriggered: true);
+        UtilsScript.Instance.StartNextCycle();
     }
 }

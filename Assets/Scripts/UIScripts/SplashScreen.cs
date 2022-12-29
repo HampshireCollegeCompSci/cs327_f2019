@@ -27,17 +27,8 @@ public class SplashScreen : MonoBehaviour
     {
         yield return new WaitForSeconds(2);
         MusicController.Instance.MainMenuMusic();
-
-        CanvasGroup canvasGroup = splashScreen.GetComponent<CanvasGroup>();
-
-        float alpha = canvasGroup.alpha;
-        while (alpha > 0)
-        {
-            alpha -= Time.deltaTime * 0.5f;
-            canvasGroup.alpha = alpha;
-            yield return null;
-        }
-
+        yield return Animate.FadeCanvasGroup(splashScreen.GetComponent<CanvasGroup>(),
+            1, 0, GameValues.AnimationDurataions.logoDelay);
         splashScreen.SetActive(false);
     }
 

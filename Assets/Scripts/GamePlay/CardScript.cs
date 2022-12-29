@@ -489,17 +489,19 @@ public class CardScript : MonoBehaviour, IGlow
         SpriteRenderer holoSR = hologram.GetComponent<SpriteRenderer>();
         SpriteRenderer objectSR = hologramFood.GetComponent<SpriteRenderer>();
         Color holoColor = holoSR.color;
-        holoColor.a = 0;
-        holoSR.color = holoColor;
-        objectSR.color = holoColor;
-        yield return null;
 
-        while (holoColor.a < 1)
+        float duration = GameValues.AnimationDurataions.cardHologramFadeIn;
+        float timeElapsed = 0;
+        while (timeElapsed < duration)
         {
-            holoColor.a += Time.deltaTime * 0.5f;
+            holoColor.a = Mathf.Lerp(0, 1, timeElapsed / duration);
             holoSR.color = holoColor;
             objectSR.color = holoColor;
+            timeElapsed += Time.deltaTime;
             yield return null;
         }
+        holoColor.a = 1;
+        holoSR.color = holoColor;
+        objectSR.color = holoColor;
     }
 }

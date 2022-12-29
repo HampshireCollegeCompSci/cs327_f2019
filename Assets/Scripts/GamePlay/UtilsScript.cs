@@ -32,6 +32,8 @@ public class UtilsScript : MonoBehaviour
 
     [SerializeField]
     private bool _isNextCycle, _inputStopped;
+    [SerializeField]
+    private int inputStopRequests;
 
     private ShowPossibleMoves showPossibleMoves;
     private int _selectedCardsLayer, _gameplayLayer;
@@ -45,6 +47,7 @@ public class UtilsScript : MonoBehaviour
 
             selectedCards = new(13);
             selectedCardsCopy = new(13);
+            inputStopRequests = 0;
             showPossibleMoves = new ShowPossibleMoves();
         }
         else if (Instance != this)
@@ -94,9 +97,21 @@ public class UtilsScript : MonoBehaviour
         get => _inputStopped;
         set
         {
-            if (!IsNextCycle)
+            if (value)
             {
-                _inputStopped = value;
+                inputStopRequests++;
+                if (!_inputStopped)
+                {
+                    _inputStopped = true;
+                }
+            }
+            else
+            {
+                inputStopRequests--;
+                if (inputStopRequests == 0)
+                {
+                    _inputStopped = false;
+                }
             }
         }
     }
@@ -106,33 +121,9 @@ public class UtilsScript : MonoBehaviour
         get => showPossibleMoves;
     }
 
-    private bool IsNextCycle
-    {
-        get => _isNextCycle;
-        set
-        {
-            if (_isNextCycle)
-            {
-                _isNextCycle = value;
-                InputStopped = value;
-            }
-            else
-            {
-                InputStopped = value;
-                _isNextCycle = value;
-            }
-        }
-    }
+    public int SelectedCardsLayer => _selectedCardsLayer;
 
-    public int SelectedCardsLayer
-    {
-        get => _selectedCardsLayer;
-    }
-
-    private int GameplayLayer
-    {
-        get => _gameplayLayer;
-    }
+    private int GameplayLayer => _gameplayLayer;
 
     public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false, bool startingGame = false, bool isMatch = false)
     {
@@ -238,35 +229,7 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    public void Match(CardScript card1Script, CardScript card2Script)
-    {
-        // stop the hologram fade in coroutine so that its alpha value doesn't change anymore
-        card1Script.StopAllCoroutines();
-        card2Script.StopAllCoroutines();
-
-        GameObject comboHologram = selectedCardsCopy[0].GetComponent<CardScript>().HologramFood;
-        comboHologram.transform.parent = null;
-
-        Vector3 p = selectedCardsCopy[0].transform.position;
-        p.z += 2;
-        GameObject matchExplosion = Instantiate(matchPrefab, p, Quaternion.identity);
-        matchExplosion.transform.localScale = new Vector3(Config.GameValues.matchExplosionScale, Config.GameValues.matchExplosionScale);
-
-        card2Script.MoveCard(MatchedPileScript.Instance.gameObject);
-        card1Script.MoveCard(MatchedPileScript.Instance.gameObject);
-
-        int points = Config.GameValues.matchPoints + (Config.Instance.consecutiveMatches * Config.GameValues.scoreMultiplier);
-        ScoreScript.Instance.UpdateScore(points);
-
-        SoundEffectsController.Instance.FoodMatch(card1Script.Card.Suit);
-        SpaceBabyController.Instance.BabyEat();
-
-        StartCoroutine(FoodComboMove(comboHologram, matchExplosion));
-        p.y += 0.2f;
-        StartCoroutine(PointFade(points, p));
-    }
-
-    public void StartNextCycle(bool manuallyTriggered = false)
+    public void StartNextCycle()
     {
         if (Config.Instance.tutorialOn)
         {
@@ -279,13 +242,9 @@ public class UtilsScript : MonoBehaviour
                 return;
             }
         }
-
-        if (!(manuallyTriggered && InputStopped)) // stops 2 NextCycles from happening at once
-        { 
-            IsNextCycle = true;
-            ActionCountScript.Instance.PressKnob();
-            StartCoroutine(NextCycle());
-        }
+        InputStopped = true;
+        ActionCountScript.Instance.PressKnob();
+        StartCoroutine(NextCycle());
     }
 
     private RaycastHit2D GetClick()
@@ -611,84 +570,119 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    private IEnumerator FoodComboMove(GameObject comboHologram, GameObject matchExplosion)
+    private void Match(CardScript card1Script, CardScript card2Script)
     {
-        // moves the object to the spacebaby
-        //Vector3 target = baby.transform.position;
-        //float initialDistance = Vector3.Distance(comboHologram.transform.position, target);
-        //int speed = Config.config.cardsToReactorspeed / 2;
-        //while (comboHologram.transform.position != target)
-        //{
-        //    fadeColor.a = Vector3.Distance(comboHologram.transform.position, target) / initialDistance;
-        //    comboSR.color = fadeColor;
-        //    comboHologram.transform.position = Vector3.MoveTowards(comboHologram.transform.position, target, Time.deltaTime * speed);
-        //    yield return null;
-        //}
+        // stop the hologram fade in coroutine so that its alpha value doesn't change anymore
+        card1Script.StopAllCoroutines();
+        card2Script.StopAllCoroutines();
 
-        SpriteRenderer comboSR = comboHologram.GetComponent<SpriteRenderer>();
-        Color fadeColor = Color.white;
+        int points = Config.GameValues.matchPoints + (Config.Instance.consecutiveMatches * Config.GameValues.scoreMultiplier);
+        StartCoroutine(MatchEffect(points));
 
-        // wait for one frame so that the holograms's color won't be overwritten by 
-        // the card script's hologram fade coroutine which will stopped during the wait
-        yield return null;
-        comboSR.color = fadeColor;
+        card2Script.MoveCard(MatchedPileScript.Instance.gameObject);
+        card1Script.MoveCard(MatchedPileScript.Instance.gameObject);
 
-        yield return new WaitForSeconds(0.9f);
-        Vector3 comboScale = comboSR.transform.localScale;
-        while (fadeColor.a > 0)
-        {
-            comboScale += 0.04f * Time.deltaTime * Vector3.one;
-            comboHologram.transform.localScale = comboScale;
-            fadeColor.a -= Time.deltaTime * 0.8f;
-            comboSR.color = fadeColor;
-            yield return null;
-        }
-
-        //SoundController.Instance.CardMatchSound();
-        Destroy(matchExplosion);
-        Destroy(comboHologram);
+        ScoreScript.Instance.UpdateScore(points);
+        SoundEffectsController.Instance.FoodMatch(card1Script.Card.Suit);
+        SpaceBabyController.Instance.BabyEat();
     }
 
-    private IEnumerator PointFade(int points, Vector3 position)
+    private IEnumerator MatchEffect(int points)
     {
-        yield return new WaitForSeconds(0.2f);
-        GameObject matchPointsEffect = Instantiate(matchPointsPrefab, position, Quaternion.identity, gameUI.transform);
+        // get the hologram object and make sure it stays where it is
+        GameObject comboHologram = selectedCardsCopy[0].GetComponent<CardScript>().HologramFood;
+        comboHologram.transform.parent = null;
+        SpriteRenderer comboSR = comboHologram.GetComponent<SpriteRenderer>();
+        comboSR.color = Color.white;
 
+        Vector3 position = selectedCardsCopy[0].transform.position;
+        // instantiate the explosion that is z-offset and scaled
+        position.z += 2;
+        GameObject matchExplosion = Instantiate(matchPrefab, position, Quaternion.identity);
+        matchExplosion.transform.localScale = new Vector3(Config.GameValues.matchExplosionScale, Config.GameValues.matchExplosionScale);
+
+        // instantiate the points with even more offset
+        position.y += 0.25f;
+        position.z += 0.2f;
+        GameObject matchPointsEffect = Instantiate(matchPointsPrefab, position, Quaternion.identity, gameUI.transform);
+        
+        // set the points readout
         Text pointText = matchPointsEffect.GetComponent<Text>();
         pointText.text = $"+{points} ";
-
+        // set the combo readout
         Text comboText = matchPointsEffect.transform.GetChild(0).GetComponent<Text>();
-        if (Config.Instance.consecutiveMatches > 1)
-        {
-            comboText.text = $"X{Config.Instance.consecutiveMatches} COMBO";
-        }
 
-        comboText.color = Config.GameValues.pointColor;
+        comboText.text = (Config.Instance.consecutiveMatches > 1) switch
+        {
+            true => $"X{Config.Instance.consecutiveMatches} COMBO",
+            false => "",
+        };
+
+        // set the color of the points and combo
         pointText.color = Config.GameValues.pointColor;
+        comboText.color = Config.GameValues.pointColor;
 
-        Vector3 pointsScale = new(0.2f, 0.2f, 0.2f);
-        matchPointsEffect.transform.localScale = pointsScale;
-        while (pointsScale.x < 1)
+        // get the start and end values for the points
+        Color pointFadeColor = pointText.color;
+        Vector3 pointScaleStart = Vector3.zero;
+        Vector3 pointScaleEnd = Vector3.one;
+
+        // lerp scale up and fade in only the points
+        float duration = GameValues.AnimationDurataions.comboPointsFadeIn;
+        float timeElapsed = 0;
+        while (timeElapsed < duration)
         {
+            float t = timeElapsed / duration;
+
+            matchPointsEffect.transform.localScale = Vector3.Lerp(pointScaleStart, pointScaleEnd, t);
+
+            pointFadeColor.a = Mathf.Lerp(0, 1, t);
+            pointText.color = pointFadeColor;
+            comboText.color = pointFadeColor;
+
+            timeElapsed += Time.deltaTime;
             yield return null;
-            pointsScale += 3f * Time.deltaTime * Vector3.one;
-            matchPointsEffect.transform.localScale = pointsScale;
         }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(GameValues.AnimationDurataions.comboWait);
 
-        Color fadeColor = pointText.color;
-        while (fadeColor.a > 0)
+        // how much the scale up will be
+        Vector2 scaleMulti = new(1.2f, 1.2f);
+
+        // get the start and end values for the combo object
+        Color comboFadeColor = comboSR.color;
+        Vector3 comboScaleStart = comboSR.transform.localScale;
+        Vector3 comboScaleEnd = Vector3.Scale(comboScaleStart, scaleMulti);
+
+        // get the start and end values for the points
+        pointScaleStart = pointScaleEnd;
+        pointScaleEnd = Vector3.Scale(pointScaleStart, scaleMulti);
+
+        // lerp scale up and fade out both points and combo object
+        duration = GameValues.AnimationDurataions.comboFadeOut;
+        timeElapsed = 0;
+        while (timeElapsed < duration)
         {
-            pointsScale += 0.3f * Time.deltaTime * Vector3.one;
-            matchPointsEffect.transform.localScale = pointsScale;
-            fadeColor.a -= Time.deltaTime * 0.9f;
-            pointText.color = fadeColor;
-            comboText.color = fadeColor;
+            float t = timeElapsed / duration;
+            float alpha = Mathf.Lerp(1, 0, t);
+            // scale up
+            matchPointsEffect.transform.localScale = Vector3.Lerp(pointScaleStart, pointScaleEnd, t);
+            comboSR.transform.localScale = Vector3.Lerp(comboScaleStart, comboScaleEnd, t); ;
+            // point color
+            pointFadeColor.a = alpha;
+            pointText.color = pointFadeColor;
+            comboText.color = pointFadeColor;
+            // combo object color
+            comboFadeColor.a = alpha;
+            comboSR.color = comboFadeColor;
+
+            timeElapsed += Time.deltaTime;
             yield return null;
         }
-
+        // destroy the temporary objects
         Destroy(matchPointsEffect);
+        Destroy(matchExplosion);
+        Destroy(comboHologram);
     }
 
     private void Alert(bool turnOnAlert, bool checkAgain = false, bool matchRelated = false)
@@ -772,15 +766,13 @@ public class UtilsScript : MonoBehaviour
 
         foreach (FoundationScript foundationScript in foundationScripts)
         {
-            if (foundationScript.CardList.Count == 0)
-            {
-                continue;
-            }
+            if (foundationScript.CardList.Count == 0) continue;
 
             GameObject topFoundationCard = foundationScript.CardList[^1];
             CardScript topCardScript = topFoundationCard.GetComponent<CardScript>();
             ReactorScript reactorScript = reactorScripts[topCardScript.Card.Suit.Index];
 
+            // turn off the moving cards hologram and make it appear in front of everything
             topCardScript.Hologram = false;
             topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = SelectedCardsLayer;
             topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = SelectedCardsLayer;
@@ -795,29 +787,28 @@ public class UtilsScript : MonoBehaviour
                 }
             }
 
-            Vector3 target = reactorScript.GetNextCardPosition();
-            while (topFoundationCard.transform.position != target)
-            {
-                topFoundationCard.transform.position = Vector3.MoveTowards(topFoundationCard.transform.position, target,
-                    Time.deltaTime * Config.GameValues.cardsToReactorspeed);
-                yield return null;
-            }
+            yield return Animate.SmoothstepTransform(topFoundationCard.transform,
+                topFoundationCard.transform.position,
+                reactorScript.GetNextCardPosition(),
+                GameValues.AnimationDurataions.cardsToReactor);
 
+            // set the sorting layer back to default
             topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = GameplayLayer;
             topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = GameplayLayer;
 
             SoundEffectsController.Instance.CardToReactorSound();
             topCardScript.MoveCard(reactorScript.gameObject, isCycle: true);
 
+            // if the game is lost during the next cycle stop immediately
             if (Config.Instance.gameOver)
             {
                 Config.Instance.moveCounter += 1;
-                IsNextCycle = false;
+                InputStopped = false;
                 yield break;
             }
         }
 
-        IsNextCycle = false;
+        InputStopped = false;
         UpdateActions(0, setAsValue: true);
     }
 

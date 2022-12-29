@@ -131,25 +131,13 @@ public class ActionCountScript : MonoBehaviour
 
     private IEnumerator Flash(AlertLevel alertLevel)
     {
-        float timeElapsed = 0;
-        float duration = 1.5f;
-
-        bool turnOn = true;
-        Color startColor = GameValues.AlertLevels.none.lightColor;
-        Color endColor = alertLevel.lightColor;
+        FadeColorPair alertFadeIn = new(GameValues.AlertLevels.none.lightColor, alertLevel.lightColor);
+        FadeColorPair alertFadeOut = new(alertLevel.lightColor, GameValues.AlertLevels.none.lightColor);
 
         while (true)
         {
-            while (timeElapsed < duration)
-            {
-                sirenImage.color = Color.Lerp(startColor, endColor, timeElapsed / duration);
-                timeElapsed += Time.deltaTime;
-                yield return null;
-            }
-            timeElapsed = 0;
-            startColor = sirenImage.color;
-            endColor = turnOn ? GameValues.AlertLevels.none.lightColor : alertLevel.lightColor;
-            turnOn = !turnOn;
+            yield return Animate.FadeImage(sirenImage, alertFadeIn, GameValues.AnimationDurataions.alertFade);
+            yield return Animate.FadeImage(sirenImage, alertFadeOut, GameValues.AnimationDurataions.alertFade);
         }
     }
 }

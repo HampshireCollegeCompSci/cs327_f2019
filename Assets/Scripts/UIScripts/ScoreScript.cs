@@ -54,6 +54,10 @@ public class ScoreScript : MonoBehaviour
             currentValue += 10;
             scoreText.text = currentValue.ToString();
         }
+        if (currentValue != newScore)
+        {
+            scoreText.text = newScore.ToString();
+        }
         scoreCoroutine = null;
     }
 }

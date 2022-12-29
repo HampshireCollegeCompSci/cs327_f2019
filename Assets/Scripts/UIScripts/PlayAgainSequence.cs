@@ -73,18 +73,9 @@ public class PlayAgainSequence : MonoBehaviour
     private IEnumerator FadeOut()
     {
         sequencePanel.SetActive(true);
-        Image panelImage = sequencePanel.GetComponent<Image>();
-        Color panelColor = Config.GameValues.fadeDarkColor;
-        panelColor.a = 0;
-        panelImage.color = panelColor;
-        yield return null;
-
-        while (panelColor.a < 1)
-        {
-            panelColor.a += Time.deltaTime * Config.GameValues.summaryTransitionSpeed;
-            panelImage.color = panelColor;
-            yield return null;
-        }
+        yield return Animate.FadeImage(sequencePanel.GetComponent<Image>(),
+            GameValues.FadeColors.backFadeIn,
+            GameValues.AnimationDurataions.playAgainFadeOut);
 
         winSequence.StopAllCoroutines();
         spaceBaby.GetComponent<SpaceBabyController>().StopAllCoroutines();

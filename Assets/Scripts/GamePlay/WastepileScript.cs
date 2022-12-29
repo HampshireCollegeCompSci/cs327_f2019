@@ -184,16 +184,6 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
             cardScript.Obstructed = true;
         }
 
-        Vector3 contentPosition = contentRectTransform.anchoredPosition;
-
-        // if the contents have been moved from their default position scroll to the left
-        while (contentPosition.x > 0)
-        {
-            yield return null;
-            contentPosition.x -= Time.deltaTime * Config.GameValues.wastepileAnimationSpeedFast;
-            contentRectTransform.anchoredPosition = contentPosition;
-        }
-
         // add the new cards, for the non-top cards: don't try to show their hologram
         for (int i = 0; i < cards.Count - 1; i++)
         {
@@ -202,16 +192,25 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         cards[^1].GetComponent<CardScript>().MoveCard(this.gameObject, doLog);
 
         // move the scroll rect's content so that the new cards are hidden to the left side of the belt
-        contentPosition.x = cardSpacing * cards.Count;
-        contentRectTransform.anchoredPosition = contentPosition;
+        Vector2 startPosition = contentRectTransform.anchoredPosition;
+        startPosition.x += cardSpacing * cards.Count;
+        contentRectTransform.anchoredPosition = startPosition;
 
-        // scroll the tokens back into view
-        while (contentPosition.x > 0)
+        Vector2 endPosition = contentRectTransform.anchoredPosition;
+        endPosition.x = 0;
+
+        // get the number of cards that have been scrolled away from
+        float numCards = contentRectTransform.anchoredPosition.x / cardSpacing;
+        // the duration of the scroll back to x=0, scroll faster through cards that were not just dealed 
+        float duration = numCards switch
         {
-            yield return null;
-            contentPosition.x -= Time.deltaTime * Config.GameValues.wastepileAnimationSpeedSlow;
-            contentRectTransform.anchoredPosition = contentPosition;
-        }
+            1 => 0.3f,
+            2 => 0.4f,
+            3 => 0.5f,
+            _ => 0.5f + (numCards - 3) / 10
+        };
+
+        yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, duration);
 
         DeckScript.Instance.StartButtonUp();
 
@@ -227,14 +226,14 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
     {
         SetScrolling(true);
 
-        // Scrolls the conveyor belt back 1 token distance
-        Vector3 contentPosition = contentRectTransform.anchoredPosition;
-        while (contentPosition.x < cardSpacing)
-        {
-            contentPosition.x += Time.deltaTime * Config.GameValues.wastepileAnimationSpeedSlow;
-            contentRectTransform.anchoredPosition = contentPosition;
-            yield return null;
-        }
+        Vector2 startPosition = contentRectTransform.anchoredPosition;
+        // back 1 token distance
+        Vector2 endPosition = contentRectTransform.anchoredPosition;
+        endPosition.x = cardSpacing;
+
+        float duration = (cardSpacing - contentRectTransform.anchoredPosition.x) / (cardSpacing * 3);
+
+        yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, duration);
 
         Destroy(parentCardContainer);
         SetScrolling(false);
@@ -244,15 +243,18 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
     {
         SetScrolling(true);
 
-        // move all the tokens in the conveyor belt to the left
-        Vector3 contentPosition = contentRectTransform.anchoredPosition;
-        float xGoal = cardSpacing * (cardList.Count + 1);
-        while (contentPosition.x < xGoal)
+        // move the scroll rect's content so that the new cards are hidden to the left side of the belt
+        Vector2 startPosition = contentRectTransform.anchoredPosition;
+        Vector2 endPosition = contentRectTransform.anchoredPosition;
+        endPosition.x = cardSpacing * (cardList.Count + 1);
+
+        float duration = cardList.Count switch
         {
-            contentPosition.x += Time.deltaTime * Config.GameValues.wastepileAnimationSpeedFast;
-            contentRectTransform.anchoredPosition = contentPosition;
-            yield return null;
-        }
+            < 6 => cardList.Count / 10,
+            _ => 0.6f + (cardList.Count - 6) / 15
+        };
+
+        yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, duration);
 
         // move all the tokens
         while (cardList.Count > 0)
@@ -260,8 +262,9 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
             cardList[^1].GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, showHolo: false);
         }
 
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.5f);
         DeckScript.Instance.Deal();
+        // do not set scrolling to false yet as the deck deal will do that at the end
     }
 
     private void SetScrolling(bool value)

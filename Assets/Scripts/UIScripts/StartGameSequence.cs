@@ -126,12 +126,7 @@ public class StartGameSequence : MonoBehaviour
         }
 
         buttonGroup.interactable = false;
-        while (buttonGroup.alpha > 0)
-        {
-            buttonGroup.alpha -= Time.deltaTime * Config.GameValues.fadeOutButtonsSpeed;
-            yield return null;
-        }
-
+        yield return Animate.FadeCanvasGroup(buttonGroup, 1, 0, GameValues.AnimationDurataions.buttonFadeOut);
         StartCoroutine(PanAndZoomTo(spaceShipWindowObject.transform.position, Config.GameValues.zoomFactor));
     }
 

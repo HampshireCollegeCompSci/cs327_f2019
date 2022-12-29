@@ -97,30 +97,12 @@ public class WinSequence : MonoBehaviour
     private IEnumerator WinTransition()
     {
         spaceBabyController.BabyHappy();
-
         panelOverlay.SetActive(true);
         Image panelImage = panelOverlay.GetComponent<Image>();
-        Color panelColor = Config.GameValues.fadeLightColor;
-        panelColor.a = 0;
-        panelImage.color = panelColor;
-
-        while (panelColor.a < 1)
-        {
-            panelColor.a += Time.deltaTime * 0.75f;
-            panelImage.color = panelColor;
-            yield return null;
-        }
-
+        yield return Animate.FadeImage(panelImage, GameValues.FadeColors.grayFadeIn, GameValues.AnimationDurataions.gameSummaryBabyFade);
         spaceBabyController.gameObject.SetActive(false);
         babyPlanet.SetActive(true);
-
-        while (panelColor.a > 0)
-        {
-            panelColor.a -= Time.deltaTime * 0.75f;
-            panelImage.color = panelColor;
-            yield return null;
-        }
-
+        yield return Animate.FadeImage(panelImage, GameValues.FadeColors.grayFadeOut, GameValues.AnimationDurataions.gameSummaryBabyFade);
         panelOverlay.SetActive(false);
     }
 }
