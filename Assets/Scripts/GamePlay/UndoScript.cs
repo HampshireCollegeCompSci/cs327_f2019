@@ -59,10 +59,16 @@ public class UndoScript : MonoBehaviour
         return;
     }
 
-    /*
-     *undo is the function which reads from the moveLog and resets cards, score, moves, etc to their old state. 
-     */
-    public void Undo()
+    [SerializeField]
+    private void UndoButton()
+    {
+        if (UtilsScript.Instance.InputStopped || Config.Instance.gamePaused) return;
+        Debug.Log("undo button");
+        SoundEffectsController.Instance.UndoPressSound();
+        Undo();
+    }
+
+    private void Undo()
     {
         if (moveLog.Count != 0) //only run if there's something in the stack
         {

@@ -104,18 +104,13 @@ public class ActionCountScript : MonoBehaviour
         actionText.text = (Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions).ToString();
     }
 
-    public void PressKnob()
+    public void KnobDown()
     {
-        if (UtilsScript.Instance.InputStopped) return;
-        // the make actions max button calls this
-        SoundEffectsController.Instance.VibrateMedium();
         buttonImage.sprite = buttonDown;
-        StartCoroutine(ButtonAnimTrans());
     }
 
-    private IEnumerator ButtonAnimTrans()
+    public void KnobUp()
     {
-        yield return new WaitForSeconds(0.3f);
         buttonImage.sprite = buttonUp;
     }
 

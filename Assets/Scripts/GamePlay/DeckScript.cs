@@ -60,23 +60,26 @@ public class DeckScript : MonoBehaviour, ICardContainer
         UpdateDeckCounter(dealed: true);
     }
 
-    public void DealButton()
+    [SerializeField]
+    private void DealButton()
     {
         // don't allow dealing when other stuff is happening
         if (UtilsScript.Instance.InputStopped) return;
 
         if (cardList.Count != 0) // can the deck can be drawn from
         {
-            buttonCoroutine = StartCoroutine(ButtonDown());
             SoundEffectsController.Instance.DeckDeal();
             Deal();
         }
         // if it is possible to repopulate the deck
         else if (WastepileScript.Instance.CardList.Count > GameValues.GamePlay.cardsToDeal)
         {
-            buttonCoroutine = StartCoroutine(ButtonDown());
-            DeckReset();
+            // moves all wastePile cards into the deck
+            WastepileScript.Instance.StartDeckReset();
+            SoundEffectsController.Instance.DeckReshuffle();
         }
+        else return;
+        buttonCoroutine = StartCoroutine(ButtonDown());
     }
 
     public void Deal(bool doLog = true)
@@ -100,19 +103,13 @@ public class DeckScript : MonoBehaviour, ICardContainer
         }
     }
 
-    public void DeckReset()
-    {
-        // moves all wastePile cards into the deck
-
-        WastepileScript.Instance.StartDeckReset();
-        SoundEffectsController.Instance.DeckReshuffle();
-    }
-
     public void StartButtonUp()
     {
-        if (buttonCoroutine == null) return;
-        StopCoroutine(buttonCoroutine);
-        StartCoroutine(ButtonUp());
+        if (buttonCoroutine != null)
+        {
+            StopCoroutine(buttonCoroutine);
+        }
+        buttonCoroutine = StartCoroutine(ButtonUp());
     }
 
     public void UpdateDeckCounter(bool dealed = false)
@@ -156,19 +153,21 @@ public class DeckScript : MonoBehaviour, ICardContainer
 
     private IEnumerator ButtonDown()
     {
-        foreach (Sprite button in buttonAnimation)
+        for (int i = 1; i < buttonAnimation.Length; i++)
         {
-            buttonImage.sprite = button;
-            yield return new WaitForSeconds(0.1f);
+            buttonImage.sprite = buttonAnimation[i];
+            yield return new WaitForSeconds(0.07f);
         }
+        buttonCoroutine = null;
     }
 
     private IEnumerator ButtonUp()
     {
-        for (int i = buttonAnimation.Length - 2; i > 0; i--)
+        for (int i = buttonAnimation.Length - 2; i >= 0; i--)
         {
             buttonImage.sprite = buttonAnimation[i];
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.07f);
         }
+        buttonCoroutine = null;
     }
 }

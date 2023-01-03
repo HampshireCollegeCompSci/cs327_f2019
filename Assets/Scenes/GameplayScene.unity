@@ -1376,9 +1376,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2058941302}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: MakeActionsMax
+      - m_Target: {fileID: 1574574478}
+        m_TargetAssemblyTypeName: UtilsScript, Assembly-CSharp
+        m_MethodName: MakeActionsMaxButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4727,7 +4727,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1202057894}
   - component: {fileID: 1202057893}
-  - component: {fileID: 1202057895}
   m_Layer: 0
   m_Name: Controllers
   m_TagString: Untagged
@@ -4777,18 +4776,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1202057895
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1202057892}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53d2c23039b95f54a98bf75c816da902, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1204289923
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5806,6 +5793,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1489801181}
   - component: {fileID: 1489801185}
+  - component: {fileID: 1489801186}
   - component: {fileID: 1489801184}
   - component: {fileID: 1489801183}
   m_Layer: 5
@@ -5880,8 +5868,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2058941302}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 1489801186}
+        m_TargetAssemblyTypeName: UndoScript, Assembly-CSharp
         m_MethodName: UndoButton
         m_Mode: 1
         m_Arguments:
@@ -5930,6 +5918,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1489801180}
   m_CullTransparentMesh: 0
+--- !u!114 &1489801186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1489801180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53d2c23039b95f54a98bf75c816da902, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1509225425
 GameObject:
   m_ObjectHideFlags: 0
@@ -6351,6 +6351,7 @@ MonoBehaviour:
   hidFoodHologram: 0
   _isNextCycle: 0
   _inputStopped: 0
+  inputStopRequests: 0
 --- !u!4 &1574574479
 Transform:
   m_ObjectHideFlags: 0

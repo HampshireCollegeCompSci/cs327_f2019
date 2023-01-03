@@ -81,9 +81,14 @@ public class MenuUIScript : MonoBehaviour
         }
     }
 
-    public void NewGame(bool isContinue = false, bool isTutorial = false)
+    private void UpdateButtonText(GameObject button, string text)
     {
-        Debug.Log("MenuUI new game");
+        button.transform.GetChild(2).GetComponent<Text>().text = text;
+    }
+
+    private void NewGame(bool isContinue = false, bool isTutorial = false)
+    {
+        Debug.Log("UI Button new game");
 
         SoundEffectsController.Instance.ButtonPressSound();
 
@@ -125,47 +130,25 @@ public class MenuUIScript : MonoBehaviour
         }
     }
 
-    private void UpdateButtonText(GameObject button, string text)
-    {
-        button.transform.GetChild(2).GetComponent<Text>().text = text;
-    }
-
-    [SerializeField]
-    private void ButtonPressEffect()
-    {
-        SoundEffectsController.Instance.ButtonPressSound();
-    }
-
     [SerializeField]
     private void Play()
     {
-        Debug.Log("MenuUI play");
+        Debug.Log("UI Button play");
 
         SoundEffectsController.Instance.ButtonPressSound();
 
         //Preprocessor Directive to make builds work
-#if (UNITY_EDITOR)
-        UnityEditor.AssetDatabase.Refresh();
-#endif
+        #if (UNITY_EDITOR)
+                UnityEditor.AssetDatabase.Refresh();
+        #endif
 
         ToggleMainMenuButtons(false);
     }
 
     [SerializeField]
-    private void UndoButton()
-    {
-        Debug.Log("MenuUI undo button");
-
-        if (UtilsScript.Instance.InputStopped || Config.Instance.gamePaused) return;
-
-        SoundEffectsController.Instance.UndoPressSound();
-        UndoScript.Instance.Undo();
-    }
-
-    [SerializeField]
     private void PlayAgain()
     {
-        Debug.Log("MenuUI play again");
+        Debug.Log("UI Button play again");
         SoundEffectsController.Instance.ButtonPressSound();
 
         if (PlayAgainSequence.Instance != null)
@@ -181,7 +164,7 @@ public class MenuUIScript : MonoBehaviour
     [SerializeField]
     private void Restart()
     {
-        Debug.Log("MenuUI restart");
+        Debug.Log("UI Button restart");
         SoundEffectsController.Instance.ButtonPressSound();
         if (SceneManager.GetSceneByName(Constants.ScenesNames.pause).isLoaded)
         {
@@ -199,7 +182,7 @@ public class MenuUIScript : MonoBehaviour
     [SerializeField]
     private void MainMenu()
     {
-        Debug.Log("MenuUI main menu");
+        Debug.Log("UI Button main menu");
         SoundEffectsController.Instance.ButtonPressSound();
         if (SceneManager.GetSceneByName(Constants.ScenesNames.pause).isLoaded)
         {
@@ -216,7 +199,7 @@ public class MenuUIScript : MonoBehaviour
     [SerializeField]
     private void Settings()
     {
-        Debug.Log("MenuUI settings");
+        Debug.Log("UI Button settings");
 
         SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.LoadScene(Constants.ScenesNames.settings, LoadSceneMode.Additive);
@@ -225,7 +208,7 @@ public class MenuUIScript : MonoBehaviour
     [SerializeField]
     private void About()
     {
-        Debug.Log("MenuUI about");
+        Debug.Log("UI Button about");
 
         SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.LoadScene(Constants.ScenesNames.about);
@@ -235,7 +218,7 @@ public class MenuUIScript : MonoBehaviour
     [SerializeField]
     private void PauseGame()
     {
-        Debug.Log("MenuUI pause game");
+        Debug.Log("UI Button pause game");
 
         if (UtilsScript.Instance.InputStopped || Config.Instance.gamePaused) return;
         Time.timeScale = 0;
@@ -248,7 +231,7 @@ public class MenuUIScript : MonoBehaviour
     [SerializeField]
     private void ResumeGame()
     {
-        Debug.Log("MenuUI resume game");
+        Debug.Log("UI Button resume game");
         Time.timeScale = 1;
         SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.UnloadSceneAsync(Constants.ScenesNames.pause);
@@ -259,7 +242,7 @@ public class MenuUIScript : MonoBehaviour
     [SerializeField]
     private void SettingsBackButton()
     {
-        Debug.Log("MenuUI Settings Back");
+        Debug.Log("UI Button Settings Back");
         SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.UnloadSceneAsync(Constants.ScenesNames.settings);
     }
@@ -267,7 +250,7 @@ public class MenuUIScript : MonoBehaviour
     [SerializeField]
     private void MainMenuBackButton()
     {
-        Debug.Log("MenuUI Main Menu Back");
+        Debug.Log("UI Button Main Menu Back");
         SoundEffectsController.Instance.ButtonPressSound();
         // The main menu scene has two sets of buttons that get swapped on/off
         ToggleMainMenuButtons(true);
@@ -315,13 +298,5 @@ public class MenuUIScript : MonoBehaviour
 
             NewGame(isContinue: true);
         }
-    }
-
-    [SerializeField]
-    private void MakeActionsMax()
-    {
-        if (UtilsScript.Instance.InputStopped || Config.Instance.gamePaused) return;
-        Debug.Log("MenuUI make actions max");
-        UtilsScript.Instance.StartNextCycle();
     }
 }

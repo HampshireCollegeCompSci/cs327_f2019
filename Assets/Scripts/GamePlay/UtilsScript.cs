@@ -69,25 +69,28 @@ public class UtilsScript : MonoBehaviour
         {
             if (dragOn)
             {
+                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
                 if (Input.GetMouseButtonUp(0))
                 {
-                    TryToPlaceCards(GetClick());
+                    if (hit.collider != null)
+                    {
+                        TryToPlaceCards(hit);
+                    }
                     UnselectCards();
                 }
                 else
                 {
-                    DragSelectedCards(GetClick());
+                    DragSelectedCards(hit);
                 }
             }
             else if (Input.GetMouseButtonDown(0))
             {
                 if (InputStopped) return;
+                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 
-                TryToSelectCards(GetClick());
-
-                if (dragOn)
+                if (hit.collider != null)
                 {
-                    DragSelectedCards(GetClick());
+                    TryToSelectCards(hit);
                 }
             }
         }
@@ -230,7 +233,17 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    public void StartNextCycle()
+    [SerializeField]
+    private void MakeActionsMaxButton()
+    {
+        if (InputStopped || Config.Instance.gamePaused) return;
+        Debug.Log("make actions max button");
+        ActionCountScript.Instance.KnobDown();
+        SoundEffectsController.Instance.VibrateMedium();
+        StartNextCycle(manuallyTriggered: true);
+    }
+
+    private void StartNextCycle(bool manuallyTriggered = false)
     {
         if (Config.Instance.tutorialOn)
         {
@@ -244,22 +257,11 @@ public class UtilsScript : MonoBehaviour
             }
         }
         InputStopped = true;
-        ActionCountScript.Instance.PressKnob();
-        StartCoroutine(NextCycle());
-    }
-
-    private RaycastHit2D GetClick()
-    {
-        return Physics2D.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
-                                                                           Input.mousePosition.y,
-                                                                           10)),
-                                                               Vector2.zero);
+        StartCoroutine(NextCycle(manuallyTriggered));
     }
 
     private void TryToSelectCards(RaycastHit2D hit)
     {
-        if (hit.collider == null) return;
-
         GameObject hitGameObject = hit.collider.gameObject;
         if (!hitGameObject.CompareTag(Constants.Tags.card)) return;
         selectedCards.Add(hitGameObject);
@@ -283,6 +285,7 @@ public class UtilsScript : MonoBehaviour
             }
         }
         StartDragging();
+        DragSelectedCards(hit);
     }
 
     private void StartDragging()
@@ -317,10 +320,8 @@ public class UtilsScript : MonoBehaviour
 
     private void TryToPlaceCards(RaycastHit2D hit)
     {
-        // hit object is what the card will attempt to go into
-        if (hit.collider == null) return;
-
         GameObject oldContainer = selectedCards[0].GetComponent<CardScript>().Container;
+        // hit object is what the card will attempt to go into
         GameObject newContainer = hit.collider.gameObject;
 
         if (newContainer == selectedCardsCopy[0].GetComponent<CardScript>().gameObject)
@@ -573,7 +574,7 @@ public class UtilsScript : MonoBehaviour
         position.y += 0.25f;
         position.z += 0.2f;
         GameObject matchPointsEffect = Instantiate(matchPointsPrefab, position, Quaternion.identity, gameUI.transform);
-        
+
         // set the points readout
         Text pointText = matchPointsEffect.GetComponent<Text>();
         pointText.text = $"+{points} ";
@@ -728,7 +729,7 @@ public class UtilsScript : MonoBehaviour
         return false;
     }
 
-    private IEnumerator NextCycle()
+    private IEnumerator NextCycle(bool manuallyTriggered)
     {
         SpaceBabyController.Instance.BabyActionCounter();
 
@@ -772,11 +773,19 @@ public class UtilsScript : MonoBehaviour
             {
                 Config.Instance.moveCounter += 1;
                 InputStopped = false;
+                if (manuallyTriggered)
+                {
+                    ActionCountScript.Instance.KnobUp();
+                }
                 yield break;
             }
         }
 
         InputStopped = false;
+        if (manuallyTriggered)
+        {
+            ActionCountScript.Instance.KnobUp();
+        }
         UpdateActions(0, setAsValue: true);
     }
 
