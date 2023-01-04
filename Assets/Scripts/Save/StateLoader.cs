@@ -264,13 +264,10 @@ public class StateLoader : MonoBehaviour
         {
             GameObject card = cardID switch
             {
-                int ID => LoadPileScript.Instance.CardList.Find(card => card.GetComponent<CardScript>().CardID == ID),
+                int ID => FindCardBinarySearch(ID),
                 string name => LoadPileScript.Instance.CardList.Find(card => card.GetComponent<CardScript>().name == name),
                 _ => null
             };
-
-            // int ID => LoadPileScript.Instance.CardList.BinarySearch(ID, Comparer<GameObject>.Create((x, y) =>
-            // x.GetComponent<CardScript>().CardID.CompareTo(y.GetComponent<CardScript>().CardID))),
 
             if (card == null)
             {
@@ -284,5 +281,29 @@ public class StateLoader : MonoBehaviour
                 cardScript.Hidden = true;
             }
         }
+    }
+
+    private GameObject FindCardBinarySearch(int ID)
+    {
+        var list = LoadPileScript.Instance.CardList;
+        int left = 0, right = list.Count - 1;
+        while (left <= right)
+        {
+            int mid = left + (right - left) / 2;
+            CardScript cs = list[mid].GetComponent<CardScript>();
+            if (cs.CardID == ID)
+            {
+                return list[mid];
+            }
+            else if (cs.CardID < ID)
+            {
+                left = mid + 1;
+            }
+            else
+            {
+                right = mid - 1;
+            }
+        }
+        return null;
     }
 }

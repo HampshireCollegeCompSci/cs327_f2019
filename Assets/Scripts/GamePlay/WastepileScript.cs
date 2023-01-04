@@ -207,7 +207,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
             1 => 0.3f,
             2 => 0.4f,
             3 => 0.5f,
-            _ => 0.5f + (numCards - 3) / 10
+            _ => 0.5f + (numCards - 3) / 10f
         };
 
         yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, duration);
@@ -250,8 +250,8 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
 
         float duration = cardList.Count switch
         {
-            < 6 => cardList.Count / 10,
-            _ => 0.6f + (cardList.Count - 6) / 15
+            < 6 => cardList.Count / 10f,
+            _ => 0.6f + (cardList.Count - 6) / 20f
         };
 
         yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, duration);
@@ -261,6 +261,10 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         {
             cardList[^1].GetComponent<CardScript>().MoveCard(Constants.CardContainerType.Deck, DeckScript.Instance.gameObject, showHolo: false);
         }
+
+        // move it back to 0 so that when auto dealing occurs, the proper position is used to start scrolling
+        endPosition.x = 0;
+        contentRectTransform.anchoredPosition = endPosition;
 
         yield return new WaitForSeconds(0.5f);
         DeckScript.Instance.Deal();

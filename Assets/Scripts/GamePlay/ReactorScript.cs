@@ -4,9 +4,9 @@ using UnityEngine.UI;
 
 public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 {
-    private const int maxFullReactorCards = 4;
+    private const int maxFullReactorCards = 5;
     private const float xOffset = -0.02f;
-    private const float startingYOffset = -0.34f;
+    private const float startingYOffset = -0.35f;
     private const float largeYOffset = 0.16f;
     private const float smallYOffset = 0.03f;
 
@@ -55,7 +55,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
                 _glowing = true;
                 suitGlowSR.enabled = true;
                 glowSR.enabled = true;
-                hitbox.enabled= true;
+                hitbox.enabled = true;
             }
             else if (!value && _glowing)
             {
@@ -63,7 +63,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
                 RevertSuitGlow();
                 suitGlowSR.enabled = false;
                 glowSR.enabled = false;
-                hitbox.enabled= false;
+                hitbox.enabled = false;
             }
         }
     }
