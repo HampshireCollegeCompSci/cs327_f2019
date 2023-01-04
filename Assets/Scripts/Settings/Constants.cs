@@ -62,7 +62,7 @@
         public const string selectedCards = "SelectedCards";
         public const string gameplay = "Gameplay";
     }
-    
+
     public static class Tags
     {
         public const string card = "Card";
@@ -74,13 +74,24 @@
         public const string loadPile = "LoadPile";
     }
 
-    public static class LogMoveTypes
+    public enum CardContainerType
     {
-        public const byte move = 0;
-        public const byte stack = 1;
-        public const byte match = 3;
-        public const byte draw = 4;
-        public const byte cycle = 5;
-        public const byte deckreset = 6;
+        None,
+        Loadpile,
+        MatchedPile,
+        Foundation,
+        Reactor,
+        Deck,
+        WastePile
+    }
+
+    public enum LogMoveType
+    {
+        Move,
+        Stack,
+        Match,
+        Draw,
+        Cycle,
+        Deckreset
     }
 }

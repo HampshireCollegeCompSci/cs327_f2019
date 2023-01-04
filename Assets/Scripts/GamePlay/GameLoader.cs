@@ -217,14 +217,14 @@ public class GameLoader : MonoBehaviour
             for (int i = 0; i < GameValues.GamePlay.foundationStartingSize - 1; i++)
             {
                 currentCardScript = cards[^1].GetComponent<CardScript>();
-                currentCardScript.MoveCard(foundationScript.gameObject, doLog: false, showHolo: false);
+                currentCardScript.MoveCard(Constants.CardContainerType.Foundation, foundationScript.gameObject, doLog: false, showHolo: false);
                 currentCardScript.Hidden = true;
                 cards.RemoveAt(cards.Count - 1);
             }
 
             // adding and revealing the top card of the foundation
             currentCardScript = cards[^1].GetComponent<CardScript>();
-            currentCardScript.MoveCard(foundationScript.gameObject, doLog: false);
+            currentCardScript.MoveCard(Constants.CardContainerType.Foundation, foundationScript.gameObject, doLog: false);
             cards.RemoveAt(cards.Count - 1);
         }
 
@@ -243,7 +243,7 @@ public class GameLoader : MonoBehaviour
     {
         foreach (GameObject card in cards)
         {
-            card.GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, doLog: false);
+            card.GetComponent<CardScript>().MoveCard(Constants.CardContainerType.Deck, DeckScript.Instance.gameObject, doLog: false);
         }
     }
 
@@ -251,7 +251,7 @@ public class GameLoader : MonoBehaviour
     {
         foreach (GameObject card in cards)
         {
-            card.GetComponent<CardScript>().MoveCard(LoadPileScript.Instance.gameObject, doLog: false, isAction: false);
+            card.GetComponent<CardScript>().MoveCard(Constants.CardContainerType.Loadpile, LoadPileScript.Instance.gameObject, doLog: false, isAction: false);
         }
     }
 

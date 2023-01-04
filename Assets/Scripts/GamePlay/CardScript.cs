@@ -33,7 +33,8 @@ public class CardScript : MonoBehaviour, IGlow
     private Coroutine holoCoroutine;
     private Color originalColor;
     private Color draggingColor;
-    private GameObject container;
+    private Constants.CardContainerType _currentContainerType;
+    private GameObject _container;
 
     void Awake()
     {
@@ -50,7 +51,9 @@ public class CardScript : MonoBehaviour, IGlow
 
     public byte CardID => _cardID;
 
-    public GameObject Container => container;
+    public Constants.CardContainerType CurrentContainerType => _currentContainerType;
+
+    public GameObject Container => _container;
 
     public GameObject Values => values;
 
@@ -253,8 +256,10 @@ public class CardScript : MonoBehaviour, IGlow
     public void SetUp(Card card, Sprite suitSprite, Sprite hologramFoodSprite, Sprite hologramComboSprite)
     {
         _card = card;
+        _currentContainerType = Constants.CardContainerType.None;
+        _container = null;
 
-        _cardID = (byte) (card.Rank.Value + card.Suit.Index * 13);
+        _cardID = (byte)(card.Rank.Value + card.Suit.Index * 13);
         this.name = $"{card.Suit.Name}_{card.Rank.Value}";
 
         hologramFoodSR.sprite = hologramFoodSprite;
@@ -333,7 +338,7 @@ public class CardScript : MonoBehaviour, IGlow
     public void MakeVisualOnly()
     {
         gameObject.transform.localScale = new Vector3(GameValues.Transforms.draggedCardScale, GameValues.Transforms.draggedCardScale, 1);
-        container = null;
+        _container = null;
 
         values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = UtilsScript.Instance.SelectedCardsLayer;
 
@@ -363,122 +368,103 @@ public class CardScript : MonoBehaviour, IGlow
     /// <param name="isCycle">is for a next cycle</param>
     /// <param name="isStack">is part of a foundation stack move</param>
     /// <param name="showHolo">show this card's hologram on final placement</param>
-    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool showHolo = true)
+    public void MoveCard(Constants.CardContainerType newContainerType, GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool showHolo = true)
     {
         bool nextCardWasHidden = false;
-        if (Container != null)
+
+        switch (_currentContainerType)
         {
-            switch (Container.tag)
-            {
-                case Constants.Tags.foundation:
-                    if (doLog)
-                    {
-                        FoundationScript foundationScript = Container.GetComponent<FoundationScript>();
-                        if (foundationScript.CardList.Count > 1 && foundationScript.CardList[^2].GetComponent<CardScript>().Hidden)
-                        {
-                            nextCardWasHidden = true;
-                        }
-                    }
-                    Container.GetComponent<FoundationScript>().RemoveCard(gameObject, showHolo: showHolo);
-                    break;
-                case Constants.Tags.reactor:
-                    Container.GetComponent<ReactorScript>().RemoveCard(gameObject);
-                    break;
-                case Constants.Tags.wastepile:
-                    if (!doLog || destination.CompareTag(Constants.Tags.deck))
-                    {
-                        WastepileScript.Instance.RemoveCard(gameObject, undoingOrDeck: true, showHolo: showHolo);
-                    }
-                    else
-                    {
-                        WastepileScript.Instance.RemoveCard(gameObject, showHolo: showHolo);
-                    }
-                    break;
-                case Constants.Tags.deck:
-                    DeckScript.Instance.RemoveCard(gameObject);
-                    break;
-                case Constants.Tags.matchedPile:
-                    MatchedPileScript.Instance.RemoveCard(gameObject);
-                    break;
-                case Constants.Tags.loadPile:
-                    LoadPileScript.Instance.RemoveCard(gameObject);
-                    break;
-                default:
-                    throw new System.Exception($"the card conatainer of {Container} is not supported");
-            }
+            case Constants.CardContainerType.None:
+                break;
+            case Constants.CardContainerType.Foundation:
+                FoundationScript foundationScript = _container.GetComponent<FoundationScript>();
+                if (doLog && foundationScript.CardList.Count > 1 && foundationScript.CardList[^2].GetComponent<CardScript>().Hidden)
+                {
+                    nextCardWasHidden = true;
+                }
+                foundationScript.RemoveCard(gameObject, showHolo: showHolo);
+                break;
+            case Constants.CardContainerType.Reactor:
+                _container.GetComponent<ReactorScript>().RemoveCard(gameObject);
+                break;
+            case Constants.CardContainerType.WastePile:
+                if (!doLog || newContainerType == Constants.CardContainerType.Deck)
+                {
+                    WastepileScript.Instance.RemoveCard(gameObject, undoingOrDeck: true, showHolo: showHolo);
+                }
+                else
+                {
+                    WastepileScript.Instance.RemoveCard(gameObject, showHolo: showHolo);
+                }
+                break;
+            case Constants.CardContainerType.Deck:
+                DeckScript.Instance.RemoveCard(gameObject);
+                break;
+            case Constants.CardContainerType.MatchedPile:
+                MatchedPileScript.Instance.RemoveCard(gameObject);
+                break;
+            case Constants.CardContainerType.Loadpile:
+                LoadPileScript.Instance.RemoveCard(gameObject);
+                break;
+            default:
+                throw new System.Exception($"the card conatainer of {_currentContainerType} is not supported");
         }
 
-        switch (destination.tag)
+        switch (newContainerType)
         {
-            case Constants.Tags.foundation:
+            case Constants.CardContainerType.Foundation:
                 if (doLog)
                 {
-                    if (isStack)
-                    {
-                        UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.stack, isAction, nextCardWasHidden);
-                    }
-                    else
-                    {
-                        UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.move, isAction, nextCardWasHidden);
-                    }
+                    UndoScript.Instance.LogMove(gameObject, _currentContainerType, _container, (isStack ? Constants.LogMoveType.Stack : Constants.LogMoveType.Move), isAction, nextCardWasHidden);
                 }
                 destination.GetComponent<FoundationScript>().AddCard(gameObject, showHolo: showHolo);
                 break;
-            case Constants.Tags.reactor:
+            case Constants.CardContainerType.Reactor:
                 if (doLog)
                 {
-                    if (isCycle)
-                    {
-                        UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.cycle, true, nextCardWasHidden);
-                    }
-                    else
-                    {
-                        UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.move, isAction, nextCardWasHidden);
-                    }
+                    UndoScript.Instance.LogMove(gameObject, _currentContainerType, _container, (isCycle ? Constants.LogMoveType.Cycle : Constants.LogMoveType.Move), true, nextCardWasHidden);
                 }
                 destination.GetComponent<ReactorScript>().AddCard(gameObject);
                 break;
-            case Constants.Tags.wastepile:
+            case Constants.CardContainerType.WastePile:
                 if (doLog)
                 {
                     // for undoing a match that goes into the wastepile
-                    if (Container.CompareTag(Constants.Tags.foundation))
+                    if (_currentContainerType == Constants.CardContainerType.Foundation)
                     {
-                        UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.move, isAction, nextCardWasHidden);
+                        UndoScript.Instance.LogMove(gameObject, _currentContainerType, _container, Constants.LogMoveType.Move, isAction, nextCardWasHidden);
                     }
                     else
                     {
-                        UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.draw, isAction);
+                        UndoScript.Instance.LogMove(gameObject, _currentContainerType, _container, Constants.LogMoveType.Draw, isAction);
                     }
                 }
 
                 WastepileScript.Instance.AddCard(gameObject, showHolo: showHolo);
                 break;
-            case Constants.Tags.deck:
+            case Constants.CardContainerType.Deck:
                 if (doLog)
                 {
-                    UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.deckreset, isAction);
+                    UndoScript.Instance.LogMove(gameObject, _currentContainerType, _container, Constants.LogMoveType.Deckreset, isAction);
                 }
                 DeckScript.Instance.AddCard(gameObject);
                 break;
-            case Constants.Tags.matchedPile:
+            case Constants.CardContainerType.MatchedPile:
                 if (doLog)
                 {
-                    UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.match, isAction, nextCardWasHidden);
+                    UndoScript.Instance.LogMove(gameObject, _currentContainerType, _container, Constants.LogMoveType.Match, isAction, nextCardWasHidden);
                 }
                 MatchedPileScript.Instance.AddCard(gameObject);
                 break;
-            case Constants.Tags.loadPile:
-                if (doLog)
-                {
-                    UndoScript.Instance.LogMove(gameObject, Constants.LogMoveTypes.match, isAction, nextCardWasHidden);
-                }
+            case Constants.CardContainerType.Loadpile:
                 LoadPileScript.Instance.AddCard(gameObject);
                 break;
             default:
-                throw new System.Exception($"the card destination of {destination} is not supported");
+                throw new System.Exception($"the card destination of {newContainerType} is not supported");
         }
-        container = destination;
+
+        _currentContainerType = newContainerType;
+        _container = destination;
     }
 
     /// <summary>

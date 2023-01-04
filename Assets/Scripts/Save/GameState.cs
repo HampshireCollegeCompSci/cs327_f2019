@@ -36,7 +36,7 @@ public class GameState<T>
         public FoundationCards()
         {
             unhidden = new List<T>();
-            hidden= new List<T>();
+            hidden = new List<T>();
         }
     }
 
@@ -59,8 +59,9 @@ public class GameState<T>
 public class SaveMove
 {
     public byte c;
-    public int o;
-    public byte m;
+    public Constants.CardContainerType t;
+    public int i;
+    public Constants.LogMoveType m;
     public byte h;
     public byte a;
     public int r;

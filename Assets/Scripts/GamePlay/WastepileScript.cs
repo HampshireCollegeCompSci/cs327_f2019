@@ -187,9 +187,9 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         // add the new cards, for the non-top cards: don't try to show their hologram
         for (int i = 0; i < cards.Count - 1; i++)
         {
-            cards[i].GetComponent<CardScript>().MoveCard(this.gameObject, doLog, showHolo: false);
+            cards[i].GetComponent<CardScript>().MoveCard(Constants.CardContainerType.WastePile, this.gameObject, doLog, showHolo: false);
         }
-        cards[^1].GetComponent<CardScript>().MoveCard(this.gameObject, doLog);
+        cards[^1].GetComponent<CardScript>().MoveCard(Constants.CardContainerType.WastePile, this.gameObject, doLog);
 
         // move the scroll rect's content so that the new cards are hidden to the left side of the belt
         Vector2 startPosition = contentRectTransform.anchoredPosition;
@@ -259,7 +259,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         // move all the tokens
         while (cardList.Count > 0)
         {
-            cardList[^1].GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, showHolo: false);
+            cardList[^1].GetComponent<CardScript>().MoveCard(Constants.CardContainerType.Deck, DeckScript.Instance.gameObject, showHolo: false);
         }
 
         yield return new WaitForSeconds(0.5f);

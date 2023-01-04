@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -269,12 +270,12 @@ public class UtilsScript : MonoBehaviour
         CardScript hitCardScript = hitGameObject.GetComponent<CardScript>();
 
         //if we click a card in the wastepile select it
-        if (hitCardScript.Container.CompareTag(Constants.Tags.wastepile))
+        if (hitCardScript.CurrentContainerType == Constants.CardContainerType.WastePile)
         {
             // all non-top wastepile cards have their hitboxes disabled
             WastepileScript.Instance.DraggingCard = true;
         }
-        else if (hitCardScript.Container.CompareTag(Constants.Tags.foundation))
+        else if (hitCardScript.CurrentContainerType == Constants.CardContainerType.Foundation)
         {
             //if we click a card in a foundation
             List<GameObject> cardListREF = hitCardScript.Container.GetComponent<FoundationScript>().CardList;
@@ -320,7 +321,7 @@ public class UtilsScript : MonoBehaviour
 
     private void TryToPlaceCards(RaycastHit2D hit)
     {
-        GameObject oldContainer = selectedCards[0].GetComponent<CardScript>().Container;
+        Constants.CardContainerType oldContainer = selectedCards[0].GetComponent<CardScript>().CurrentContainerType;
         // hit object is what the card will attempt to go into
         GameObject newContainer = hit.collider.gameObject;
 
@@ -340,27 +341,27 @@ public class UtilsScript : MonoBehaviour
                     if (hitCardScript.GlowColor.Equals(GameValues.Colors.Highlight.match))
                     {
                         Match(selectedCards[0].GetComponent<CardScript>(), hitCardScript);
-                        OtherActions(oldContainer.tag, hitCardScript.Container.tag, isMatch: true);
+                        OtherActions(oldContainer, hitCardScript.CurrentContainerType, isMatch: true);
                     }
                     else
                     {
-                        MoveAllSelectedCards(hitCardScript.Container);
-                        OtherActions(oldContainer.tag, hitCardScript.Container.tag);
+                        MoveAllSelectedCards(hitCardScript.CurrentContainerType, hitCardScript.Container);
+                        OtherActions(oldContainer, hitCardScript.CurrentContainerType);
                     }
                 }
                 break;
             case Constants.Tags.foundation:
                 if (newContainer.GetComponent<FoundationScript>().Glowing)
                 {
-                    MoveAllSelectedCards(newContainer);
-                    OtherActions(oldContainer.tag, newContainer.tag);
+                    MoveAllSelectedCards(Constants.CardContainerType.Foundation, newContainer);
+                    OtherActions(oldContainer, Constants.CardContainerType.Foundation);
                 }
                 break;
             case Constants.Tags.reactor:
                 if (newContainer.GetComponent<ReactorScript>().Glowing)
                 {
-                    MoveAllSelectedCards(newContainer);
-                    OtherActions(oldContainer.tag, newContainer.tag);
+                    MoveAllSelectedCards(Constants.CardContainerType.Reactor, newContainer);
+                    OtherActions(oldContainer, Constants.CardContainerType.Reactor);
                 }
                 break;
             default:
@@ -369,12 +370,12 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    private void OtherActions(string oldContainer, string newContainer, bool isMatch = false)
+    private void OtherActions(Constants.CardContainerType oldContainer, Constants.CardContainerType newContainer, bool isMatch = false)
     {
         // if the card has matched into a foundation card,
         // or if the card was from a foundation and moved into a non foundation container
-        bool checkGameOver = (isMatch && newContainer.Equals(Constants.Tags.foundation)) ||
-            (oldContainer.Equals(Constants.Tags.foundation) && !newContainer.Equals(Constants.Tags.foundation));
+        bool checkGameOver = (isMatch && newContainer == Constants.CardContainerType.Foundation) ||
+            (oldContainer == Constants.CardContainerType.Foundation && newContainer != Constants.CardContainerType.Foundation);
 
         UpdateActions(isMatch ? 0 : 1, checkGameOver: checkGameOver, isMatch: isMatch);
 
@@ -382,31 +383,31 @@ public class UtilsScript : MonoBehaviour
         {
             switch (newContainer)
             {
-                case Constants.Tags.reactor:
+                case Constants.CardContainerType.Reactor:
                     SoundEffectsController.Instance.CardToReactorSound();
                     break;
-                case Constants.Tags.foundation:
+                case Constants.CardContainerType.Foundation:
                     SoundEffectsController.Instance.CardStackSound();
                     break;
                 default:
-                    throw new System.Exception("this shouldn't happen");
+                    throw new System.ArgumentException($"{newContainer} is an unexpected card container");
             }
         }
     }
 
-    private void MoveAllSelectedCards(GameObject destination)
+    private void MoveAllSelectedCards(Constants.CardContainerType newContainer, GameObject destination)
     {
         if (selectedCards.Count > 1)
         {
             for (int i = 0; i < selectedCards.Count - 1; i++)
             {
-                selectedCards[i].GetComponent<CardScript>().MoveCard(destination, isStack: true, showHolo: false);
+                selectedCards[i].GetComponent<CardScript>().MoveCard(newContainer, destination, isStack: true, showHolo: false);
             }
-            selectedCards[^1].GetComponent<CardScript>().MoveCard(destination, isStack: true, showHolo: true);
+            selectedCards[^1].GetComponent<CardScript>().MoveCard(newContainer, destination, isStack: true, showHolo: true);
         }
         else
         {
-            selectedCards[0].GetComponent<CardScript>().MoveCard(destination);
+            selectedCards[0].GetComponent<CardScript>().MoveCard(newContainer, destination);
         }
     }
 
@@ -477,8 +478,7 @@ public class UtilsScript : MonoBehaviour
                 // if it's a match
                 if (hoveringOverCS.GlowColor.Equals(GameValues.Colors.Highlight.match))
                 {
-                    // if the hovering over card is not in the reactor
-                    if (!hoveringOverCS.Container.CompareTag(Constants.Tags.reactor))
+                    if (hoveringOverCS.CurrentContainerType != Constants.CardContainerType.Reactor)
                     {
                         // hide the hover over card food hologram
                         hoveringOverCS.Hologram = false;
@@ -499,7 +499,8 @@ public class UtilsScript : MonoBehaviour
                 hoveringOverRS.ChangeSuitGlow(GameValues.Colors.Highlight.match);
                 changedSuitGlowColor = true;
             }
-            else if (showPossibleMoves.foundationIsGlowing && hoveringOver.CompareTag(Constants.Tags.foundation))
+            else if (showPossibleMoves.foundationIsGlowing &&
+                hoveringOver.CompareTag(Constants.Tags.foundation))
             {
                 FoundationScript hoveringOverFS = hoveringOver.GetComponent<FoundationScript>();
                 if (!hoveringOverFS.Glowing) return;
@@ -548,8 +549,8 @@ public class UtilsScript : MonoBehaviour
         int points = GameValues.Points.matchPoints + (Config.Instance.consecutiveMatches * GameValues.Points.scoreMultiplier);
         StartCoroutine(MatchEffect(points));
 
-        card2Script.MoveCard(MatchedPileScript.Instance.gameObject);
-        card1Script.MoveCard(MatchedPileScript.Instance.gameObject);
+        card2Script.MoveCard(Constants.CardContainerType.MatchedPile, MatchedPileScript.Instance.gameObject);
+        card1Script.MoveCard(Constants.CardContainerType.MatchedPile,MatchedPileScript.Instance.gameObject);
 
         ScoreScript.Instance.UpdateScore(points);
         SoundEffectsController.Instance.FoodMatch(card1Script.Card.Suit);
@@ -766,7 +767,7 @@ public class UtilsScript : MonoBehaviour
             topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = GameplayLayer;
 
             SoundEffectsController.Instance.CardToReactorSound();
-            topCardScript.MoveCard(reactorScript.gameObject, isCycle: true);
+            topCardScript.MoveCard(Constants.CardContainerType.Reactor, reactorScript.gameObject, isCycle: true);
 
             // if the game is lost during the next cycle stop immediately
             if (Config.Instance.gameOver)

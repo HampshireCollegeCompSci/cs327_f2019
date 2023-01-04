@@ -140,8 +140,8 @@ public class ShowPossibleMoves
 
     private void FindMoves(CardScript selectedCardScript)
     {
-        bool cardIsFromFoundation = selectedCardScript.Container.CompareTag(Constants.Tags.foundation);
-        bool cardIsFromWastepile = selectedCardScript.Container.CompareTag(Constants.Tags.wastepile);
+        bool cardIsFromFoundation = selectedCardScript.CurrentContainerType == Constants.CardContainerType.Foundation;
+        bool cardIsFromWastepile = selectedCardScript.CurrentContainerType == Constants.CardContainerType.WastePile;
 
         // if the card is not in a foundation or not at the top of a foundation
         bool cardCanBeMatched = !(cardIsFromFoundation &&
@@ -165,7 +165,7 @@ public class ShowPossibleMoves
 
             // if the reactor is not obstructed (tutorial setting)
             // and the card is not in the reactor, get the reactor that we can move into
-            if (!ReactorObstructed && !selectedCardScript.Container.CompareTag(Constants.Tags.reactor))
+            if (!ReactorObstructed && selectedCardScript.CurrentContainerType != Constants.CardContainerType.Reactor)
             {
                 reactorMove = UtilsScript.Instance.reactorScripts[selectedCardScript.Card.Suit.Index].gameObject;
             }
