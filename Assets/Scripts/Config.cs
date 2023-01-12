@@ -27,6 +27,7 @@ public class Config : MonoBehaviour
     public int matchCounter;
 
     private Difficulty _currentDifficulty;
+    private int _selectedCardsLayer, _cardLayer;
 
     // Initialize the singleton instance.
     private void Awake()
@@ -45,7 +46,12 @@ public class Config : MonoBehaviour
             // Check if the game state version needs updating and if the save file needs deleting
             SaveFile.CheckNewGameStateVersion();
             // Set the application frame rate to what was saved
+            Debug.Log($"setting frame rate to: {PersistentSettings.FrameRate}");
             Application.targetFrameRate = PersistentSettings.FrameRate;
+
+
+            _selectedCardsLayer = SortingLayer.NameToID(Constants.SortingLayers.selectedCards);
+            _cardLayer = SortingLayer.NameToID(Constants.SortingLayers.card);
         }
         else if (Instance != this)
         {
@@ -54,6 +60,10 @@ public class Config : MonoBehaviour
     }
 
     public Difficulty CurrentDifficulty => _currentDifficulty;
+
+    public int SelectedCardsLayer => _selectedCardsLayer;
+
+    public int CardLayer => _cardLayer;
 
     public void SetDifficulty(int dif)
     {

@@ -124,7 +124,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
 
     public void SetCardPositions()
     {
-        float zOffset = -0.1f;
+        float zOffset = 0;
         int hiddenCards = 0;
         float yOffset = 0;
 
@@ -138,8 +138,8 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
                 hiddenCards++;
                 yOffset += cardList.Count switch
                 {
-                    >12 => 0.02f,
-                    >10 => 0.07f,
+                    > 12 => 0.02f,
+                    > 10 => 0.07f,
                     _ => 0.15f
                 };
             }
@@ -156,7 +156,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
                 yOffset += 0.33f;
             }
 
-            zOffset -= 0.05f;
+            zOffset -= 0.01f;
         }
     }
 

@@ -60,7 +60,7 @@
     public static class SortingLayers
     {
         public const string selectedCards = "SelectedCards";
-        public const string gameplay = "Gameplay";
+        public const string card = "Card";
     }
 
     public static class Tags

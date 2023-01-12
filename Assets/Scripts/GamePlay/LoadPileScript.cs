@@ -32,6 +32,7 @@ public class LoadPileScript : MonoBehaviour, ICardContainer
     public void AddCard(GameObject card)
     {
         cardList.Add(card);
+        card.transform.SetParent(gameObject.transform);
     }
 
     public void RemoveCard(GameObject card)

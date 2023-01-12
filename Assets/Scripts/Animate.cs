@@ -42,16 +42,14 @@ public static class Animate
         toUpdate.anchoredPosition = end;
     }
 
-    public static IEnumerator SmoothstepTransform(Transform toUpdate, Vector3 start, Vector3 end, float duration)
+    public static IEnumerator SmoothstepTransform(Transform toUpdate, Vector2 start, Vector2 end, float duration)
     {
-        // cards have their values z-offset infront, so card z cannot be 0 or else the values will be behind the main camera :(
-        end.z = start.z;
         float timeElapsed = 0;
         while (timeElapsed < duration)
         {
             float t = timeElapsed / duration;
             t = t * t * (3f - 2f * t); // Smoothstep formula
-            toUpdate.position = Vector3.Lerp(start, end, t);
+            toUpdate.position = Vector2.Lerp(start, end, t);
             timeElapsed += Time.deltaTime;
             yield return null;
         }

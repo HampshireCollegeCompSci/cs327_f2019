@@ -340,11 +340,11 @@ public class CardScript : MonoBehaviour, IGlow
         gameObject.transform.localScale = new Vector3(GameValues.Transforms.draggedCardScale, GameValues.Transforms.draggedCardScale, 1);
         _container = null;
 
-        values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = UtilsScript.Instance.SelectedCardsLayer;
+        values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = Config.Instance.SelectedCardsLayer;
 
         foreach (Renderer renderers in this.gameObject.GetComponentsInChildren<Renderer>(includeInactive: true))
         {
-            renderers.sortingLayerID = UtilsScript.Instance.SelectedCardsLayer;
+            renderers.sortingLayerID = Config.Instance.SelectedCardsLayer;
             // TODO : A Unity bug requires this
             renderers.material.color = renderers.material.color;
         }

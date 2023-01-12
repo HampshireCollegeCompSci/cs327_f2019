@@ -241,7 +241,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     private Vector3 GetCardPosition(int index)
     {
-        float zOffset = index * -0.05f;
+        float zOffset = index * -0.01f;
 
         // if there are too many cards in the reactor to display them all in full
         if (cardList.Count > maxFullReactorCards)

@@ -38,7 +38,6 @@ public class UtilsScript : MonoBehaviour
     private int inputStopRequests;
 
     private ShowPossibleMoves showPossibleMoves;
-    private int _selectedCardsLayer, _gameplayLayer;
 
     // Initialize the singleton instance.
     void Awake()
@@ -56,12 +55,6 @@ public class UtilsScript : MonoBehaviour
         {
             throw new System.ArgumentException("there should not already be an instance of this");
         }
-    }
-
-    void Start()
-    {
-        _selectedCardsLayer = SortingLayer.NameToID(Constants.SortingLayers.selectedCards);
-        _gameplayLayer = SortingLayer.NameToID(Constants.SortingLayers.gameplay);
     }
 
     void Update()
@@ -125,10 +118,6 @@ public class UtilsScript : MonoBehaviour
     {
         get => showPossibleMoves;
     }
-
-    public int SelectedCardsLayer => _selectedCardsLayer;
-
-    private int GameplayLayer => _gameplayLayer;
 
     public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false, bool startingGame = false, bool isMatch = false)
     {
@@ -744,8 +733,8 @@ public class UtilsScript : MonoBehaviour
 
             // turn off the moving cards hologram and make it appear in front of everything
             topCardScript.Hologram = false;
-            topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = SelectedCardsLayer;
-            topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = SelectedCardsLayer;
+            topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = Config.Instance.SelectedCardsLayer;
+            topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = Config.Instance.SelectedCardsLayer;
 
             // immediately unhide the next possible top foundation card and start its hologram
             if (foundationScript.CardList.Count > 1)
@@ -763,8 +752,8 @@ public class UtilsScript : MonoBehaviour
                 GameValues.AnimationDurataions.cardsToReactor);
 
             // set the sorting layer back to default
-            topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = GameplayLayer;
-            topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = GameplayLayer;
+            topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = Config.Instance.CardLayer;
+            topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = Config.Instance.CardLayer;
 
             SoundEffectsController.Instance.CardToReactorSound();
             topCardScript.MoveCard(Constants.CardContainerType.Reactor, reactorScript.gameObject, isCycle: true);
