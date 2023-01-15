@@ -21,8 +21,8 @@ public class ResultsScript : MonoBehaviour
         // game won or lost text
         stateText.text = Config.Instance.gameWin switch
         {
-            true => GameValues.MenuText.gameState[0],
-            false => GameValues.MenuText.gameState[1]
+            true => GameValues.Text.gameWon,
+            false => GameValues.Text.gameLost
         };
         difficultyText.text = Config.Instance.CurrentDifficulty.Name.ToUpper();
 

@@ -11,12 +11,14 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
     [SerializeField]
     private HighLightColor _glowColor;
 
+    private BoxCollider2D hitbox;
     private SpriteRenderer spriteRenderer;
 
     void Awake()
     {
         cardList = new(52);
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        hitbox = gameObject.GetComponent<BoxCollider2D>();
 
         _glowing = false;
         _glowColor = GameValues.Colors.Highlight.none;
@@ -32,10 +34,12 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
             if (value && !_glowing)
             {
                 _glowing = true;
+                hitbox.enabled = true;
             }
             else if (!value && _glowing)
             {
                 _glowing = false;
+                hitbox.enabled = false;
                 GlowColor = GameValues.Colors.Highlight.none;
             }
         }

@@ -34,6 +34,32 @@ public class TutorialScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Continues the tutorial if it's ready. The tutorial next button calls this.
+    /// </summary>
+    public void NextButton()
+    {
+        Debug.Log("tutorial touch");
+
+        if (waiting && !UtilsScript.Instance.InputStopped)
+        {
+            waiting = false;
+            SoundEffectsController.Instance.ButtonPressSound();
+            NextStep();
+        }
+    }
+
+    /// <summary>
+    /// Ends the tutorial by request from the tutorial exit button.
+    /// </summary>
+    public void ExitButton()
+    {
+        Debug.Log("exit tutorial requested");
+        SoundEffectsController.Instance.ButtonPressSound();
+        SceneManager.LoadScene(Constants.ScenesNames.mainMenu);
+        MusicController.Instance.MainMenuMusic();
+    }
+
     private void StartTutorial()
     {
         Debug.Log("starting the tutorial");
@@ -109,22 +135,6 @@ public class TutorialScript : MonoBehaviour
         if (!waiting)
         {
             CommandInterpreter();
-        }
-    }
-
-    [SerializeField]
-    /// <summary>
-    /// Continues the tutorial if it's ready. The tutorial next button calls this.
-    /// </summary>
-    private void NextButton()
-    {
-        Debug.Log("tutorial touch");
-
-        if (waiting && !UtilsScript.Instance.InputStopped)
-        {
-            waiting = false;
-            SoundEffectsController.Instance.ButtonPressSound();
-            NextStep();
         }
     }
 
@@ -222,7 +232,7 @@ public class TutorialScript : MonoBehaviour
         UtilsScript.Instance.ShowPossibleMoves.TokenMoveable = true;
 
         Config.Instance.tutorialOn = false;
-        Config.Instance.SetDifficulty(0);
+        Config.Instance.SetDifficulty(GameValues.GamePlay.difficulties[0]);
         MusicController.Instance.GameMusic();
         GameLoader.Instance.RestartGame();
 
@@ -230,18 +240,6 @@ public class TutorialScript : MonoBehaviour
         undoButton.interactable = true;
         timerButton.interactable = true;
         pauseButton.interactable = true;
-    }
-
-    [SerializeField]
-    /// <summary>
-    /// Ends the tutorial by request from the tutorial exit button.
-    /// </summary>
-    private void ExitButton()
-    {
-        Debug.Log("exit tutorial requested");
-        SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.LoadScene(Constants.ScenesNames.mainMenu);
-        MusicController.Instance.MainMenuMusic();
     }
 
     /// <summary>

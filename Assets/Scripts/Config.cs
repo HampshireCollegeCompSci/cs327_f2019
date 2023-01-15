@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Config : MonoBehaviour
@@ -65,13 +64,10 @@ public class Config : MonoBehaviour
 
     public int CardLayer => _cardLayer;
 
-    public void SetDifficulty(int dif)
+    public void SetDifficulty(Difficulty dif)
     {
-        if (dif < 0 || dif > GameValues.GamePlay.difficulties.Count)
-        {
-            throw new IndexOutOfRangeException($"the difficulties index of \"{dif}\" did not fall in the range of 0-{GameValues.GamePlay.difficulties.Count}");
-        }
-        _currentDifficulty = GameValues.GamePlay.difficulties[dif];
+        Debug.Log($"setting difficulty to: {dif}");
+        _currentDifficulty = dif;
     }
 
     public void SetDifficulty(string dif)
@@ -80,7 +76,7 @@ public class Config : MonoBehaviour
         {
             if (dif == GameValues.GamePlay.difficulties[i].Name)
             {
-                SetDifficulty(i);
+                SetDifficulty(GameValues.GamePlay.difficulties[i]);
                 return;
             }
         }

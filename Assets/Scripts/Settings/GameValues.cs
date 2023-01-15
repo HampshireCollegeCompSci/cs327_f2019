@@ -83,16 +83,10 @@ public static class GameValues
         public const bool foodSuitsEnabledDefault = false;
     }
 
-    public static class MenuText
+    public static class Text
     {
-        public static readonly string[] menuButtons = new string[] { "PLAY", "TUTORIAL", "SETTINGS", "ABOUT" };
-        public static readonly string[] levelButtons = new string[] { "CONTINUE", "EASY", "MEDIUM", "HARD" };
-        public static readonly string backButton = "BACK";
-        public static readonly string loading = "LOADING...";
-        public static readonly string[] pauseButtons = new string[] { "RESUME", "RESTART", "SETTINGS", "MAIN\nMENU" };
-        public static readonly string[] summaryButtons = new string[] { "MAIN\nMENU", "PLAY\nAGAIN" };
-        public static readonly string[] scoreActionLabels = new string[] { "Score", "Action" };
-        public static readonly string[] gameState = new string[] { "YOU WON", "YOU LOST" };
+        public const string gameWon = "YOU WON";
+        public const string gameLost = "YOU LOST";
     }
 
     public static class Colors
@@ -175,7 +169,7 @@ public static class GameValues
 
         public static readonly FadeColorPair blackFadeOut = new(blackA1, blackA0);
         public static readonly FadeColorPair backFadeIn = new(blackA0, blackA1);
-        
+
         public static readonly FadeColorPair grayFadeIn = new(grayA0, grayA1);
         public static readonly FadeColorPair grayFadeOut = new(grayA1, grayA0);
     }

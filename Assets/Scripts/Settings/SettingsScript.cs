@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -71,8 +70,13 @@ public class SettingsScript : MonoBehaviour
         lockout = false;
     }
 
-    [SerializeField]
-    private void MusicVolumeChange(float update)
+    public void BackButton()
+    {
+        Debug.Log("UI Button Settings Back");
+        SceneManager.UnloadSceneAsync(Constants.ScenesNames.settings);
+    }
+
+    public void MusicVolumeChange(float update)
     {
         if (lockout) return;
 
@@ -82,8 +86,7 @@ public class SettingsScript : MonoBehaviour
         MusicController.Instance.UpdateMaxVolume(volumeUpdate);
     }
 
-    [SerializeField]
-    private void SoundEffectsVolumeChange(float update)
+    public void SoundEffectsVolumeChange(float update)
     {
         if (lockout) return;
 
@@ -99,17 +102,15 @@ public class SettingsScript : MonoBehaviour
         }
     }
 
-    [SerializeField]
-    private void VibrationEnabledOnToggle(bool update)
+    public void VibrationEnabledOnToggle(bool update)
     {
         if (lockout) return;
-        
+
         PersistentSettings.VibrationEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
     }
 
-    [SerializeField]
-    private void FoodSuitsEnabledOnToggle(bool update)
+    public void FoodSuitsEnabledOnToggle(bool update)
     {
         if (lockout) return;
 
@@ -122,25 +123,23 @@ public class SettingsScript : MonoBehaviour
         }
     }
 
-    [SerializeField]
-    private void TryToClearRecordsButton()
+    public void TryToClearRecordsButton()
     {
         if (lockout) return;
 
         confirmYesButton.interactable = false;
+        Debug.Log("trying to clear records");
         confirmObject.SetActive(true);
         StartCoroutine(ButtonDelay());
     }
 
-    [SerializeField]
-    private void ClearRecordsConfirmationButton()
+    public void ClearRecordsConfirmationButton()
     {
         Debug.Log("clearing saved records");
         PersistentSettings.ClearScores();
     }
 
-    [SerializeField]
-    private void FrameRateChange(float update)
+    public void FrameRateChange(float update)
     {
         if (lockout) return;
 
@@ -172,7 +171,7 @@ public class SettingsScript : MonoBehaviour
             120 => new List<int>(5) { -1, 30, 40, 60, 120 },
             90 => new List<int>(4) { -1, 30, 45, 90 },
             60 => new List<int>(3) { -1, 30, 60 },
-            48 => new List<int>(3) { -1, 24, 48},
+            48 => new List<int>(3) { -1, 24, 48 },
             30 => new List<int>(3) { -1, 15, 30 },
             _ => new List<int>(2) { -1, maxFrameRate },
         };
@@ -221,7 +220,7 @@ public class SettingsScript : MonoBehaviour
 
     private IEnumerator ButtonDelay()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSecondsRealtime(1.5f);
         confirmYesButton.interactable = true;
     }
 }

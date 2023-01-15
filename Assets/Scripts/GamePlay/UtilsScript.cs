@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -555,14 +554,11 @@ public class UtilsScript : MonoBehaviour
         comboSR.color = Color.white;
 
         Vector3 position = selectedCardsCopy[0].transform.position;
-        // instantiate the explosion that is z-offset and scaled
-        position.z += 2;
         GameObject matchExplosion = Instantiate(matchPrefab, position, Quaternion.identity);
         matchExplosion.transform.localScale = new Vector3(GameValues.Transforms.matchExplosionScale, GameValues.Transforms.matchExplosionScale);
 
-        // instantiate the points with even more offset
+        // instantiate the points slightly below
         position.y += 0.25f;
-        position.z += 0.2f;
         GameObject matchPointsEffect = Instantiate(matchPointsPrefab, position, Quaternion.identity, gameUI.transform);
 
         // set the points readout

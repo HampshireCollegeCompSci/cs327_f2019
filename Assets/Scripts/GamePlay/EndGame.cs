@@ -108,7 +108,7 @@ public class EndGame : MonoBehaviour
             SoundEffectsController.Instance.WinSound();
             gameOverText.color = GameValues.Colors.gameOverWin;
             wonlostText.color = GameValues.Colors.gameOverWin;
-            wonlostText.text = GameValues.MenuText.gameState[0];
+            wonlostText.text = GameValues.Text.gameWon;
         }
         else
         {
@@ -117,7 +117,7 @@ public class EndGame : MonoBehaviour
             SoundEffectsController.Instance.LoseSound();
             gameOverText.color = GameValues.Colors.gameOverLose;
             wonlostText.color = GameValues.Colors.gameOverLose;
-            wonlostText.text = GameValues.MenuText.gameState[1];
+            wonlostText.text = GameValues.Text.gameLost;
         }
 
         fadeInScreen.enabled = true;
@@ -155,7 +155,6 @@ public class EndGame : MonoBehaviour
 
     public void RestartGame()
     {
-        SoundEffectsController.Instance.ButtonPressSound();
         restartButton.SetActive(false);
         continueButton.SetActive(false);
         gameOverTextPanel.SetActive(false);
@@ -189,7 +188,6 @@ public class EndGame : MonoBehaviour
 
     public void ContinueGameOverTransition()
     {
-        SoundEffectsController.Instance.ButtonPressSound();
         restartButton.SetActive(false);
         continueButton.SetActive(false);
 
@@ -245,7 +243,7 @@ public class EndGame : MonoBehaviour
         Color fadeColor = fadeInScreen.color;
         CanvasGroup textGroup = gameOverTextPanel.GetComponent<CanvasGroup>();
 
-        float startingAlpha = fadeColor.a; 
+        float startingAlpha = fadeColor.a;
         float duration = GameValues.AnimationDurataions.gameEndFade;
         float timeElapsed = 0;
         while (timeElapsed < duration)
