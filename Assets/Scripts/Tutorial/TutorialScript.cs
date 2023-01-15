@@ -234,7 +234,9 @@ public class TutorialScript : MonoBehaviour
         Config.Instance.tutorialOn = false;
         Config.Instance.SetDifficulty(GameValues.GamePlay.difficulties[0]);
         MusicController.Instance.GameMusic();
+        UtilsScript.Instance.InputStopped = true;
         GameLoader.Instance.RestartGame();
+        UtilsScript.Instance.InputStopped = false;
 
         deckButton.interactable = true;
         undoButton.interactable = true;

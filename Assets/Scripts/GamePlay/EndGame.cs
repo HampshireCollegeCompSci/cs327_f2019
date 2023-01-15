@@ -31,7 +31,7 @@ public class EndGame : MonoBehaviour
 
     public void ManualGameWin()
     {
-        if (!GameValues.GamePlay.enableCheat || Config.Instance.gamePaused) return;
+        if (!GameValues.GamePlay.enableCheat) return;
 
         GameOver(true);
         // to ensure that the full win animation plays for debug
@@ -42,8 +42,8 @@ public class EndGame : MonoBehaviour
     {
         Debug.Log($"Game Over, won: {didWin}");
 
+        UtilsScript.Instance.InputStopped = true;
         Config.Instance.gameOver = true;
-        Config.Instance.gamePaused = true;
         Config.Instance.gameWin = didWin;
 
         SaveFile.Delete();
@@ -153,7 +153,7 @@ public class EndGame : MonoBehaviour
         continueButton.SetActive(true);
     }
 
-    public void RestartGame()
+    public void RestartGameWhenOver()
     {
         restartButton.SetActive(false);
         continueButton.SetActive(false);
@@ -183,6 +183,7 @@ public class EndGame : MonoBehaviour
         MusicController.Instance.GameMusic();
         Config.Instance.gameOver = false;
         GameLoader.Instance.RestartGame();
+        UtilsScript.Instance.InputStopped = false;
         this.gameObject.GetComponent<Image>().enabled = false;
     }
 

@@ -13,7 +13,6 @@ public class Config : MonoBehaviour
     public bool prettyColors;
 
     // game values
-    public bool gamePaused;
     public bool gameOver;
     public bool gameWin;
 

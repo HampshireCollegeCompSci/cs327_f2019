@@ -47,7 +47,7 @@ public class UtilsScript : MonoBehaviour
 
             selectedCards = new(13);
             selectedCardsCopy = new(13);
-            inputStopRequests = 0;
+            InputStopped = true;
             showPossibleMoves = new ShowPossibleMoves();
         }
         else if (Instance != this)
@@ -56,38 +56,7 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        if (!Config.Instance.gamePaused)
-        {
-            if (dragOn)
-            {
-                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-                if (Input.GetMouseButtonUp(0))
-                {
-                    if (hit.collider != null)
-                    {
-                        TryToPlaceCards(hit);
-                    }
-                    UnselectCards();
-                }
-                else
-                {
-                    DragSelectedCards(hit);
-                }
-            }
-            else if (Input.GetMouseButtonDown(0))
-            {
-                if (InputStopped) return;
-                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-
-                if (hit.collider != null)
-                {
-                    TryToSelectCards(hit);
-                }
-            }
-        }
-    }
+    public ShowPossibleMoves ShowPossibleMoves => showPossibleMoves;
 
     public bool InputStopped
     {
@@ -113,148 +82,44 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    public ShowPossibleMoves ShowPossibleMoves
+    void Update()
     {
-        get => showPossibleMoves;
-    }
-
-    public void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false, bool startingGame = false, bool isMatch = false)
-    {
-        // so that during a game start consecutiveMatches is not set to 0 after being set from a saved game
-        if (!startingGame)
+        if (dragOn)
         {
-            if (isMatch)
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            if (Input.GetMouseButtonUp(0))
             {
-                Config.Instance.consecutiveMatches++;
+                TryToPlaceCards(hit);
+                UnselectCards();
+                showPossibleMoves.HideMoves();
+                dragOn = false;
+                InputStopped = false;
             }
             else
             {
-                Config.Instance.consecutiveMatches = 0;
+                DragSelectedCards(hit);
             }
         }
-
-        // so that a nextcycle trigger doesn't save the state before and after, we only need the after
-        bool doSaveState = true;
-
-        // detecting if the game is starting or if a nextcycle will be triggered
-        if (startingGame || (!setAsValue && ((Config.Instance.actions + actionUpdate) >= Config.Instance.CurrentDifficulty.MoveLimit)))
+        else if (Input.GetMouseButtonDown(0) && !InputStopped)
         {
-            doSaveState = false;
-        }
-        else
-        {
-            Config.Instance.moveCounter++;
-        }
-
-        bool wasInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= GameValues.GamePlay.turnAlertThreshold;
-
-        // loading a saved game triggers this
-        if (startingGame)
-        {
-            Config.Instance.actions = actionUpdate;
-        }
-        // a nextcycle after it's done triggers this
-        else if (setAsValue)
-        {
-            // if nextcycle caused a Game Over
-            if (TryGameOver()) return;
-
-            Config.Instance.actions = actionUpdate;
-        }
-        else if (actionUpdate == 0) // a match was made
-        {
-            // check if reactor alerts should be turned off
-            if (wasInAlertThreshold)
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            if (TrySelectCards(hit))
             {
-                Alert(false, true, true);
+                dragOn = true;
+                InputStopped = true;
+                SoundEffectsController.Instance.CardPressSound();
+                DragSelectedCards(hit);
             }
-
-            if (!TryGameOver()) // if a match didn't win the game
-            {
-                StateLoader.Instance.WriteState();
-            }
-            return;
-        }
-        else if (actionUpdate == -1) // a match undo
-        {
-            if (wasInAlertThreshold)
-            {
-                Alert(false, true, true);
-            }
-            StateLoader.Instance.WriteState();
-            return;
-        }
-        else
-        {
-            Config.Instance.actions += actionUpdate;
-        }
-
-        ActionCountScript.Instance.UpdateActionText();
-
-        if (CheckNextCycle()) return;
-
-        // foundation moves trigger this as they are the only ones that can cause a gameover via winning
-        // reactors trigger their own gameovers
-        if (checkGameOver && TryGameOver()) return;
-
-        if (doSaveState && !Config.Instance.gameOver)
-        {
-            StateLoader.Instance.WriteState();
-        }
-
-        // time to determine if the alert should be turned on
-        bool isInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= GameValues.GamePlay.turnAlertThreshold;
-        if (!wasInAlertThreshold && !isInAlertThreshold)
-        {
-            // do nothing
-        }
-        else if (wasInAlertThreshold && isInAlertThreshold)
-        {
-            Alert(false, true);
-        }
-        else if (wasInAlertThreshold && !isInAlertThreshold)
-        {
-            Alert(false);
-        }
-        else if (!wasInAlertThreshold && isInAlertThreshold)
-        {
-            Alert(true);
         }
     }
 
-    [SerializeField]
-    private void MakeActionsMaxButton()
+    private bool TrySelectCards(RaycastHit2D hit)
     {
-        if (InputStopped || Config.Instance.gamePaused) return;
-        Debug.Log("make actions max button");
-        ActionCountScript.Instance.KnobDown();
-        SoundEffectsController.Instance.VibrateMedium();
-        StartNextCycle(manuallyTriggered: true);
-    }
-
-    private void StartNextCycle(bool manuallyTriggered = false)
-    {
-        if (Config.Instance.tutorialOn)
-        {
-            if (Config.Instance.nextCycleEnabled)
-            {
-                Config.Instance.nextCycleEnabled = false;
-            }
-            else
-            {
-                return;
-            }
-        }
-        InputStopped = true;
-        StartCoroutine(NextCycle(manuallyTriggered));
-    }
-
-    private void TryToSelectCards(RaycastHit2D hit)
-    {
+        if (hit.collider == null) return false;
         GameObject hitGameObject = hit.collider.gameObject;
-        if (!hitGameObject.CompareTag(Constants.Tags.card)) return;
-        selectedCards.Add(hitGameObject);
+        if (!hitGameObject.CompareTag(Constants.Tags.card)) return false;
 
+        selectedCards.Add(hitGameObject);
         CardScript hitCardScript = hitGameObject.GetComponent<CardScript>();
 
         //if we click a card in the wastepile select it
@@ -273,14 +138,6 @@ public class UtilsScript : MonoBehaviour
                 selectedCards.Add(cardListREF[i]);
             }
         }
-        StartDragging();
-        DragSelectedCards(hit);
-    }
-
-    private void StartDragging()
-    {
-        dragOn = true;
-        InputStopped = true;
 
         // make a copy of the selected cards to move around
         GameObject cardCopy;
@@ -298,17 +155,18 @@ public class UtilsScript : MonoBehaviour
         topSelectedCopyCardScript.Hologram = true;
 
         // show any tokens (and reactors) that we can interact with
-        showPossibleMoves.ShowMoves(selectedCards[0].GetComponent<CardScript>());
+        showPossibleMoves.ShowMoves(hitCardScript);
 
         changedHologramColor = false;
         changedSuitGlowColor = false;
         hidFoodHologram = false;
-
-        SoundEffectsController.Instance.CardPressSound();
+        return true;
     }
 
     private void TryToPlaceCards(RaycastHit2D hit)
     {
+        if (hit.collider == null) return;
+
         Constants.CardContainerType oldContainer = selectedCards[0].GetComponent<CardScript>().CurrentContainerType;
         // hit object is what the card will attempt to go into
         GameObject newContainer = hit.collider.gameObject;
@@ -365,7 +223,7 @@ public class UtilsScript : MonoBehaviour
         bool checkGameOver = (isMatch && newContainer == Constants.CardContainerType.Foundation) ||
             (oldContainer == Constants.CardContainerType.Foundation && newContainer != Constants.CardContainerType.Foundation);
 
-        UpdateActions(isMatch ? 0 : 1, checkGameOver: checkGameOver, isMatch: isMatch);
+        Actions.UpdateActions(isMatch ? 0 : 1, checkGameOver: checkGameOver, isMatch: isMatch);
 
         if (!isMatch)
         {
@@ -418,11 +276,6 @@ public class UtilsScript : MonoBehaviour
         }
         selectedCardsCopy.Clear();
         topSelectedCopyCardScript = null;
-
-        dragOn = false;
-        InputStopped = false;
-
-        showPossibleMoves.HideMoves();
     }
 
     private void DragSelectedCards(RaycastHit2D hit)
@@ -437,11 +290,7 @@ public class UtilsScript : MonoBehaviour
             cardPosition.z -= 0.05f;
         }
 
-        DragGlow(hit);
-    }
-
-    private void DragGlow(RaycastHit2D hit)
-    {
+        // glow time
         // if the tutorial is not on and there is no stuff glowing, stop
         if (!showPossibleMoves.AreThingsGlowing()) return;
 
@@ -638,162 +487,5 @@ public class UtilsScript : MonoBehaviour
         Destroy(matchPointsEffect);
         Destroy(matchExplosion);
         Destroy(comboHologram);
-    }
-
-    private void Alert(bool turnOnAlert, bool checkAgain = false, bool matchRelated = false)
-    {
-        bool highAlertTurnedOn = false;
-
-        // if turning on the alert for the first time
-        // or checking again if the previous move changed something
-        if (turnOnAlert || checkAgain)
-        {
-            foreach (ReactorScript reactorScript in reactorScripts)
-            {
-                // if a nextcyle will overload the reactor
-                if (reactorScript.OverLimitSoon())
-                {
-                    highAlertTurnedOn = true;
-                }
-                else if (checkAgain) // try turning the glow off just in case if it already on
-                {
-                    reactorScript.Alert = false;
-                }
-            }
-        }
-        else // we are done with the alert
-        {
-            MusicController.Instance.GameMusic();
-
-            foreach (ReactorScript reactorScript in reactorScripts)
-            {
-                reactorScript.Alert = false;
-            }
-        }
-
-        if (turnOnAlert || checkAgain)
-        {
-            MusicController.Instance.AlertMusic();
-        }
-
-        // if there is one move left
-        if (turnOnAlert || (checkAgain && !matchRelated && Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions == 1))
-        {
-            SoundEffectsController.Instance.AlertSound();
-        }
-
-
-        if (highAlertTurnedOn) // if the high alert was turned on during this check
-        {
-            // if the alert was not already on turn it on
-            // or if the alert is already on and there is only 1 move left,
-            // have the baby be angry and play the alert sound
-            if (ActionCountScript.Instance.TurnSirenOn(GameValues.AlertLevels.high) ||
-                (!matchRelated && Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions == 1))
-            {
-                SpaceBabyController.Instance.BabyReactorHigh();
-            }
-        }
-        else if (turnOnAlert || checkAgain)
-        {
-            ActionCountScript.Instance.TurnSirenOn(GameValues.AlertLevels.low);
-        }
-        else // the action counter is not low so turn stuff off
-        {
-            ActionCountScript.Instance.TurnSirenOff();
-        }
-    }
-
-    private bool CheckNextCycle()
-    {
-        if (Config.Instance.actions >= Config.Instance.CurrentDifficulty.MoveLimit)
-        {
-            StartNextCycle();
-            return true;
-        }
-
-        return false;
-    }
-
-    private IEnumerator NextCycle(bool manuallyTriggered)
-    {
-        SpaceBabyController.Instance.BabyActionCounter();
-
-        foreach (FoundationScript foundationScript in foundationScripts)
-        {
-            if (foundationScript.CardList.Count == 0) continue;
-
-            GameObject topFoundationCard = foundationScript.CardList[^1];
-            CardScript topCardScript = topFoundationCard.GetComponent<CardScript>();
-            ReactorScript reactorScript = reactorScripts[topCardScript.Card.Suit.Index];
-
-            // turn off the moving cards hologram and make it appear in front of everything
-            topCardScript.Hologram = false;
-            topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = Config.Instance.SelectedCardsLayer;
-            topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = Config.Instance.SelectedCardsLayer;
-
-            // immediately unhide the next possible top foundation card and start its hologram
-            if (foundationScript.CardList.Count > 1)
-            {
-                CardScript nextTopFoundationCard = foundationScript.CardList[^2].GetComponent<CardScript>();
-                if (nextTopFoundationCard.Hidden)
-                {
-                    nextTopFoundationCard.NextCycleReveal();
-                }
-            }
-
-            yield return Animate.SmoothstepTransform(topFoundationCard.transform,
-                topFoundationCard.transform.position,
-                reactorScript.GetNextCardPosition(),
-                GameValues.AnimationDurataions.cardsToReactor);
-
-            // set the sorting layer back to default
-            topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = Config.Instance.CardLayer;
-            topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = Config.Instance.CardLayer;
-
-            SoundEffectsController.Instance.CardToReactorSound();
-            topCardScript.MoveCard(Constants.CardContainerType.Reactor, reactorScript.gameObject, isCycle: true);
-
-            // if the game is lost during the next cycle stop immediately
-            if (Config.Instance.gameOver)
-            {
-                Config.Instance.moveCounter += 1;
-                InputStopped = false;
-                if (manuallyTriggered)
-                {
-                    ActionCountScript.Instance.KnobUp();
-                }
-                yield break;
-            }
-        }
-
-        InputStopped = false;
-        if (manuallyTriggered)
-        {
-            ActionCountScript.Instance.KnobUp();
-        }
-        UpdateActions(0, setAsValue: true);
-    }
-
-    private bool TryGameOver()
-    {
-        if (!Config.Instance.gameOver && AreFoundationsEmpty())
-        {
-            EndGame.Instance.GameOver(true);
-            return true;
-        }
-        return false;
-    }
-
-    private bool AreFoundationsEmpty()
-    {
-        foreach (FoundationScript foundationScript in foundationScripts)
-        {
-            if (foundationScript.CardList.Count != 0)
-            {
-                return false;
-            }
-        }
-        return true;
     }
 }

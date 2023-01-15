@@ -63,7 +63,7 @@ public class UndoScript : MonoBehaviour
     [SerializeField]
     private void UndoButton()
     {
-        if (UtilsScript.Instance.InputStopped || Config.Instance.gamePaused) return;
+        if (UtilsScript.Instance.InputStopped) return;
         Debug.Log("undo button");
         SoundEffectsController.Instance.UndoPressSound();
         Undo();
@@ -104,7 +104,7 @@ public class UndoScript : MonoBehaviour
                     }
                     topCardMove.card.GetComponent<CardScript>().MoveCard(topCardMove.containerType, newFoundation, doLog: false);
 
-                    UtilsScript.Instance.UpdateActions(topCardMove.remainingActions, setAsValue: true);
+                    Actions.UpdateActions(topCardMove.remainingActions, setAsValue: true);
                     break;
                 case Constants.LogMoveType.Move:
                     // standard behavior, move a single token back where it was
@@ -114,7 +114,7 @@ public class UndoScript : MonoBehaviour
 
                     if (lastMove.isAction)
                     {
-                        UtilsScript.Instance.UpdateActions(lastMove.remainingActions, setAsValue: true);
+                        Actions.UpdateActions(lastMove.remainingActions, setAsValue: true);
                     }
                     break;
                 case Constants.LogMoveType.Match:
@@ -127,7 +127,7 @@ public class UndoScript : MonoBehaviour
                     MoveFoundationCard(lastMove);
 
                     ScoreScript.Instance.SetScore(lastMove.score);
-                    UtilsScript.Instance.UpdateActions(-1);
+                    Actions.UpdateActions(-1);
                     break;
                 case Constants.LogMoveType.Draw:
                     // move the drawn cards back to the deck (assuming the last action was to draw from the deck)
@@ -139,7 +139,7 @@ public class UndoScript : MonoBehaviour
                         if (moveLog.Count == 0 || moveLog.Peek().moveNum != lastMove.moveNum)
                         {
                             lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.containerType, lastMove.origin, doLog: false);
-                            UtilsScript.Instance.UpdateActions(lastMove.remainingActions, setAsValue: true);
+                            Actions.UpdateActions(lastMove.remainingActions, setAsValue: true);
                             break;
                         }
 
@@ -169,7 +169,7 @@ public class UndoScript : MonoBehaviour
                             return;
                         }
                     }
-                    UtilsScript.Instance.UpdateActions(lastMove.remainingActions, setAsValue: true);
+                    Actions.UpdateActions(lastMove.remainingActions, setAsValue: true);
                     break;
                 default:
                     throw new System.Exception("invalid move log move type");

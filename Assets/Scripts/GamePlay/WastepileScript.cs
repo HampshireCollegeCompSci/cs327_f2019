@@ -84,7 +84,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
 
         if (doLog)
         {
-            UtilsScript.Instance.UpdateActions(1);
+            Actions.UpdateActions(1);
         }
 
         StartCoroutine(ScrollBarAdding(cards.Count));

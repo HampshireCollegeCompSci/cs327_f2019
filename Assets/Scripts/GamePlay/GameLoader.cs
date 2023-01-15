@@ -95,8 +95,6 @@ public class GameLoader : MonoBehaviour
 
     public void RestartGame()
     {
-        Config.Instance.gamePaused = true;
-
         List<GameObject> cards = GetAllCards();
         MoveCardsToLoadPile(cards);
         foreach (GameObject card in cards)
@@ -104,8 +102,6 @@ public class GameLoader : MonoBehaviour
             card.GetComponent<CardScript>().SetValuesToDefault();
         }
         StartNewGame(cards);
-
-        Config.Instance.gamePaused = false;
     }
 
     private List<GameObject> GetNewCards()
@@ -179,7 +175,7 @@ public class GameLoader : MonoBehaviour
         ScoreScript.Instance.SetScore(0);
 
         Config.Instance.actions = 0;
-        UtilsScript.Instance.UpdateActions(0, startingGame: true);
+        Actions.UpdateActions(0, startingGame: true);
 
         foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
         {
@@ -202,9 +198,7 @@ public class GameLoader : MonoBehaviour
         for (int i = 0; i < cards.Count; i++)
         {
             int j = rand.Next(i, cards.Count);
-            GameObject temp = cards[i];
-            cards[i] = cards[j];
-            cards[j] = temp;
+            (cards[j], cards[i]) = (cards[i], cards[j]);
         }
         return cards;
     }
