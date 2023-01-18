@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class StateLoader : MonoBehaviour
@@ -8,7 +10,13 @@ public class StateLoader : MonoBehaviour
     // Singleton instance.
     public static StateLoader Instance;
 
+    private CancellationTokenSource tokenSource;
+    private Task saveTask;
     private List<SaveMove> saveMoveLog;
+    private bool saveMovesDisabled;
+    private int movesUntilSave;
+    private int movesSinceLastSave;
+    private int lastSavedMove;
 
     // Initialize the singleton instance.
     private void Awake()
@@ -16,6 +24,7 @@ public class StateLoader : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            tokenSource = new CancellationTokenSource();
         }
         else if (Instance != this)
         {
@@ -26,6 +35,33 @@ public class StateLoader : MonoBehaviour
     private void Start()
     {
         saveMoveLog = new();
+        movesUntilSave = PersistentSettings.MovesUntilSave;
+        saveMovesDisabled = !PersistentSettings.SaveGameStateEnabled;
+        movesSinceLastSave = 0;
+    }
+
+    void OnApplicationFocus(bool hasFocus)
+    {
+        //Debug.LogWarning("OnApplicationFocus: " + hasFocus);
+        if (!hasFocus)
+        {
+            TryForceWriteState();
+        }
+    }
+
+    void OnApplicationPause(bool pauseStatus)
+    {
+        //Debug.LogWarning("OnApplicationPause: " + pauseStatus);
+        if (pauseStatus)
+        {
+            TryForceWriteState();
+        }
+    }
+
+    void OnApplicationQuit()
+    {
+        //Debug.LogWarning("Application ending after " + Time.time + " seconds");
+        TryForceWriteState();
     }
 
     public void ClearSaveMoveLog()
@@ -61,15 +97,76 @@ public class StateLoader : MonoBehaviour
         saveMoveLog.RemoveAt(saveMoveLog.Count - 1);
     }
 
-    public void WriteState(/*string path*/)
+    public void SetGameStateSaving(bool enabled)
+    {
+        Debug.Log($"updating game state saving to: {enabled}");
+        saveMovesDisabled = !enabled;
+        if (enabled && movesSinceLastSave >= movesUntilSave)
+        {
+            TryForceWriteState();
+        }
+    }
+
+    public void UpdateMovesUntilSave(int update)
+    {
+        Debug.Log($"updating moves until save to: {update}");
+        if (update == movesUntilSave) return;
+        movesUntilSave = update;
+        if (movesSinceLastSave >= update)
+        {
+            TryForceWriteState();
+        }
+    }
+
+    public void TryForceWriteState()
+    {
+        if (saveMovesDisabled || lastSavedMove == Config.Instance.moveCounter) return;
+        Debug.Log("forcing write state");
+        movesSinceLastSave = movesUntilSave;
+        TryWriteState();
+    }
+
+    public void TryWriteState()
     {
         if (Config.Instance.tutorialOn) return;
-
+        movesSinceLastSave++;
+        if (saveMovesDisabled || movesSinceLastSave < movesUntilSave) return;
+        movesSinceLastSave = 0;
+        lastSavedMove = Config.Instance.moveCounter;
         Debug.Log("writing state");
 
-        GameState<int> gameState = new();
+        // if the previous task to write the save file hasn't completed
+        if (saveTask != null && !saveTask.IsCompleted)
+        {
+            Debug.LogWarning("canceling the previous save task");
+            tokenSource.Cancel();
+            try
+            {
+                saveTask.Wait();
+            }
+            // TaskCanceledException is being thrown as expected, but I can't catch it for some reason
+            catch (Exception) 
+            {
+                Debug.LogWarning("the save task was successfully canceled");
+            }
+            tokenSource = new CancellationTokenSource();
+            saveTask = null;
+        }
 
-        //save foundations
+        GameState<int> gameState = new()
+        {
+            difficulty = Config.Instance.CurrentDifficulty.Name,
+            moveCounter = Config.Instance.moveCounter,
+            actions = Config.Instance.actions,
+            score = Config.Instance.score,
+            consecutiveMatches = Config.Instance.consecutiveMatches,
+
+            wastePile = ConvertCardListToStringList(WastepileScript.Instance.CardList),
+            deck = ConvertCardListToStringList(DeckScript.Instance.CardList),
+            matches = ConvertCardListToStringList(MatchedPileScript.Instance.CardList),
+            moveLog = saveMoveLog,
+        };
+
         for (int i = 0; i < UtilsScript.Instance.foundationScripts.Length; i++)
         {
             foreach (GameObject card in UtilsScript.Instance.foundationScripts[i].CardList)
@@ -85,36 +182,14 @@ public class StateLoader : MonoBehaviour
                 }
             }
         }
-
-        //save reactors
         for (int i = 0; i < UtilsScript.Instance.reactorScripts.Length; i++)
         {
             gameState.reactors[i].cards = ConvertCardListToStringList(UtilsScript.Instance.reactorScripts[i].CardList);
         }
 
-        //save wastepile
-        gameState.wastePile = ConvertCardListToStringList(WastepileScript.Instance.CardList);
-
-        //save deck
-        gameState.deck = ConvertCardListToStringList(DeckScript.Instance.CardList);
-
-        //save matches
-        gameState.matches = ConvertCardListToStringList(MatchedPileScript.Instance.CardList);
-
-        //save undo
-        gameState.moveLog = saveMoveLog;
-
-        //save other data
-        gameState.score = Config.Instance.score;
-        gameState.consecutiveMatches = Config.Instance.consecutiveMatches;
-        gameState.moveCounter = Config.Instance.moveCounter;
-        gameState.actions = Config.Instance.actions;
-        gameState.difficulty = Config.Instance.CurrentDifficulty.Name;
-
-        //saving to json, when in editor save it in human readable format
-        File.WriteAllText(SaveFile.GetPath(), JsonUtility.ToJson(gameState, Application.isEditor));
-
-        //UnityEditor.AssetDatabase.Refresh();
+        string content = JsonUtility.ToJson(gameState, Application.isEditor);
+        Debug.Log("starting the task to write the save file ");
+        saveTask = File.WriteAllTextAsync(SaveFile.GetPath(), content, tokenSource.Token);
     }
 
     public void LoadSaveState()
@@ -147,6 +222,7 @@ public class StateLoader : MonoBehaviour
         ScoreScript.Instance.SetScore(state.score);
         Config.Instance.consecutiveMatches = state.consecutiveMatches;
         Config.Instance.moveCounter = state.moveCounter;
+        lastSavedMove = state.moveCounter;
         // more is done at the end
 
         // if the tutorial isn't being loaded then we need to setup the move log

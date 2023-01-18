@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,7 +22,12 @@ public class SettingsScript : MonoBehaviour
     private List<int> frameRates;
 
     [SerializeField]
-    private GameObject frameRateInfoObject, suitArtNoticeObject;
+    private Toggle saveGameStateToggle;
+    [SerializeField]
+    private InputField movesUntilSaveInputField;
+
+    [SerializeField]
+    private GameObject suitArtNoticeObject;
 
     [SerializeField]
     private GameObject confirmObject;
@@ -66,6 +72,9 @@ public class SettingsScript : MonoBehaviour
         foodSuitsToggle.isOn = PersistentSettings.VibrationEnabled;
 
         SetupFrameRateSettings();
+
+        saveGameStateToggle.isOn = PersistentSettings.SaveGameStateEnabled;
+        movesUntilSaveInputField.text = PersistentSettings.MovesUntilSave.ToString();
 
         lockout = false;
     }
@@ -157,6 +166,42 @@ public class SettingsScript : MonoBehaviour
         UpdateFrameRateText(frameRateSetting);
     }
 
+    public void SaveGameStateOnToggle(bool update)
+    {
+        if (lockout) return;
+        Debug.Log($"seting save game state to: {update}");
+        PersistentSettings.SaveGameStateEnabled = update;
+        SoundEffectsController.Instance.ButtonPressSound();
+
+        if (SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
+        {
+            StateLoader.Instance.SetGameStateSaving(update);
+        }
+        if (!update)
+        {
+            SaveFile.Delete();
+        }
+    }
+
+    public void MovesUntilSaveOnEndEdit(string update)
+    {
+        if (lockout) return;
+        Debug.Log($"seting moves until save to: {update}");
+
+        if (Int32.TryParse(update, out int movesUntilSave) && movesUntilSave > 0)
+        {
+            PersistentSettings.MovesUntilSave = movesUntilSave;
+            if (SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
+            {
+                StateLoader.Instance.UpdateMovesUntilSave(movesUntilSave);
+            }
+        }
+        else
+        {
+            movesUntilSaveInputField.text = PersistentSettings.MovesUntilSave.ToString();
+        }
+    }
+
     private void SetupFrameRateSettings()
     {
         // target frame rate settings
@@ -213,7 +258,7 @@ public class SettingsScript : MonoBehaviour
     {
         frameRateText.text = frameRate switch
         {
-            -1 => "DEFAULT",
+            -1 => "Default",
             _ => frameRate.ToString()
         };
     }

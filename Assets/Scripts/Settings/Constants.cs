@@ -37,6 +37,8 @@
         public const string vibrationEnabledKey = "VibrationEnabled";
         public const string foodSuitsEnabledKey = "FoodSuitsEnabled";
         public const string frameRateKey = "FrameRate";
+        public const string saveGameStateKey = "SaveGameState";
+        public const string movesUntilSaveKey = "MovesUntilSave";
     }
 
     // Music Audio Mixer Exposed Parameters (name)

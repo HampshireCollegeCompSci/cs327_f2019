@@ -70,7 +70,7 @@ public class Actions : MonoBehaviour
 
             if (!TryGameWon()) // if a match didn't win the game
             {
-                StateLoader.Instance.WriteState();
+                StateLoader.Instance.TryWriteState();
             }
             return;
         }
@@ -80,7 +80,7 @@ public class Actions : MonoBehaviour
             {
                 Alert(false, true, true);
             }
-            StateLoader.Instance.WriteState();
+            StateLoader.Instance.TryWriteState();
             return;
         }
         else
@@ -102,7 +102,7 @@ public class Actions : MonoBehaviour
 
         if (doSaveState && !Config.Instance.gameOver)
         {
-            StateLoader.Instance.WriteState();
+            StateLoader.Instance.TryWriteState();
         }
 
         // time to determine if the alert should be turned on

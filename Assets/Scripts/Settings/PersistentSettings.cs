@@ -15,9 +15,17 @@ public static class PersistentSettings
 
         _soundEffectsVolume = PlayerPrefs.GetInt(Constants.Settings.soundEffectsVolumeKey,
             GameValues.Settings.soundEffectsDefaultVolume);
+        if (_soundEffectsVolume < 0 || _soundEffectsVolume > GameValues.Settings.soundEffectsVolumeDenominator)
+        {
+            SoundEffectsVolume = GameValues.Settings.soundEffectsDefaultVolume;
+        }
 
         _musicVolume = PlayerPrefs.GetInt(Constants.Settings.musicVolumeKey,
             GameValues.Settings.musicDefaultVolume);
+        if (_musicVolume < 0 || _musicVolume > GameValues.Settings.musicVolumeDenominator)
+        {
+            MusicVolume = GameValues.Settings.musicDefaultVolume;
+        }
 
         if (Vibration.HasVibrator())
         {
@@ -37,6 +45,16 @@ public static class PersistentSettings
         {
             Debug.LogError($"the unsupported frame rate of {FrameRate} was saved, defaulting to the device's default");
             FrameRate = -1;
+        }
+
+        _saveGameStateEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.saveGameStateKey,
+                Convert.ToInt32(GameValues.Settings.saveGameStateDefault)));
+
+        _movesUntilSave = PlayerPrefs.GetInt(Constants.Settings.movesUntilSaveKey,
+            GameValues.Settings.movesUntilSaveDefault);
+        if (_movesUntilSave <= 0)
+        {
+            MovesUntilSave = GameValues.Settings.movesUntilSaveDefault;
         }
     }
 
@@ -110,11 +128,40 @@ public static class PersistentSettings
                 PlayerPrefs.SetInt(Constants.Settings.frameRateKey, value);
             }
         }
-    } 
+    }
+
+    private static bool _saveGameStateEnabled;
+    public static bool SaveGameStateEnabled
+    {
+        get => _saveGameStateEnabled;
+        set
+        {
+            if (_saveGameStateEnabled != value)
+            {
+                _saveGameStateEnabled = value;
+                PlayerPrefs.SetInt(Constants.Settings.saveGameStateKey,
+                    Convert.ToInt32(value));
+            }
+        }
+    }
+
+    private static int _movesUntilSave;
+    public static int MovesUntilSave
+    {
+        get => _movesUntilSave;
+        set
+        {
+            if (_movesUntilSave != value)
+            {
+                _movesUntilSave = value;
+                PlayerPrefs.SetInt(Constants.Settings.movesUntilSaveKey, value);
+            }
+        }
+    }
 
     public static bool NewGameStateVersion()
     {
-        if (PlayerPrefs.GetString(Constants.GameStates.versionKey, defaultValue : "NULL") != Constants.GameStates.version)
+        if (PlayerPrefs.GetString(Constants.GameStates.versionKey, defaultValue: "NULL") != Constants.GameStates.version)
         {
             PlayerPrefs.SetString(Constants.GameStates.versionKey, Constants.GameStates.version);
             return true;
@@ -169,7 +216,7 @@ public static class PersistentSettings
     /// </summary>
     public static void TrySetLeastMoves(Difficulty difficulty, int newMoves)
     {
-        int oldLeastMoves= GetLeastMoves(difficulty);
+        int oldLeastMoves = GetLeastMoves(difficulty);
         if (oldLeastMoves == 0 || oldLeastMoves < newMoves)
         {
             SetLeastMoves(difficulty, newMoves);

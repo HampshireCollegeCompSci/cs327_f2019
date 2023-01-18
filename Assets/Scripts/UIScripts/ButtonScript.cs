@@ -16,6 +16,7 @@ public class ButtonScript : MonoBehaviour
         Debug.Log("UI Button main menu");
         if (SceneManager.GetSceneByName(Constants.ScenesNames.pause).isLoaded)
         {
+            StateLoader.Instance.TryForceWriteState();
             Time.timeScale = 1;
         }
         SceneManager.LoadScene(Constants.ScenesNames.mainMenu);

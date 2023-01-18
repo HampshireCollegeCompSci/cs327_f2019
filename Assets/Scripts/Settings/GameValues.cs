@@ -81,6 +81,9 @@ public static class GameValues
 
         public const bool vibrationEnabledDefault = true;
         public const bool foodSuitsEnabledDefault = false;
+
+        public const bool saveGameStateDefault = true;
+        public const int movesUntilSaveDefault = 1;
     }
 
     public static class Text
