@@ -272,7 +272,7 @@ public class CardScript : MonoBehaviour, IGlow
         rankText.text = card.Rank.Name;
 
         // setting up the in-game appearance of the card's suit
-        suitObject.GetComponent<SpriteRenderer>().sprite = suitSprite;
+        SetSuitSprite(suitSprite);
 
         if (Config.Instance.prettyColors)
         {
@@ -313,6 +313,11 @@ public class CardScript : MonoBehaviour, IGlow
         // order matters here
         Obstructed = false;
         HitBox = false;
+    }
+
+    public void SetSuitSprite(Sprite update)
+    {
+        suitObject.GetComponent<SpriteRenderer>().sprite = update;
     }
 
     /// <summary>

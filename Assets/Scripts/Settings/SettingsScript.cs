@@ -128,7 +128,7 @@ public class SettingsScript : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
         {
-            suitArtNoticeObject.SetActive(true);
+            GameLoader.Instance.ChangeSuitSprites();
         }
     }
 

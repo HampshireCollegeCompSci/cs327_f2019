@@ -104,6 +104,18 @@ public class GameLoader : MonoBehaviour
         StartNewGame(cards);
     }
 
+    public void ChangeSuitSprites()
+    {
+        Debug.Log("changing suit sprites");
+        Sprite[] suitSprites = GetSuitSprites();
+        foreach (GameObject card in GetAllCards())
+        {
+            CardScript cs = card.GetComponent<CardScript>();
+            cs.SetSuitSprite(suitSprites[cs.Card.Suit.Index]);
+        }
+        SetRectorSuitSprites(suitSprites);
+    }
+
     private List<GameObject> GetNewCards()
     {
         List<GameObject> newCards = new(52);
