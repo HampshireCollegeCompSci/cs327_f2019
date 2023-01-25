@@ -6,11 +6,14 @@ using UnityEngine;
 /// </summary>
 public static class PersistentSettings
 {
+    private static bool hasChecked = false;
+
     /// <summary>
     /// Sets the keys up and stores their values for repeated use.
     /// </summary>
-    public static void CheckKeys()
+    public static void TryCheckKeys()
     {
+        if (hasChecked) return;
         Debug.Log("checking keys");
 
         _soundEffectsVolume = PlayerPrefs.GetInt(Constants.Settings.soundEffectsVolumeKey,
@@ -47,6 +50,8 @@ public static class PersistentSettings
             FrameRate = -1;
         }
 
+        Convert.ToBoolean(10);
+
         _saveGameStateEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.saveGameStateKey,
                 Convert.ToInt32(GameValues.Settings.saveGameStateDefault)));
 
@@ -56,6 +61,12 @@ public static class PersistentSettings
         {
             MovesUntilSave = GameValues.Settings.movesUntilSaveDefault;
         }
+
+        _hintsEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.hintsEnabledKey,
+                Convert.ToInt32(GameValues.Settings.hintsEnabledDefault)));
+        _colorMode = PlayerPrefs.GetInt(Constants.Settings.colorMode, 0);
+
+        hasChecked = true;
     }
 
     private static int _musicVolume;
@@ -155,6 +166,35 @@ public static class PersistentSettings
             {
                 _movesUntilSave = value;
                 PlayerPrefs.SetInt(Constants.Settings.movesUntilSaveKey, value);
+            }
+        }
+    }
+
+    private static bool _hintsEnabled;
+    public static bool HintsEnabled
+    {
+        get => _hintsEnabled;
+        set
+        {
+            if (_hintsEnabled != value)
+            {
+                _hintsEnabled = value;
+                PlayerPrefs.SetInt(Constants.Settings.hintsEnabledKey,
+                    Convert.ToInt32(value));
+            }
+        }
+    }
+
+    private static int _colorMode;
+    public static int ColorMode
+    {
+        get => _colorMode;
+        set
+        {
+            if (_colorMode != value)
+            {
+                _colorMode = value;
+                PlayerPrefs.SetInt(Constants.Settings.colorMode, value);
             }
         }
     }

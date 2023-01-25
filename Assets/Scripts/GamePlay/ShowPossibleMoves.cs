@@ -56,19 +56,19 @@ public class ShowPossibleMoves
 
         foreach (GameObject card in cardMoves)
         {
-            card.GetComponent<CardScript>().GlowColor = GameValues.Colors.Highlight.move;
+            card.GetComponent<CardScript>().GlowColor = Config.Instance.CurrentColorMode.Move;
             moveTokensAreGlowing = true;
         }
 
         foreach (GameObject card in cardMatches)
         {
-            card.GetComponent<CardScript>().GlowColor = GameValues.Colors.Highlight.match;
+            card.GetComponent<CardScript>().GlowColor = Config.Instance.CurrentColorMode.Match;
             matchTokensAreGlowing = true;
         }
 
         foreach (GameObject foundation in foundationMoves)
         {
-            foundation.GetComponent<FoundationScript>().GlowColor = GameValues.Colors.Highlight.move;
+            foundation.GetComponent<FoundationScript>().GlowColor = Config.Instance.CurrentColorMode.Move;
             foundationIsGlowing = true;
         }
 
@@ -88,11 +88,11 @@ public class ShowPossibleMoves
             if (reactorMoveScript.CountReactorCard() + selectedCardScript.Card.Rank.ReactorValue >
                 Config.Instance.CurrentDifficulty.ReactorLimit)
             {
-                reactorMoveScript.GlowColor = GameValues.Colors.Highlight.over;
+                reactorMoveScript.GlowColor = Config.Instance.CurrentColorMode.Over;
             }
             else
             {
-                reactorMoveScript.GlowColor = GameValues.Colors.Highlight.move;
+                reactorMoveScript.GlowColor = Config.Instance.CurrentColorMode.Move;
             }
         }
 

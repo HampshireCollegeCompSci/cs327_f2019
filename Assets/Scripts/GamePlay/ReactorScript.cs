@@ -39,7 +39,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         hitbox = this.gameObject.GetComponent<BoxCollider2D>();
 
         _glowing = false;
-        _glowColor = GameValues.Colors.Highlight.none;
+        _glowColor = GameValues.Colors.normal;
         _alert = false;
     }
 
@@ -50,20 +50,14 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         get => _glowing;
         set
         {
-            if (value && !_glowing)
+            if (_glowing == value) return;
+            _glowing = value;
+            hitbox.enabled = value;
+
+            if (Config.Instance.HintsEnabled)
             {
-                _glowing = true;
-                suitGlowSR.enabled = true;
-                glowSR.enabled = true;
-                hitbox.enabled = true;
-            }
-            else if (!value && _glowing)
-            {
-                _glowing = false;
-                RevertSuitGlow();
-                suitGlowSR.enabled = false;
-                glowSR.enabled = false;
-                hitbox.enabled = false;
+                glowSR.enabled = value;
+                suitGlowSR.enabled = value;
             }
         }
     }
@@ -73,14 +67,11 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         get => _glowColor;
         set
         {
-            if (!value.Equals(_glowColor))
-            {
-                _glowColor = value;
-                glowSR.color = value.glowColor;
-                ChangeSuitGlow(value);
-            }
-
             Glowing = true;
+            if (_glowColor.Equals(value)) return;
+            _glowColor = value;
+            glowSR.color = value.GlowColor;
+            suitGlowSR.color = value.GlowColor;
         }
     }
 
@@ -89,11 +80,11 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         get => _alert;
         set
         {
-            if (value == _alert) return;
+            if (_alert == value) return;
             _alert = value;
-            if (value)
+            if (value && Config.Instance.HintsEnabled)
             {
-                reactorScore.color = Color.red;
+                reactorScore.color = Config.Instance.CurrentColorMode.Over.Color;
             }
             else
             {
@@ -190,35 +181,57 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         reactorScore.text = $"{cardValCount}/{Config.Instance.CurrentDifficulty.ReactorLimit}";
     }
 
-    public void TryHighlightOverloaded(bool turnOn)
+    public bool TryHighlightOverloaded(bool turnOn)
     {
         if (turnOn)
         {
             // will turn glowing on but not set the flag for it
-            // so that it will not be turned off later
+            // so that it will not be turned off in the same frame
             if (CountReactorCard() > Config.Instance.CurrentDifficulty.ReactorLimit)
             {
-                Glowing = true;
-                GlowColor = GameValues.Colors.Highlight.over;
+                GlowColor = Config.Instance.CurrentColorMode.Over;
+                reactorScore.color = Config.Instance.CurrentColorMode.Over.Color;
                 _glowing = false;
-                Alert = true;
+                if (!Config.Instance.HintsEnabled)
+                {
+                    glowSR.enabled = true;
+                    suitGlowSR.enabled = true;
+                }
+                return true;
             }
         }
         else
         {
+            GlowColor = GameValues.Colors.normal;
+            reactorScore.color = Color.black;
             _glowing = true;
             Glowing = false;
+            if (!Config.Instance.HintsEnabled)
+            {
+                glowSR.enabled = false;
+                suitGlowSR.enabled = false;
+            }
         }
-    }
-
-    public void RevertSuitGlow()
-    {
-        ChangeSuitGlow(GlowColor);
+        return false;
     }
 
     public void ChangeSuitGlow(HighLightColor highLightColor)
     {
-        suitGlowSR.color = highLightColor.glowColor;
+        //suitGlowSR.enabled = true; // TODO: this is needed again because of a Unity bug
+        if (!Config.Instance.HintsEnabled)
+        {
+            suitGlowSR.enabled = true;
+        }
+        suitGlowSR.color = highLightColor.GlowColor;
+    }
+
+    public void RevertSuitGlow()
+    {
+        if (!Config.Instance.HintsEnabled)
+        {
+            suitGlowSR.enabled = false;
+        }
+        suitGlowSR.color = GlowColor.GlowColor;
     }
 
     private void CheckGameOver(int cardValCount)

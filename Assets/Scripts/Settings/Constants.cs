@@ -39,6 +39,8 @@
         public const string frameRateKey = "FrameRate";
         public const string saveGameStateKey = "SaveGameState";
         public const string movesUntilSaveKey = "MovesUntilSave";
+        public const string hintsEnabledKey = "HintsEnabled";
+        public const string colorMode = "ColorMode";
     }
 
     // Music Audio Mixer Exposed Parameters (name)
@@ -96,4 +98,13 @@
         Cycle,
         Deckreset
     }
+
+    public enum ColorLevel
+    {
+        None,
+        Match,
+        Move,
+        Over,
+        Notify
+    };
 }

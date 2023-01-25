@@ -13,12 +13,13 @@ public class SettingsScript : MonoBehaviour
     private Text musicVolumeText, soundEffectsVolumeText;
 
     [SerializeField]
-    private Toggle vibrationToggle, foodSuitsToggle;
-
-    [SerializeField]
     private Slider frameRateSlider;
     [SerializeField]
     private Text frameRateText;
+
+    [SerializeField]
+    private Toggle vibrationToggle, foodSuitsToggle;
+
     private List<int> frameRates;
 
     [SerializeField]
@@ -27,7 +28,11 @@ public class SettingsScript : MonoBehaviour
     private InputField movesUntilSaveInputField;
 
     [SerializeField]
-    private GameObject suitArtNoticeObject;
+    private Toggle hintsToggle;
+    [SerializeField]
+    private Dropdown colorModeDropdown;
+    [SerializeField]
+    private Image colorModeMatch, colorModeMove, colorModeOver, colorModeNotify;
 
     [SerializeField]
     private GameObject confirmObject;
@@ -43,6 +48,7 @@ public class SettingsScript : MonoBehaviour
     void Start()
     {
         lockout = true;
+        PersistentSettings.TryCheckKeys();
 
         // music volume
         musicSlider.maxValue = GameValues.Settings.musicVolumeDenominator;
@@ -69,12 +75,23 @@ public class SettingsScript : MonoBehaviour
             vibrationToggle.isOn = false;
         }
 
-        foodSuitsToggle.isOn = PersistentSettings.VibrationEnabled;
+        foodSuitsToggle.isOn = PersistentSettings.FoodSuitsEnabled;
 
         SetupFrameRateSettings();
 
         saveGameStateToggle.isOn = PersistentSettings.SaveGameStateEnabled;
         movesUntilSaveInputField.text = PersistentSettings.MovesUntilSave.ToString();
+
+        hintsToggle.isOn = PersistentSettings.HintsEnabled;
+
+        var colorModeOptions = new List<Dropdown.OptionData>(GameValues.Colors.Modes.List.Count);
+        foreach (var mode in GameValues.Colors.Modes.List)
+        {
+            colorModeOptions.Add(new Dropdown.OptionData(mode.Name));
+        }
+        colorModeDropdown.options = colorModeOptions;
+        colorModeDropdown.value = PersistentSettings.ColorMode;
+        UpdateColorModeImages(GameValues.Colors.Modes.List[PersistentSettings.ColorMode]);
 
         lockout = false;
     }
@@ -119,10 +136,10 @@ public class SettingsScript : MonoBehaviour
         SoundEffectsController.Instance.ButtonPressSound();
     }
 
-    public void FoodSuitsEnabledOnToggle(bool update)
+    public void ThematicSuitArt(bool update)
     {
         if (lockout) return;
-
+        Debug.Log($"seting food suits to: {update}");
         PersistentSettings.FoodSuitsEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
 
@@ -202,6 +219,34 @@ public class SettingsScript : MonoBehaviour
         }
     }
 
+    public void HintsEnabledOnToggle(bool update)
+    {
+        if (lockout) return;
+        Debug.Log($"seting hints enabled to: {update}");
+        PersistentSettings.HintsEnabled = update;
+        Config.Instance.SetHints(update);
+        SoundEffectsController.Instance.ButtonPressSound();
+    }
+
+    public void ColorModeOnValueChange(int update)
+    {
+        if (lockout) return;
+        Debug.Log($"seting color mode to: {update}");
+        if (update < 0 || update >= GameValues.Colors.Modes.List.Count)
+        {
+            update = 0;
+            Debug.LogError($"the color mode of \"{update}\" is invalid, setting it to 0");
+            lockout = true;
+            colorModeDropdown.value = 0;
+            lockout = false;
+        }
+
+        PersistentSettings.ColorMode = update;
+        UpdateColorModeImages(GameValues.Colors.Modes.List[update]);
+        Config.Instance.SetColorMode(GameValues.Colors.Modes.List[update]);
+        SoundEffectsController.Instance.ButtonPressSound();
+    }
+
     private void SetupFrameRateSettings()
     {
         // target frame rate settings
@@ -261,6 +306,14 @@ public class SettingsScript : MonoBehaviour
             -1 => "Default",
             _ => frameRate.ToString()
         };
+    }
+
+    private void UpdateColorModeImages(ColorMode update)
+    {
+        colorModeMatch.color = update.Match.Color;
+        colorModeMove.color = update.Move.Color;
+        colorModeOver.color = update.Over.Color;
+        colorModeNotify.color = update.Notify.Color;
     }
 
     private IEnumerator ButtonDelay()

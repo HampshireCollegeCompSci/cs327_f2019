@@ -79,7 +79,7 @@ public class MenuUIScript : MonoBehaviour
     {
         Debug.Log("UI Button new game");
         Config.Instance.continuing = isContinue;
-        Config.Instance.tutorialOn = isTutorial;
+        Config.Instance.SetTutorialOn(isTutorial);
 
         if (StartGameSequence.Instance != null)
         {

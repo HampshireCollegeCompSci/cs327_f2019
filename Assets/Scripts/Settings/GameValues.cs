@@ -84,6 +84,8 @@ public static class GameValues
 
         public const bool saveGameStateDefault = true;
         public const int movesUntilSaveDefault = 1;
+
+        public const bool hintsEnabledDefault = true;
     }
 
     public static class Text
@@ -96,29 +98,41 @@ public static class GameValues
     {
         public const float selectedCardOpacity = 0.25f;
         public static readonly Color cardObstructedColor = new(0.6f, 0.6f, 0.6f);
+        public static readonly HighLightColor normal = new(Color.white, Constants.ColorLevel.None);
 
-        public static readonly Color pointColor = Color.green;
-
-        public static readonly Color tutorialObjectHighlightColor = new(1, 1, 0, 0.35f);
-
-        public static readonly Color gameOverWin = Color.cyan;
-        public static readonly Color gameOverLose = Color.red;
-
-        public static class Highlight
+        public static class Modes
         {
-            public static readonly HighLightColor none = new(Color.white);
-            public static readonly HighLightColor match = new(Color.green);
-            public static readonly HighLightColor move = new(Color.yellow);
-            public static readonly HighLightColor over = new(Color.red);
-            public static readonly HighLightColor win = new(Color.cyan);
+            public static readonly ColorMode normal = new("Normal",
+                new HighLightColor(Color.green, Constants.ColorLevel.Match),
+                new HighLightColor("#FFFF00", Constants.ColorLevel.Move),
+                new HighLightColor(Color.red, Constants.ColorLevel.Over),
+                new HighLightColor(Color.cyan, Constants.ColorLevel.Notify)
+                );
 
-            public static readonly ReadOnlyCollection<HighLightColor> colors = Array.AsReadOnly(new HighLightColor[]
+            public static readonly ColorMode deuteranopia = new("Deuteranopia",
+                new HighLightColor("#56F0B7", Constants.ColorLevel.Match),
+                new HighLightColor("#FFE043", Constants.ColorLevel.Move),
+                new HighLightColor("#F45DFF", Constants.ColorLevel.Over),
+                new HighLightColor("#1F00F5", Constants.ColorLevel.Notify)
+                );
+
+            public static readonly ColorMode protanopia = new("Protanopia",
+                new HighLightColor("#00D8F5", Constants.ColorLevel.Match),
+                new HighLightColor("#F1FF00", Constants.ColorLevel.Move),
+                new HighLightColor("#FF8C81", Constants.ColorLevel.Over),
+                new HighLightColor("#9F00F5", Constants.ColorLevel.Notify)
+                );
+
+            public static readonly ColorMode tritanopia = new("Tritanopia",
+                new HighLightColor("#92F05F", Constants.ColorLevel.Match),
+                new HighLightColor("#FFA446", Constants.ColorLevel.Move),
+                new HighLightColor("#ED00FF", Constants.ColorLevel.Over),
+                new HighLightColor("#0161F5", Constants.ColorLevel.Notify)
+                );
+
+            public static readonly ReadOnlyCollection<ColorMode> List = Array.AsReadOnly(new ColorMode[]
             {
-                none,
-                match,
-                move,
-                over,
-                win
+                normal, deuteranopia, protanopia, tritanopia
             });
         }
     }
@@ -126,7 +140,7 @@ public static class GameValues
     public static class AlertLevels
     {
         // for the action counter
-        public static readonly AlertLevel none = new(new Color(0.725f, 0.725f, 0.725f), Color.white);
+        public static readonly AlertLevel none = new(new Color(0.725f, 0.725f, 0.725f), new Color(0.216f, 0.15f, 0.337f));
         public static readonly AlertLevel low = new(new Color(0.941f, 0.706f, 0.055f), new Color(0.6f, 0.45f, 0.039f));
         public static readonly AlertLevel high = new(new Color(0.835f, 0.2f, 0.098f), new Color(0.56f, 0.141f, 0.11f));
     }

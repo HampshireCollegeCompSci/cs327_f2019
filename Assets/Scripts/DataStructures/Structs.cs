@@ -128,18 +128,65 @@ public readonly struct FadeColorPair
 }
 
 [Serializable]
+#pragma warning disable CS0660, CS0661
 public struct HighLightColor
+#pragma warning restore CS0660, CS0661
 {
-    public HighLightColor(Color color)
+    public HighLightColor(string hexColor, Constants.ColorLevel colorLevel)
+    {
+        if (ColorUtility.TryParseHtmlString(hexColor, out Color newCol))
+        {
+            this.color = newCol;
+            GlowColor = color;
+            GlowColor.a = 0.6f;
+            this.ColorLevel = colorLevel;
+        }
+        else
+        {
+            throw new ArgumentException($"the hex of \"{hexColor}\" could not be parsed");
+        }
+    }
+
+    public HighLightColor(Color color, Constants.ColorLevel colorLevel)
     {
         this.color = color;
-        glowColor = color;
-        glowColor.a = 0.3f;
+        GlowColor = color;
+        GlowColor.a = 0.6f;
+        this.ColorLevel = colorLevel;
     }
 
     [SerializeField]
     private Color color;
     public Color Color => color;
+    public readonly Color GlowColor;
+    public readonly Constants.ColorLevel ColorLevel;
 
-    public readonly Color glowColor;
+    public static bool operator ==(HighLightColor left, HighLightColor right)
+    {
+        return left.ColorLevel == right.ColorLevel;
+    }
+
+    public static bool operator !=(HighLightColor left, HighLightColor right)
+    {
+        return left.ColorLevel != right.ColorLevel;
+    }
+}
+
+public readonly struct ColorMode
+{
+    public readonly string Name;
+    public readonly HighLightColor Match, Move, Over, Notify;
+
+    public ColorMode(string name,
+                     HighLightColor match,
+                     HighLightColor move,
+                     HighLightColor over,
+                     HighLightColor notify)
+    {
+        this.Name = name;
+        this.Match = match;
+        this.Move = move;
+        this.Over = over;
+        this.Notify = notify;
+    }
 }

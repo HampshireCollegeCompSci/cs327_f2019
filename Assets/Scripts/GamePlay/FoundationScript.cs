@@ -21,7 +21,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
         hitbox = gameObject.GetComponent<BoxCollider2D>();
 
         _glowing = false;
-        _glowColor = GameValues.Colors.Highlight.none;
+        _glowColor = GameValues.Colors.normal;
     }
 
     public List<GameObject> CardList => cardList;
@@ -31,16 +31,12 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
         get => _glowing;
         set
         {
-            if (value && !_glowing)
+            if (_glowing == value) return;
+            _glowing = value;
+            hitbox.enabled = value;
+            if (!value)
             {
-                _glowing = true;
-                hitbox.enabled = true;
-            }
-            else if (!value && _glowing)
-            {
-                _glowing = false;
-                hitbox.enabled = false;
-                GlowColor = GameValues.Colors.Highlight.none;
+                GlowColor = GameValues.Colors.normal;
             }
         }
     }
@@ -50,15 +46,17 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
         get => _glowColor;
         set
         {
-            if (!_glowColor.Equals(value))
-            {
-                _glowColor = value;
-                spriteRenderer.color = value.Color;
-            }
-
-            if (!value.Equals(GameValues.Colors.Highlight.none))
+            if (value.ColorLevel != Constants.ColorLevel.None)
             {
                 Glowing = true;
+            }
+
+            if (_glowColor.Equals(value)) return;
+            _glowColor = value;
+
+            if (Config.Instance.HintsEnabled)
+            {
+                spriteRenderer.color = value.Color;
             }
         }
     }
@@ -169,14 +167,19 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
         if (turnOn)
         {
             // will turn glowing on but not set the flag for it
-            // so that it will not be turned off later
-            GlowColor = GameValues.Colors.Highlight.win;
+            // so that it will not be turned off in the same frame
+            _glowColor = Config.Instance.CurrentColorMode.Match;
+            spriteRenderer.color = Config.Instance.CurrentColorMode.Match.Color;
             _glowing = false;
         }
         else
         {
             _glowing = true;
             Glowing = false;
+            if (!Config.Instance.HintsEnabled)
+            {
+                spriteRenderer.color = GameValues.Colors.normal.Color;
+            }
         }
     }
 }

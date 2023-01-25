@@ -84,10 +84,10 @@ public class ResultsScript : MonoBehaviour
 
     private void UpdateHigh(Text newTitle, Text newStat, Text oldTitle, Text oldStat)
     {
-        newTitle.color = Color.cyan;
-        newStat.color = Color.cyan;
+        newTitle.color = Config.Instance.CurrentColorMode.Match.Color;
+        newStat.color = Config.Instance.CurrentColorMode.Match.Color;
 
-        oldTitle.color = Color.red;
-        oldStat.color = Color.red;
+        oldTitle.color = Config.Instance.CurrentColorMode.Over.Color;
+        oldStat.color = Config.Instance.CurrentColorMode.Over.Color;
     }
 }

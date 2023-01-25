@@ -72,9 +72,9 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1811593571
   m_SortingLayer: 4
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: cb886533a87fe2246beeb76e6203296f, type: 3}
-  m_Color: {r: 0.5, g: 1, b: 1, a: 0.5019608}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -139,8 +139,6 @@ MonoBehaviour:
   reactorScore: {fileID: 0}
   suitGlow: {fileID: 2848916833999962054}
   _glowing: 0
-  _glowColor:
-    color: {r: 0, g: 0, b: 0, a: 0}
   _alert: 0
 --- !u!212 &6584834730880525759
 SpriteRenderer:
@@ -184,7 +182,7 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: cb886533a87fe2246beeb76e6203296f, type: 3}
-  m_Color: {r: 0.5, g: 1, b: 1, a: 0.5019608}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

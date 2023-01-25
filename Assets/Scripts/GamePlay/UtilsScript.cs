@@ -29,7 +29,7 @@ public class UtilsScript : MonoBehaviour
     [SerializeField]
     private GameObject hoveringOver;
     [SerializeField]
-    private bool changedHologramColor, changedSuitGlowColor, hidFoodHologram;
+    private bool changedHologramColor, wasOnMatch, changedSuitGlowColor, hidFoodHologram;
 
     [SerializeField]
     private bool _isNextCycle, _inputStopped;
@@ -89,6 +89,7 @@ public class UtilsScript : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
             if (Input.GetMouseButtonUp(0))
             {
+                DragGlowRevert();
                 TryToPlaceCards(hit);
                 UnselectCards();
                 showPossibleMoves.HideMoves();
@@ -158,6 +159,7 @@ public class UtilsScript : MonoBehaviour
         showPossibleMoves.ShowMoves(hitCardScript);
 
         changedHologramColor = false;
+        wasOnMatch = false;
         changedSuitGlowColor = false;
         hidFoodHologram = false;
         return true;
@@ -184,7 +186,7 @@ public class UtilsScript : MonoBehaviour
                 CardScript hitCardScript = newContainer.GetComponent<CardScript>();
                 if (hitCardScript.Glowing)
                 {
-                    if (hitCardScript.GlowColor.Equals(GameValues.Colors.Highlight.match))
+                    if (hitCardScript.GlowColor.Equals(Config.Instance.CurrentColorMode.Match))
                     {
                         Match(selectedCards[0].GetComponent<CardScript>(), hitCardScript);
                         OtherActions(oldContainer, hitCardScript.CurrentContainerType, isMatch: true);
@@ -211,7 +213,6 @@ public class UtilsScript : MonoBehaviour
                 }
                 break;
             default:
-                Debug.LogWarning("tried to place card in an invalid object");
                 break;
         }
     }
@@ -287,69 +288,72 @@ public class UtilsScript : MonoBehaviour
         {
             card.transform.position = cardPosition;
             cardPosition.y += GameValues.Transforms.draggedCardYOffset;
-            cardPosition.z -= 0.05f;
+            cardPosition.z -= 0.01f;
         }
 
         // glow time
         // if the tutorial is not on and there is no stuff glowing, stop
         if (!showPossibleMoves.AreThingsGlowing()) return;
 
-        if (hit.collider != null)
-        {
-            // are we still hovering over the same object
-            if (hit.collider.gameObject == hoveringOver) return;
-
-            DragGlowRevert();
-            hoveringOver = hit.collider.gameObject;
-
-            // if we are hovering over a glowing card
-            if (showPossibleMoves.AreCardsGlowing() &&
-                hoveringOver.CompareTag(Constants.Tags.card))
-            {
-                CardScript hoveringOverCS = hoveringOver.GetComponent<CardScript>();
-                if (!hoveringOverCS.Glowing) return;
-
-                // change the dragged card hologram color to what it's hovering over
-                topSelectedCopyCardScript.HologramColor = hoveringOverCS.GlowColor;
-                changedHologramColor = true;
-                // if it's a match
-                if (hoveringOverCS.GlowColor.Equals(GameValues.Colors.Highlight.match))
-                {
-                    if (hoveringOverCS.CurrentContainerType != Constants.CardContainerType.Reactor)
-                    {
-                        // hide the hover over card food hologram
-                        hoveringOverCS.Hologram = false;
-                        hidFoodHologram = true;
-                    }
-                }
-            }
-            // else if we are hovering over a glowing reactor
-            else if (showPossibleMoves.reactorIsGlowing &&
-                hoveringOver.CompareTag(Constants.Tags.reactor))
-            {
-                ReactorScript hoveringOverRS = hoveringOver.GetComponent<ReactorScript>();
-                if (!hoveringOverRS.Glowing) return;
-
-                topSelectedCopyCardScript.HologramColor = hoveringOverRS.GlowColor;
-                changedHologramColor = true;
-
-                hoveringOverRS.ChangeSuitGlow(GameValues.Colors.Highlight.match);
-                changedSuitGlowColor = true;
-            }
-            else if (showPossibleMoves.foundationIsGlowing &&
-                hoveringOver.CompareTag(Constants.Tags.foundation))
-            {
-                FoundationScript hoveringOverFS = hoveringOver.GetComponent<FoundationScript>();
-                if (!hoveringOverFS.Glowing) return;
-
-                topSelectedCopyCardScript.HologramColor = hoveringOverFS.GlowColor;
-                changedHologramColor = true;
-            }
-        }
-        else
+        if (hit.collider == null)
         {
             DragGlowRevert();
             hoveringOver = null;
+            return;
+        }
+
+        // are we still hovering over the same object
+        if (hit.collider.gameObject == hoveringOver) return;
+
+        DragGlowRevert();
+        hoveringOver = hit.collider.gameObject;
+
+        // if we are hovering over a glowing card
+        if (showPossibleMoves.AreCardsGlowing() &&
+            hoveringOver.CompareTag(Constants.Tags.card))
+        {
+            CardScript hoveringOverCS = hoveringOver.GetComponent<CardScript>();
+            if (!hoveringOverCS.Glowing) return;
+
+            // change the dragged card hologram color to what it's hovering over
+            topSelectedCopyCardScript.HologramColor = Config.Instance.HintsEnabled ?
+                hoveringOverCS.GlowColor : Config.Instance.CurrentColorMode.Notify;
+            changedHologramColor = true;
+
+            if (hoveringOverCS.GlowColor.ColorLevel != Constants.ColorLevel.Match) return;
+
+            topSelectedCopyCardScript.MatchChangeFoodHologram(true);
+            wasOnMatch = true;
+
+            if (hoveringOverCS.CurrentContainerType == Constants.CardContainerType.Reactor) return;
+
+            // hide the hover over card food hologram
+            hoveringOverCS.Hologram = false;
+            hidFoodHologram = true;
+        }
+        // else if we are hovering over a glowing reactor
+        else if (showPossibleMoves.reactorIsGlowing &&
+            hoveringOver.CompareTag(Constants.Tags.reactor))
+        {
+            ReactorScript hoveringOverRS = hoveringOver.GetComponent<ReactorScript>();
+            if (!hoveringOverRS.Glowing) return;
+
+            topSelectedCopyCardScript.HologramColor = Config.Instance.HintsEnabled ?
+                hoveringOverRS.GlowColor : Config.Instance.CurrentColorMode.Notify;
+            changedHologramColor = true;
+
+            hoveringOverRS.ChangeSuitGlow(Config.Instance.CurrentColorMode.Notify);
+            changedSuitGlowColor = true;
+        }
+        else if (showPossibleMoves.foundationIsGlowing &&
+            hoveringOver.CompareTag(Constants.Tags.foundation))
+        {
+            FoundationScript hoveringOverFS = hoveringOver.GetComponent<FoundationScript>();
+            if (!hoveringOverFS.Glowing) return;
+
+            topSelectedCopyCardScript.HologramColor = Config.Instance.HintsEnabled ?
+                hoveringOverFS.GlowColor : Config.Instance.CurrentColorMode.Notify;
+            changedHologramColor = true;
         }
     }
 
@@ -365,8 +369,14 @@ public class UtilsScript : MonoBehaviour
         // if we where hovering over a glowing token
         if (changedHologramColor)
         {
-            topSelectedCopyCardScript.HologramColor = GameValues.Colors.Highlight.none;
+            topSelectedCopyCardScript.HologramColor = GameValues.Colors.normal;
             changedHologramColor = false;
+        }
+
+        if (wasOnMatch)
+        {
+            topSelectedCopyCardScript.MatchChangeFoodHologram(false);
+            wasOnMatch = false;
         }
 
         // if we where hovering over a matching glowing token
@@ -423,8 +433,8 @@ public class UtilsScript : MonoBehaviour
         };
 
         // set the color of the points and combo
-        pointText.color = GameValues.Colors.pointColor;
-        comboText.color = GameValues.Colors.pointColor;
+        pointText.color = Config.Instance.CurrentColorMode.Match.Color;
+        comboText.color = Config.Instance.CurrentColorMode.Match.Color;
 
         // get the start and end values for the points
         Color pointFadeColor = pointText.color;

@@ -16,7 +16,7 @@ public class ActionCountScript : MonoBehaviour
     private Sprite buttonDown, buttonUp;
 
     private Color originalScreenColor;
-    private AlertLevel currentAlertLevel;
+    private AlertLevel _currentAlertLevel;
 
     private Coroutine actionCoroutine;
     private Coroutine flasherCoroutine;
@@ -37,8 +37,31 @@ public class ActionCountScript : MonoBehaviour
     private void Start()
     {
         originalScreenColor = screenImage.color;
-        currentAlertLevel = GameValues.AlertLevels.none;
+        _currentAlertLevel = GameValues.AlertLevels.none;
         flasherCoroutine = null;
+    }
+
+    public AlertLevel AlertLevel
+    {
+        get => _currentAlertLevel;
+        set
+        {
+            if (_currentAlertLevel.Equals(value)) return;
+            _currentAlertLevel = value;
+            TryStopFlashing();
+
+            if (!value.Equals(GameValues.AlertLevels.none))
+            {
+                // when hints are disabled do not show high alerts
+                if (!Config.Instance.HintsEnabled && value.Equals(GameValues.AlertLevels.high))
+                {
+                    value = GameValues.AlertLevels.low;
+                }
+                flasherCoroutine = StartCoroutine(Flash(value));
+            }
+            screenImage.color = value.screenColor;
+            lightsImage.color = value.lightColor;
+        }
     }
 
     public void UpdateActionText(string setTo = null)
@@ -46,8 +69,7 @@ public class ActionCountScript : MonoBehaviour
         if (setTo == null)
         {
             int newValue = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions;
-            int oldValue;
-            if (int.TryParse(actionText.text, out oldValue) &&
+            if (int.TryParse(actionText.text, out int oldValue) &&
                 oldValue + 1 < newValue)
             {
                 actionCoroutine = StartCoroutine(AddToActionText(oldValue, newValue));
@@ -67,28 +89,6 @@ public class ActionCountScript : MonoBehaviour
         {
             actionText.text = setTo;
         }
-    }
-
-    public void TurnSirenOff()
-    {
-        TryStopFlashing();
-        screenImage.color = originalScreenColor;
-        lightsImage.color = GameValues.AlertLevels.none.lightColor;
-        currentAlertLevel = GameValues.AlertLevels.none;
-    }
-
-    public bool TurnSirenOn(AlertLevel newAlertLevel)
-    {
-        if (currentAlertLevel.Equals(newAlertLevel)) return false;
-
-        currentAlertLevel = newAlertLevel;
-        TryStopFlashing();
-
-        screenImage.color = currentAlertLevel.screenColor;
-        lightsImage.color = currentAlertLevel.lightColor;
-
-        flasherCoroutine = StartCoroutine(Flash(currentAlertLevel));
-        return true;
     }
 
     private IEnumerator AddToActionText(int currentValue, int newValue)

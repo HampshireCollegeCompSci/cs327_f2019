@@ -256,21 +256,24 @@ public class Actions : MonoBehaviour
         if (highAlertTurnedOn) // if the high alert was turned on during this check
         {
             // if the alert was not already on turn it on
-            // or if the alert is already on and there is only 1 move left,
-            // have the baby be angry and play the alert sound
-            if (ActionCountScript.Instance.TurnSirenOn(GameValues.AlertLevels.high) ||
-                (!matchRelated && Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions == 1))
+            if (!ActionCountScript.Instance.AlertLevel.Equals(GameValues.AlertLevels.high)) 
+            {
+                ActionCountScript.Instance.AlertLevel = GameValues.AlertLevels.high;
+                SpaceBabyController.Instance.BabyReactorHigh();
+            }
+            // or if there is only 1 move left now
+            else if (!matchRelated && Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions == 1)
             {
                 SpaceBabyController.Instance.BabyReactorHigh();
             }
         }
         else if (turnOnAlert || checkAgain)
         {
-            ActionCountScript.Instance.TurnSirenOn(GameValues.AlertLevels.low);
+            ActionCountScript.Instance.AlertLevel = GameValues.AlertLevels.low;
         }
         else // the action counter is not low so turn stuff off
         {
-            ActionCountScript.Instance.TurnSirenOff();
+            ActionCountScript.Instance.AlertLevel = GameValues.AlertLevels.none;
         }
     }
 

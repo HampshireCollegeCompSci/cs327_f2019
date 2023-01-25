@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using static Constants;
 
 public class Config : MonoBehaviour
 {
@@ -24,6 +27,9 @@ public class Config : MonoBehaviour
     public int moveCounter;
     public int matchCounter;
 
+    private ColorMode _currentColorMode;
+    private bool _hintsEnabled;
+
     private Difficulty _currentDifficulty;
     private int _selectedCardsLayer, _cardLayer;
 
@@ -40,13 +46,15 @@ public class Config : MonoBehaviour
             // Setup the Vibration Package
             Vibration.Init();
             // Check Player Preferences
-            PersistentSettings.CheckKeys();
+            PersistentSettings.TryCheckKeys();
             // Check if the game state version needs updating and if the save file needs deleting
             SaveFile.CheckNewGameStateVersion();
             // Set the application frame rate to what was saved
             Debug.Log($"setting frame rate to: {PersistentSettings.FrameRate}");
             Application.targetFrameRate = PersistentSettings.FrameRate;
 
+            SetHints(PersistentSettings.HintsEnabled);
+            SetColorMode(GameValues.Colors.Modes.List[PersistentSettings.ColorMode]);
 
             _selectedCardsLayer = SortingLayer.NameToID(Constants.SortingLayers.selectedCards);
             _cardLayer = SortingLayer.NameToID(Constants.SortingLayers.card);
@@ -56,6 +64,10 @@ public class Config : MonoBehaviour
             Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
         }
     }
+
+    public bool HintsEnabled => _hintsEnabled;
+
+    public ColorMode CurrentColorMode => _currentColorMode;
 
     public Difficulty CurrentDifficulty => _currentDifficulty;
 
@@ -81,5 +93,51 @@ public class Config : MonoBehaviour
         }
 
         throw new KeyNotFoundException($"the difficulty \"{dif}\" was not found");
+    }
+
+    public void SetTutorialOn(bool value)
+    {
+        tutorialOn = value;
+        _hintsEnabled = value || PersistentSettings.HintsEnabled;
+    }
+
+    public void SetColorMode(ColorMode value)
+    {
+        if (_currentColorMode.Equals(value)) return;
+        _currentColorMode = value;
+        if (SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
+        {
+            UpdateGameplayColors();
+        }
+    }
+
+    public void SetHints(bool update)
+    {
+        if (_hintsEnabled == update) return;
+        _hintsEnabled = update;
+        if (SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
+        {
+            UpdateGameplayColors();
+
+            if (ActionCountScript.Instance.AlertLevel.Equals(GameValues.AlertLevels.high))
+            {
+                ActionCountScript.Instance.AlertLevel = GameValues.AlertLevels.none;
+                ActionCountScript.Instance.AlertLevel = GameValues.AlertLevels.high;
+            }
+        }
+    }
+
+    private void UpdateGameplayColors()
+    {
+        // the only color that is shown when the game can be paused is each reactor's score
+        foreach (var reactor in UtilsScript.Instance.reactorScripts)
+        {
+            // toggle the alerts if they're on so that their text color is updated
+            if (reactor.Alert)
+            {
+                reactor.Alert = false;
+                reactor.Alert = true;
+            }
+        }
     }
 }

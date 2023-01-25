@@ -73,7 +73,7 @@ public class TutorialScript : MonoBehaviour
         // start the tutorial
         tutorialUIPanel.SetActive(true);
         // update colors via script instead of having to do it in editor each time
-        UpdateHighlightObjectsColor(GameValues.Colors.tutorialObjectHighlightColor);
+        UpdateHighlightObjectsColor(Config.Instance.CurrentColorMode.Notify.GlowColor);
 
         // get the tutorial commands ready
         commandQueue = CommandEnqueuer(CreateFromJSON());
@@ -231,7 +231,7 @@ public class TutorialScript : MonoBehaviour
         tutorialUIPanel.SetActive(false);
         UtilsScript.Instance.ShowPossibleMoves.TokenMoveable = true;
 
-        Config.Instance.tutorialOn = false;
+        Config.Instance.SetTutorialOn(false);
         Config.Instance.SetDifficulty(GameValues.GamePlay.difficulties[0]);
         MusicController.Instance.GameMusic();
         UtilsScript.Instance.InputStopped = true;
@@ -380,7 +380,7 @@ public class TutorialScript : MonoBehaviour
                 if (highlightOn)
                 {
                     UtilsScript.Instance.reactorScripts[index].GlowColor = highlightColor;
-                    if (highlightColor.Equals(GameValues.Colors.Highlight.over))
+                    if (highlightColor.ColorLevel == Constants.ColorLevel.Over)
                     {
                         UtilsScript.Instance.reactorScripts[index].Alert = true;
                     }
@@ -746,12 +746,20 @@ public class TutorialScript : MonoBehaviour
         {
             throw new FormatException($"does not contain a int for command #{index}");
         }
-        if (colorLevel < 0 || colorLevel >= GameValues.Colors.Highlight.colors.Count)
+        if (!Enum.IsDefined(typeof(Constants.ColorLevel), colorLevel))
         {
-            throw new FormatException($"does not properly specify between \"0\" to \"{GameValues.Colors.Highlight.colors.Count - 1}\" (inclusive) for command #{index}");
+            throw new FormatException($"does not contain a valid color level for command #{index}");
         }
 
-        return GameValues.Colors.Highlight.colors[colorLevel];
+        return colorLevel switch
+        {
+            (int)Constants.ColorLevel.None => GameValues.Colors.normal,
+            (int)Constants.ColorLevel.Match => Config.Instance.CurrentColorMode.Match,
+            (int)Constants.ColorLevel.Move => Config.Instance.CurrentColorMode.Move,
+            (int)Constants.ColorLevel.Over => Config.Instance.CurrentColorMode.Over,
+            (int)Constants.ColorLevel.Notify => Config.Instance.CurrentColorMode.Notify,
+            _ => throw new FormatException($"the color level of \"{colorLevel}\" was not found for command #{index}")
+        };
     }
 
     /// <summary>

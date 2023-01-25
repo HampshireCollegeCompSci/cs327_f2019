@@ -33,9 +33,11 @@ public class EndGame : MonoBehaviour
     {
         if (!GameValues.GamePlay.enableCheat) return;
 
+        #pragma warning disable CS0162 // Unreachable code detected
         GameOver(true);
         // to ensure that the full win animation plays for debug
         Config.Instance.matchCounter = 26;
+        #pragma warning restore CS0162 // Unreachable code detected
     }
 
     public void GameOver(bool didWin)
@@ -50,7 +52,9 @@ public class EndGame : MonoBehaviour
 
         if (GameValues.Points.enableBonusPoints)
         {
+            #pragma warning disable CS0162 // Unreachable code detected
             AddExtraEndGameScore();
+            #pragma warning restore CS0162 // Unreachable code detected
         }
 
         // overwritten when manually won (cheated)
@@ -67,7 +71,7 @@ public class EndGame : MonoBehaviour
         {
             foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
             {
-                reactorScript.TryHighlightOverloaded(true);
+                if (reactorScript.TryHighlightOverloaded(true)) break;
             }
         }
 
@@ -106,8 +110,8 @@ public class EndGame : MonoBehaviour
         {
             fadeColor = GameValues.FadeColors.grayA1;
             SoundEffectsController.Instance.WinSound();
-            gameOverText.color = GameValues.Colors.gameOverWin;
-            wonlostText.color = GameValues.Colors.gameOverWin;
+            gameOverText.color = Config.Instance.CurrentColorMode.Match.Color;
+            wonlostText.color = Config.Instance.CurrentColorMode.Match.Color;
             wonlostText.text = GameValues.Text.gameWon;
         }
         else
@@ -115,8 +119,8 @@ public class EndGame : MonoBehaviour
             fadeColor = GameValues.FadeColors.blackA1;
             errorObject.SetActive(true);
             SoundEffectsController.Instance.LoseSound();
-            gameOverText.color = GameValues.Colors.gameOverLose;
-            wonlostText.color = GameValues.Colors.gameOverLose;
+            gameOverText.color = Config.Instance.CurrentColorMode.Over.Color;
+            wonlostText.color = Config.Instance.CurrentColorMode.Over.Color;
             wonlostText.text = GameValues.Text.gameLost;
         }
 
