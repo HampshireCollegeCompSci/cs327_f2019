@@ -15,7 +15,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"Welcome to the interactive tutorial!\n\nNormal gameplay interactions are modified during this.\n\nTo continue, press on next below."
+				"Welcome to the interactive tutorial!\n\nNormal gameplay interactions are modified during this and hints are turned on.\n\nTo continue, press on next below."
 			]
 		},
 		{
@@ -494,7 +494,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"The 0 moves remaining effect can be triggered manually by pressing the button attached to the left side of the move counter.\n\nTry manually triggering one now."
+				"The zero moves remaining effect can be triggered manually by pressing the button attached to the left side of the move counter.\n\nTry manually triggering one now."
 			]
 		},
 		{
@@ -581,38 +581,13 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"The game can be paused or quit at any time and progress will be saved.\n\nIn the settings menu, the suits art style can be selected to be either traditional or thematic."
-			]
-		},
-		{
-			"argumentList": [
-				"ChangeObjectHighlight",
-				"scoreboard",
-				"OFF"
-			]
-		},
-		{
-			"argumentList": [
-				"ChangeObjectHighlight",
-				"pause",
-				"ON"
-			]
-		},
-		{
-			"argumentList": [
-				"WaitForTouch"
-			]
-		},
-		{
-			"argumentList": [
-				"ChangeShownText",
 				"There are three gameplay difficulties to choose from.\n\nIncreasing the difficulty lowers the maximum move count and the storage container limits."
 			]
 		},
 		{
 			"argumentList": [
 				"ChangeObjectHighlight",
-				"pause",
+				"scoreboard",
 				"OFF"
 			]
 		},

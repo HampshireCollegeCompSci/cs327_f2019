@@ -203,6 +203,7 @@ public class MusicController : MonoBehaviour, ISound
     public void FadeMusicIn()
     {
         if (Muted || Paused) return;
+        StopCoroutine(fadeOutCoroutine);
         if (AudioSourcePlaying == 1)
         {
             //audioMixer.SetFloat(Constants.audioMixerNameTrack1, 0.002f);

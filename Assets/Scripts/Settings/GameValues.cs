@@ -51,8 +51,7 @@ public static class GameValues
         public const float draggedCardScale = 0.15f;
         public const float draggedCardYOffset = 0.4f;
 
-        public const int zoomFactor = 20;
-        public const float panAndZoomSpeed = 30;
+        public const float zoomFactor = 0.3f;
     }
 
     public static class Points
@@ -152,17 +151,17 @@ public static class GameValues
         // main menu
         public const float logoDelay = 2;
         public const float buttonFadeOut = 0.5f;
+        public const float zoomAndFade = 2;
 
         // screen fades 
-        public const float startGameFadeIn = 1; // fades out the game startup logos
-        public const float gameplayFadeIn = 1; // fades in the gameplay scene
+        public const float startGameFadeIn = 0.5f; // fades out the game startup logos
+        public const float gameplayFadeIn = 0.5f; // fades in the gameplay scene
         public const float gameOverFade = 1f; // fades in the game over pop-up
-        public const float gameEndFade = 1.5f; // fades out of the gameplay scene to summary
-        public const float summaryFadeIn = 1f; // fades into the summary scene
-        public const float playAgainFadeOut = 2; // fades out of the summary scene to gameplay
+        public const float gameEndFade = 1f; // fades out of the gameplay scene to summary
+        public const float summaryFadeIn = 0.5f; // fades into the summary scene
+        public const float playAgainFadeOut = 1; // fades out of the summary scene to gameplay
 
         // gameplay
-
         public const float cardHologramFadeIn = 2; // fades in the cards holograms
         public const float cardsToReactor = 0.6f; // movement of the cards to reactor during a nextcycle
         // match effect
@@ -171,6 +170,7 @@ public static class GameValues
         public const float comboFadeOut = 1; // fade out and scale up the point text and food combo object
 
         public const float alertFade = 1; // action counter's alert siren
+        public const float reactorExplosionDelay = 0.4f; // the delay between reactors exploding when losing
 
         public const float gameSummaryBabyFade = 2; // fade in, then out baby win transitioning in the summary scene
     }

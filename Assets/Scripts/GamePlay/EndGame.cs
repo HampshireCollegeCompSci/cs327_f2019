@@ -216,7 +216,7 @@ public class EndGame : MonoBehaviour
             if (reactorScript.CardList.Count != 0)
             {
                 StartCoroutine(ReactorMeltdown(reactorScript));
-                yield return new WaitForSeconds(0.4f);
+                yield return new WaitForSeconds(GameValues.AnimationDurataions.reactorExplosionDelay);
             }
         }
 

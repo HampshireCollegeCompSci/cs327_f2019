@@ -24,8 +24,7 @@ public class SpaceBabyController : MonoBehaviour, ISound
         }
         else if (Instance != this)
         {
-            // since the pause scene creates a duplicate spacebby on top of the gameplay scene's this will happen
-            Debug.LogWarning("There really shouldn't be two of these but oh well.");
+            Debug.LogWarning("There shouldn't be two of these at a time.");
         }
     }
 

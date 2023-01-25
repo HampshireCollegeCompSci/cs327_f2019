@@ -58,9 +58,9 @@ public class GameLoader : MonoBehaviour
             {
                 StateLoader.Instance.LoadSaveState();
             }
-            catch
+            catch (Exception e)
             {
-                Debug.LogError("failed to load the save state");
+                Debug.LogError("failed to load the save state: " + e);
                 SaveFile.Delete();
                 return false;
             }
