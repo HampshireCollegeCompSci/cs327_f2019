@@ -195,7 +195,7 @@ public class GameLoader : MonoBehaviour
             reactorScript.Alert = false;
         }
 
-        ActionCountScript.Instance.AlertLevel = GameValues.AlertLevels.none;
+        ActionCountScript.Instance.AlertLevel = GameValues.Colors.normal;
 
         cards = ShuffleCards(cards);
         cards = SetUpFoundations(cards);

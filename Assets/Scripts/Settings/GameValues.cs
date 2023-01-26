@@ -136,14 +136,6 @@ public static class GameValues
         }
     }
 
-    public static class AlertLevels
-    {
-        // for the action counter
-        public static readonly AlertLevel none = new(new Color(0.725f, 0.725f, 0.725f), new Color(0.216f, 0.15f, 0.337f));
-        public static readonly AlertLevel low = new(new Color(0.941f, 0.706f, 0.055f), new Color(0.6f, 0.45f, 0.039f));
-        public static readonly AlertLevel high = new(new Color(0.835f, 0.2f, 0.098f), new Color(0.56f, 0.141f, 0.11f));
-    }
-
     public static class AnimationDurataions
     {
         // all durations are in seconds

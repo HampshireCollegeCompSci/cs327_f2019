@@ -256,9 +256,9 @@ public class Actions : MonoBehaviour
         if (highAlertTurnedOn) // if the high alert was turned on during this check
         {
             // if the alert was not already on turn it on
-            if (!ActionCountScript.Instance.AlertLevel.Equals(GameValues.AlertLevels.high)) 
+            if (ActionCountScript.Instance.AlertLevel.ColorLevel != Constants.ColorLevel.Over) 
             {
-                ActionCountScript.Instance.AlertLevel = GameValues.AlertLevels.high;
+                ActionCountScript.Instance.AlertLevel = Config.Instance.CurrentColorMode.Over;
                 SpaceBabyController.Instance.BabyReactorHigh();
             }
             // or if there is only 1 move left now
@@ -269,11 +269,11 @@ public class Actions : MonoBehaviour
         }
         else if (turnOnAlert || checkAgain)
         {
-            ActionCountScript.Instance.AlertLevel = GameValues.AlertLevels.low;
+            ActionCountScript.Instance.AlertLevel = Config.Instance.CurrentColorMode.Move;
         }
         else // the action counter is not low so turn stuff off
         {
-            ActionCountScript.Instance.AlertLevel = GameValues.AlertLevels.none;
+            ActionCountScript.Instance.AlertLevel = GameValues.Colors.normal;
         }
     }
 

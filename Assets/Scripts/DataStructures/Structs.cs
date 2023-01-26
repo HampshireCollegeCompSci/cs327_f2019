@@ -103,18 +103,6 @@ public struct Rank
     public int ReactorValue => reactorValue;
 }
 
-public readonly struct AlertLevel
-{
-    public AlertLevel(Color lightColor, Color screenColor)
-    {
-        this.lightColor = lightColor;
-        this.screenColor = screenColor;
-    }
-
-    public readonly Color lightColor;
-    public readonly Color screenColor;
-}
-
 public readonly struct FadeColorPair
 {
     public FadeColorPair(Color startColor, Color endColor)
@@ -132,13 +120,18 @@ public readonly struct FadeColorPair
 public struct HighLightColor
 #pragma warning restore CS0660, CS0661
 {
+    private const float glowAlpha = 0.6f;
+    private const float screenDiv = 1.6f;
+
     public HighLightColor(string hexColor, Constants.ColorLevel colorLevel)
     {
         if (ColorUtility.TryParseHtmlString(hexColor, out Color newCol))
         {
             this.color = newCol;
             GlowColor = color;
-            GlowColor.a = 0.6f;
+            GlowColor.a = glowAlpha;
+            ScreenColor = color / screenDiv;
+            ScreenColor.a = 1;
             this.ColorLevel = colorLevel;
         }
         else
@@ -151,7 +144,9 @@ public struct HighLightColor
     {
         this.color = color;
         GlowColor = color;
-        GlowColor.a = 0.6f;
+        GlowColor.a = glowAlpha;
+        ScreenColor = color / screenDiv;
+        ScreenColor.a = 1;
         this.ColorLevel = colorLevel;
     }
 
@@ -159,6 +154,7 @@ public struct HighLightColor
     private Color color;
     public Color Color => color;
     public readonly Color GlowColor;
+    public readonly Color ScreenColor;
     public readonly Constants.ColorLevel ColorLevel;
 
     public static bool operator ==(HighLightColor left, HighLightColor right)

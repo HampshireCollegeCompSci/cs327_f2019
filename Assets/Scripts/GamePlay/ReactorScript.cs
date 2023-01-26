@@ -16,7 +16,9 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
     [SerializeField]
     private Suit suit;
     [SerializeField]
-    private Text reactorScore;
+    private Image reactorScoreImage;
+    [SerializeField]
+    private Text reactorScoreText;
     [SerializeField]
     private GameObject suitGlow;
 
@@ -84,11 +86,12 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
             _alert = value;
             if (value && Config.Instance.HintsEnabled)
             {
-                reactorScore.color = Config.Instance.CurrentColorMode.Over.Color;
+                reactorScoreImage.enabled = true;
+                reactorScoreImage.color = Config.Instance.CurrentColorMode.Over.GlowColor;
             }
             else
             {
-                reactorScore.color = Color.black;
+                reactorScoreImage.enabled = false;
             }
         }
     }
@@ -178,7 +181,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     public void SetReactorScore(int cardValCount)
     {
-        reactorScore.text = $"{cardValCount}/{Config.Instance.CurrentDifficulty.ReactorLimit}";
+        reactorScoreText.text = $"{cardValCount}/{Config.Instance.CurrentDifficulty.ReactorLimit}";
     }
 
     public bool TryHighlightOverloaded(bool turnOn)
@@ -190,7 +193,8 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
             if (CountReactorCard() > Config.Instance.CurrentDifficulty.ReactorLimit)
             {
                 GlowColor = Config.Instance.CurrentColorMode.Over;
-                reactorScore.color = Config.Instance.CurrentColorMode.Over.Color;
+                reactorScoreImage.enabled = true;
+                reactorScoreImage.color = Config.Instance.CurrentColorMode.Over.Color;
                 _glowing = false;
                 if (!Config.Instance.HintsEnabled)
                 {
@@ -203,7 +207,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         else
         {
             GlowColor = GameValues.Colors.normal;
-            reactorScore.color = Color.black;
+            reactorScoreImage.enabled = false;
             _glowing = true;
             Glowing = false;
             if (!Config.Instance.HintsEnabled)

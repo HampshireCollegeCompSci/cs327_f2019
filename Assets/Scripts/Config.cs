@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static Constants;
 
 public class Config : MonoBehaviour
 {
@@ -105,31 +103,22 @@ public class Config : MonoBehaviour
     {
         if (_currentColorMode.Equals(value)) return;
         _currentColorMode = value;
-        if (SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
-        {
-            UpdateGameplayColors();
-        }
+        TryUpdateGameplayColors();
     }
 
     public void SetHints(bool update)
     {
         if (_hintsEnabled == update) return;
         _hintsEnabled = update;
-        if (SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
-        {
-            UpdateGameplayColors();
-
-            if (ActionCountScript.Instance.AlertLevel.Equals(GameValues.AlertLevels.high))
-            {
-                ActionCountScript.Instance.AlertLevel = GameValues.AlertLevels.none;
-                ActionCountScript.Instance.AlertLevel = GameValues.AlertLevels.high;
-            }
-        }
+        TryUpdateGameplayColors();
     }
 
-    private void UpdateGameplayColors()
+    private void TryUpdateGameplayColors()
     {
-        // the only color that is shown when the game can be paused is each reactor's score
+        if (!SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
+            return;
+
+        // reactor's score color
         foreach (var reactor in UtilsScript.Instance.reactorScripts)
         {
             // toggle the alerts if they're on so that their text color is updated
@@ -138,6 +127,19 @@ public class Config : MonoBehaviour
                 reactor.Alert = false;
                 reactor.Alert = true;
             }
+        }
+        // actions colors
+        if (ActionCountScript.Instance.AlertLevel.ColorLevel != Constants.ColorLevel.None)
+        {
+            // toggle the level so the updated color will take effect
+            Constants.ColorLevel level = ActionCountScript.Instance.AlertLevel.ColorLevel;
+            ActionCountScript.Instance.AlertLevel = GameValues.Colors.normal;
+            ActionCountScript.Instance.AlertLevel = level switch
+            {
+                Constants.ColorLevel.Move => CurrentColorMode.Move,
+                Constants.ColorLevel.Over => CurrentColorMode.Over,
+                _ => throw new System.ArgumentException($"the color level of {level} is not supported")
+            };
         }
     }
 }

@@ -15,8 +15,8 @@ public class ActionCountScript : MonoBehaviour
     [SerializeField]
     private Sprite buttonDown, buttonUp;
 
-    private Color originalScreenColor;
-    private AlertLevel _currentAlertLevel;
+    private Color originalScreenColor, originalLightsColor, originalSirenColor;
+    private HighLightColor _currentAlertLevel;
 
     private Coroutine actionCoroutine;
     private Coroutine flasherCoroutine;
@@ -37,30 +37,43 @@ public class ActionCountScript : MonoBehaviour
     private void Start()
     {
         originalScreenColor = screenImage.color;
-        _currentAlertLevel = GameValues.AlertLevels.none;
+        originalLightsColor = lightsImage.color;
+        originalSirenColor = sirenImage.color;
+        _currentAlertLevel = GameValues.Colors.normal;
         flasherCoroutine = null;
     }
 
-    public AlertLevel AlertLevel
+    public HighLightColor AlertLevel
     {
         get => _currentAlertLevel;
         set
         {
             if (_currentAlertLevel.Equals(value)) return;
             _currentAlertLevel = value;
-            TryStopFlashing();
 
-            if (!value.Equals(GameValues.AlertLevels.none))
+            if (flasherCoroutine != null)
+            {
+                StopCoroutine(flasherCoroutine);
+                flasherCoroutine = null;
+                sirenImage.color = originalSirenColor;
+            }
+
+            if (value.ColorLevel != Constants.ColorLevel.None)
             {
                 // when hints are disabled do not show high alerts
-                if (!Config.Instance.HintsEnabled && value.Equals(GameValues.AlertLevels.high))
+                if (!Config.Instance.HintsEnabled && value.ColorLevel == Constants.ColorLevel.Over)
                 {
-                    value = GameValues.AlertLevels.low;
+                    value = Config.Instance.CurrentColorMode.Move;
                 }
-                flasherCoroutine = StartCoroutine(Flash(value));
+                flasherCoroutine = StartCoroutine(Flash(value.Color));
+                screenImage.color = value.ScreenColor;
+                lightsImage.color = value.Color;
             }
-            screenImage.color = value.screenColor;
-            lightsImage.color = value.lightColor;
+            else
+            {
+                screenImage.color = originalScreenColor;
+                lightsImage.color = originalLightsColor;
+            }
         }
     }
 
@@ -114,20 +127,10 @@ public class ActionCountScript : MonoBehaviour
         buttonImage.sprite = buttonUp;
     }
 
-    private void TryStopFlashing()
+    private IEnumerator Flash(Color flashColor)
     {
-        if (flasherCoroutine != null)
-        {
-            StopCoroutine(flasherCoroutine);
-            flasherCoroutine = null;
-            sirenImage.color = GameValues.AlertLevels.none.lightColor;
-        }
-    }
-
-    private IEnumerator Flash(AlertLevel alertLevel)
-    {
-        FadeColorPair alertFadeIn = new(GameValues.AlertLevels.none.lightColor, alertLevel.lightColor);
-        FadeColorPair alertFadeOut = new(alertLevel.lightColor, GameValues.AlertLevels.none.lightColor);
+        FadeColorPair alertFadeIn = new(originalSirenColor, flashColor);
+        FadeColorPair alertFadeOut = new(flashColor, originalSirenColor);
 
         while (true)
         {
