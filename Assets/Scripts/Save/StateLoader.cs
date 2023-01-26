@@ -135,8 +135,10 @@ public class StateLoader : MonoBehaviour
         lastSavedMove = Config.Instance.moveCounter;
         Debug.Log("writing state");
 
-        // if the previous task to write the save file hasn't completed
-        if (saveTask != null && !saveTask.IsCompleted)
+        // if this isn't running on WebGL (no thread support)
+        // and if the previous task to write the save file hasn't completed
+        if (Application.platform != RuntimePlatform.WebGLPlayer &&
+            saveTask != null && !saveTask.IsCompleted)
         {
             Debug.LogWarning("canceling the previous save task");
             tokenSource.Cancel();
@@ -188,8 +190,16 @@ public class StateLoader : MonoBehaviour
         }
 
         string content = JsonUtility.ToJson(gameState, Application.isEditor);
-        Debug.Log("starting the task to write the save file ");
-        saveTask = File.WriteAllTextAsync(SaveFile.GetPath(), content, tokenSource.Token);
+        if (Application.platform != RuntimePlatform.WebGLPlayer)
+        {
+            Debug.Log("starting the task to write the save file");
+            saveTask = File.WriteAllTextAsync(SaveFile.GetPath(), content, tokenSource.Token);
+        }
+        else
+        {
+            Debug.Log("writing the save file");
+            File.WriteAllText(SaveFile.GetPath(), content);
+        }
     }
 
     public void LoadSaveState()
