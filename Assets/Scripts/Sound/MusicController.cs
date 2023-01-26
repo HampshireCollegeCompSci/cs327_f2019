@@ -119,16 +119,17 @@ public class MusicController : MonoBehaviour, ISound
             if (value)
             {
                 if (fadeInCoroutine != null)
-                {
                     StopCoroutine(fadeInCoroutine);
-                }
+                if (fadeOutCoroutine != null) 
+                   StopCoroutine(fadeOutCoroutine);
                 audioMixer.SetFloat(Constants.AudioMixerNames.master, -80);
                 muteDelyCoroutine = StartCoroutine(PauseDelay());
                 Debug.Log("muted music");
             }
             else
             {
-                StopCoroutine(muteDelyCoroutine);
+                if (muteDelyCoroutine != null)
+                    StopCoroutine(muteDelyCoroutine);
                 FadeMusicIn();
                 Debug.Log("unmuted music");
             }
@@ -145,9 +146,9 @@ public class MusicController : MonoBehaviour, ISound
             if (value)
             {
                 if (fadeInCoroutine != null)
-                {
                     StopCoroutine(fadeInCoroutine);
-                }
+                if (fadeOutCoroutine != null)
+                    StopCoroutine(fadeOutCoroutine);
                 audioMixer.SetFloat(Constants.AudioMixerNames.master, -80);
                 pauseDelyCoroutine = StartCoroutine(PauseDelay());
                 Debug.Log("paused music");
@@ -155,7 +156,8 @@ public class MusicController : MonoBehaviour, ISound
             else
             {
                 audioMixer.SetFloat(Constants.AudioMixerNames.master, Mathf.Log10(maxVolume) * 20);
-                StopCoroutine(pauseDelyCoroutine);
+                if (pauseDelyCoroutine != null)
+                    StopCoroutine(pauseDelyCoroutine);
                 // note: playing a track that is already playing starts it from the beginning
                 FadeMusicIn();
                 Debug.Log("unpaused music");
@@ -183,10 +185,14 @@ public class MusicController : MonoBehaviour, ISound
         }
     }
 
+    /// <summary>
+    /// Fade the current music out from its current state.
+    /// </summary>
     public void FadeMusicOut()
     {
         if (Muted || Paused) return;
-        StopCoroutine(fadeInCoroutine);
+        if (fadeInCoroutine != null)
+            StopCoroutine(fadeInCoroutine);
         if (AudioSourcePlaying == 1)
         {
             StartFadeOut(Constants.AudioMixerNames.track1, GameValues.Music.musicFadeOutSlowDurationSec, audioSource_1);
@@ -203,7 +209,8 @@ public class MusicController : MonoBehaviour, ISound
     public void FadeMusicIn()
     {
         if (Muted || Paused) return;
-        StopCoroutine(fadeOutCoroutine);
+        if (fadeOutCoroutine != null)
+            StopCoroutine(fadeOutCoroutine);
         if (AudioSourcePlaying == 1)
         {
             //audioMixer.SetFloat(Constants.audioMixerNameTrack1, 0.002f);
@@ -214,10 +221,6 @@ public class MusicController : MonoBehaviour, ISound
             //audioMixer.SetFloat(Constants.audioMixerNameTrack2, 0.002f);
             StartFadeIn(Constants.AudioMixerNames.track2, GameValues.Music.musicFadeInDurationSec, audioSource_2);
         }
-        //else
-        //{
-        //    Transition(audioClips[PlayingTrack]);
-        //}
     }
 
     public void PlayMusic()
@@ -278,21 +281,12 @@ public class MusicController : MonoBehaviour, ISound
 
     private IEnumerator PauseDelay()
     {
-        AudioSource audioSource;
-        if (AudioSourcePlaying == 1)
-        {
-            audioSource = audioSource_1;
-            audioMixer.SetFloat(Constants.AudioMixerNames.track1, -80);
-        }
-        else
-        {
-            audioSource = audioSource_2;
-            audioMixer.SetFloat(Constants.AudioMixerNames.track2, -80);
-        }
-
+        audioMixer.SetFloat(Constants.AudioMixerNames.track1, -80);
+        audioMixer.SetFloat(Constants.AudioMixerNames.track2, -80);
         // to prevent audio blips lower the volume first and then pause the music
-        yield return new WaitForSecondsRealtime(0.1f);
-        audioSource.Pause();
+        yield return new WaitForSecondsRealtime(0.05f);
+        audioSource_1.Pause();
+        audioSource_2.Pause();
     }
 
     private void StartFadeIn(string fadeInAudioMixerName, float duration, AudioSource audioSource)

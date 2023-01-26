@@ -31,10 +31,9 @@ public class UndoScript : MonoBehaviour
         moveLog = newMoves;
     }
 
-    public void ClearMoveLog()
+    public void GameStart()
     {
         moveLog.Clear();
-        StateLoader.Instance.ClearSaveMoveLog();
     }
 
     /*

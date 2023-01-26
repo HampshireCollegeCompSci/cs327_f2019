@@ -4,7 +4,14 @@ public class NotAtAllSuspiciousFile : MonoBehaviour
 {
     public void Max()
     {
-        Config.Instance.prettyColors = !Config.Instance.prettyColors;
-        SoundEffectsController.Instance.PauseMenuButtonSound();
+        if (Config.Instance.prettyColors)
+        {
+            SoundEffectsController.Instance.ExplosionSound();
+        }
+        else
+        {
+            Config.Instance.prettyColors = true;
+            SoundEffectsController.Instance.PauseMenuButtonSound();
+        }
     }
 }

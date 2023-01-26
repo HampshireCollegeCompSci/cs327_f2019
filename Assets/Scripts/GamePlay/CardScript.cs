@@ -261,7 +261,6 @@ public class CardScript : MonoBehaviour, IGlow
         // setting up the in-game appearance of the card's suit
         SetSuitSprite(suitSprite);
 
-        // TODO: this needs to change
         if (Config.Instance.prettyColors)
         {
             originalColor = new Color(
@@ -272,7 +271,7 @@ public class CardScript : MonoBehaviour, IGlow
         }
         else
         {
-            originalColor = Color.white;
+            originalColor = thisSR.color;
         }
         draggingColor = originalColor;
         draggingColor.a = GameValues.Colors.selectedCardOpacity;

@@ -46,6 +46,10 @@ public class GameLoader : MonoBehaviour
         // Figure out what kinda game to start
         if (Config.Instance.tutorialOn)
         {
+            if (Config.Instance.prettyColors)
+            {
+                Config.Instance.prettyColors = false;
+            }
             LoadTutorial(Constants.Tutorial.tutorialStateStartFileName, gameStart: true);
         }
         else if (Config.Instance.continuing)
@@ -70,6 +74,10 @@ public class GameLoader : MonoBehaviour
             StartNewGame(GetNewCards());
         }
 
+        if (Config.Instance.prettyColors)
+        {
+            Config.Instance.prettyColors = false;
+        }
         return true;
     }
 
@@ -176,7 +184,8 @@ public class GameLoader : MonoBehaviour
         // the game difficultuy should already be set to what is desired for things to work properly
 
         // remove old stuff
-        UndoScript.Instance.ClearMoveLog();
+        UndoScript.Instance.GameStart();
+        StateLoader.Instance.GameStart();
         SaveFile.Delete();
 
         // reset game values

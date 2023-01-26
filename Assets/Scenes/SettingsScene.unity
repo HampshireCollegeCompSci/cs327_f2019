@@ -601,7 +601,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 0
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 50
   m_Viewport: {fileID: 1406185867}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 0}
@@ -839,8 +839,8 @@ PrefabInstance:
 
 
         The
-        game will also try to save if you: pause and go to the main menu, exit the
-        app, or quit the game'
+        game will also save when you quit the game or exit the app, so it''s okay
+        to have this be set high.'
       objectReference: {fileID: 0}
     - target: {fileID: 7829983092310510378, guid: 91ec940a979982e47bcf8a7c38d4b331,
         type: 3}
@@ -952,9 +952,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 0.10980392, g: 0, b: 0.1882353, a: 1}
-    m_HighlightedColor: {r: 1, g: 0, b: 0.74201393, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
     m_PressedColor: {r: 0, g: 0.6981132, b: 0.5845061, a: 1}
-    m_SelectedColor: {r: 0, g: 0.9902191, b: 1, a: 1}
+    m_SelectedColor: {r: 0.27450982, g: 0.5686275, b: 0.8352941, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -3222,7 +3222,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 1
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -3248,12 +3248,12 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 471176730}
   m_HandleRect: {fileID: 471176729}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.8965834
+  m_Size: 0.6285167
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

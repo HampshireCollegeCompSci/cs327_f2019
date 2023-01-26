@@ -37,7 +37,6 @@ public class StateLoader : MonoBehaviour
         saveMoveLog = new();
         movesUntilSave = PersistentSettings.MovesUntilSave;
         saveMovesDisabled = !PersistentSettings.SaveGameStateEnabled;
-        movesSinceLastSave = 0;
     }
 
     void OnApplicationFocus(bool hasFocus)
@@ -64,9 +63,10 @@ public class StateLoader : MonoBehaviour
         TryForceWriteState();
     }
 
-    public void ClearSaveMoveLog()
+    public void GameStart()
     {
         saveMoveLog.Clear();
+        movesSinceLastSave = 0;
     }
 
     public void AddMove(Move newMove)

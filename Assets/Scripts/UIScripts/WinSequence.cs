@@ -18,8 +18,8 @@ public class WinSequence : MonoBehaviour
     private Sprite[] foodObjects;
 
     // food objects
-    private Vector2 startPosition;
-    private Vector2 endPosition;
+    private Vector3 startPosition;
+    private Vector3 endPosition;
     private Vector2 startScale;
     private Vector2 endScale;
 
@@ -86,7 +86,7 @@ public class WinSequence : MonoBehaviour
         while (timeElapsed < feedDuration)
         {
             float t = timeElapsed / feedDuration;
-            foody.transform.position = Vector2.Lerp(startPosition, endPosition, t);
+            foody.transform.position = Vector3.Lerp(startPosition, endPosition, t);
             foody.transform.localScale = Vector2.Lerp(startScale, endScale, t);
             timeElapsed += Time.deltaTime;
             yield return null;

@@ -426,9 +426,9 @@ public class UtilsScript : MonoBehaviour
         // set the combo readout
         Text comboText = matchPointsEffect.transform.GetChild(0).GetComponent<Text>();
 
-        comboText.text = (Config.Instance.consecutiveMatches > 1) switch
+        comboText.text = (Config.Instance.consecutiveMatches >= 1) switch
         {
-            true => $"X{Config.Instance.consecutiveMatches} COMBO",
+            true => $"X{Config.Instance.consecutiveMatches + 1} COMBO",
             false => "",
         };
 

@@ -79,6 +79,10 @@ public class DeckScript : MonoBehaviour, ICardContainer
             SoundEffectsController.Instance.DeckReshuffle();
         }
         else return;
+        if (buttonCoroutine != null)
+        {
+            StopCoroutine(buttonCoroutine);
+        }
         buttonCoroutine = StartCoroutine(ButtonDown());
     }
 
