@@ -34,6 +34,32 @@ public class TutorialScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Continues the tutorial if it's ready. The tutorial next button calls this.
+    /// </summary>
+    public void NextButton()
+    {
+        Debug.Log("tutorial touch");
+
+        if (waiting && !UtilsScript.Instance.InputStopped)
+        {
+            waiting = false;
+            SoundEffectsController.Instance.ButtonPressSound();
+            NextStep();
+        }
+    }
+
+    /// <summary>
+    /// Ends the tutorial by request from the tutorial exit button.
+    /// </summary>
+    public void ExitButton()
+    {
+        Debug.Log("exit tutorial requested");
+        SoundEffectsController.Instance.ButtonPressSound();
+        SceneManager.LoadScene(Constants.ScenesNames.mainMenu);
+        MusicController.Instance.MainMenuMusic();
+    }
+
     private void StartTutorial()
     {
         Debug.Log("starting the tutorial");
@@ -47,7 +73,7 @@ public class TutorialScript : MonoBehaviour
         // start the tutorial
         tutorialUIPanel.SetActive(true);
         // update colors via script instead of having to do it in editor each time
-        UpdateHighlightObjectsColor(Config.GameValues.tutorialObjectHighlightColor);
+        UpdateHighlightObjectsColor(Config.Instance.CurrentColorMode.Notify.GlowColor);
 
         // get the tutorial commands ready
         commandQueue = CommandEnqueuer(CreateFromJSON());
@@ -79,7 +105,7 @@ public class TutorialScript : MonoBehaviour
     {
         Debug.Log("creating list from JSON");
 
-        TextAsset jsonTextFile = Resources.Load<TextAsset>(Constants.tutorialCommandListFilePath);
+        TextAsset jsonTextFile = Resources.Load<TextAsset>(Constants.Tutorial.tutorialCommandListFilePath);
         TutorialCommands commandFile = JsonUtility.FromJson<TutorialCommands>(jsonTextFile.ToString());
         return commandFile.commands;
     }
@@ -109,22 +135,6 @@ public class TutorialScript : MonoBehaviour
         if (!waiting)
         {
             CommandInterpreter();
-        }
-    }
-
-    [SerializeField]
-    /// <summary>
-    /// Continues the tutorial if it's ready. The tutorial next button calls this.
-    /// </summary>
-    private void NextButton()
-    {
-        Debug.Log("tutorial touch");
-
-        if (waiting && !UtilsScript.Instance.InputStopped)
-        {
-            waiting = false;
-            SoundEffectsController.Instance.ButtonPressSound();
-            NextStep();
         }
     }
 
@@ -221,27 +231,17 @@ public class TutorialScript : MonoBehaviour
         tutorialUIPanel.SetActive(false);
         UtilsScript.Instance.ShowPossibleMoves.TokenMoveable = true;
 
-        Config.Instance.tutorialOn = false;
-        Config.Instance.SetDifficulty(0);
+        Config.Instance.SetTutorialOn(false);
+        Config.Instance.SetDifficulty(GameValues.GamePlay.difficulties[0]);
         MusicController.Instance.GameMusic();
+        UtilsScript.Instance.InputStopped = true;
         GameLoader.Instance.RestartGame();
+        UtilsScript.Instance.InputStopped = false;
 
         deckButton.interactable = true;
         undoButton.interactable = true;
         timerButton.interactable = true;
         pauseButton.interactable = true;
-    }
-
-    [SerializeField]
-    /// <summary>
-    /// Ends the tutorial by request from the tutorial exit button.
-    /// </summary>
-    private void ExitButton()
-    {
-        Debug.Log("exit tutorial requested");
-        SoundEffectsController.Instance.ButtonPressSound();
-        SceneManager.LoadScene(Constants.mainMenuScene);
-        MusicController.Instance.MainMenuMusic();
     }
 
     /// <summary>
@@ -352,10 +352,10 @@ public class TutorialScript : MonoBehaviour
         bool highlightOn = ParseOnOrOff(command, 2);
 
         // get the containers index
-        byte index = ParseContainerIndex(command, 3);
+        int index = ParseContainerIndex(command, 3);
 
         // get the highlight color level
-        byte highlightColorLevel = ParseHighlightColorLevel(command, 4);
+        HighLightColor highlightColor = ParseHighlightColor(command, 4);
 
         // find the container
         switch (command[1].ToUpper())
@@ -365,7 +365,7 @@ public class TutorialScript : MonoBehaviour
                 {
                     foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
                     {
-                        reactorScript.GlowLevel = highlightColorLevel;
+                        reactorScript.GlowColor = highlightColor;
                     }
                 }
                 else
@@ -379,8 +379,8 @@ public class TutorialScript : MonoBehaviour
             case sReactor:
                 if (highlightOn)
                 {
-                    UtilsScript.Instance.reactorScripts[index].GlowLevel = highlightColorLevel;
-                    if (highlightColorLevel == Constants.overHighlightColorLevel)
+                    UtilsScript.Instance.reactorScripts[index].GlowColor = highlightColor;
+                    if (highlightColor.ColorLevel == Constants.ColorLevel.Over)
                     {
                         UtilsScript.Instance.reactorScripts[index].Alert = true;
                     }
@@ -396,7 +396,7 @@ public class TutorialScript : MonoBehaviour
                 {
                     foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
                     {
-                        foundationScript.GlowLevel = highlightColorLevel;
+                        foundationScript.GlowColor = highlightColor;
                     }
                 }
                 else
@@ -410,7 +410,7 @@ public class TutorialScript : MonoBehaviour
             case sFoundation:
                 if (highlightOn)
                 {
-                    UtilsScript.Instance.foundationScripts[index].GlowLevel = highlightColorLevel;
+                    UtilsScript.Instance.foundationScripts[index].GlowColor = highlightColor;
                 }
                 else
                 {
@@ -445,14 +445,14 @@ public class TutorialScript : MonoBehaviour
         bool highlightOn = ParseOnOrOff(command, 4);
 
         // get the highlight color level
-        byte highlightColorLevel = ParseHighlightColorLevel(command, 5);
+        HighLightColor highlightColor = ParseHighlightColor(command, 5);
 
         // find the desired token's location
         switch (command[1].ToUpper())
         {
             case sReactor:
                 List<GameObject> reactorCardList = UtilsScript.Instance.reactorScripts[containerIndex].CardList;
-                if (reactorCardList.Count < tokenIndex)
+                if (reactorCardList.Count < tokenIndex - 1)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
                         $"there are only {reactorCardList.Count} token(s) to choose from in reactor {containerIndex}");
@@ -460,31 +460,31 @@ public class TutorialScript : MonoBehaviour
 
                 if (highlightOn)
                 {
-                    reactorCardList[tokenIndex].GetComponent<CardScript>().GlowLevel = highlightColorLevel;
+                    reactorCardList[^tokenIndex].GetComponent<CardScript>().GlowColor = highlightColor;
                 }
                 else
                 {
-                    reactorCardList[tokenIndex].GetComponent<CardScript>().Glowing = false;
+                    reactorCardList[^tokenIndex].GetComponent<CardScript>().Glowing = false;
                 }
                 break;
             case sFoundation:
                 List<GameObject> foundationCardList = UtilsScript.Instance.foundationScripts[containerIndex].CardList;
-                if (foundationCardList.Count < tokenIndex)
+                if (foundationCardList.Count < tokenIndex - 1)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
                         $"there are only {foundationCardList.Count} token(s) to choose from in foundation {containerIndex}");
                 }
                 if (highlightOn)
                 {
-                    foundationCardList[tokenIndex].GetComponent<CardScript>().GlowLevel = highlightColorLevel;
+                    foundationCardList[^tokenIndex].GetComponent<CardScript>().GlowColor = highlightColor;
                 }
                 else
                 {
-                    foundationCardList[tokenIndex].GetComponent<CardScript>().Glowing = false;
+                    foundationCardList[^tokenIndex].GetComponent<CardScript>().Glowing = false;
                 }
                 break;
             case sWastepile:
-                if (WastepileScript.Instance.CardList.Count < tokenIndex)
+                if (WastepileScript.Instance.CardList.Count < tokenIndex - 1)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
                         $"there are only {WastepileScript.Instance.CardList.Count} token(s) to choose from in the waste pile");
@@ -492,11 +492,11 @@ public class TutorialScript : MonoBehaviour
 
                 if (highlightOn)
                 {
-                    WastepileScript.Instance.CardList[tokenIndex].GetComponent<CardScript>().GlowLevel = highlightColorLevel;
+                    WastepileScript.Instance.CardList[^tokenIndex].GetComponent<CardScript>().GlowColor = highlightColor;
                 }
                 else
                 {
-                    WastepileScript.Instance.CardList[tokenIndex].GetComponent<CardScript>().Glowing = false;
+                    WastepileScript.Instance.CardList[^tokenIndex].GetComponent<CardScript>().Glowing = false;
                 }
                 break;
             default:
@@ -531,29 +531,29 @@ public class TutorialScript : MonoBehaviour
         {
             case sReactor:
                 List<GameObject> reactorCardList = UtilsScript.Instance.reactorScripts[containerIndex].CardList;
-                if (reactorCardList.Count < tokenIndex)
+                if (reactorCardList.Count < tokenIndex - 1)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
                         $"there are only {reactorCardList.Count} token(s) to choose from in reactor {containerIndex}");
                 }
-                reactorCardList[tokenIndex].GetComponent<CardScript>().Obstructed = obstructed;
+                reactorCardList[^tokenIndex].GetComponent<CardScript>().Obstructed = obstructed;
                 break;
             case sFoundation:
                 List<GameObject> foundationCardList = UtilsScript.Instance.foundationScripts[containerIndex].CardList;
-                if (foundationCardList.Count < tokenIndex)
+                if (foundationCardList.Count < tokenIndex - 1)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
                         $"there are only {foundationCardList.Count} token(s) to choose from in foundation {containerIndex}");
                 }
-                foundationCardList[tokenIndex].GetComponent<CardScript>().Obstructed = obstructed;
+                foundationCardList[^tokenIndex].GetComponent<CardScript>().Obstructed = obstructed;
                 break;
             case sWastepile:
-                if (WastepileScript.Instance.CardList.Count < tokenIndex)
+                if (WastepileScript.Instance.CardList.Count < tokenIndex - 1)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
                         $"there are only {WastepileScript.Instance.CardList.Count} token(s) to choose from in the waste pile");
                 }
-                WastepileScript.Instance.CardList[tokenIndex].GetComponent<CardScript>().Obstructed = obstructed;
+                WastepileScript.Instance.CardList[^tokenIndex].GetComponent<CardScript>().Obstructed = obstructed;
                 break;
             default:
                 throw new FormatException("contains an invalid object that contains the token for command #1");
@@ -566,26 +566,27 @@ public class TutorialScript : MonoBehaviour
 
         foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
         {
-            // only the first reactor token/card is ever not obstructed
+            // only the top reactor token/card is ever not obstructed
             if (reactorScript.CardList.Count != 0)
             {
-                reactorScript.CardList[0].GetComponent<CardScript>().Obstructed = true;
+                reactorScript.CardList[^1].GetComponent<CardScript>().Obstructed = true;
             }
         }
 
         foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
-            foreach (GameObject card in foundationScript.CardList)
+            // from the top of the list downwards, obstruct until a hidden card is reached
+            for (int i = foundationScript.CardList.Count - 1; i >= 0; i--)
             {
-                if (card.GetComponent<CardScript>().Hidden) break;
-                card.GetComponent<CardScript>().Obstructed = true;
+                if (foundationScript.CardList[i].GetComponent<CardScript>().Hidden) break;
+                foundationScript.CardList[i].GetComponent<CardScript>().Obstructed = true;
             }
         }
 
-        // only the first wastepile token/card is ever not obstructed
+        // only the top wastepile token/card is ever not obstructed
         if (WastepileScript.Instance.CardList.Count != 0)
         {
-            WastepileScript.Instance.CardList[0].GetComponent<CardScript>().Obstructed = true;
+            WastepileScript.Instance.CardList[^1].GetComponent<CardScript>().Obstructed = true;
         }
     }
 
@@ -716,7 +717,7 @@ public class TutorialScript : MonoBehaviour
     /// Parses the given command index for "on" or "off" and returns the bool result.
     /// Ignores case and throws a FormatException if the command is not valid.
     /// </summary>
-    private bool ParseOnOrOff(List<string> command, byte index)
+    private bool ParseOnOrOff(List<string> command, int index)
     {
         if (command[index].Equals("on", StringComparison.OrdinalIgnoreCase))
         {
@@ -734,38 +735,46 @@ public class TutorialScript : MonoBehaviour
     /// <summary>
     /// Parses the given command's index for a reactor alert level and returns it.
     /// </summary>
-    private byte ParseHighlightColorLevel(List<string> command, byte index)
+    private HighLightColor ParseHighlightColor(List<string> command, int index)
     {
-        byte colorLevel;
+        int colorLevel;
         try
         {
-            colorLevel = byte.Parse(command[index]);
+            colorLevel = int.Parse(command[index]);
         }
         catch (FormatException)
         {
-            throw new FormatException($"does not contain a byte for command #{index}");
+            throw new FormatException($"does not contain a int for command #{index}");
         }
-        if (colorLevel > 3) // there are only three color levels available
+        if (!Enum.IsDefined(typeof(Constants.ColorLevel), colorLevel))
         {
-            throw new FormatException($"does not properly specify between \"0\" to \"3\" (inclusive) for command #{index}");
+            throw new FormatException($"does not contain a valid color level for command #{index}");
         }
 
-        return colorLevel;
+        return colorLevel switch
+        {
+            (int)Constants.ColorLevel.None => GameValues.Colors.normal,
+            (int)Constants.ColorLevel.Match => Config.Instance.CurrentColorMode.Match,
+            (int)Constants.ColorLevel.Move => Config.Instance.CurrentColorMode.Move,
+            (int)Constants.ColorLevel.Over => Config.Instance.CurrentColorMode.Over,
+            (int)Constants.ColorLevel.Notify => Config.Instance.CurrentColorMode.Notify,
+            _ => throw new FormatException($"the color level of \"{colorLevel}\" was not found for command #{index}")
+        };
     }
 
     /// <summary>
     /// Parses the given command's index for a container game object (where tokens/cards reside) index and returns it.
     /// </summary>
-    private byte ParseContainerIndex(List<string> command, byte index)
+    private int ParseContainerIndex(List<string> command, int index)
     {
-        byte parsedIndex;
+        int parsedIndex;
         try
         {
-            parsedIndex = byte.Parse(command[index]);
+            parsedIndex = int.Parse(command[index]);
         }
         catch (FormatException)
         {
-            throw new FormatException($"does not contain a byte for command #{index}");
+            throw new FormatException($"does not contain a int for command #{index}");
         }
         if (index < 0 || index > 3) // there are only 4 reactors and 4 foundations
         {
@@ -778,12 +787,12 @@ public class TutorialScript : MonoBehaviour
     /// <summary>
     /// Parses the given command's index for a token/card index and returns it.
     /// </summary>
-    private int ParseTokenIndex(List<string> command, byte index)
+    private int ParseTokenIndex(List<string> command, int index)
     {
         int tokenIndex;
         try
         {
-            tokenIndex = Int32.Parse(command[index]);
+            tokenIndex = int.Parse(command[index]);
         }
         catch (FormatException)
         {
@@ -793,6 +802,9 @@ public class TutorialScript : MonoBehaviour
         {
             throw new FormatException($"contains a negative int for command #{index}");
         }
-        return tokenIndex;
+
+        // tutorial input index is based on the top index = 0, in-game it's the opposite
+        // this will used in list[list.Count - tokenIndex]
+        return tokenIndex + 1;
     }
 }

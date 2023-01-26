@@ -31,30 +31,34 @@ public class EndGame : MonoBehaviour
 
     public void ManualGameWin()
     {
-        if (!Config.GameValues.enableCheat || Config.Instance.gamePaused) return;
+        if (!GameValues.GamePlay.enableCheat) return;
 
+        #pragma warning disable CS0162 // Unreachable code detected
         GameOver(true);
         // to ensure that the full win animation plays for debug
         Config.Instance.matchCounter = 26;
+        #pragma warning restore CS0162 // Unreachable code detected
     }
 
     public void GameOver(bool didWin)
     {
         Debug.Log($"Game Over, won: {didWin}");
 
+        UtilsScript.Instance.InputStopped = true;
         Config.Instance.gameOver = true;
-        Config.Instance.gamePaused = true;
         Config.Instance.gameWin = didWin;
 
-        SaveState.Delete();
+        SaveFile.Delete();
 
-        if (Config.GameValues.enableBonusPoints)
+        if (GameValues.Points.enableBonusPoints)
         {
+            #pragma warning disable CS0162 // Unreachable code detected
             AddExtraEndGameScore();
+            #pragma warning restore CS0162 // Unreachable code detected
         }
 
         // overwritten when manually won (cheated)
-        Config.Instance.matchCounter = (byte)(MatchedPileScript.Instance.CardList.Count / 2);
+        Config.Instance.matchCounter = MatchedPileScript.Instance.CardList.Count / 2;
 
         if (didWin)
         {
@@ -67,7 +71,7 @@ public class EndGame : MonoBehaviour
         {
             foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
             {
-                reactorScript.TryHighlightOverloaded(true);
+                if (reactorScript.TryHighlightOverloaded(true)) break;
             }
         }
 
@@ -79,14 +83,14 @@ public class EndGame : MonoBehaviour
         int extraScore = 0;
         if (MatchedPileScript.Instance.CardList.Count == 52)
         {
-            extraScore += Config.GameValues.perfectGamePoints;
+            extraScore += GameValues.Points.perfectGamePoints;
         }
 
         foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
             if (foundationScript.CardList.Count == 0)
             {
-                extraScore += Config.GameValues.emptyReactorPoints;
+                extraScore += GameValues.Points.emptyReactorPoints;
             }
         }
 
@@ -104,36 +108,39 @@ public class EndGame : MonoBehaviour
 
         if (Config.Instance.gameWin)
         {
-            fadeColor = Config.GameValues.fadeLightColor;
+            fadeColor = GameValues.FadeColors.grayA1;
             SoundEffectsController.Instance.WinSound();
-            gameOverText.color = Color.cyan;
-            wonlostText.color = Color.cyan;
-            wonlostText.text = "YOU WON";
+            gameOverText.color = Config.Instance.CurrentColorMode.Match.Color;
+            wonlostText.color = Config.Instance.CurrentColorMode.Match.Color;
+            wonlostText.text = GameValues.Text.gameWon;
         }
         else
         {
-            fadeColor = Config.GameValues.fadeDarkColor;
+            fadeColor = GameValues.FadeColors.blackA1;
             errorObject.SetActive(true);
             SoundEffectsController.Instance.LoseSound();
-            gameOverText.color = Color.red;
-            wonlostText.color = Color.red;
-            wonlostText.text = "YOU LOST";
+            gameOverText.color = Config.Instance.CurrentColorMode.Over.Color;
+            wonlostText.color = Config.Instance.CurrentColorMode.Over.Color;
+            wonlostText.text = GameValues.Text.gameLost;
         }
 
-        fadeColor.a = 0;
-        fadeInScreen.color = fadeColor;
         fadeInScreen.enabled = true;
-        textGroup.alpha = 0;
         gameOverTextPanel.SetActive(true);
-        yield return null;
 
-        while (textGroup.alpha < 1)
+        float duration = GameValues.AnimationDurataions.gameOverFade;
+        float timeElapsed = 0;
+        while (timeElapsed < duration)
         {
-            fadeColor.a += Time.deltaTime * 0.3f;
+            float t = timeElapsed / duration;
+            fadeColor.a = Mathf.Lerp(0, 0.4f, t);
             fadeInScreen.color = fadeColor;
-            textGroup.alpha += Time.deltaTime;
+            textGroup.alpha = Mathf.Lerp(0, 1, t);
+            timeElapsed += Time.deltaTime;
             yield return null;
         }
+        fadeColor.a = 0.4f;
+        fadeInScreen.color = fadeColor;
+        textGroup.alpha = 1;
 
         if (Config.Instance.gameWin)
         {
@@ -150,9 +157,8 @@ public class EndGame : MonoBehaviour
         continueButton.SetActive(true);
     }
 
-    public void RestartGame()
+    public void RestartGameWhenOver()
     {
-        SoundEffectsController.Instance.ButtonPressSound();
         restartButton.SetActive(false);
         continueButton.SetActive(false);
         gameOverTextPanel.SetActive(false);
@@ -162,8 +168,8 @@ public class EndGame : MonoBehaviour
         if (Config.Instance.gameWin)
         {
             // save the results
-            PlayerPrefKeys.TrySetHighScore(Config.Instance.currentDifficulty, Config.Instance.score);
-            PlayerPrefKeys.TrySetLeastMoves(Config.Instance.currentDifficulty, Config.Instance.moveCounter);
+            PersistentSettings.TrySetHighScore(Config.Instance.CurrentDifficulty, Config.Instance.score);
+            PersistentSettings.TrySetLeastMoves(Config.Instance.CurrentDifficulty, Config.Instance.moveCounter);
 
             foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
             {
@@ -181,12 +187,12 @@ public class EndGame : MonoBehaviour
         MusicController.Instance.GameMusic();
         Config.Instance.gameOver = false;
         GameLoader.Instance.RestartGame();
+        UtilsScript.Instance.InputStopped = false;
         this.gameObject.GetComponent<Image>().enabled = false;
     }
 
     public void ContinueGameOverTransition()
     {
-        SoundEffectsController.Instance.ButtonPressSound();
         restartButton.SetActive(false);
         continueButton.SetActive(false);
 
@@ -210,7 +216,7 @@ public class EndGame : MonoBehaviour
             if (reactorScript.CardList.Count != 0)
             {
                 StartCoroutine(ReactorMeltdown(reactorScript));
-                yield return new WaitForSeconds(Config.GameValues.reactorMeltDownSpeed);
+                yield return new WaitForSeconds(GameValues.AnimationDurataions.reactorExplosionDelay);
             }
         }
 
@@ -222,7 +228,7 @@ public class EndGame : MonoBehaviour
         foreach (GameObject card in reactorScript.CardList)
         {
             GameObject matchExplosion = Instantiate(explosionPrefab, card.transform.position, Quaternion.identity);
-            matchExplosion.transform.localScale = new Vector3(Config.GameValues.matchExplosionScale, Config.GameValues.matchExplosionScale);
+            matchExplosion.transform.localScale = new Vector3(GameValues.Transforms.matchExplosionScale, GameValues.Transforms.matchExplosionScale);
         }
         yield return new WaitForSeconds(0.2f);
         foreach (GameObject card in reactorScript.CardList)
@@ -232,7 +238,7 @@ public class EndGame : MonoBehaviour
         SoundEffectsController.Instance.ExplosionSound();
 
         GameObject reactorExplosion = Instantiate(explosionPrefab, reactorScript.gameObject.transform.position, Quaternion.identity);
-        reactorExplosion.transform.localScale = new Vector3(Config.GameValues.matchExplosionScale / 2, Config.GameValues.matchExplosionScale / 2);
+        reactorExplosion.transform.localScale = new Vector3(GameValues.Transforms.matchExplosionScale / 2, GameValues.Transforms.matchExplosionScale / 2);
         reactorExplosion.GetComponent<Animator>().Play("LoseExplosionAnim");
     }
 
@@ -241,21 +247,28 @@ public class EndGame : MonoBehaviour
         Image fadeInScreen = this.gameObject.GetComponent<Image>();
         Color fadeColor = fadeInScreen.color;
         CanvasGroup textGroup = gameOverTextPanel.GetComponent<CanvasGroup>();
-        float alphaChange;
-        while (textGroup.alpha > 0)
+
+        float startingAlpha = fadeColor.a;
+        float duration = GameValues.AnimationDurataions.gameEndFade;
+        float timeElapsed = 0;
+        while (timeElapsed < duration)
         {
-            alphaChange = Time.deltaTime * Config.GameValues.endGameFadeOutSpeed;
-            fadeColor.a += alphaChange;
+            float t = timeElapsed / duration;
+            fadeColor.a = Mathf.Lerp(startingAlpha, 1, t);
             fadeInScreen.color = fadeColor;
-            textGroup.alpha -= alphaChange;
+            textGroup.alpha = Mathf.Lerp(1, 0, t);
+            timeElapsed += Time.deltaTime;
             yield return null;
         }
+        fadeColor.a = 1;
+        fadeInScreen.color = fadeColor;
+        textGroup.alpha = 0;
 
         TransitionToSummaryScene();
     }
 
     private void TransitionToSummaryScene()
     {
-        SceneManager.LoadScene(Constants.summaryScene);
+        SceneManager.LoadScene(Constants.ScenesNames.summary);
     }
 }

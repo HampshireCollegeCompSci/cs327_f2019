@@ -3,8 +3,9 @@
 public class Move
 {
     public GameObject card;
+    public Constants.CardContainerType containerType;
     public GameObject origin;
-    public byte moveType;
+    public Constants.LogMoveType moveType;
     public bool nextCardWasHidden;
     public bool isAction;
     public int remainingActions;

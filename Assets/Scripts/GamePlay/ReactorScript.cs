@@ -4,9 +4,9 @@ using UnityEngine.UI;
 
 public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 {
-    private const int maxFullReactorCards = 4;
+    private const int maxFullReactorCards = 5;
     private const float xOffset = -0.02f;
-    private const float startingYOffset = -0.34f;
+    private const float startingYOffset = -0.35f;
     private const float largeYOffset = 0.16f;
     private const float smallYOffset = 0.03f;
 
@@ -14,74 +14,66 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
     private List<GameObject> cardList;
 
     [SerializeField]
-    private byte reactorSuitIndex;
+    private Suit suit;
     [SerializeField]
-    private Text reactorScore;
+    private Image reactorScoreImage;
+    [SerializeField]
+    private Text reactorScoreText;
     [SerializeField]
     private GameObject suitGlow;
 
     [SerializeField]
     private bool _glowing;
     [SerializeField]
-    private byte _glowLevel;
+    private HighLightColor _glowColor;
     [SerializeField]
     private bool _alert;
 
     private SpriteRenderer suitGlowSR;
     private SpriteRenderer glowSR;
+    private BoxCollider2D hitbox;
 
     void Awake()
     {
-        cardList = new();
+        cardList = new(52);
         suitGlowSR = suitGlow.GetComponent<SpriteRenderer>();
         glowSR = this.gameObject.GetComponent<SpriteRenderer>();
+        hitbox = this.gameObject.GetComponent<BoxCollider2D>();
 
         _glowing = false;
-        _glowLevel = 0;
+        _glowColor = GameValues.Colors.normal;
         _alert = false;
     }
 
-    public List<GameObject> CardList
-    {
-        get => cardList;
-    }
+    public List<GameObject> CardList => cardList;
 
     public bool Glowing
     {
         get => _glowing;
         set
         {
-            if (value && !_glowing)
+            if (_glowing == value) return;
+            _glowing = value;
+            hitbox.enabled = value;
+
+            if (Config.Instance.HintsEnabled)
             {
-                _glowing = true;
-                suitGlowSR.enabled = true;
-                glowSR.enabled = true;
-            }
-            else if (!value && _glowing)
-            {
-                _glowing = false;
-                RevertSuitGlow();
-                suitGlowSR.enabled = false;
-                glowSR.enabled = false;
+                glowSR.enabled = value;
+                suitGlowSR.enabled = value;
             }
         }
     }
 
-    public byte GlowLevel
+    public HighLightColor GlowColor
     {
-        get => _glowLevel;
+        get => _glowColor;
         set
         {
-            if (value != _glowLevel)
-            {
-                _glowLevel = value;
-                Color glowColor = Config.GameValues.highlightColors[value];
-                glowColor.a = 0.3f;
-                glowSR.color = glowColor;
-                ChangeSuitGlow(glowColor);
-            }
-
             Glowing = true;
+            if (_glowColor.Equals(value)) return;
+            _glowColor = value;
+            glowSR.color = value.GlowColor;
+            suitGlowSR.color = value.GlowColor;
         }
     }
 
@@ -90,37 +82,35 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         get => _alert;
         set
         {
-            if (value == _alert) return;
+            if (_alert == value) return;
             _alert = value;
-            if (value)
+            if (value && Config.Instance.HintsEnabled)
             {
-                reactorScore.color = Color.red;
+                reactorScoreImage.enabled = true;
+                reactorScoreImage.color = Config.Instance.CurrentColorMode.Over.GlowColor;
             }
             else
             {
-                reactorScore.color = Color.black;
+                reactorScoreImage.enabled = false;
             }
         }
     }
 
-    public byte ReactorSuitIndex
-    {
-        get => reactorSuitIndex;
-    }
+    public Suit ReactorSuit => suit;
 
-    public void SetReactorSuitIndex(byte reactorSuitIndex)
+    public void SetReactorSuit(Suit suit)
     {
-        this.reactorSuitIndex = reactorSuitIndex;
+        this.suit = suit;
     }
 
     public void AddCard(GameObject card)
     {
         if (cardList.Count != 0)
         {
-            cardList[0].GetComponent<CardScript>().Obstructed = true;
+            cardList[^1].GetComponent<CardScript>().Obstructed = true;
         }
 
-        cardList.Insert(0, card);
+        cardList.Add(card);
         card.transform.SetParent(gameObject.transform);
         CardScript cardScript = card.GetComponent<CardScript>();
         cardScript.Hologram = false;
@@ -135,11 +125,11 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     public void RemoveCard(GameObject card)
     {
-        cardList.Remove(card);
+        cardList.RemoveAt(cardList.LastIndexOf(card));
 
         if (cardList.Count != 0)
         {
-            cardList[0].GetComponent<CardScript>().Obstructed = false;
+            cardList[^1].GetComponent<CardScript>().Obstructed = false;
         }
 
         SetCardPositions();
@@ -148,7 +138,17 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     public Vector3 GetNextCardPosition()
     {
-        return this.gameObject.transform.TransformPoint(GetCardPosition(0, cardList.Count + 1));
+        Vector3 nextPosition;
+        if (cardList.Count == 0)
+        {
+            nextPosition = new Vector3(xOffset, startingYOffset, 0);
+        }
+        else
+        {
+            nextPosition = cardList[^1].transform.localPosition;
+            nextPosition.y += largeYOffset;
+        }
+        return this.gameObject.transform.TransformPoint(nextPosition);
     }
 
     public int CountReactorCard()
@@ -157,7 +157,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         int cardListVal = cardList.Count;
         for (int i = 0; i < cardListVal; i++)
         {
-            totalSum += cardList[i].GetComponent<CardScript>().CardReactorValue;
+            totalSum += cardList[i].GetComponent<CardScript>().Card.Rank.ReactorValue;
         }
 
         return totalSum;
@@ -165,7 +165,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     public bool OverLimitSoon()
     {
-        if (CountReactorCard() + GetIncreaseOnNextCycle() > Config.Instance.reactorLimit)
+        if (CountReactorCard() + GetIncreaseOnNextCycle() > Config.Instance.CurrentDifficulty.ReactorLimit)
         {
             Alert = true;
             return true;
@@ -181,48 +181,68 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     public void SetReactorScore(int cardValCount)
     {
-        reactorScore.text = $"{cardValCount}/{Config.Instance.reactorLimit}";
+        reactorScoreText.text = $"{cardValCount}/{Config.Instance.CurrentDifficulty.ReactorLimit}";
     }
 
-    public void TryHighlightOverloaded(bool turnOn)
+    public bool TryHighlightOverloaded(bool turnOn)
     {
         if (turnOn)
         {
             // will turn glowing on but not set the flag for it
-            // so that it will not be turned off later
-            if (CountReactorCard() > Config.Instance.reactorLimit)
+            // so that it will not be turned off in the same frame
+            if (CountReactorCard() > Config.Instance.CurrentDifficulty.ReactorLimit)
             {
-                Glowing = true;
-                GlowLevel = Constants.overHighlightColorLevel;
+                GlowColor = Config.Instance.CurrentColorMode.Over;
+                reactorScoreImage.enabled = true;
+                reactorScoreImage.color = Config.Instance.CurrentColorMode.Over.Color;
                 _glowing = false;
-                Alert = true;
-                ChangeSuitGlow(3);
+                if (!Config.Instance.HintsEnabled)
+                {
+                    glowSR.enabled = true;
+                    suitGlowSR.enabled = true;
+                }
+                return true;
             }
         }
         else
         {
+            GlowColor = GameValues.Colors.normal;
+            reactorScoreImage.enabled = false;
             _glowing = true;
             Glowing = false;
+            if (!Config.Instance.HintsEnabled)
+            {
+                glowSR.enabled = false;
+                suitGlowSR.enabled = false;
+            }
         }
+        return false;
+    }
+
+    public void ChangeSuitGlow(HighLightColor highLightColor)
+    {
+        //suitGlowSR.enabled = true; // TODO: this is needed again because of a Unity bug
+        if (!Config.Instance.HintsEnabled)
+        {
+            suitGlowSR.enabled = true;
+        }
+        suitGlowSR.color = highLightColor.GlowColor;
     }
 
     public void RevertSuitGlow()
     {
-        ChangeSuitGlow(GlowLevel);
-    }
-
-    public void ChangeSuitGlow(byte level)
-    {
-        Color newColor = Config.GameValues.highlightColors[level];
-        newColor.a = 0.3f;
-        ChangeSuitGlow(newColor);
+        if (!Config.Instance.HintsEnabled)
+        {
+            suitGlowSR.enabled = false;
+        }
+        suitGlowSR.color = GlowColor.GlowColor;
     }
 
     private void CheckGameOver(int cardValCount)
     {
         if (Config.Instance.tutorialOn || Config.Instance.gameOver) return;
 
-        if (cardValCount > Config.Instance.reactorLimit)
+        if (cardValCount > Config.Instance.CurrentDifficulty.ReactorLimit)
         {
             EndGame.Instance.GameOver(false);
         }
@@ -230,33 +250,35 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     private void SetCardPositions()
     {
-        int cardCount = cardList.Count;
-        for (int i = 0; i < cardCount; i++)
+        for (int i = 0; i < cardList.Count; i++)
         {
-            Vector3 newPos = GetCardPosition(i, cardCount);
-            cardList[i].transform.localPosition = newPos;
+            cardList[i].transform.localPosition = GetCardPosition(i);
         }
     }
 
-    private Vector3 GetCardPosition(int index, int cardListCount)
+    private Vector3 GetCardPosition(int index)
     {
-        int reverseIndex = cardListCount - index - 1;
-        float zOffset = -0.05f * (reverseIndex + 1);
+        float zOffset = index * -0.01f;
 
-        if (cardListCount > maxFullReactorCards)
+        // if there are too many cards in the reactor to display them all in full
+        if (cardList.Count > maxFullReactorCards)
         {
-            if (index >= maxFullReactorCards)
+            int numSmallCards = cardList.Count - maxFullReactorCards;
+            // if this card is below the top number of maxFullReactorCards
+            if (index < numSmallCards)
             {
-                return new Vector3(xOffset, startingYOffset + smallYOffset * reverseIndex, zOffset);
+                // make the y-offset smaller
+                return new Vector3(xOffset, startingYOffset + smallYOffset * index, zOffset);
             }
             else
             {
-                return new Vector3(xOffset, startingYOffset + smallYOffset * (cardListCount - 1 - maxFullReactorCards) + largeYOffset * (maxFullReactorCards - index), zOffset);
+                // add the needed number of small y-offsets in addition to a number of large y-offsets
+                return new Vector3(xOffset, startingYOffset + smallYOffset * numSmallCards + largeYOffset * (index - numSmallCards), zOffset);
             }
         }
         else
         {
-            return new Vector3(xOffset, startingYOffset + largeYOffset * reverseIndex, zOffset);
+            return new Vector3(xOffset, startingYOffset + largeYOffset * index, zOffset);
         }
     }
 
@@ -267,19 +289,14 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         {
             if (foundationScript.CardList.Count != 0)
             {
-                CardScript topCardScript = foundationScript.CardList[0].GetComponent<CardScript>();
-                if (topCardScript.CardSuitIndex == reactorSuitIndex)
+                CardScript topCardScript = foundationScript.CardList[^1].GetComponent<CardScript>();
+                if (topCardScript.Card.Suit.Equals(ReactorSuit))
                 {
-                    output += topCardScript.CardReactorValue;
+                    output += topCardScript.Card.Rank.ReactorValue;
                 }
             }
         }
 
         return output;
-    }
-
-    private void ChangeSuitGlow(Color newColor)
-    {
-        suitGlowSR.color = newColor;
     }
 }

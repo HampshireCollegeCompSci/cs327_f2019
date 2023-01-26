@@ -17,30 +17,29 @@ public class WinSequence : MonoBehaviour
     [SerializeField]
     private Sprite[] foodObjects;
 
+    // food objects
+    private Vector3 startPosition;
+    private Vector3 endPosition;
+    private Vector2 startScale;
+    private Vector2 endScale;
+
     private Vector3 babyScale;
-    private Vector3 foodTargetPosition;
-    private Vector3 targetScale;
+    private float babyScaleIncrease;
+    private const float feedDuration = 0.85f;
 
     public void StartWinSequence()
     {
-        byte matches = (byte)(Config.Instance.matchCounter / 2);
-        if (matches > 10)
-        {
-            matches = 10;
-        }
-        else if (matches == 0)
+        if (Config.Instance.matchCounter == 0)
         {
             Debug.LogWarning("zero matches detected");
             return;
         }
 
-        if (matches > foodObjects.Length)
-        {
-            throw new System.ArgumentException("matchNumber cannot be greater than foodObjects.Length");
-        }
+        int percentage = Config.Instance.matchCounter * 100 / 26;
+        int amount = foodObjects.Length * percentage / 100;
 
         StartCoroutine(SpaceBabyAnimationDelay());
-        StartCoroutine(Feed(matches));
+        StartCoroutine(Feed(amount));
     }
 
     private IEnumerator SpaceBabyAnimationDelay()
@@ -51,9 +50,15 @@ public class WinSequence : MonoBehaviour
 
     private IEnumerator Feed(int matches)
     {
+        Debug.Log($"feeding the space baby: {matches}");
+
+        startPosition = spaceShip.transform.position;
+        endPosition = foodTarget.position;
+        startScale = Vector2.zero;
+        endScale = new(20, 20);
+
         babyScale = spaceBabyController.gameObject.transform.localScale;
-        foodTargetPosition = foodTarget.position;
-        targetScale = new Vector3(0.2f, 0.2f, 1);
+        babyScaleIncrease = babyScale.x / 40;
 
         for (int i = 0; i < matches; i++)
         {
@@ -62,7 +67,7 @@ public class WinSequence : MonoBehaviour
         }
 
         yield return new WaitForSeconds(0.7f);
-        if (matches == 10)
+        if (Config.Instance.matchCounter == 26)
         {
             StartCoroutine(WinTransition());
         }
@@ -74,53 +79,37 @@ public class WinSequence : MonoBehaviour
 
     private IEnumerator FoodMove(Sprite foodSprite)
     {
-        GameObject foody = Instantiate(foodPrefab, spaceShip.transform.position, Quaternion.identity, foodTarget);
-        foody.transform.localScale = Vector3.zero;
+        GameObject foody = Instantiate(foodPrefab, spaceShip.transform.position, Quaternion.identity, spaceShip.transform);
         foody.GetComponent<SpriteRenderer>().sprite = foodSprite;
-        foody.GetComponent<SpriteRenderer>().sortingOrder = 2;
 
-        while (foody.transform.position != foodTargetPosition)
+        float timeElapsed = 0;
+        while (timeElapsed < feedDuration)
         {
-            foody.transform.position = Vector3.MoveTowards(foody.transform.position, foodTargetPosition,
-                Time.deltaTime * 2);
-            foody.transform.localScale = Vector3.MoveTowards(foody.transform.localScale, targetScale,
-                Time.deltaTime);
+            float t = timeElapsed / feedDuration;
+            foody.transform.position = Vector3.Lerp(startPosition, endPosition, t);
+            foody.transform.localScale = Vector2.Lerp(startScale, endScale, t);
+            timeElapsed += Time.deltaTime;
             yield return null;
         }
+        foody.transform.position = endPosition;
+        foody.transform.localScale= endScale;
+        yield return null;
 
         spaceBabyController.PlayEatSound();
         Destroy(foody);
-        babyScale.x += 0.02f;
+        babyScale.x += babyScaleIncrease;
         spaceBabyController.gameObject.transform.localScale = babyScale;
     }
 
     private IEnumerator WinTransition()
     {
         spaceBabyController.BabyHappy();
-
         panelOverlay.SetActive(true);
         Image panelImage = panelOverlay.GetComponent<Image>();
-        Color panelColor = Config.GameValues.fadeLightColor;
-        panelColor.a = 0;
-        panelImage.color = panelColor;
-
-        while (panelColor.a < 1)
-        {
-            panelColor.a += Time.deltaTime * 0.75f;
-            panelImage.color = panelColor;
-            yield return null;
-        }
-
+        yield return Animate.FadeImage(panelImage, GameValues.FadeColors.grayFadeIn, GameValues.AnimationDurataions.gameSummaryBabyFade);
         spaceBabyController.gameObject.SetActive(false);
         babyPlanet.SetActive(true);
-
-        while (panelColor.a > 0)
-        {
-            panelColor.a -= Time.deltaTime * 0.75f;
-            panelImage.color = panelColor;
-            yield return null;
-        }
-
+        yield return Animate.FadeImage(panelImage, GameValues.FadeColors.grayFadeOut, GameValues.AnimationDurataions.gameSummaryBabyFade);
         panelOverlay.SetActive(false);
     }
 }

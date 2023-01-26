@@ -43,7 +43,7 @@ public class PlayAgainSequence : MonoBehaviour
         sequenceDone = false;
         SpaceBabyController.Instance = null;
 
-        SceneManager.LoadSceneAsync(Constants.gameplayScene, LoadSceneMode.Additive);
+        SceneManager.LoadSceneAsync(Constants.ScenesNames.gameplay, LoadSceneMode.Additive);
 
         MusicController.Instance.FadeMusicOut();
         StartCoroutine(FadeOut());
@@ -61,10 +61,10 @@ public class PlayAgainSequence : MonoBehaviour
         if (gameplayLoaded && sequenceDone)
         {
             Debug.Log("unloading summary scene");
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.gameplayScene));
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.ScenesNames.gameplay));
             cameraObject.SetActive(false);
             StartGame.Instance.TransitionToGamePlay();
-            SceneManager.UnloadSceneAsync(Constants.summaryScene);
+            SceneManager.UnloadSceneAsync(Constants.ScenesNames.summary);
             return true;
         }
         return false;
@@ -73,18 +73,9 @@ public class PlayAgainSequence : MonoBehaviour
     private IEnumerator FadeOut()
     {
         sequencePanel.SetActive(true);
-        Image panelImage = sequencePanel.GetComponent<Image>();
-        Color panelColor = Config.GameValues.fadeDarkColor;
-        panelColor.a = 0;
-        panelImage.color = panelColor;
-        yield return null;
-
-        while (panelColor.a < 1)
-        {
-            panelColor.a += Time.deltaTime * Config.GameValues.summaryTransitionSpeed;
-            panelImage.color = panelColor;
-            yield return null;
-        }
+        yield return Animate.FadeImage(sequencePanel.GetComponent<Image>(),
+            GameValues.FadeColors.backFadeIn,
+            GameValues.AnimationDurataions.playAgainFadeOut);
 
         winSequence.StopAllCoroutines();
         spaceBaby.GetComponent<SpaceBabyController>().StopAllCoroutines();

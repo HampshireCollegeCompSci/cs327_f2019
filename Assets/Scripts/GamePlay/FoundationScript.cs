@@ -9,55 +9,54 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
     [SerializeField]
     private bool _glowing;
     [SerializeField]
-    private byte _glowLevel;
+    private HighLightColor _glowColor;
 
+    private BoxCollider2D hitbox;
     private SpriteRenderer spriteRenderer;
 
     void Awake()
     {
-        cardList = new();
+        cardList = new(52);
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        hitbox = gameObject.GetComponent<BoxCollider2D>();
 
         _glowing = false;
-        _glowLevel = 0;
+        _glowColor = GameValues.Colors.normal;
     }
 
-    public List<GameObject> CardList
-    {
-        get => cardList;
-    }
+    public List<GameObject> CardList => cardList;
 
     public bool Glowing
     {
         get => _glowing;
         set
         {
-            if (value && !_glowing)
+            if (_glowing == value) return;
+            _glowing = value;
+            hitbox.enabled = value;
+            if (!value)
             {
-                _glowing = true;
-            }
-            else if (!value && _glowing)
-            {
-                _glowing = false;
-                GlowLevel = Constants.defaultHighlightColorLevel;
+                GlowColor = GameValues.Colors.normal;
             }
         }
     }
 
-    public byte GlowLevel
+    public HighLightColor GlowColor
     {
-        get => _glowLevel;
+        get => _glowColor;
         set
         {
-            if (value != _glowLevel)
-            {
-                _glowLevel = value;
-                spriteRenderer.color = Config.GameValues.highlightColors[value];
-            }
-
-            if (value != Constants.defaultHighlightColorLevel)
+            if (value.ColorLevel != Constants.ColorLevel.None)
             {
                 Glowing = true;
+            }
+
+            if (_glowColor.Equals(value)) return;
+            _glowColor = value;
+
+            if (Config.Instance.HintsEnabled)
+            {
+                spriteRenderer.color = value.Color;
             }
         }
     }
@@ -78,10 +77,10 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
     {
         if (cardList.Count != 0)
         {
-            cardList[0].GetComponent<CardScript>().Hologram = false;
+            cardList[^1].GetComponent<CardScript>().Hologram = false;
         }
 
-        cardList.Insert(0, card);
+        cardList.Add(card);
         card.transform.SetParent(gameObject.transform);
 
         SetCardPositions();
@@ -90,48 +89,48 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
     public void RemoveCard(GameObject card, bool showHolo)
     {
         RemoveCard(card);
-        if (cardList.Count != 0 && showHolo)
-        {
-            cardList[0].GetComponent<CardScript>().Hologram = true;
-        }
-    }
-
-    public void RemoveCard(GameObject card)
-    {
-        cardList.Remove(card);
 
         if (cardList.Count != 0)
         {
-            CardScript cardScript = cardList[0].GetComponent<CardScript>();
+            CardScript topCardScript = cardList[^1].GetComponent<CardScript>();
 
-            if (cardScript.Hidden)
+            if (topCardScript.Hidden)
             {
-                cardScript.Hidden = false;
+                topCardScript.Hidden = false;
 
                 // when the tutorial is active, disable moving the next top card so that
                 // we don't need to deal with some user interactions
                 if (Config.Instance.tutorialOn)
                 {
-                    cardScript.Obstructed = true;
+                    topCardScript.Obstructed = true;
                 }
                 else
                 {
-                    cardScript.HitBox = true;
+                    topCardScript.HitBox = true;
                 }
+            }
+
+            if (showHolo)
+            {
+                topCardScript.Hologram = true;
             }
         }
 
         SetCardPositions();
     }
 
+    public void RemoveCard(GameObject card)
+    {
+        cardList.RemoveAt(cardList.LastIndexOf(card));
+    }
+
     public void SetCardPositions()
     {
-        float zOffset = -0.1f;
+        float zOffset = 0;
         int hiddenCards = 0;
         float yOffset = 0;
 
-        int count = cardList.Count;
-        for (int i = count - 1; i >= 0; i--) // go backwards through the list
+        for (int i = 0; i < cardList.Count; i++)
         {
             // as we go through, place cards above and in-front the previous one
             cardList[i].transform.position = gameObject.transform.position + new Vector3(0, yOffset, zOffset);
@@ -139,24 +138,18 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
             if (cardList[i].GetComponent<CardScript>().Hidden)  // don't show hidden cards as much
             {
                 hiddenCards++;
-                if (count > 12)
+                yOffset += cardList.Count switch
                 {
-                    yOffset += 0.02f;
-                }
-                else if (count > 10)
-                {
-                    yOffset += 0.07f;
-                }
-                else
-                {
-                    yOffset += 0.15f;
-                }
+                    > 12 => 0.02f,
+                    > 10 => 0.07f,
+                    _ => 0.15f
+                };
             }
-            else if (hiddenCards != 0 && count > 16)
+            else if (hiddenCards != 0 && cardList.Count > 16)
             {
                 yOffset += 0.30f;
             }
-            else if (count - hiddenCards > 11)
+            else if (cardList.Count - hiddenCards > 11)
             {
                 yOffset += 0.30f;
             }
@@ -165,7 +158,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
                 yOffset += 0.33f;
             }
 
-            zOffset -= 0.05f;
+            zOffset -= 0.01f;
         }
     }
 
@@ -174,14 +167,19 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
         if (turnOn)
         {
             // will turn glowing on but not set the flag for it
-            // so that it will not be turned off later
-            GlowLevel = Constants.winHighlightColorLevel;
+            // so that it will not be turned off in the same frame
+            _glowColor = Config.Instance.CurrentColorMode.Match;
+            spriteRenderer.color = Config.Instance.CurrentColorMode.Match.Color;
             _glowing = false;
         }
         else
         {
             _glowing = true;
             Glowing = false;
+            if (!Config.Instance.HintsEnabled)
+            {
+                spriteRenderer.color = GameValues.Colors.normal.Color;
+            }
         }
     }
 }

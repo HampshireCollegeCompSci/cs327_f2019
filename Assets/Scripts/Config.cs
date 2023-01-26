@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Config : MonoBehaviour
 {
     // Singleton instance.
     public static Config Instance;
-    public static GameValues GameValues;
 
     // game settings
     public bool tutorialOn, nextCycleEnabled;
@@ -12,22 +13,23 @@ public class Config : MonoBehaviour
 
     public bool prettyColors;
 
-    public string currentDifficulty;
-    public int reactorLimit;
-    public int actionMax;
-
     // game values
-    public bool gamePaused;
     public bool gameOver;
     public bool gameWin;
 
     public int actions;
     public int score;
-    public byte consecutiveMatches;
+    public int consecutiveMatches;
 
     // long term tracking
     public int moveCounter;
-    public byte matchCounter;
+    public int matchCounter;
+
+    private ColorMode _currentColorMode;
+    private bool _hintsEnabled;
+
+    private Difficulty _currentDifficulty;
+    private int _selectedCardsLayer, _cardLayer;
 
     // Initialize the singleton instance.
     private void Awake()
@@ -39,14 +41,21 @@ public class Config : MonoBehaviour
             Instance = this;
 
             // These must be done in this order
-            // Load the game values from the file
-            LoadGameValues();
             // Setup the Vibration Package
             Vibration.Init();
             // Check Player Preferences
-            PlayerPrefKeys.CheckKeys();
+            PersistentSettings.TryCheckKeys();
+            // Check if the game state version needs updating and if the save file needs deleting
+            SaveFile.CheckNewGameStateVersion();
             // Set the application frame rate to what was saved
-            SetFrameRate();
+            Debug.Log($"setting frame rate to: {PersistentSettings.FrameRate}");
+            Application.targetFrameRate = PersistentSettings.FrameRate;
+
+            SetHints(PersistentSettings.HintsEnabled);
+            SetColorMode(GameValues.Colors.Modes.List[PersistentSettings.ColorMode]);
+
+            _selectedCardsLayer = SortingLayer.NameToID(Constants.SortingLayers.selectedCards);
+            _cardLayer = SortingLayer.NameToID(Constants.SortingLayers.card);
         }
         else if (Instance != this)
         {
@@ -54,74 +63,83 @@ public class Config : MonoBehaviour
         }
     }
 
-    public void SetDifficulty(int dif)
+    public bool HintsEnabled => _hintsEnabled;
+
+    public ColorMode CurrentColorMode => _currentColorMode;
+
+    public Difficulty CurrentDifficulty => _currentDifficulty;
+
+    public int SelectedCardsLayer => _selectedCardsLayer;
+
+    public int CardLayer => _cardLayer;
+
+    public void SetDifficulty(Difficulty dif)
     {
-        currentDifficulty = GameValues.difficulties[dif];
-        reactorLimit = GameValues.reactorLimits[dif];
-        actionMax = GameValues.moveLimits[dif];
+        Debug.Log($"setting difficulty to: {dif}");
+        _currentDifficulty = dif;
     }
 
     public void SetDifficulty(string dif)
     {
-        for (int i = 0; i < GameValues.difficulties.Length; i++)
+        for (int i = 0; i < GameValues.GamePlay.difficulties.Count; i++)
         {
-            if (dif.Equals(GameValues.difficulties[i]))
+            if (dif == GameValues.GamePlay.difficulties[i].Name)
             {
-                SetDifficulty(i);
+                SetDifficulty(GameValues.GamePlay.difficulties[i]);
                 return;
             }
         }
 
-        throw new System.Exception($"The difficulty \"{dif}\" was not found.");
+        throw new KeyNotFoundException($"the difficulty \"{dif}\" was not found");
     }
 
-    private void SetFrameRate()
+    public void SetTutorialOn(bool value)
     {
-        int targetFrameRate = PlayerPrefs.GetInt(Constants.frameRateKey, -1);
-        // the screen refresh rate must be divisible by the targeted frame rate
-        if (targetFrameRate != -1 && (Screen.currentResolution.refreshRate % targetFrameRate != 0))
+        tutorialOn = value;
+        _hintsEnabled = value || PersistentSettings.HintsEnabled;
+    }
+
+    public void SetColorMode(ColorMode value)
+    {
+        if (_currentColorMode.Equals(value)) return;
+        _currentColorMode = value;
+        TryUpdateGameplayColors();
+    }
+
+    public void SetHints(bool update)
+    {
+        if (_hintsEnabled == update) return;
+        _hintsEnabled = update;
+        TryUpdateGameplayColors();
+    }
+
+    private void TryUpdateGameplayColors()
+    {
+        if (!SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
+            return;
+
+        // reactor's score color
+        foreach (var reactor in UtilsScript.Instance.reactorScripts)
         {
-            Debug.LogWarning($"the screen refresh rate of {Screen.currentResolution.refreshRate} doesn't support the saved target frame rate.");
-            targetFrameRate = -1;
-            PlayerPrefs.SetInt(Constants.frameRateKey, targetFrameRate);
+            // toggle the alerts if they're on so that their text color is updated
+            if (reactor.Alert)
+            {
+                reactor.Alert = false;
+                reactor.Alert = true;
+            }
         }
-
-        Debug.Log($"setting target frame rate to: {targetFrameRate}");
-        Application.targetFrameRate = targetFrameRate;
-    }
-
-    private void LoadGameValues()
-    {
-        Debug.Log("loading gamevalues from json");
-        TextAsset jsonTextFile = Resources.Load<TextAsset>(Constants.gameValuesPath);
-        GameValues = JsonUtility.FromJson<GameValues>(jsonTextFile.ToString());
-
-        // Colors need to be reconstructed
-        GameValues.cardObstructedColor = CreateColor(GameValues.cardObstructedColorValues);
-
-        GameValues.matchHighlightColor = CreateColor(GameValues.matchHighlightColorValues);
-        GameValues.moveHighlightColor = CreateColor(GameValues.moveHighlightColorValues);
-        GameValues.overHighlightColor = CreateColor(GameValues.overHighlightColorValues);
-        GameValues.highlightColors = new Color[] {
-            Color.white,
-            GameValues.matchHighlightColor,
-            GameValues.moveHighlightColor,
-            GameValues.overHighlightColor,
-            Color.cyan
-        };
-
-        GameValues.pointColor = CreateColor(GameValues.pointColorValues);
-        GameValues.tutorialObjectHighlightColor = CreateColor(GameValues.tutorialObjectHighlightColorValues);
-        GameValues.fadeDarkColor = CreateColor(GameValues.fadeDarkColorValues);
-        GameValues.fadeLightColor = CreateColor(GameValues.fadeLightColorValues);
-    }
-
-    private Color CreateColor(float[] colorV)
-    {
-        if (colorV.Length != 4)
+        // actions colors
+        if (ActionCountScript.Instance.AlertLevel.ColorLevel != Constants.ColorLevel.None)
         {
-            throw new System.ArgumentException("the array of color values is not a lenght of 4");
+            // toggle the level so the updated color will take effect
+            Constants.ColorLevel level = ActionCountScript.Instance.AlertLevel.ColorLevel;
+            ActionCountScript.Instance.AlertLevel = GameValues.Colors.normal;
+            ActionCountScript.Instance.AlertLevel = level switch
+            {
+                Constants.ColorLevel.Move => CurrentColorMode.Move,
+                Constants.ColorLevel.Over => CurrentColorMode.Over,
+                _ => throw new System.ArgumentException($"the color level of {level} is not supported")
+            };
         }
-        return new Color(colorV[0], colorV[1], colorV[2], colorV[3]);
     }
 }

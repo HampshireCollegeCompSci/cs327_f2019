@@ -6,7 +6,7 @@
         set;
     }
 
-    byte GlowLevel
+    HighLightColor GlowColor
     {
         get;
         set;

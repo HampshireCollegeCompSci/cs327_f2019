@@ -4,68 +4,61 @@ using UnityEngine;
 public class CardScript : MonoBehaviour, IGlow
 {
     [SerializeField]
+    private Card _card;
+
+    [SerializeField]
     private Sprite cardFrontSprite, cardBackSprite, hologramFoodSprite, hologramComboSprite;
     [SerializeField]
     private GameObject values, suitObject, rankObject, glow, hologram, hologramFood;
 
+    private SpriteRenderer thisSR, hologramSR, hologramFoodSR, glowSR;
+    private Renderer[] renderers;
+    private BoxCollider2D thisBC2D;
+    private Animator hologramAnimator;
+
     [SerializeField]
-    private byte cardRank; // the number on the card, ace is 1 jack is 11 queen is 12 king is 13
-    [SerializeField]
-    private byte cardSuitIndex;
-    [SerializeField]
-    private byte cardID;
-    [SerializeField]
-    private byte cardReactorValue; // what the card is worth to the reactor jack, queen, king are all 10
+    private byte _cardID;
 
     [SerializeField]
     private bool _enabled, _hidden, _hitBox, _obstructed, _dragging;
     [SerializeField]
     private bool _hologram;
     [SerializeField]
-    private byte _hologramColorLevel;
+    private HighLightColor _hologramColor;
     [SerializeField]
     private bool _glowing;
     [SerializeField]
-    private byte _glowLevel;
+    private HighLightColor _glowColor;
 
     private Coroutine holoCoroutine;
+    private Color holoCoroutineColor;
     private Color originalColor;
-    private GameObject container;
+    private Color draggingColor;
+    private Constants.CardContainerType _currentContainerType;
+    private GameObject _container;
 
-    public byte CardRank
+    void Awake()
     {
-        get => cardRank;
+        thisSR = gameObject.GetComponent<SpriteRenderer>();
+        renderers = gameObject.GetComponentsInChildren<Renderer>(includeInactive: true);
+        thisBC2D = gameObject.GetComponent<BoxCollider2D>();
+        hologramSR = hologram.GetComponent<SpriteRenderer>();
+        hologramFoodSR = hologramFood.GetComponent<SpriteRenderer>();
+        glowSR = glow.GetComponent<SpriteRenderer>();
+        hologramAnimator = hologram.GetComponent<Animator>();
     }
 
-    public byte CardSuitIndex
-    {
-        get => cardSuitIndex;
-    }
+    public Card Card => _card;
 
-    public byte CardID
-    {
-        get => cardID;
-    }
+    public byte CardID => _cardID;
 
-    public byte CardReactorValue
-    {
-        get => cardReactorValue;
-    }
+    public Constants.CardContainerType CurrentContainerType => _currentContainerType;
 
-    public GameObject Container
-    {
-        get => container;
-    }
+    public GameObject Container => _container;
 
-    public GameObject Values
-    {
-        get => values;
-    }
+    public GameObject Values => values;
 
-    public GameObject HologramFood
-    {
-        get => hologramFood;
-    }
+    public GameObject HologramFood => hologramFood;
 
     /// <summary>
     /// The state of the card's existence.
@@ -77,7 +70,7 @@ public class CardScript : MonoBehaviour, IGlow
         {
             if (_enabled == value) return;
             _enabled = value;
-            gameObject.GetComponent<SpriteRenderer>().enabled = value;
+            thisSR.enabled = value;
             values.SetActive(value);
             if (!value)
             {
@@ -99,12 +92,12 @@ public class CardScript : MonoBehaviour, IGlow
             _hidden = value;
             if (value)
             {
-                gameObject.GetComponent<SpriteRenderer>().sprite = cardBackSprite;
+                thisSR.sprite = cardBackSprite;
                 HitBox = false;
             }
             else
             {
-                gameObject.GetComponent<SpriteRenderer>().sprite = cardFrontSprite;
+                thisSR.sprite = cardFrontSprite;
             }
             values.SetActive(!value);
         }
@@ -120,7 +113,7 @@ public class CardScript : MonoBehaviour, IGlow
         {
             if (_hitBox == value) return;
             _hitBox = value;
-            this.gameObject.GetComponent<BoxCollider2D>().enabled = value;
+            thisBC2D.enabled = value;
         }
     }
 
@@ -135,14 +128,7 @@ public class CardScript : MonoBehaviour, IGlow
             HitBox = !value;
             if (_obstructed == value) return;
             _obstructed = value;
-            if (value)
-            {
-                SetColor(Config.GameValues.cardObstructedColor);
-            }
-            else
-            {
-                SetColor(originalColor);
-            }
+            thisSR.color = value ? GameValues.Colors.cardObstructedColor : originalColor;
         }
     }
 
@@ -159,17 +145,14 @@ public class CardScript : MonoBehaviour, IGlow
             _dragging = value;
             if (value)
             {
-                Color newColor = originalColor;
-                newColor.a = Config.GameValues.selectedCardOpacity;
-
-                foreach (Renderer renderers in this.gameObject.GetComponentsInChildren<Renderer>())
+                foreach (Renderer renderers in renderers)
                 {
-                    renderers.material.color = newColor;
+                    renderers.material.color = draggingColor;
                 }
             }
             else
             {
-                foreach (Renderer renderers in this.gameObject.GetComponentsInChildren<Renderer>(includeInactive: true))
+                foreach (Renderer renderers in renderers)
                 {
                     renderers.material.color = originalColor;
                 }
@@ -195,9 +178,13 @@ public class CardScript : MonoBehaviour, IGlow
             {
                 holoCoroutine = StartCoroutine(StartHologram());
             }
-            else if (!value && _hologram && holoCoroutine != null)
+            else if (!value && _hologram)
             {
-                StopCoroutine(holoCoroutine);
+                if (holoCoroutine != null)
+                {
+                    StopCoroutine(holoCoroutine);
+                    holoCoroutine = null;
+                }
                 hologram.SetActive(false);
                 hologramFood.SetActive(false);
             }
@@ -209,29 +196,15 @@ public class CardScript : MonoBehaviour, IGlow
     /// <summary>
     /// The color level (translates to rgb color) of the card's hologram.
     /// </summary>
-    public byte HologramColorLevel
+    public HighLightColor HologramColor
     {
-        get => _hologramColorLevel;
+        get => _hologramColor;
         set
         {
-            if (_hologramColorLevel == value) return;
-
-            hologram.GetComponent<SpriteRenderer>().color = Config.GameValues.highlightColors[value];
-
-            SpriteRenderer hologramFoodSP = hologramFood.GetComponent<SpriteRenderer>();
-            hologramFoodSP.color = Config.GameValues.highlightColors[value];
-
-            if (value == Constants.matchHighlightColorLevel)
-            {
-                hologramFoodSP.sprite = hologramComboSprite;
-            }
-            else if (_hologramColorLevel == Constants.matchHighlightColorLevel)
-            {
-                hologramFoodSP.sprite = hologramFoodSprite;
-            }
-
-            // do this at the end
-            _hologramColorLevel = value;
+            if (_hologramColor == value) return;
+            _hologramColor = value;
+            hologramSR.color = value.Color;
+            hologramFoodSR.color = value.Color;
         }
     }
 
@@ -245,68 +218,63 @@ public class CardScript : MonoBehaviour, IGlow
         {
             if (_glowing == value) return;
             _glowing = value;
-            glow.SetActive(value);
+            if (Config.Instance.HintsEnabled)
+            {
+                glow.SetActive(value);
+            }
         }
     }
 
     /// <summary>
     /// The color level (translates to rgb color) of the card's glow.
     /// </summary>
-    public byte GlowLevel
+    public HighLightColor GlowColor
     {
-        get => _glowLevel;
+        get => _glowColor;
         set
         {
             Glowing = true;
-            if (_glowLevel == value) return;
-            if (value != _glowLevel)
-            {
-                _glowLevel = value;
-                glow.GetComponent<SpriteRenderer>().color = Config.GameValues.highlightColors[value];
-            }
+            if (_glowColor.Equals(value)) return;
+            _glowColor = value;
+            glowSR.color = value.Color;
         }
     }
 
-    public void SetUp(byte rank, byte suitIndex, Sprite suitSprite, Sprite hologramFoodSprite, Sprite hologramComboSprite)
+    public void SetUp(Card card, Sprite suitSprite, Sprite hologramFoodSprite, Sprite hologramComboSprite)
     {
-        cardRank = rank;
-        cardSuitIndex = suitIndex;
+        _card = card;
+        _currentContainerType = Constants.CardContainerType.None;
+        _container = null;
 
-        cardID = (byte)(rank + suitIndex * 13);
-        this.name = $"{Constants.suits[cardSuitIndex]}_{cardRank}";
+        _cardID = (byte)(card.Rank.Value + card.Suit.Index * 13);
+        this.name = $"{card.Suit.Name}_{card.Rank.Value}";
 
-        // reactor values, all face cards have a value of 10
-        cardReactorValue = (byte)(rank < 10 ? rank : 10);
-
-        hologramFood.GetComponent<SpriteRenderer>().sprite = hologramFoodSprite;
+        hologramFoodSR.sprite = hologramFoodSprite;
         this.hologramFoodSprite = hologramFoodSprite;
         this.hologramComboSprite = hologramComboSprite;
 
         // in-game appearance of the card's rank
         TextMesh rankText = rankObject.GetComponent<TextMesh>();
-        rankText.color = suitIndex > 1 ? Color.red : Color.black;
-        rankText.text = rank switch
-        {
-            1 => "A",
-            11 => "J",
-            12 => "Q",
-            13 => "K",
-            _ => rank.ToString()
-        };
+        rankText.color = card.Suit.Color;
+        rankText.text = card.Rank.Name;
 
         // setting up the in-game appearance of the card's suit
-        suitObject.GetComponent<SpriteRenderer>().sprite = suitSprite;
+        SetSuitSprite(suitSprite);
 
         if (Config.Instance.prettyColors)
         {
-            originalColor = new Color(Random.Range(0.4f, 1), Random.Range(0.4f, 1f), Random.Range(0.4f, 1f), 1);
-            // TODO: this needs to change
-            SetColor(originalColor);
+            originalColor = new Color(
+                Random.Range(0.4f, 1),
+                Random.Range(0.4f, 1),
+                Random.Range(0.4f, 1));
+            thisSR.color = originalColor;
         }
         else
         {
-            originalColor = Color.white;
+            originalColor = thisSR.color;
         }
+        draggingColor = originalColor;
+        draggingColor.a = GameValues.Colors.selectedCardOpacity;
 
         // initialized default values
         _enabled = true;
@@ -316,8 +284,8 @@ public class CardScript : MonoBehaviour, IGlow
         _hologram = false;
         _dragging = false;
         _glowing = false;
-        _glowLevel = 0;
-        _hologramColorLevel = 0;
+        _glowColor = GameValues.Colors.normal;
+        _hologramColor = GameValues.Colors.normal;
     }
 
     public void SetValuesToDefault()
@@ -333,6 +301,11 @@ public class CardScript : MonoBehaviour, IGlow
         HitBox = false;
     }
 
+    public void SetSuitSprite(Sprite update)
+    {
+        suitObject.GetComponent<SpriteRenderer>().sprite = update;
+    }
+
     /// <summary>
     /// Reveals the card without setting the flag that it is hidden (for undo purposes).
     /// </summary>
@@ -342,12 +315,15 @@ public class CardScript : MonoBehaviour, IGlow
         _hidden = true;
     }
 
-    /// <summary>
-    /// Sets the cards color, doesn't include hologram, glow, and values.
-    /// </summary>
-    public void SetColor(Color setTo)
+    public void MatchChangeFoodHologram(bool turnOn)
     {
-        this.gameObject.GetComponent<SpriteRenderer>().color = setTo;
+        hologramFoodSR.sprite = turnOn ? hologramComboSprite : hologramFoodSprite;
+        if (holoCoroutine != null)
+        {
+            Color temp = HologramColor.Color;
+            temp.a = holoCoroutineColor.a;
+            holoCoroutineColor = temp;
+        }
     }
 
     /// <summary>
@@ -355,25 +331,24 @@ public class CardScript : MonoBehaviour, IGlow
     /// </summary>
     public void MakeVisualOnly()
     {
-        gameObject.transform.localScale = new Vector3(Config.GameValues.draggedCardScale, Config.GameValues.draggedCardScale, 1);
-        container = null;
+        gameObject.transform.localScale = new Vector3(GameValues.Transforms.draggedCardScale, GameValues.Transforms.draggedCardScale, 1);
+        _container = null;
 
-        values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = UtilsScript.Instance.SelectedCardsLayer;
+        values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = Config.Instance.SelectedCardsLayer;
 
         foreach (Renderer renderers in this.gameObject.GetComponentsInChildren<Renderer>(includeInactive: true))
         {
-            renderers.sortingLayerID = UtilsScript.Instance.SelectedCardsLayer;
+            renderers.sortingLayerID = Config.Instance.SelectedCardsLayer;
             // TODO : A Unity bug requires this
             renderers.material.color = renderers.material.color;
         }
 
         // when picking up a card that has a hologram that's just starting up
         // make the dragged card's hologram have full alpha
-        SpriteRenderer holoSR = hologram.GetComponent<SpriteRenderer>();
-        Color holoColor = holoSR.color;
+        Color holoColor = hologramSR.color;
         holoColor.a = 1;
-        holoSR.color = holoColor;
-        hologramFood.GetComponent<SpriteRenderer>().color = holoColor;
+        hologramSR.color = holoColor;
+        hologramFoodSR.color = holoColor;
 
         HitBox = false;
     }
@@ -387,122 +362,103 @@ public class CardScript : MonoBehaviour, IGlow
     /// <param name="isCycle">is for a next cycle</param>
     /// <param name="isStack">is part of a foundation stack move</param>
     /// <param name="showHolo">show this card's hologram on final placement</param>
-    public void MoveCard(GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool showHolo = true)
+    public void MoveCard(Constants.CardContainerType newContainerType, GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool showHolo = true)
     {
         bool nextCardWasHidden = false;
-        if (Container != null)
+
+        switch (_currentContainerType)
         {
-            switch (Container.tag)
-            {
-                case Constants.foundationTag:
-                    if (doLog)
-                    {
-                        FoundationScript foundationScript = Container.GetComponent<FoundationScript>();
-                        if (foundationScript.CardList.Count > 1 && foundationScript.CardList[1].GetComponent<CardScript>().Hidden)
-                        {
-                            nextCardWasHidden = true;
-                        }
-                    }
-                    Container.GetComponent<FoundationScript>().RemoveCard(gameObject, showHolo: showHolo);
-                    break;
-                case Constants.reactorTag:
-                    Container.GetComponent<ReactorScript>().RemoveCard(gameObject);
-                    break;
-                case Constants.wastepileTag:
-                    if (!doLog || destination.CompareTag(Constants.deckTag))
-                    {
-                        WastepileScript.Instance.RemoveCard(gameObject, undoingOrDeck: true, showHolo: showHolo);
-                    }
-                    else
-                    {
-                        WastepileScript.Instance.RemoveCard(gameObject, showHolo: showHolo);
-                    }
-                    break;
-                case Constants.deckTag:
-                    DeckScript.Instance.RemoveCard(gameObject);
-                    break;
-                case Constants.matchedPileTag:
-                    MatchedPileScript.Instance.RemoveCard(gameObject);
-                    break;
-                case Constants.loadPileTag:
-                    LoadPileScript.Instance.RemoveCard(gameObject);
-                    break;
-                default:
-                    throw new System.Exception($"the card conatainer of {Container} is not supported");
-            }
+            case Constants.CardContainerType.None:
+                break;
+            case Constants.CardContainerType.Foundation:
+                FoundationScript foundationScript = _container.GetComponent<FoundationScript>();
+                if (doLog && foundationScript.CardList.Count > 1 && foundationScript.CardList[^2].GetComponent<CardScript>().Hidden)
+                {
+                    nextCardWasHidden = true;
+                }
+                foundationScript.RemoveCard(gameObject, showHolo: showHolo);
+                break;
+            case Constants.CardContainerType.Reactor:
+                _container.GetComponent<ReactorScript>().RemoveCard(gameObject);
+                break;
+            case Constants.CardContainerType.WastePile:
+                if (!doLog || newContainerType == Constants.CardContainerType.Deck)
+                {
+                    WastepileScript.Instance.RemoveCard(gameObject, undoingOrDeck: true, showHolo: showHolo);
+                }
+                else
+                {
+                    WastepileScript.Instance.RemoveCard(gameObject, showHolo: showHolo);
+                }
+                break;
+            case Constants.CardContainerType.Deck:
+                DeckScript.Instance.RemoveCard(gameObject);
+                break;
+            case Constants.CardContainerType.MatchedPile:
+                MatchedPileScript.Instance.RemoveCard(gameObject);
+                break;
+            case Constants.CardContainerType.Loadpile:
+                LoadPileScript.Instance.RemoveCard(gameObject);
+                break;
+            default:
+                throw new System.Exception($"the card conatainer of {_currentContainerType} is not supported");
         }
 
-        switch (destination.tag)
+        switch (newContainerType)
         {
-            case Constants.foundationTag:
+            case Constants.CardContainerType.Foundation:
                 if (doLog)
                 {
-                    if (isStack)
-                    {
-                        UndoScript.Instance.LogMove(gameObject, Constants.stackLogMove, isAction, nextCardWasHidden);
-                    }
-                    else
-                    {
-                        UndoScript.Instance.LogMove(gameObject, Constants.moveLogMove, isAction, nextCardWasHidden);
-                    }
+                    UndoScript.Instance.LogMove(gameObject, _currentContainerType, _container, (isStack ? Constants.LogMoveType.Stack : Constants.LogMoveType.Move), isAction, nextCardWasHidden);
                 }
                 destination.GetComponent<FoundationScript>().AddCard(gameObject, showHolo: showHolo);
                 break;
-            case Constants.reactorTag:
+            case Constants.CardContainerType.Reactor:
                 if (doLog)
                 {
-                    if (isCycle)
-                    {
-                        UndoScript.Instance.LogMove(gameObject, Constants.cycleLogMove, true, nextCardWasHidden);
-                    }
-                    else
-                    {
-                        UndoScript.Instance.LogMove(gameObject, Constants.moveLogMove, isAction, nextCardWasHidden);
-                    }
+                    UndoScript.Instance.LogMove(gameObject, _currentContainerType, _container, (isCycle ? Constants.LogMoveType.Cycle : Constants.LogMoveType.Move), true, nextCardWasHidden);
                 }
                 destination.GetComponent<ReactorScript>().AddCard(gameObject);
                 break;
-            case Constants.wastepileTag:
+            case Constants.CardContainerType.WastePile:
                 if (doLog)
                 {
                     // for undoing a match that goes into the wastepile
-                    if (Container.CompareTag(Constants.foundationTag))
+                    if (_currentContainerType == Constants.CardContainerType.Foundation)
                     {
-                        UndoScript.Instance.LogMove(gameObject, Constants.moveLogMove, isAction, nextCardWasHidden);
+                        UndoScript.Instance.LogMove(gameObject, _currentContainerType, _container, Constants.LogMoveType.Move, isAction, nextCardWasHidden);
                     }
                     else
                     {
-                        UndoScript.Instance.LogMove(gameObject, Constants.drawLogMove, isAction);
+                        UndoScript.Instance.LogMove(gameObject, _currentContainerType, _container, Constants.LogMoveType.Draw, isAction);
                     }
                 }
 
                 WastepileScript.Instance.AddCard(gameObject, showHolo: showHolo);
                 break;
-            case Constants.deckTag:
+            case Constants.CardContainerType.Deck:
                 if (doLog)
                 {
-                    UndoScript.Instance.LogMove(gameObject, Constants.deckresetLogMove, isAction);
+                    UndoScript.Instance.LogMove(gameObject, _currentContainerType, _container, Constants.LogMoveType.Deckreset, isAction);
                 }
                 DeckScript.Instance.AddCard(gameObject);
                 break;
-            case Constants.matchedPileTag:
+            case Constants.CardContainerType.MatchedPile:
                 if (doLog)
                 {
-                    UndoScript.Instance.LogMove(gameObject, Constants.matchLogMove, isAction, nextCardWasHidden);
+                    UndoScript.Instance.LogMove(gameObject, _currentContainerType, _container, Constants.LogMoveType.Match, isAction, nextCardWasHidden);
                 }
                 MatchedPileScript.Instance.AddCard(gameObject);
                 break;
-            case Constants.loadPileTag:
-                if (doLog)
-                {
-                    UndoScript.Instance.LogMove(gameObject, Constants.matchLogMove, isAction, nextCardWasHidden);
-                }
+            case Constants.CardContainerType.Loadpile:
                 LoadPileScript.Instance.AddCard(gameObject);
                 break;
             default:
-                throw new System.Exception($"the card destination of {destination} is not supported");
+                throw new System.Exception($"the card destination of {newContainerType} is not supported");
         }
-        container = destination;
+
+        _currentContainerType = newContainerType;
+        _container = destination;
     }
 
     /// <summary>
@@ -514,22 +470,23 @@ public class CardScript : MonoBehaviour, IGlow
         hologramFood.SetActive(true);
 
         // start the animation at a random frame
-        hologram.GetComponent<Animator>().Play(0, -1, Random.Range(0.0f, 1.0f));
+        hologramAnimator.Play(0, -1, Random.Range(0.0f, 1.0f));
 
-        SpriteRenderer holoSR = hologram.GetComponent<SpriteRenderer>();
-        SpriteRenderer objectSR = hologramFood.GetComponent<SpriteRenderer>();
-        Color holoColor = holoSR.color;
-        holoColor.a = 0;
-        holoSR.color = holoColor;
-        objectSR.color = holoColor;
-        yield return null;
+        holoCoroutineColor = hologramSR.color;
 
-        while (holoColor.a < 1)
+        float duration = GameValues.AnimationDurataions.cardHologramFadeIn;
+        float timeElapsed = 0;
+        while (timeElapsed < duration)
         {
-            holoColor.a += Time.deltaTime * 0.5f;
-            holoSR.color = holoColor;
-            objectSR.color = holoColor;
+            holoCoroutineColor.a = Mathf.Lerp(0, 1, timeElapsed / duration);
+            hologramSR.color = holoCoroutineColor;
+            hologramFoodSR.color = holoCoroutineColor;
+            timeElapsed += Time.deltaTime;
             yield return null;
         }
+        holoCoroutineColor.a = 1;
+        hologramSR.color = holoCoroutineColor;
+        hologramFoodSR.color = holoCoroutineColor;
+        holoCoroutine = null;
     }
 }

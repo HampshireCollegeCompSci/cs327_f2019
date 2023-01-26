@@ -59,18 +59,9 @@ public class SummaryTransition : MonoBehaviour
     private IEnumerator FadeIn()
     {
         transitionPanel.SetActive(true);
-        Image panelImage = transitionPanel.GetComponent<Image>();
-        Color panelColor = Config.Instance.gameWin ? Config.GameValues.fadeLightColor : Config.GameValues.fadeDarkColor;
-        panelColor.a = 1;
-        panelImage.color = panelColor;
-        yield return null;
-
-        while (panelColor.a > 0)
-        {
-            panelColor.a -= Time.deltaTime * Config.GameValues.summaryTransitionSpeed;
-            panelImage.color = panelColor;
-            yield return null;
-        }
+        yield return Animate.FadeImage(transitionPanel.GetComponent<Image>(),
+            Config.Instance.gameWin ? GameValues.FadeColors.grayFadeOut : GameValues.FadeColors.blackFadeOut,
+            GameValues.AnimationDurataions.summaryFadeIn);
         transitionPanel.SetActive(false);
 
         if (Config.Instance.gameWin)
@@ -118,5 +109,8 @@ public class SummaryTransition : MonoBehaviour
         SoundEffectsController.Instance.ExplosionSound();
         spaceShipObject.GetComponent<Image>().sprite = spaceShipDebrisSprite;
         spaceShipObject.transform.localScale = new Vector3(1.5f, 1.5f, 1);
+
+        yield return new WaitForSeconds(1);
+        Destroy(explosions[3]);
     }
 }

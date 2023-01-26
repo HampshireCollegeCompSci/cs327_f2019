@@ -35,11 +35,9 @@ public class GameLoader : MonoBehaviour
         suitSpritesToUse = GetSuitSprites();
         SetRectorSuitSprites(suitSpritesToUse);
 
-        byte suitIndex = 0;
-        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        for (int i = 0; i < 4; i++)
         {
-            reactorScript.SetReactorSuitIndex(suitIndex);
-            suitIndex++;
+            UtilsScript.Instance.reactorScripts[i].SetReactorSuit(GameValues.GamePlay.suits[i]);
         }
 
         Config.Instance.gameOver = false;
@@ -48,7 +46,11 @@ public class GameLoader : MonoBehaviour
         // Figure out what kinda game to start
         if (Config.Instance.tutorialOn)
         {
-            LoadTutorial(Constants.tutorialStateStartFileName, gameStart: true);
+            if (Config.Instance.prettyColors)
+            {
+                Config.Instance.prettyColors = false;
+            }
+            LoadTutorial(Constants.Tutorial.tutorialStateStartFileName, gameStart: true);
         }
         else if (Config.Instance.continuing)
         {
@@ -60,10 +62,10 @@ public class GameLoader : MonoBehaviour
             {
                 StateLoader.Instance.LoadSaveState();
             }
-            catch
+            catch (Exception e)
             {
-                Debug.LogError("failed to load the save state");
-                SaveState.Delete();
+                Debug.LogError("failed to load the save state: " + e);
+                SaveFile.Delete();
                 return false;
             }
         }
@@ -72,6 +74,10 @@ public class GameLoader : MonoBehaviour
             StartNewGame(GetNewCards());
         }
 
+        if (Config.Instance.prettyColors)
+        {
+            Config.Instance.prettyColors = false;
+        }
         return true;
     }
 
@@ -97,8 +103,6 @@ public class GameLoader : MonoBehaviour
 
     public void RestartGame()
     {
-        Config.Instance.gamePaused = true;
-
         List<GameObject> cards = GetAllCards();
         MoveCardsToLoadPile(cards);
         foreach (GameObject card in cards)
@@ -106,38 +110,48 @@ public class GameLoader : MonoBehaviour
             card.GetComponent<CardScript>().SetValuesToDefault();
         }
         StartNewGame(cards);
+    }
 
-        Config.Instance.gamePaused = false;
+    public void ChangeSuitSprites()
+    {
+        Debug.Log("changing suit sprites");
+        Sprite[] suitSprites = GetSuitSprites();
+        foreach (GameObject card in GetAllCards())
+        {
+            CardScript cs = card.GetComponent<CardScript>();
+            cs.SetSuitSprite(suitSprites[cs.Card.Suit.Index]);
+        }
+        SetRectorSuitSprites(suitSprites);
     }
 
     private List<GameObject> GetNewCards()
     {
-        List<GameObject> newCards = new();
+        List<GameObject> newCards = new(52);
 
         // order: spade ace, 2, 3... 10, jack, queen, king, clubs... diamonds... hearts
         int hFSIndex = 0; // used for assigning holograms
-        for (byte suit = 0; suit < 4; suit++) // order: spades, clubs, diamonds, hearts
+        foreach (Suit suit in GameValues.GamePlay.suits)
         {
-            for (byte rank = 1; rank < 14; rank++) // card num: 1 - 13
+            foreach (Rank rank in GameValues.GamePlay.ranks)
             {
                 GameObject newCard = Instantiate(cardPrefab, this.gameObject.transform);
 
                 Sprite hologramFoodSprite, hologramComboSprite;
                 // setting up the cards reactor value, in-game appearance, and hologram sprites
-                if (rank < 10)
+                if (rank.Value < 10)
                 {
                     hologramFoodSprite = holograms[hFSIndex];
-                    hologramComboSprite = suit < 2 ? combinedHolograms[0] : combinedHolograms[5];
+                    hologramComboSprite = suit.Index < 2 ? combinedHolograms[0] : combinedHolograms[5];
                 }
                 else
                 {
                     hFSIndex++;
                     // all cards >10 have fancy holograms, this is a complex way of assigning them
                     hologramFoodSprite = holograms[hFSIndex];
-                    hologramComboSprite = suit < 2 ? combinedHolograms[rank - 9] : combinedHolograms[rank - 4];
+                    hologramComboSprite = suit.Index < 2 ? combinedHolograms[rank.Value - 9] : combinedHolograms[rank.Value - 4];
                 }
 
-                newCard.GetComponent<CardScript>().SetUp(rank, suit, suitSpritesToUse[suit], hologramFoodSprite, hologramComboSprite);
+                newCard.GetComponent<CardScript>().SetUp(new Card(suit, rank), suitSpritesToUse[suit.Index], hologramFoodSprite, hologramComboSprite);
                 newCards.Add(newCard);
             }
             hFSIndex++;
@@ -148,7 +162,7 @@ public class GameLoader : MonoBehaviour
 
     private List<GameObject> GetAllCards()
     {
-        List<GameObject> cards = new();
+        List<GameObject> cards = new(52);
 
         foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
@@ -170,8 +184,9 @@ public class GameLoader : MonoBehaviour
         // the game difficultuy should already be set to what is desired for things to work properly
 
         // remove old stuff
-        UndoScript.Instance.ClearMoveLog();
-        SaveState.Delete();
+        UndoScript.Instance.GameStart();
+        StateLoader.Instance.GameStart();
+        SaveFile.Delete();
 
         // reset game values
         Config.Instance.consecutiveMatches = 0;
@@ -181,7 +196,7 @@ public class GameLoader : MonoBehaviour
         ScoreScript.Instance.SetScore(0);
 
         Config.Instance.actions = 0;
-        UtilsScript.Instance.UpdateActions(0, startingGame: true);
+        Actions.UpdateActions(0, startingGame: true);
 
         foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
         {
@@ -189,7 +204,7 @@ public class GameLoader : MonoBehaviour
             reactorScript.Alert = false;
         }
 
-        ActionCountScript.Instance.TurnSirenOff();
+        ActionCountScript.Instance.AlertLevel = GameValues.Colors.normal;
 
         cards = ShuffleCards(cards);
         cards = SetUpFoundations(cards);
@@ -201,16 +216,10 @@ public class GameLoader : MonoBehaviour
     private List<GameObject> ShuffleCards(List<GameObject> cards)
     {
         System.Random rand = new();
-        int count = cards.Count;
-        int length = count - 1;
-        int j;
-        GameObject temp;
-        for (int i = 0; i < length; i++)
+        for (int i = 0; i < cards.Count; i++)
         {
-            j = rand.Next(i, count);
-            temp = cards[i];
-            cards[i] = cards[j];
-            cards[j] = temp;
+            int j = rand.Next(i, cards.Count);
+            (cards[j], cards[i]) = (cards[i], cards[j]);
         }
         return cards;
     }
@@ -220,26 +229,26 @@ public class GameLoader : MonoBehaviour
         CardScript currentCardScript;
         foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
         {
-            for (int i = 0; i < Config.GameValues.foundationStartingSize - 1; i++)
+            for (int i = 0; i < GameValues.GamePlay.foundationStartingSize - 1; i++)
             {
-                currentCardScript = cards[0].GetComponent<CardScript>();
-                currentCardScript.MoveCard(foundationScript.gameObject, doLog: false, showHolo: false);
+                currentCardScript = cards[^1].GetComponent<CardScript>();
+                currentCardScript.MoveCard(Constants.CardContainerType.Foundation, foundationScript.gameObject, doLog: false, showHolo: false);
                 currentCardScript.Hidden = true;
-                cards.RemoveAt(0);
+                cards.RemoveAt(cards.Count - 1);
             }
 
             // adding and revealing the top card of the foundation
-            currentCardScript = cards[0].GetComponent<CardScript>();
-            currentCardScript.MoveCard(foundationScript.gameObject, doLog: false);
-            cards.RemoveAt(0);
+            currentCardScript = cards[^1].GetComponent<CardScript>();
+            currentCardScript.MoveCard(Constants.CardContainerType.Foundation, foundationScript.gameObject, doLog: false);
+            cards.RemoveAt(cards.Count - 1);
         }
 
         // for testing out max foundation stack size
         //for (int i = 0; i < 12; i++)
         //{
-        //    currentCardScript = cards[0].GetComponent<CardScript>();
+        //    currentCardScript = cards[^1].GetComponent<CardScript>();
         //    currentCardScript.MoveCard(UtilsScript.Instance.foundations[0], doLog: false);
-        //    cards.RemoveAt(0);
+        //    cards.RemoveAt(cards.Count - 1);
         //}
 
         return cards;
@@ -249,7 +258,7 @@ public class GameLoader : MonoBehaviour
     {
         foreach (GameObject card in cards)
         {
-            card.GetComponent<CardScript>().MoveCard(DeckScript.Instance.gameObject, doLog: false);
+            card.GetComponent<CardScript>().MoveCard(Constants.CardContainerType.Deck, DeckScript.Instance.gameObject, doLog: false);
         }
     }
 
@@ -257,23 +266,14 @@ public class GameLoader : MonoBehaviour
     {
         foreach (GameObject card in cards)
         {
-            card.GetComponent<CardScript>().MoveCard(LoadPileScript.Instance.gameObject, doLog: false, isAction: false);
+            card.GetComponent<CardScript>().MoveCard(Constants.CardContainerType.Loadpile, LoadPileScript.Instance.gameObject, doLog: false, isAction: false);
         }
     }
 
     private Sprite[] GetSuitSprites()
     {
-        // getting user setting
-        if (bool.TryParse(PlayerPrefs.GetString(Constants.foodSuitsEnabledKey), out bool isOn))
-        { }
-        else
-        {
-            // unable to parse
-            isOn = false;
-        }
-
         // the food sprites start at index 0, classic at 4
-        int suitSpritesIndex = isOn ? 0 : 4;
+        int suitSpritesIndex = PersistentSettings.FoodSuitsEnabled ? 0 : 4;
 
         // getting a subset list of suit sprites to use for the token/cards
         Sprite[] suitSpritesSubset = new Sprite[4];

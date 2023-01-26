@@ -1,40 +1,67 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-[System.Serializable]
-public class GameState
+[Serializable]
+public class GameState<T>
 {
-    public List<byte> wastePile;
-    public List<byte> deck;
-    public List<byte> matches;
-    public List<FoundationCards> foundations;
-    public List<ReactorCards> reactors;
-    public List<SaveMove> moveLog;
-    public int score;
-    public byte consecutiveMatches;
+    public string difficulty;
     public int moveCounter;
     public int actions;
-    public string difficulty;
+    public int score;
+    public int consecutiveMatches;
+    public ReactorCards[] reactors;
+    public FoundationCards[] foundations;
+    public List<T> wastePile;
+    public List<T> deck;
+    public List<T> matches;
+    public List<SaveMove> moveLog;
+
+    [Serializable]
+    public class ReactorCards
+    {
+        public List<T> cards;
+
+        public ReactorCards()
+        {
+            cards = new List<T>();
+        }
+    }
+
+    [Serializable]
+    public class FoundationCards
+    {
+        public List<T> unhidden;
+        public List<T> hidden;
+
+        public FoundationCards()
+        {
+            unhidden = new List<T>();
+            hidden = new List<T>();
+        }
+    }
+
+    public GameState()
+    {
+        reactors = new ReactorCards[4];
+        for (int i = 0; i < reactors.Length; i++)
+        {
+            reactors[i] = new ReactorCards();
+        }
+        foundations = new FoundationCards[4];
+        for (int i = 0; i < foundations.Length; i++)
+        {
+            foundations[i] = new FoundationCards();
+        }
+    }
 }
 
-[System.Serializable]
-public class FoundationCards
-{
-    public List<byte> hidden;
-    public List<byte> unhidden;
-}
-
-[System.Serializable]
-public class ReactorCards
-{
-    public List<byte> cards;
-}
-
-[System.Serializable]
+[Serializable]
 public class SaveMove
 {
     public byte c;
-    public int o;
-    public byte m;
+    public Constants.CardContainerType t;
+    public int i;
+    public Constants.LogMoveType m;
     public byte h;
     public byte a;
     public int r;

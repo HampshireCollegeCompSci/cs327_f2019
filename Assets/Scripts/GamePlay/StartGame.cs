@@ -36,9 +36,6 @@ public class StartGame : MonoBehaviour
 
     private void Start()
     {
-        // pause the game until the game is loaded and the transition is complete
-        Config.Instance.gamePaused = true;
-
         // load the game to the point that it can be played
         if (!GameLoader.Instance.LoadGame())
         {
@@ -90,19 +87,8 @@ public class StartGame : MonoBehaviour
     {
         Image fadeInScreen = this.gameObject.GetComponent<Image>();
         fadeInScreen.enabled = true;
-        Color fadeColor = Config.GameValues.fadeDarkColor;
-        fadeColor.a = 1;
-        fadeInScreen.color = fadeColor;
-        yield return null;
-
-        while (fadeColor.a > 0)
-        {
-            fadeColor.a -= Time.deltaTime * Config.GameValues.startGameFadeInSpeed;
-            fadeInScreen.color = fadeColor;
-            yield return null;
-        }
-
+        yield return Animate.FadeImage(fadeInScreen, GameValues.FadeColors.blackFadeOut, GameValues.AnimationDurataions.startGameFadeIn);
         fadeInScreen.enabled = false;
-        Config.Instance.gamePaused = false;
+        UtilsScript.Instance.InputStopped = false;
     }
 }

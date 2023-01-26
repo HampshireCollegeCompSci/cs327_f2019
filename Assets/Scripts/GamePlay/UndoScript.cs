@@ -31,22 +31,22 @@ public class UndoScript : MonoBehaviour
         moveLog = newMoves;
     }
 
-    public void ClearMoveLog()
+    public void GameStart()
     {
         moveLog.Clear();
-        StateLoader.Instance.ClearSaveMoveLog();
     }
 
     /*
      *logMove takes a number of  paramaters, detects if the card below the moved card was hidden, then logs the move.
      */
-    public void LogMove(GameObject card, byte moveType, bool isAction = true, bool nextCardWasHidden = false)
+    public void LogMove(GameObject card, Constants.CardContainerType cardContainer, GameObject origin, Constants.LogMoveType moveType, bool isAction = true, bool nextCardWasHidden = false)
     {
         //create the log of the move
         Move move = new()
         {
             card = card,
-            origin = card.GetComponent<CardScript>().Container,
+            containerType = cardContainer,
+            origin = origin,
             moveType = moveType,
             nextCardWasHidden = nextCardWasHidden,
             isAction = isAction,
@@ -59,10 +59,16 @@ public class UndoScript : MonoBehaviour
         return;
     }
 
-    /*
-     *undo is the function which reads from the moveLog and resets cards, score, moves, etc to their old state. 
-     */
-    public void Undo()
+    [SerializeField]
+    private void UndoButton()
+    {
+        if (UtilsScript.Instance.InputStopped) return;
+        Debug.Log("undo button");
+        SoundEffectsController.Instance.UndoPressSound();
+        Undo();
+    }
+
+    private void Undo()
     {
         if (moveLog.Count != 0) //only run if there's something in the stack
         {
@@ -70,41 +76,36 @@ public class UndoScript : MonoBehaviour
             Move lastMove;
             switch (moveLog.Peek().moveType)
             {
-                case Constants.stackLogMove:
-                    // list goes from bottom token to top in original stack
-                    List<Move> undoList = new()
-                    {
-                        moveLog.Pop() // this is the top token of the stack
-                    };
+                case Constants.LogMoveType.Stack:
+                    // the undoList is ordered such that [0] is the top of the stack
+                    Move topCardMove = moveLog.Pop();
+
+                    List<Move> undoList = new(13) { topCardMove };
                     StateLoader.Instance.RemoveMove();
 
-                    int moveNumber = undoList[0].moveNum;
+                    int moveNumber = topCardMove.moveNum;
                     while (moveLog.Count != 0 && moveLog.Peek().moveNum == moveNumber)
                     {
-                        undoList.Insert(0, moveLog.Pop());
+                        undoList.Add(moveLog.Pop());
                         StateLoader.Instance.RemoveMove();
                     }
 
-                    GameObject newFoundation = undoList[0].origin;
-
-                    // cards are removed bottom to top when moving stacks and
-                    // nextCardWasHidden expects that it's token was on the top (index 0) of the stack
-                    // therefore, the top of the stack is the only card that will know if the stack sat on a hidden card
-                    if (undoList[^1].nextCardWasHidden)
+                    GameObject newFoundation = topCardMove.origin;
+                    if (topCardMove.nextCardWasHidden)
                     {
-                        newFoundation.GetComponent<FoundationScript>().CardList[0].GetComponent<CardScript>().Hidden = true;
+                        newFoundation.GetComponent<FoundationScript>().CardList[^1].GetComponent<CardScript>().Hidden = true;
                     }
 
                     // move the tokens back
-                    for (int i = 0; i < undoList.Count - 1; i++)
+                    for (int i = undoList.Count - 1; i > 0; i--)
                     {
-                        undoList[i].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false, showHolo: false);
+                        undoList[i].card.GetComponent<CardScript>().MoveCard(topCardMove.containerType, newFoundation, doLog: false, showHolo: false);
                     }
-                    undoList[^1].card.GetComponent<CardScript>().MoveCard(newFoundation, doLog: false);
+                    topCardMove.card.GetComponent<CardScript>().MoveCard(topCardMove.containerType, newFoundation, doLog: false);
 
-                    UtilsScript.Instance.UpdateActions(undoList[0].remainingActions, setAsValue: true);
+                    Actions.UpdateActions(topCardMove.remainingActions, setAsValue: true);
                     break;
-                case Constants.moveLogMove:
+                case Constants.LogMoveType.Move:
                     // standard behavior, move a single token back where it was
                     lastMove = moveLog.Pop();
                     StateLoader.Instance.RemoveMove();
@@ -112,10 +113,10 @@ public class UndoScript : MonoBehaviour
 
                     if (lastMove.isAction)
                     {
-                        UtilsScript.Instance.UpdateActions(lastMove.remainingActions, setAsValue: true);
+                        Actions.UpdateActions(lastMove.remainingActions, setAsValue: true);
                     }
                     break;
-                case Constants.matchLogMove:
+                case Constants.LogMoveType.Match:
                     // undo a match, removing the score gained and moving both cards back to their original locations
                     MoveFoundationCard(moveLog.Pop());
                     StateLoader.Instance.RemoveMove();
@@ -125,9 +126,9 @@ public class UndoScript : MonoBehaviour
                     MoveFoundationCard(lastMove);
 
                     ScoreScript.Instance.SetScore(lastMove.score);
-                    UtilsScript.Instance.UpdateActions(-1);
+                    Actions.UpdateActions(-1);
                     break;
-                case Constants.drawLogMove:
+                case Constants.LogMoveType.Draw:
                     // move the drawn cards back to the deck (assuming the last action was to draw from the deck)
                     while (true)
                     {
@@ -136,15 +137,15 @@ public class UndoScript : MonoBehaviour
 
                         if (moveLog.Count == 0 || moveLog.Peek().moveNum != lastMove.moveNum)
                         {
-                            lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false);
-                            UtilsScript.Instance.UpdateActions(lastMove.remainingActions, setAsValue: true);
+                            lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.containerType, lastMove.origin, doLog: false);
+                            Actions.UpdateActions(lastMove.remainingActions, setAsValue: true);
                             break;
                         }
 
-                        lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.origin, doLog: false, showHolo: false);
+                        lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.containerType, lastMove.origin, doLog: false, showHolo: false);
                     }
                     break;
-                case Constants.cycleLogMove:
+                case Constants.LogMoveType.Cycle:
                     // undo a cycle turning over, resets all tokens moved up, along with the move counter
                     lastMove = moveLog.Pop();
                     StateLoader.Instance.RemoveMove();
@@ -155,7 +156,7 @@ public class UndoScript : MonoBehaviour
                         // undo the cycle moves until the move that triggered it is reached.
                         // then trigger undo again so that the moveset is properly undone.
                         // note that a undo of a manual trigger of a cycle will not cause undo to be called again.
-                        if (moveLog.Peek().moveType.Equals(Constants.cycleLogMove))
+                        if (moveLog.Peek().moveType.Equals(Constants.LogMoveType.Cycle))
                         {
                             lastMove = moveLog.Pop();
                             StateLoader.Instance.RemoveMove();
@@ -167,7 +168,7 @@ public class UndoScript : MonoBehaviour
                             return;
                         }
                     }
-                    UtilsScript.Instance.UpdateActions(lastMove.remainingActions, setAsValue: true);
+                    Actions.UpdateActions(lastMove.remainingActions, setAsValue: true);
                     break;
                 default:
                     throw new System.Exception("invalid move log move type");
@@ -179,9 +180,9 @@ public class UndoScript : MonoBehaviour
     {
         if (toMove.nextCardWasHidden)
         {
-            toMove.origin.GetComponent<FoundationScript>().CardList[0].GetComponent<CardScript>().Hidden = true;
+            toMove.origin.GetComponent<FoundationScript>().CardList[^1].GetComponent<CardScript>().Hidden = true;
         }
 
-        toMove.card.GetComponent<CardScript>().MoveCard(toMove.origin, doLog: false);
+        toMove.card.GetComponent<CardScript>().MoveCard(toMove.containerType, toMove.origin, doLog: false);
     }
 }
