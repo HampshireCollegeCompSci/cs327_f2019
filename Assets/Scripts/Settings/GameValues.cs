@@ -98,14 +98,15 @@ public static class GameValues
         public const float selectedCardOpacity = 0.25f;
         public static readonly Color cardObstructedColor = new(0.6f, 0.6f, 0.6f);
         public static readonly HighLightColor normal = new(Color.white, Constants.ColorLevel.None);
+        public static readonly HighLightColor card = new("#1af4ff", Constants.ColorLevel.None);
 
         public static class Modes
         {
             public static readonly ColorMode normal = new("Normal",
                 new HighLightColor(Color.green, Constants.ColorLevel.Match),
-                new HighLightColor("#FFFF00", Constants.ColorLevel.Move),
+                new HighLightColor("#FFDF00", Constants.ColorLevel.Move),
                 new HighLightColor(Color.red, Constants.ColorLevel.Over),
-                new HighLightColor(Color.cyan, Constants.ColorLevel.Notify)
+                new HighLightColor("#4691D5", Constants.ColorLevel.Notify)
                 );
 
             public static readonly ColorMode deuteranopia = new("Deuteranopia",

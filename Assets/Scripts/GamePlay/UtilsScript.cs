@@ -89,7 +89,7 @@ public class UtilsScript : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
             if (Input.GetMouseButtonUp(0))
             {
-                DragGlowRevert();
+                DragGlowRevert(isPlacing: true);
                 TryToPlaceCards(hit);
                 UnselectCards();
                 showPossibleMoves.HideMoves();
@@ -357,7 +357,7 @@ public class UtilsScript : MonoBehaviour
         }
     }
 
-    private void DragGlowRevert()
+    private void DragGlowRevert(bool isPlacing = false)
     {
         // if we where hovering over a glowing reactor
         if (changedSuitGlowColor)
@@ -369,11 +369,11 @@ public class UtilsScript : MonoBehaviour
         // if we where hovering over a glowing token
         if (changedHologramColor)
         {
-            topSelectedCopyCardScript.HologramColor = GameValues.Colors.normal;
+            topSelectedCopyCardScript.HologramColor = GameValues.Colors.card;
             changedHologramColor = false;
         }
 
-        if (wasOnMatch)
+        if (wasOnMatch && !isPlacing)
         {
             topSelectedCopyCardScript.MatchChangeFoodHologram(false);
             wasOnMatch = false;
