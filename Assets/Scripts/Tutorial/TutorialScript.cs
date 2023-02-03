@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -12,6 +13,7 @@ public class TutorialScript : MonoBehaviour
     private const string sFoundations = "FOUNDATIONS";
     private const string sFoundation = "FOUNDATION";
     private const string sWastepile = "WASTEPILE";
+    private static readonly Regex sWhitespace = new Regex(@"\s+");
 
     private Queue<List<string>> commandQueue;
     private bool waiting;
@@ -159,7 +161,7 @@ public class TutorialScript : MonoBehaviour
         // catches all failed attempts and logs them readably
         try
         {
-            switch (command[0].ToUpper())
+            switch (NormalizeString(command[0]))
             {
                 case "ENDTUTORIAL":
                     EndTutorial();
@@ -304,7 +306,7 @@ public class TutorialScript : MonoBehaviour
         bool highlightOn = ParseOnOrOff(command, 2);
 
         // interpreting  1st command
-        switch (command[1].ToUpper())
+        switch (NormalizeString(command[1]))
         {
             case sReactors:
                 tutorialReactors.SetActive(highlightOn);
@@ -342,7 +344,7 @@ public class TutorialScript : MonoBehaviour
     {
         // command format: 
         // 0:ChangeContainerHighlight, 1:Container(s) to Highlight,       2:Highlight On/Off, 3:Index,   4:Highlight Color Level
-        // 0:ChangeContainerHighlight, 1:Reactor(s) or Foundation(s),     2:On/Off,           3:0-Count, 4:0-3 (inclusive)
+        // 0:ChangeContainerHighlight, 1:Reactor(s) or Foundation(s),     2:On/Off,           3:0-Count, 4:0-4 (inclusive)
 
         Debug.Log("highlighting container(s)");
 
@@ -358,7 +360,7 @@ public class TutorialScript : MonoBehaviour
         HighLightColor highlightColor = ParseHighlightColor(command, 4);
 
         // find the container
-        switch (command[1].ToUpper())
+        switch (NormalizeString(command[1]))
         {
             case sReactors:
                 if (highlightOn)
@@ -428,8 +430,8 @@ public class TutorialScript : MonoBehaviour
     private void ChangeTokenHighlight(List<string> command)
     {
         // command format: 
-        // 0:ChangeTokenHighlight, 1:Object(s) Containing Token,   2:Object Index, 3:Token Index, 4:Highlight On/Off, 5:Highlight Color Level
-        // 0:ChangeTokenHighlight,  1:Reactor-Foundation-WastePile, 2:0-1-2-3,      3:0-Count,     4:On-Off,           5:0-3 (inclusive)
+        // 0:ChangeTokenHighlight, 1:Card Container,               2:Container Index, 3:Card Index, 4:Highlight On/Off, 5:Highlight Color Level
+        // 0:ChangeTokenHighlight, 1:Reactor-Foundation-WastePile, 2:0-1-2-3,         3:0-Count,    4:On-Off,           5:0-4 (inclusive)
 
         Debug.Log("highlighting token");
 
@@ -448,7 +450,7 @@ public class TutorialScript : MonoBehaviour
         HighLightColor highlightColor = ParseHighlightColor(command, 5);
 
         // find the desired token's location
-        switch (command[1].ToUpper())
+        switch (NormalizeString(command[1]))
         {
             case sReactor:
                 List<GameObject> reactorCardList = UtilsScript.Instance.reactorScripts[containerIndex].CardList;
@@ -527,7 +529,7 @@ public class TutorialScript : MonoBehaviour
         bool obstructed = ParseOnOrOff(command, 4);
 
         // find the desired token's location
-        switch (command[1].ToUpper())
+        switch (NormalizeString(command[1]))
         {
             case sReactor:
                 List<GameObject> reactorCardList = UtilsScript.Instance.reactorScripts[containerIndex].CardList;
@@ -618,7 +620,7 @@ public class TutorialScript : MonoBehaviour
 
         bool interactable = ParseOnOrOff(command, 2);
 
-        switch (command[1].ToUpper())
+        switch (NormalizeString(command[1]))
         {
             case "DECK":
                 deckButton.interactable = interactable;
@@ -682,6 +684,14 @@ public class TutorialScript : MonoBehaviour
         CheckCommandCount(command, 2);
 
         ActionCountScript.Instance.UpdateActionText(command[1]);
+    }
+
+    /// <summary>
+    /// Take a string and returns that string without any whitespace and in uppercase 
+    /// </summary>
+    private string NormalizeString(string toNormalize)
+    {
+        return sWhitespace.Replace(toNormalize, "").ToUpper();
     }
 
     /// <summary>
