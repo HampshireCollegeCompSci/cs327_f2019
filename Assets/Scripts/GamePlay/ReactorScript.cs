@@ -194,7 +194,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
             {
                 GlowColor = Config.Instance.CurrentColorMode.Over;
                 reactorScoreImage.enabled = true;
-                reactorScoreImage.color = Config.Instance.CurrentColorMode.Over.Color;
+                reactorScoreImage.color = Config.Instance.CurrentColorMode.Over.GlowColor;
                 _glowing = false;
                 if (!Config.Instance.HintsEnabled)
                 {

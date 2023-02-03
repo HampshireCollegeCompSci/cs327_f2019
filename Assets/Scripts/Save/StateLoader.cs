@@ -120,7 +120,7 @@ public class StateLoader : MonoBehaviour
 
     public void TryForceWriteState()
     {
-        if (saveMovesDisabled || lastSavedMove == Config.Instance.moveCounter) return;
+        if (saveMovesDisabled || Config.Instance.gameOver || lastSavedMove == Config.Instance.moveCounter) return;
         Debug.Log("forcing write state");
         movesSinceLastSave = movesUntilSave;
         TryWriteState();

@@ -1966,7 +1966,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
+  m_sendNavigationEvents: 0
   m_DragThreshold: 10
 --- !u!224 &1368949160 stripped
 RectTransform:
@@ -3048,6 +3048,11 @@ PrefabInstance:
     - target: {fileID: 1862857496121221489, guid: 41c96bacc7827e941a91caa3a25bc058,
         type: 3}
       propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862857496121221489, guid: 41c96bacc7827e941a91caa3a25bc058,
+        type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

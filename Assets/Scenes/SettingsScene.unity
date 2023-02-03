@@ -570,7 +570,7 @@ RectTransform:
   m_GameObject: {fileID: 46332796}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.0000001, y: 1.0000001, z: 1.0000001}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1406185867}
@@ -580,7 +580,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 18}
-  m_SizeDelta: {x: -21.999994, y: 350}
+  m_SizeDelta: {x: -22, y: 350}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &46332798
 MonoBehaviour:
@@ -953,7 +953,7 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 0.10980392, g: 0, b: 0.1882353, a: 1}
     m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0, g: 0.6981132, b: 0.5845061, a: 1}
+    m_PressedColor: {r: 0.0627451, g: 0.38039216, b: 0.2901961, a: 1}
     m_SelectedColor: {r: 0.27450982, g: 0.5686275, b: 0.8352941, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -3222,7 +3222,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 1
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -3253,7 +3253,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 471176729}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.6285167
+  m_Size: 0.62975776
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
