@@ -691,7 +691,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca22630ca0c8c4b438b639ced224ef9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraObject: {fileID: 0}
+  cameraObject: {fileID: 1038708046}
   sequencePanel: {fileID: 1490708313}
   LoadingTextObject: {fileID: 1093973098}
   spaceShip: {fileID: 156626858}
@@ -1722,6 +1722,12 @@ PrefabInstance:
 --- !u!20 &1038708045 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 6232750234138790370, guid: 5931a8d43d94c204b896f03449eb251f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1038708044}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1038708046 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6232750234138790372, guid: 5931a8d43d94c204b896f03449eb251f,
     type: 3}
   m_PrefabInstance: {fileID: 1038708044}
   m_PrefabAsset: {fileID: 0}

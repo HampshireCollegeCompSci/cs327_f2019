@@ -39,11 +39,14 @@ public class LetterBoxer : MonoBehaviour
         StartCoroutine(CheckScreenChangeContinuous());   
     }
 
+    /// <summary>
+    /// Continuously checks for screen size changes and updates the letterbox accordingly
+    /// </summary>
     private IEnumerator CheckScreenChangeContinuous()
     {
         while(true)
         {
-            yield return new WaitForSecondsRealtime(1);
+            yield return new WaitForSecondsRealtime(2);
             if (currentScreenWidth != Screen.width ||
                 currentScreenHeight != Screen.height)
             {

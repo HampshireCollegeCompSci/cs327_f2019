@@ -155,7 +155,8 @@ PrefabInstance:
 
         The
         default frame rate is set by your device and is typically on the lower end
-        of the scale for mobile devices.'
+        of the scale for mobile devices. For web browsers, this setting is inconsistent
+        and is best left at default.'
       objectReference: {fileID: 0}
     - target: {fileID: 7829983092241112929, guid: 91ec940a979982e47bcf8a7c38d4b331,
         type: 3}
@@ -165,7 +166,7 @@ PrefabInstance:
     - target: {fileID: 7829983092241112929, guid: 91ec940a979982e47bcf8a7c38d4b331,
         type: 3}
       propertyPath: m_FontData.m_FontSize
-      value: 40
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 7829983092310510378, guid: 91ec940a979982e47bcf8a7c38d4b331,
         type: 3}
@@ -3178,7 +3179,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 471176729}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.32026157
+  m_Size: 0.570082
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
