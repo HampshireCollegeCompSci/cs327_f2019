@@ -199,7 +199,7 @@ public class EndGame : MonoBehaviour
         if (Config.Instance.gameWin)
         {
             SoundEffectsController.Instance.WinTransition();
-            StartCoroutine(FadeGameplayOut());
+            StartCoroutine(FadeGameplayOut(true));
         }
         else
         {
@@ -219,8 +219,7 @@ public class EndGame : MonoBehaviour
                 yield return new WaitForSeconds(GameValues.AnimationDurataions.reactorExplosionDelay);
             }
         }
-
-        StartCoroutine(FadeGameplayOut());
+        StartCoroutine(FadeGameplayOut(false));
     }
 
     private IEnumerator ReactorMeltdown(ReactorScript reactorScript)
@@ -242,14 +241,15 @@ public class EndGame : MonoBehaviour
         reactorExplosion.GetComponent<Animator>().Play("LoseExplosionAnim");
     }
 
-    private IEnumerator FadeGameplayOut()
+    private IEnumerator FadeGameplayOut(bool won)
     {
         Image fadeInScreen = this.gameObject.GetComponent<Image>();
         Color fadeColor = fadeInScreen.color;
         CanvasGroup textGroup = gameOverTextPanel.GetComponent<CanvasGroup>();
 
         float startingAlpha = fadeColor.a;
-        float duration = GameValues.AnimationDurataions.gameEndFade;
+        float duration = won ? GameValues.AnimationDurataions.gameEndWonFade :
+            GameValues.AnimationDurataions.gameEndLostFade;
         float timeElapsed = 0;
         while (timeElapsed < duration)
         {

@@ -150,13 +150,14 @@ public static class GameValues
         public const float startGameFadeIn = 0.5f; // fades out the game startup logos
         public const float gameplayFadeIn = 0.5f; // fades in the gameplay scene
         public const float gameOverFade = 1f; // fades in the game over pop-up
-        public const float gameEndFade = 1f; // fades out of the gameplay scene to summary
+        public const float gameEndWonFade = 1.7f; // fades out of the gameplay scene to summary - game was won
+        public const float gameEndLostFade = 1f; // fades out of the gameplay scene to summary - game was lost
         public const float summaryFadeIn = 0.5f; // fades into the summary scene
         public const float playAgainFadeOut = 1; // fades out of the summary scene to gameplay
 
         // gameplay
         public const float cardHologramFadeIn = 2; // fades in the cards holograms
-        public const float cardsToReactor = 0.6f; // movement of the cards to reactor during a nextcycle
+        public const float cardsToReactor = 0.5f; // movement of the cards to reactor during a nextcycle
         // match effect
         public const float comboPointsFadeIn = 0.5f; // fade in and scale up the point text
         public const float comboWait = 0.5f; // wait a bit
