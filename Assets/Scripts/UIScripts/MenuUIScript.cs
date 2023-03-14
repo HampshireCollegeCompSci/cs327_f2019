@@ -63,13 +63,9 @@ public class MenuUIScript : MonoBehaviour
     {
         if (SaveFile.Exists())
         {
-            if (Application.isEditor)
-            {
-                //Preprocessor Directive to make builds work
-                #if (UNITY_EDITOR)
-                    UnityEditor.AssetDatabase.Refresh();
-                #endif
-            }
+            #if (UNITY_EDITOR)
+                UnityEditor.AssetDatabase.Refresh();
+            #endif
 
             NewGame(isContinue: true);
         }

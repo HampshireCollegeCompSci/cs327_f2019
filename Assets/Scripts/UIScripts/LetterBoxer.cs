@@ -15,7 +15,9 @@ public class LetterBoxer : MonoBehaviour
     private const float maxRatio = maxX / maxY;
 
     private Camera cam, letterBoxerCamera;
+#if UNITY_WEBGL
     private int currentScreenWidth, currentScreenHeight;
+#endif
 
     private void Awake()
     {
@@ -25,13 +27,16 @@ public class LetterBoxer : MonoBehaviour
         AddLetterBoxingCamera();
 
         PerformSizing();
-        currentScreenWidth = Screen.width;
-        currentScreenHeight = Screen.height;
+        #if UNITY_WEBGL
+            currentScreenWidth = Screen.width;
+            currentScreenHeight = Screen.height;
+        #endif
     }
 
+#if UNITY_WEBGL
     private void Start()
     {
-        StartCoroutine(CheckScreenChangeContinuous());
+        StartCoroutine(CheckScreenChangeContinuous());   
     }
 
     private IEnumerator CheckScreenChangeContinuous()
@@ -48,6 +53,7 @@ public class LetterBoxer : MonoBehaviour
             }
         }
     }
+#endif
 
     private void AddLetterBoxingCamera()
     {
