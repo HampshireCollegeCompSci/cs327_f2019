@@ -31,6 +31,8 @@ public class Config : MonoBehaviour
     private Difficulty _currentDifficulty;
     private int _selectedCardsLayer, _cardLayer;
 
+    private List<Camera> cameras;
+
     // Initialize the singleton instance.
     private void Awake()
     {
@@ -56,6 +58,7 @@ public class Config : MonoBehaviour
 
             _selectedCardsLayer = SortingLayer.NameToID(Constants.SortingLayers.selectedCards);
             _cardLayer = SortingLayer.NameToID(Constants.SortingLayers.card);
+            cameras = new List<Camera>(6);
         }
         else if (Instance != this)
         {
@@ -72,6 +75,26 @@ public class Config : MonoBehaviour
     public int SelectedCardsLayer => _selectedCardsLayer;
 
     public int CardLayer => _cardLayer;
+
+    public void AddCamera(Camera newCamera)
+    {
+        if (cameras.Count != 0)
+        {
+            cameras[^1].enabled = false;
+        }
+        cameras.Add(newCamera);
+        newCamera.enabled = true;
+    }
+
+    public void RemoveCamera(Camera oldCamera)
+    {
+        if (cameras.Count == 0) return;
+        int oldCameraIndex = cameras.LastIndexOf(oldCamera);
+        if (oldCameraIndex == -1) throw new System.Exception("tried to remove a camera that is not being tracked");
+        cameras.RemoveAt(oldCameraIndex);
+        if (cameras.Count == 0) return;
+        cameras[^1].enabled = true;
+    }
 
     public void SetDifficulty(Difficulty dif)
     {

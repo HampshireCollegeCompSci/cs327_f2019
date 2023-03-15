@@ -1,0 +1,142 @@
+﻿The Tutorial Command List uses the following format rules:
+
+JSON structure:
+{
+	"commands": [
+		{
+			"argumentList": [
+				"Command #1",
+				"any additional instructions"
+			],
+		},
+		{
+			"argumentList": [
+				"EndTutorial"
+			]
+		},
+	]
+}
+
+All arguments will have their whitespace removed and changed to uppercase during interpretation.
+Any errors encountered when interpreting the arguments will result in the tutorial freezing and an error being logged that includes what was expected.
+
+Commands for the argumentList:
+-----------------------------------------
+
+	End Tutorial: ends the tutorial by restarting the game in easy mode
+
+-----------------------------------------
+
+	Wait For Touch: waits for the user to press the next button before interpreting the next command
+
+-----------------------------------------
+
+	Load Save: loads the tutorial game state save specified, should also clear all changes made to cards but that shouldn't be relied upon
+		fileName: the .json filename of the save located in Assets/Resources/Tutorial/, note that this game state type is different than user-created saves
+
+-----------------------------------------
+
+	Change Shown Text: updates the tutorial text shown in-game
+		text: the text to be shown, can currently hold about 355 characters without any new lines
+
+-----------------------------------------
+
+	Change Object Highlight: changes the highlight state of a game object
+		object(s) to highlight: reactors, foundations, deck, wastepile, scoreboard, movecounter, undo, pause
+		highlight: on, off
+
+-----------------------------------------
+
+	Change Container Highlight: changes the highlight state of a card/token container, this is more specific than ChangeObjectHighlight
+		container(s): reactors, reactor, foundations, foundation
+		highlight: on, off
+		container index: 0, 1, 2, 3, (left to right in-game, choose any when selecting multiple)
+		highlight color: 0, 1, 2, 3, 4, (choose any when turning highlight off, see bottom of file for more info)
+
+	An example for changing the left-most reactor to the over-limit color:
+		"argumentList": [
+			"ChangeContainerHighlight",
+			"reactor",
+			"ON",
+			"0",
+			"3"
+		]
+
+-----------------------------------------
+
+	Change Token Highlight: changes the highlight state of a card/token
+		card container: reactor, foundation, wastepile
+		container index: 0, 1, 2, 3, (left to right in-game, choose any when selecting wastepile)
+		card index: 0 to cardcount-1, (the top card is always 0, the leftmost card in the wastepile is at the top)
+		highlight: on, off
+		highlight color: 0, 1, 2, 3, 4, (choose any when turning highlight off, see bottom of file for more info)
+
+	An example for changing the right-most foundation's, second to top card, highlight off:
+		"argumentList": [
+			"change token highlight",
+			"Foundation",
+			"3"
+			"1",
+			"off",
+			"0"
+		]
+
+-----------------------------------------
+
+	Remove All Token Highlight: Turns all card highlights off
+
+-----------------------------------------
+
+	Change Token Obstruction: updates the card's obstructed state (on = appears darker and is immovable in-game)
+		card container: reactor, foundation, wastepile
+		container index: 0, 1, 2, 3, (left to right in-game, choose any when selecting wastepile)
+		card index: 0 to cardcount-1, (the top card is always 0, the leftmost card in the wastepile is at the top)
+		obstruction: on, off, (on = non-interactable)
+
+	An example of setting the wastepile's first card to non-interactable
+		"argumentList": [
+			"Change Token Obstruction",
+			"wastepile",
+			"0"
+			"0",
+			"on"
+		]
+
+-----------------------------------------
+
+	Change All Token Obstruction: sets all card's obstructed state to on (they appear darker and are immovable in-game)
+
+-----------------------------------------
+
+	Change Reactor Obstruction: turns on or off the ability to place cards into reactors, does so by disabling highlighting potential reactor moves on card pick-up
+		obstruction: on, off, (on = non-interactable)
+
+-----------------------------------------
+
+	Change Token Moveability: turns on or off the ability to move cards anywhere, does so by disabling highlighting potential moves on card pick-up
+		moveability: on, off
+
+-----------------------------------------
+
+	Change Button Interactable: enables or disables the intractability of buttons
+		button: deck, undo, timer, (timer = button by the move counter)
+		intractability : on, off
+
+-----------------------------------------
+
+	Enable One Next Cycle: allows the user to press the next-cycle button once for the effect to take place
+
+-----------------------------------------
+
+	Change Move Counter Text: sets the move counter text
+		text: normally a number
+
+-----------------------------------------
+
+Highlight Color Levels:
+	0: normal, color is white
+	1: card match, color is greenish
+	2: card move, color is yellowish
+	3: over limit, color is redish
+	4: notify, color is distinct
+Colorblind modes change these colors

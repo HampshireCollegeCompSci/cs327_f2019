@@ -5,6 +5,11 @@ public class SplashScreen : MonoBehaviour
 {
     private static bool firstRun = true;
 
+#if UNITY_WEBGL
+    private bool musicCanBeStarted = false;
+    private bool hasBeenFocused = false;
+#endif
+
     [SerializeField]
     private GameObject splashScreen;
     private Coroutine splashScreenFade;
@@ -16,17 +21,18 @@ public class SplashScreen : MonoBehaviour
         {
             firstRun = false;
             splashScreen.SetActive(true);
-            if (Application.platform != RuntimePlatform.WebGLPlayer)
-            {
-                splashScreenFade = StartCoroutine(DisplayLogo());
-            }
+            splashScreenFade = StartCoroutine(DisplayLogo());
         }
     }
 
     private IEnumerator DisplayLogo()
     {
         yield return new WaitForSeconds(2);
-        MusicController.Instance.MainMenuMusic();
+        #if UNITY_WEBGL
+            TryStartMusic();
+        #else
+            MusicController.Instance.MainMenuMusic();
+        #endif
         yield return Animate.FadeCanvasGroup(splashScreen.GetComponent<CanvasGroup>(),
             1, 0, GameValues.AnimationDurataions.logoDelay);
         splashScreen.SetActive(false);
@@ -41,6 +47,37 @@ public class SplashScreen : MonoBehaviour
             StopCoroutine(splashScreenFade);
         }
         splashScreen.SetActive(false);
-        MusicController.Instance.MainMenuMusic();
+        #if UNITY_WEBGL
+            TryStartMusic();
+        #else
+            MusicController.Instance.MainMenuMusic();
+        #endif
     }
+
+
+#if UNITY_WEBGL
+    private void TryStartMusic()
+    {
+        if (hasBeenFocused)
+        {
+            MusicController.Instance.MainMenuMusic();
+        }
+        else
+        {
+            musicCanBeStarted = true;
+        }
+    }
+
+    void OnApplicationFocus(bool hasFocus)
+    {
+        if (musicCanBeStarted)
+        {
+            MusicController.Instance.MainMenuMusic();
+        }
+        else if (hasFocus)
+        {
+            hasBeenFocused = true;
+        }
+    }
+#endif
 }

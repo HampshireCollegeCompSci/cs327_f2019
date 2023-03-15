@@ -199,7 +199,7 @@ public class EndGame : MonoBehaviour
         if (Config.Instance.gameWin)
         {
             SoundEffectsController.Instance.WinTransition();
-            StartCoroutine(FadeGameplayOut());
+            StartCoroutine(FadeGameplayOut(true));
         }
         else
         {
@@ -219,15 +219,14 @@ public class EndGame : MonoBehaviour
                 yield return new WaitForSeconds(GameValues.AnimationDurataions.reactorExplosionDelay);
             }
         }
-
-        StartCoroutine(FadeGameplayOut());
+        StartCoroutine(FadeGameplayOut(false));
     }
 
     private IEnumerator ReactorMeltdown(ReactorScript reactorScript)
     {
         foreach (GameObject card in reactorScript.CardList)
         {
-            GameObject matchExplosion = Instantiate(explosionPrefab, card.transform.position, Quaternion.identity);
+            GameObject matchExplosion = Instantiate(explosionPrefab, card.transform.position, Quaternion.Euler(0, 0, Random.Range(0, 360)));
             matchExplosion.transform.localScale = new Vector3(GameValues.Transforms.matchExplosionScale, GameValues.Transforms.matchExplosionScale);
         }
         yield return new WaitForSeconds(0.2f);
@@ -237,19 +236,20 @@ public class EndGame : MonoBehaviour
         }
         SoundEffectsController.Instance.ExplosionSound();
 
-        GameObject reactorExplosion = Instantiate(explosionPrefab, reactorScript.gameObject.transform.position, Quaternion.identity);
+        GameObject reactorExplosion = Instantiate(explosionPrefab, reactorScript.gameObject.transform.position, Quaternion.Euler(0, 0, Random.Range(0, 360)));
         reactorExplosion.transform.localScale = new Vector3(GameValues.Transforms.matchExplosionScale / 2, GameValues.Transforms.matchExplosionScale / 2);
         reactorExplosion.GetComponent<Animator>().Play("LoseExplosionAnim");
     }
 
-    private IEnumerator FadeGameplayOut()
+    private IEnumerator FadeGameplayOut(bool won)
     {
         Image fadeInScreen = this.gameObject.GetComponent<Image>();
         Color fadeColor = fadeInScreen.color;
         CanvasGroup textGroup = gameOverTextPanel.GetComponent<CanvasGroup>();
 
         float startingAlpha = fadeColor.a;
-        float duration = GameValues.AnimationDurataions.gameEndFade;
+        float duration = won ? GameValues.AnimationDurataions.gameEndWonFade :
+            GameValues.AnimationDurataions.gameEndLostFade;
         float timeElapsed = 0;
         while (timeElapsed < duration)
         {

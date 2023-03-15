@@ -119,13 +119,11 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
 
         cardList.Add(card);
 
-        GameObject newCardContainer = Instantiate(cardContainerPrefab);
         // making a container for the card so that it plays nice with the scroll view
+        GameObject newCardContainer = Instantiate(cardContainerPrefab, contentPanel.transform);
         cardContainers.Add(newCardContainer);
-        newCardContainer.transform.SetParent(contentPanel.transform);
-        newCardContainer.transform.localScale = Vector3.one;
 
-        // updating the card
+        // updating the card, set the z offset so that cards appear on top of eachother
         card.transform.SetParent(newCardContainer.transform);
         card.transform.localPosition = new Vector3(0, 0, -cardList.Count * 0.01f);
     }

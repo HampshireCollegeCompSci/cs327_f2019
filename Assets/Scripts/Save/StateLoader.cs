@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
+
+#if !UNITY_WEBGL
+    using System.Threading;
+    using System.Threading.Tasks;
+#endif
+
 using UnityEngine;
 
 public class StateLoader : MonoBehaviour
@@ -10,8 +14,11 @@ public class StateLoader : MonoBehaviour
     // Singleton instance.
     public static StateLoader Instance;
 
-    private CancellationTokenSource tokenSource;
-    private Task saveTask;
+    #if !UNITY_WEBGL
+        private CancellationTokenSource tokenSource;
+        private Task saveTask;
+    #endif
+
     private List<SaveMove> saveMoveLog;
     private bool saveMovesDisabled;
     private int movesUntilSave;
@@ -24,7 +31,9 @@ public class StateLoader : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            tokenSource = new CancellationTokenSource();
+            #if !UNITY_WEBGL
+                tokenSource = new CancellationTokenSource();
+            #endif
         }
         else if (Instance != this)
         {
@@ -120,7 +129,7 @@ public class StateLoader : MonoBehaviour
 
     public void TryForceWriteState()
     {
-        if (saveMovesDisabled || lastSavedMove == Config.Instance.moveCounter) return;
+        if (saveMovesDisabled || Config.Instance.gameOver || lastSavedMove == Config.Instance.moveCounter) return;
         Debug.Log("forcing write state");
         movesSinceLastSave = movesUntilSave;
         TryWriteState();
@@ -136,24 +145,24 @@ public class StateLoader : MonoBehaviour
         Debug.Log("writing state");
 
         // if this isn't running on WebGL (no thread support)
-        // and if the previous task to write the save file hasn't completed
-        if (Application.platform != RuntimePlatform.WebGLPlayer &&
-            saveTask != null && !saveTask.IsCompleted)
-        {
-            Debug.LogWarning("canceling the previous save task");
-            tokenSource.Cancel();
-            try
+        #if !UNITY_WEBGL
+            if (saveTask != null && !saveTask.IsCompleted)
             {
-                saveTask.Wait();
+                Debug.LogWarning("canceling the previous save task");
+                tokenSource.Cancel();
+                try
+                {
+                    saveTask.Wait();
+                }
+                // TaskCanceledException is being thrown as expected, but I can't catch it for some reason
+                catch (Exception)
+                {
+                    Debug.LogWarning("the save task was successfully canceled");
+                }
+                tokenSource = new CancellationTokenSource();
+                saveTask = null;
             }
-            // TaskCanceledException is being thrown as expected, but I can't catch it for some reason
-            catch (Exception) 
-            {
-                Debug.LogWarning("the save task was successfully canceled");
-            }
-            tokenSource = new CancellationTokenSource();
-            saveTask = null;
-        }
+        #endif
 
         GameState<int> gameState = new()
         {
@@ -190,16 +199,15 @@ public class StateLoader : MonoBehaviour
         }
 
         string content = JsonUtility.ToJson(gameState, Application.isEditor);
-        if (Application.platform != RuntimePlatform.WebGLPlayer)
-        {
+
+        // again, WebGL has no thread support
+        #if !UNITY_WEBGL
             Debug.Log("starting the task to write the save file");
             saveTask = File.WriteAllTextAsync(SaveFile.GetPath(), content, tokenSource.Token);
-        }
-        else
-        {
+        #else
             Debug.Log("writing the save file");
             File.WriteAllText(SaveFile.GetPath(), content);
-        }
+        #endif
     }
 
     public void LoadSaveState()
