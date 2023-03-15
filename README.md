@@ -20,7 +20,7 @@
     <br />
     <br />
     ·
-    <a href="https://simmer.io/@JLAW/cosmia"> Play in Web Browser</a>
+    <a href="https://jonalaw.itch.io/cosmia?secret=LP0fyQ5uWSodYKsY9mfEAjt60k"> Play in Web Browser</a>
     ·
     <a href="https://github.com/HampshireCollegeCompSci/cs327_f2019/releases">View Latest Releases</a>
     ·
@@ -82,7 +82,7 @@ Afterwards in 2021, the programmer Jona began work to hopefully finalize the gam
 <br/>
 
 <!-- USAGE EXAMPLES -->
-## Gameplay Preview
+## Gameplay Preview (not always up to date)
 <div align="center">
   <a href="#">
     <img align="center" src="Images/stack.png" alt="Logo" height="420">
@@ -96,10 +96,10 @@ Afterwards in 2021, the programmer Jona began work to hopefully finalize the gam
 ## Roadmap
 
 - [x] Add Interactability to the Tutorial
-- [ ] Add More Settings Options
-- [ ] Address Aspect Ratio Issues
-- [ ] Multi-language Support
+- [x] Add More Settings Options
+- [x] Address Aspect Ratio Issues
 - [ ] Launch On App Stores
+- [ ] Multi-language Support?
 
 See the [open issues](https://github.com/HampshireCollegeCompSci/cs327_f2019/issues) for a full list of proposed features (and known issues).
 <br/><br/>
