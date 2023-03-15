@@ -77,28 +77,28 @@ public class SummaryTransition : MonoBehaviour
     private IEnumerator Explode()
     {
         explosions = new GameObject[4];
-        explosions[0] = Instantiate(explosionPrefab, spaceShipObject.transform.position, Quaternion.identity);
+        explosions[0] = Instantiate(explosionPrefab, spaceShipObject.transform.position, Quaternion.Euler(0, 0, Random.Range(0, 360)));
         explosions[0].GetComponent<SpriteRenderer>().sortingOrder = 2;
         explosions[0].transform.localScale = new Vector3(0.1f, 0.1f);
         explosions[0].transform.position += new Vector3(0.3f, 0.3f, 0);
         explosions[0].GetComponent<Animator>().Play("LoseExplosionAnim");
 
         yield return new WaitForSeconds(0.2f);
-        explosions[1] = Instantiate(explosionPrefab, spaceShipObject.transform.position, Quaternion.identity);
+        explosions[1] = Instantiate(explosionPrefab, spaceShipObject.transform.position, Quaternion.Euler(0, 0, Random.Range(0, 360)));
         explosions[1].GetComponent<SpriteRenderer>().sortingOrder = 2;
         explosions[1].transform.localScale = new Vector3(0.1f, 0.1f);
         explosions[1].transform.position += new Vector3(0.3f, -0.1f, 0);
         explosions[1].GetComponent<Animator>().Play("LoseExplosionAnim");
 
         yield return new WaitForSeconds(0.2f);
-        explosions[2] = Instantiate(explosionPrefab, spaceShipObject.transform.position, Quaternion.identity);
+        explosions[2] = Instantiate(explosionPrefab, spaceShipObject.transform.position, Quaternion.Euler(0, 0, Random.Range(0, 360)));
         explosions[2].GetComponent<SpriteRenderer>().sortingOrder = 2;
         explosions[2].transform.localScale = new Vector3(0.1f, 0.1f);
         explosions[2].transform.position += new Vector3(-0.25f, 0.1f, 0);
         explosions[2].GetComponent<Animator>().Play("LoseExplosionAnim");
 
         yield return new WaitForSeconds(5);
-        explosions[3] = Instantiate(explosionPrefab, spaceShipObject.transform.position, Quaternion.identity);
+        explosions[3] = Instantiate(explosionPrefab, spaceShipObject.transform.position, Quaternion.Euler(0, 0, Random.Range(0, 360)));
         explosions[3].GetComponent<SpriteRenderer>().sortingOrder = 2;
         explosions[3].transform.localScale = new Vector3(0.5f, 0.5f);
 

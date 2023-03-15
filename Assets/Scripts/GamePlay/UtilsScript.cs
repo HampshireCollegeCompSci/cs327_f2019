@@ -413,7 +413,8 @@ public class UtilsScript : MonoBehaviour
         comboSR.color = Color.white;
 
         Vector3 position = selectedCardsCopy[0].transform.position;
-        GameObject matchExplosion = Instantiate(matchPrefab, position, Quaternion.identity);
+        // random rotation
+        GameObject matchExplosion = Instantiate(matchPrefab, position, Quaternion.Euler(0, 0, Random.Range(0, 360)));
         matchExplosion.transform.localScale = new Vector3(GameValues.Transforms.matchExplosionScale, GameValues.Transforms.matchExplosionScale);
 
         // instantiate the points slightly below
@@ -433,8 +434,16 @@ public class UtilsScript : MonoBehaviour
         };
 
         // set the color of the points and combo
-        pointText.color = Config.Instance.CurrentColorMode.Match.Color;
-        comboText.color = Config.Instance.CurrentColorMode.Match.Color;
+        Color pointComboColor = Config.Instance.consecutiveMatches switch
+        {
+            0 => Config.Instance.CurrentColorMode.Match.Color,
+            1 => Config.Instance.CurrentColorMode.Move.Color,
+            >= 2 => Config.Instance.CurrentColorMode.Over.Color,
+            _ => throw new System.NotImplementedException($"how are there {Config.Instance.consecutiveMatches} number of matches?")
+        };
+
+        pointText.color = pointComboColor;
+        comboText.color = pointComboColor;
 
         // get the start and end values for the points
         Color pointFadeColor = pointText.color;

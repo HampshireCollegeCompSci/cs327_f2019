@@ -226,7 +226,7 @@ public class EndGame : MonoBehaviour
     {
         foreach (GameObject card in reactorScript.CardList)
         {
-            GameObject matchExplosion = Instantiate(explosionPrefab, card.transform.position, Quaternion.identity);
+            GameObject matchExplosion = Instantiate(explosionPrefab, card.transform.position, Quaternion.Euler(0, 0, Random.Range(0, 360)));
             matchExplosion.transform.localScale = new Vector3(GameValues.Transforms.matchExplosionScale, GameValues.Transforms.matchExplosionScale);
         }
         yield return new WaitForSeconds(0.2f);
@@ -236,7 +236,7 @@ public class EndGame : MonoBehaviour
         }
         SoundEffectsController.Instance.ExplosionSound();
 
-        GameObject reactorExplosion = Instantiate(explosionPrefab, reactorScript.gameObject.transform.position, Quaternion.identity);
+        GameObject reactorExplosion = Instantiate(explosionPrefab, reactorScript.gameObject.transform.position, Quaternion.Euler(0, 0, Random.Range(0, 360)));
         reactorExplosion.transform.localScale = new Vector3(GameValues.Transforms.matchExplosionScale / 2, GameValues.Transforms.matchExplosionScale / 2);
         reactorExplosion.GetComponent<Animator>().Play("LoseExplosionAnim");
     }
