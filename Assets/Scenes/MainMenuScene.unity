@@ -232,6 +232,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 871aa0b01d410402f817ec623c1b35ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spaceShip: {fileID: 153595821}
+  spaceShipOn: {fileID: 21300000, guid: 6dfad89b4de0b674aa14cd0a7bf41742, type: 3}
+  spaceShipOff: {fileID: 21300000, guid: 6882bc7aa6daa9743bf331e519f86362, type: 3}
   mainButtons: {fileID: 1745077753}
   playButton: {fileID: 7084158332501743150}
   tutorialButton: {fileID: 1676171831}
@@ -318,7 +321,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6dfad89b4de0b674aa14cd0a7bf41742, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6882bc7aa6daa9743bf331e519f86362, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

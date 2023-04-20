@@ -1,8 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MenuUIScript : MonoBehaviour
 {
+    [SerializeField]
+    private Image spaceShip;
+    [SerializeField]
+    private Sprite spaceShipOn, spaceShipOff;
+
     // MainMenuScene Main buttons
     [SerializeField]
     private GameObject mainButtons, playButton, tutorialButton, settingsButton, aboutButton;
@@ -38,6 +44,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void Tutorial()
     {
+        spaceShip.sprite = spaceShipOn;
         NewGame(isTutorial: true);
     }
 
@@ -100,15 +107,13 @@ public class MenuUIScript : MonoBehaviour
         // Continue button requires a save to exist
         if (showMain)
         {
+            spaceShip.sprite = spaceShipOff;
             continueButton.SetActive(false);
-        }
-        else if (SaveFile.Exists())
-        {
-            continueButton.SetActive(true);
         }
         else
         {
-            continueButton.SetActive(false);
+            spaceShip.sprite = spaceShipOn;
+            continueButton.SetActive(SaveFile.Exists());
         }
     }
 }
