@@ -1,7 +1,6 @@
 ﻿public static class Constants
 {
-    // Game Values
-    public const string gameValuesPath = "GameConfigurations/gameValues";
+    public const string projectWebsite = "https://github.com/HampshireCollegeCompSci/cs327_f2019#readme";
 
     public static class GameStates
     {
