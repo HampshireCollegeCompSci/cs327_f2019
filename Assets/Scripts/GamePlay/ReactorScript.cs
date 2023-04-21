@@ -28,6 +28,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
     private HighLightColor _glowColor;
     [SerializeField]
     private bool _alert;
+    private int cardValueCount;
 
     private SpriteRenderer suitGlowSR;
     private SpriteRenderer glowSR;
@@ -98,6 +99,8 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     public Suit ReactorSuit => suit;
 
+    public int CardValueCount => cardValueCount;
+
     public void SetReactorSuit(Suit suit)
     {
         this.suit = suit;
@@ -118,9 +121,9 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
         SetCardPositions();
 
-        int cardValCount = CountReactorCard();
-        SetReactorScore(cardValCount);
-        CheckGameOver(cardValCount);
+        cardValueCount += cardScript.Card.Rank.ReactorValue;
+        SetReactorScore(cardValueCount);
+        CheckGameOver(cardValueCount);
     }
 
     public void RemoveCard(GameObject card)
@@ -132,6 +135,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
             cardList[^1].GetComponent<CardScript>().Obstructed = false;
         }
 
+        cardValueCount -= card.GetComponent<CardScript>().Card.Rank.ReactorValue;
         SetCardPositions();
         SetReactorScore();
     }
@@ -151,24 +155,19 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         return this.gameObject.transform.TransformPoint(nextPosition);
     }
 
-    public int CountReactorCard()
-    {
-        int totalSum = 0;
-        int cardListVal = cardList.Count;
-        for (int i = 0; i < cardListVal; i++)
-        {
-            totalSum += cardList[i].GetComponent<CardScript>().Card.Rank.ReactorValue;
-        }
-
-        return totalSum;
-    }
-
     public bool OverLimitSoon()
     {
-        if (CountReactorCard() + GetIncreaseOnNextCycle() > Config.Instance.CurrentDifficulty.ReactorLimit)
+        int nextCardValueCount = cardValueCount;
+        foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
         {
-            Alert = true;
-            return true;
+            if (foundationScript.CardList.Count == 0) continue;
+
+            CardScript topCardScript = foundationScript.CardList[^1].GetComponent<CardScript>();
+            if (topCardScript.Card.Suit.Equals(ReactorSuit))
+            {
+                nextCardValueCount += topCardScript.Card.Rank.ReactorValue;
+                if (nextCardValueCount > Config.Instance.CurrentDifficulty.ReactorLimit) return true;
+            }
         }
 
         return false;
@@ -176,7 +175,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     public void SetReactorScore()
     {
-        SetReactorScore(CountReactorCard());
+        SetReactorScore(cardValueCount);
     }
 
     public void SetReactorScore(int cardValCount)
@@ -190,7 +189,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         {
             // will turn glowing on but not set the flag for it
             // so that it will not be turned off in the same frame
-            if (CountReactorCard() > Config.Instance.CurrentDifficulty.ReactorLimit)
+            if (cardValueCount > Config.Instance.CurrentDifficulty.ReactorLimit)
             {
                 GlowColor = Config.Instance.CurrentColorMode.Over;
                 reactorScoreImage.enabled = true;
@@ -280,23 +279,5 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         {
             return new Vector3(xOffset, startingYOffset + largeYOffset * index, zOffset);
         }
-    }
-
-    private int GetIncreaseOnNextCycle()
-    {
-        int output = 0;
-        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
-        {
-            if (foundationScript.CardList.Count != 0)
-            {
-                CardScript topCardScript = foundationScript.CardList[^1].GetComponent<CardScript>();
-                if (topCardScript.Card.Suit.Equals(ReactorSuit))
-                {
-                    output += topCardScript.Card.Rank.ReactorValue;
-                }
-            }
-        }
-
-        return output;
     }
 }

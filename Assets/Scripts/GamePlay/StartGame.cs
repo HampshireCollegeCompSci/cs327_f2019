@@ -89,6 +89,6 @@ public class StartGame : MonoBehaviour
         fadeInScreen.enabled = true;
         yield return Animate.FadeImage(fadeInScreen, GameValues.FadeColors.blackFadeOut, GameValues.AnimationDurataions.startGameFadeIn);
         fadeInScreen.enabled = false;
-        UtilsScript.Instance.InputStopped = false;
+        GameInput.Instance.InputStopped = false;
     }
 }

@@ -44,7 +44,7 @@ public class EndGame : MonoBehaviour
     {
         Debug.Log($"Game Over, won: {didWin}");
 
-        UtilsScript.Instance.InputStopped = true;
+        GameInput.Instance.InputStopped = true;
         Config.Instance.gameOver = true;
         Config.Instance.gameWin = didWin;
 
@@ -62,14 +62,14 @@ public class EndGame : MonoBehaviour
 
         if (didWin)
         {
-            foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+            foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
             {
                 foundationScript.GlowForGameEnd(true);
             }
         }
         else
         {
-            foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+            foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
             {
                 if (reactorScript.TryHighlightOverloaded(true)) break;
             }
@@ -86,7 +86,7 @@ public class EndGame : MonoBehaviour
             extraScore += GameValues.Points.perfectGamePoints;
         }
 
-        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+        foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
         {
             if (foundationScript.CardList.Count == 0)
             {
@@ -171,14 +171,14 @@ public class EndGame : MonoBehaviour
             PersistentSettings.TrySetHighScore(Config.Instance.CurrentDifficulty, Config.Instance.score);
             PersistentSettings.TrySetLeastMoves(Config.Instance.CurrentDifficulty, Config.Instance.moveCounter);
 
-            foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+            foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
             {
                 foundationScript.GlowForGameEnd(false);
             }
         }
         else
         {
-            foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+            foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
             {
                 reactorScript.TryHighlightOverloaded(false);
             }
@@ -187,7 +187,7 @@ public class EndGame : MonoBehaviour
         MusicController.Instance.GameMusic();
         Config.Instance.gameOver = false;
         GameLoader.Instance.RestartGame();
-        UtilsScript.Instance.InputStopped = false;
+        GameInput.Instance.InputStopped = false;
         this.gameObject.GetComponent<Image>().enabled = false;
     }
 
@@ -211,7 +211,7 @@ public class EndGame : MonoBehaviour
     {
         // wait for dramatic effect
         yield return new WaitForSeconds(0.5f);
-        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {
             if (reactorScript.CardList.Count != 0)
             {

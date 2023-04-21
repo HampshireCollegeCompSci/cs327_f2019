@@ -37,11 +37,10 @@ public class GameLoader : MonoBehaviour
 
         for (int i = 0; i < 4; i++)
         {
-            UtilsScript.Instance.reactorScripts[i].SetReactorSuit(GameValues.GamePlay.suits[i]);
+            GameInput.Instance.reactorScripts[i].SetReactorSuit(GameValues.GamePlay.suits[i]);
         }
 
-        Config.Instance.gameOver = false;
-        Config.Instance.gameWin = false;
+        ResetGameState();
 
         // Figure out what kinda game to start
         if (Config.Instance.tutorialOn)
@@ -103,6 +102,7 @@ public class GameLoader : MonoBehaviour
 
     public void RestartGame()
     {
+        ResetGameState();
         List<GameObject> cards = GetAllCards();
         MoveCardsToLoadPile(cards);
         foreach (GameObject card in cards)
@@ -122,6 +122,18 @@ public class GameLoader : MonoBehaviour
             cs.SetSuitSprite(suitSprites[cs.Card.Suit.Index]);
         }
         SetRectorSuitSprites(suitSprites);
+    }
+
+    private void ResetGameState()
+    {
+        Config.Instance.gameOver = false;
+        Config.Instance.gameWin = false;
+        Config.Instance.actions = 0;
+        ScoreScript.Instance.SetScore(0);
+        Config.Instance.consecutiveMatches = 0;
+        Config.Instance.moveCounter = 0;
+        UndoScript.Instance.GameStart();
+        StateLoader.Instance.GameStart();
     }
 
     private List<GameObject> GetNewCards()
@@ -164,11 +176,11 @@ public class GameLoader : MonoBehaviour
     {
         List<GameObject> cards = new(52);
 
-        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+        foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
         {
             cards.AddRange(foundationScript.CardList);
         }
-        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {
             cards.AddRange(reactorScript.CardList);
         }
@@ -182,23 +194,10 @@ public class GameLoader : MonoBehaviour
     private void StartNewGame(List<GameObject> cards)
     {
         // the game difficultuy should already be set to what is desired for things to work properly
-
-        // remove old stuff
-        UndoScript.Instance.GameStart();
-        StateLoader.Instance.GameStart();
         SaveFile.Delete();
+        Actions.StartGameUpdate();
 
-        // reset game values
-        Config.Instance.consecutiveMatches = 0;
-        Config.Instance.moveCounter = 0;
-
-        // these are updated visually as well
-        ScoreScript.Instance.SetScore(0);
-
-        Config.Instance.actions = 0;
-        Actions.UpdateActions(0, startingGame: true);
-
-        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {
             reactorScript.SetReactorScore(0);
             reactorScript.Alert = false;
@@ -227,7 +226,7 @@ public class GameLoader : MonoBehaviour
     private List<GameObject> SetUpFoundations(List<GameObject> cards)
     {
         CardScript currentCardScript;
-        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+        foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
         {
             for (int i = 0; i < GameValues.GamePlay.foundationStartingSize - 1; i++)
             {

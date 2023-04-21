@@ -84,7 +84,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
 
         if (doLog)
         {
-            Actions.UpdateActions(1);
+            Actions.MoveUpdate();
         }
 
         StartCoroutine(ScrollBarAdding(cards.Count));
@@ -291,6 +291,6 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
             scrollRect.horizontal = true;
             //scrollRect.horizontalScrollbar.interactable = true;
         }
-        UtilsScript.Instance.InputStopped = value;
+        GameInput.Instance.InputStopped = value;
     }
 }

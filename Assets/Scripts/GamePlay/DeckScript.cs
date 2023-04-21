@@ -64,7 +64,7 @@ public class DeckScript : MonoBehaviour, ICardContainer
     private void DealButton()
     {
         // don't allow dealing when other stuff is happening
-        if (UtilsScript.Instance.InputStopped) return;
+        if (GameInput.Instance.InputStopped) return;
 
         if (cardList.Count != 0) // can the deck can be drawn from
         {

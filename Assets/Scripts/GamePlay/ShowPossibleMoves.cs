@@ -85,7 +85,7 @@ public class ShowPossibleMoves
             }
 
             // if moving the card into the reactor will lose us the game
-            if (reactorMoveScript.CountReactorCard() + selectedCardScript.Card.Rank.ReactorValue >
+            if (reactorMoveScript.CardValueCount + selectedCardScript.Card.Rank.ReactorValue >
                 Config.Instance.CurrentDifficulty.ReactorLimit)
             {
                 reactorMoveScript.GlowColor = Config.Instance.CurrentColorMode.Over;
@@ -151,7 +151,7 @@ public class ShowPossibleMoves
         if (cardCanBeMatched)
         {
             // check if there is a card in a reactor that can be matched with
-            ReactorScript complimentaryReactorScript = UtilsScript.Instance.reactorScripts[
+            ReactorScript complimentaryReactorScript = GameInput.Instance.reactorScripts[
                 Suit.GetComplementaryIndex(selectedCardScript.Card.Suit)];
             if (complimentaryReactorScript.CardList.Count != 0)
             {
@@ -167,11 +167,11 @@ public class ShowPossibleMoves
             // and the card is not in the reactor, get the reactor that we can move into
             if (!ReactorObstructed && selectedCardScript.CurrentContainerType != Constants.CardContainerType.Reactor)
             {
-                reactorMove = UtilsScript.Instance.reactorScripts[selectedCardScript.Card.Suit.Index].gameObject;
+                reactorMove = GameInput.Instance.reactorScripts[selectedCardScript.Card.Suit.Index].gameObject;
             }
         }
 
-        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+        foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
         {
             if (foundationScript.CardList.Count != 0)
             {

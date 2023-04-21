@@ -90,8 +90,14 @@ public class Config : MonoBehaviour
     {
         if (cameras.Count == 0) return;
         int oldCameraIndex = cameras.LastIndexOf(oldCamera);
-        if (oldCameraIndex == -1) throw new System.Exception("tried to remove a camera that is not being tracked");
-        cameras.RemoveAt(oldCameraIndex);
+        if (oldCameraIndex == -1)
+        {
+            Debug.LogError("tried to remove a camera that is not being tracked");
+        }
+        else
+        {
+            cameras.RemoveAt(oldCameraIndex);
+        }
         if (cameras.Count == 0) return;
         cameras[^1].enabled = true;
     }
@@ -142,7 +148,7 @@ public class Config : MonoBehaviour
             return;
 
         // reactor's score color
-        foreach (var reactor in UtilsScript.Instance.reactorScripts)
+        foreach (var reactor in GameInput.Instance.reactorScripts)
         {
             // toggle the alerts if they're on so that their text color is updated
             if (reactor.Alert)
