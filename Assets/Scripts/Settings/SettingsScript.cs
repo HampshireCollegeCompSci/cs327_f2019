@@ -253,7 +253,9 @@ public class SettingsScript : MonoBehaviour
         // https://docs.unity3d.com/ScriptReference/Application-targetFrameRate.html
         // make a list of most of the supported target frame rates
         // supported means that the screen's maximum refresh rate is divisible by the target
-        int maxFrameRate = Screen.currentResolution.refreshRate;
+
+        // refreshRateRatio.value is off from the typical integer by very small amount
+        int maxFrameRate = (int) Math.Round(Screen.currentResolution.refreshRateRatio.value);
         frameRates = maxFrameRate switch
         {
             240 => new List<int>(7) { -1, 30, 40, 60, 80, 120, 240 },
