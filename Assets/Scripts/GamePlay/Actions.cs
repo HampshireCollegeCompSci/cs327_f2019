@@ -5,7 +5,7 @@
         Config.Instance.consecutiveMatches++;
         Config.Instance.moveCounter++;
 
-        if (tryGameWon)
+        if (tryGameWon || EndGame.Instance.GameCanEnd)
         {
             bool allCardsHaveBeenMatched = MatchedPileScript.Instance.CardList.Count == GameValues.GamePlay.cardCount;
             if (allCardsHaveBeenMatched)
@@ -186,7 +186,7 @@
 
     private static void TryEnableGameCanEnd()
     {
-        if (!Config.Instance.gameOver && AreFoundationsEmpty())
+        if (!EndGame.Instance.GameCanEnd && !Config.Instance.gameOver && AreFoundationsEmpty())
         {
             EndGame.Instance.GameCanEnd = true;
         }

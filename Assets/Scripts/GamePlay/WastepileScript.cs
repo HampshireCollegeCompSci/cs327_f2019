@@ -69,11 +69,16 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
 
     public void AddCards(List<GameObject> cards, bool doLog = true)
     {
+        bool wastePileWasEmpty = false;
         if (cardList.Count != 0) // hide the current top token now
         {
             CardScript cardScript = cardList[^1].GetComponent<CardScript>();
             cardScript.Hologram = false;
             cardScript.Obstructed = true;
+        }
+        else
+        {
+            wastePileWasEmpty = true;
         }
 
         // add the new cards, for the non-top cards: don't try to show their hologram
@@ -88,7 +93,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
             Actions.MoveUpdate();
         }
 
-        StartCoroutine(ScrollBarAdding(cards.Count));
+        StartCoroutine(ScrollBarAdding(cards.Count, wastePileWasEmpty));
     }
 
     public void AddCard(GameObject card, bool showHolo)
@@ -122,6 +127,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
 
         // making a container for the card so that it plays nice with the scroll view
         GameObject newCardContainer = Instantiate(cardContainerPrefab, contentPanel.transform);
+        newCardContainer.transform.SetSiblingIndex(cardList.Count);
         cardContainers.Add(newCardContainer);
 
         // updating the card, set the z offset so that cards appear on top of eachother
@@ -188,13 +194,20 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         StartCoroutine(DeckReset());
     }
 
-    private IEnumerator ScrollBarAdding(int numCardsAdded)
+    private IEnumerator ScrollBarAdding(int numCardsAdded, bool wastePileWasEmpty)
     {
         SetScrolling(true);
 
         // move the scroll rect's content so that the new cards are hidden to the left side of the belt
         Vector2 startPosition = contentRectTransform.anchoredPosition;
-        startPosition.x -= cardSpacing * numCardsAdded;
+        if (wastePileWasEmpty)
+        {
+            startPosition.x = -cardSpacing * (numCardsAdded  + 1);
+        }
+        else
+        {
+            startPosition.x -= cardSpacing * numCardsAdded;
+        }
         contentRectTransform.anchoredPosition = startPosition;
 
         Vector2 endPosition = contentRectTransform.anchoredPosition;
