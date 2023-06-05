@@ -63,9 +63,6 @@ public static class GameValues
     {
         public const int matchPoints = 200;
         public const int scoreMultiplier = 50;
-        public const bool enableBonusPoints = false;
-        public const int emptyReactorPoints = 1000;
-        public const int perfectGamePoints = 2800;
     }
 
     public static class Music
@@ -171,7 +168,7 @@ public static class GameValues
         public const float alertFade = 1; // action counter's alert siren
         public const float reactorExplosionDelay = 0.4f; // the delay between reactors exploding when losing
 
-        public const float gameSummaryBabyFade = 2; // fade in, then out baby win transitioning in the summary scene
+        public const float gameSummaryBabyFade = 1.2f; // fade in, then out baby win transitioning in the summary scene
     }
 
     public static class FadeColors

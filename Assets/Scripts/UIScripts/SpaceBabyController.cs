@@ -59,8 +59,6 @@ public class SpaceBabyController : MonoBehaviour, ISound
 
     public void BabyHappy()
     {
-        Debug.Log("SpaceBaby Happy");
-
         audioSource.PlayOneShot(happySound, 0.4f);
         animator.Play("HappyAnim");
         DelayIdle();
@@ -68,23 +66,18 @@ public class SpaceBabyController : MonoBehaviour, ISound
 
     public void BabyEat()
     {
-        Debug.Log("SpaceBaby Eat");
-
         animator.Play("EatingAnim");
         DelayIdle();
     }
 
     public void BabyReactorHigh()
     {
-        Debug.Log("SpaceBaby Reactor High");
-
         audioSource.PlayOneShot(reactorHighSound, 0.2f);
         AngryAnimation();
     }
 
     public void BabyLoseTransition()
     {
-        Debug.Log("SpaceBaby Lose Transition");
         audioSource.PlayOneShot(loseSound, 1);
 
         if (idleCoroutine != null)
@@ -98,16 +91,12 @@ public class SpaceBabyController : MonoBehaviour, ISound
 
     public void BabyActionCounter()
     {
-        Debug.Log("SpaceBaby ActionCounter");
-
         audioSource.PlayOneShot(counterSound, 0.5f);
         AngryAnimation();
     }
 
     public void PlayLoseAnimation()
     {
-        Debug.Log("SpaceBaby Lose Summary");
-
         animator.Play("Lose");
     }
 
@@ -144,7 +133,7 @@ public class SpaceBabyController : MonoBehaviour, ISound
 
     private IEnumerator BabyAnimTrans()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(2.1f);
         BabyIdle();
         idleCoroutine = null;
     }

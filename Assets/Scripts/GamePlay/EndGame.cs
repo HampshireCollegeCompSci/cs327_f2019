@@ -65,13 +65,6 @@ public class EndGame : MonoBehaviour
 
         SaveFile.Delete();
 
-        if (GameValues.Points.enableBonusPoints)
-        {
-            #pragma warning disable CS0162 // Unreachable code detected
-            AddExtraEndGameScore();
-            #pragma warning restore CS0162 // Unreachable code detected
-        }
-
         bool isCheating = Config.Instance.CurrentDifficulty.Equals(GameValues.GamePlay.difficulties[3]);
         Config.Instance.matchCounter = isCheating ? GameValues.GamePlay.matchCount : MatchedPileScript.Instance.CardList.Count / 2; ;
 
@@ -100,25 +93,6 @@ public class EndGame : MonoBehaviour
         }
 
         StartCoroutine(BeginGameOverTransition(didWin));
-    }
-
-    private void AddExtraEndGameScore()
-    {
-        int extraScore = 0;
-        if (MatchedPileScript.Instance.CardList.Count == 52)
-        {
-            extraScore += GameValues.Points.perfectGamePoints;
-        }
-
-        foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
-        {
-            if (foundationScript.CardList.Count == 0)
-            {
-                extraScore += GameValues.Points.emptyReactorPoints;
-            }
-        }
-
-        ScoreScript.Instance.UpdateScore(extraScore);
     }
 
     private IEnumerator BeginGameOverTransition(bool didWin)

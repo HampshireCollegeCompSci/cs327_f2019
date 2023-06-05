@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -200,17 +201,8 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         endPosition.x = 0;
 
         // get the number of cards that have been scrolled away from
-        float numCards = -contentRectTransform.anchoredPosition.x / cardSpacing;
-        // the duration of the scroll back to x=0, scroll faster through cards that were not just dealed 
-        float duration = numCards switch
-        {
-            1 => 0.3f,
-            2 => 0.4f,
-            3 => 0.5f,
-            _ => 0.5f + (numCards - 3) / 10f
-        };
-
-        yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, duration);
+        float numCardsFromStart = -contentRectTransform.anchoredPosition.x / cardSpacing;
+        yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, GetScrollDuration(numCardsFromStart));
 
         DeckScript.Instance.StartButtonUp();
 
@@ -243,13 +235,8 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         Vector2 endPosition = contentRectTransform.anchoredPosition;
         endPosition.x = -cardSpacing * (cardList.Count + 1);
 
-        float duration = cardList.Count switch
-        {
-            < 6 => cardList.Count / 15f,
-            _ => 0.4f + (cardList.Count - 6) / 20f
-        };
-
-        yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, duration);
+        double numCardsFromEnd = cardList.Count + (contentRectTransform.anchoredPosition.x / cardSpacing);
+        yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, GetScrollDuration(numCardsFromEnd));
 
         // move all the tokens
         while (cardList.Count > 0)
@@ -292,5 +279,11 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
             //scrollRect.horizontalScrollbar.interactable = true;
         }
         GameInput.Instance.InputStopped = value;
+    }
+
+    private float GetScrollDuration(double numCardsToScroll)
+    {
+        return 0.1f + (float)(numCardsToScroll * Math.Pow(Math.E, -(numCardsToScroll + GameValues.GamePlay.cardCount * 2) / GameValues.GamePlay.cardCount));
+        // y = 0.1f + x * e^((-x + 52 * 2) / 52))
     }
 }
