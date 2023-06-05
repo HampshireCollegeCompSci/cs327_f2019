@@ -1,8 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MenuUIScript : MonoBehaviour
 {
+    [SerializeField]
+    private Image spaceShip;
+    [SerializeField]
+    private Sprite spaceShipOn, spaceShipOff, debris;
+
     // MainMenuScene Main buttons
     [SerializeField]
     private GameObject mainButtons, playButton, tutorialButton, settingsButton, aboutButton;
@@ -38,6 +44,7 @@ public class MenuUIScript : MonoBehaviour
 
     public void Tutorial()
     {
+        spaceShip.sprite = spaceShipOn;
         NewGame(isTutorial: true);
     }
 
@@ -71,6 +78,14 @@ public class MenuUIScript : MonoBehaviour
         }
     }
 
+    public void CheatMode()
+    {
+        spaceShip.sprite = debris;
+        SoundEffectsController.Instance.ExplosionSound();
+        Config.Instance.SetDifficulty(GameValues.GamePlay.difficulties[3]);
+        NewGame();
+    }
+
     private void NewGame(bool isContinue = false, bool isTutorial = false)
     {
         Debug.Log("UI Button new game");
@@ -100,15 +115,13 @@ public class MenuUIScript : MonoBehaviour
         // Continue button requires a save to exist
         if (showMain)
         {
+            spaceShip.sprite = spaceShipOff;
             continueButton.SetActive(false);
-        }
-        else if (SaveFile.Exists())
-        {
-            continueButton.SetActive(true);
         }
         else
         {
-            continueButton.SetActive(false);
+            spaceShip.sprite = spaceShipOn;
+            continueButton.SetActive(SaveFile.Exists());
         }
     }
 }

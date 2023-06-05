@@ -11,10 +11,22 @@ public class EndGame : MonoBehaviour
     [SerializeField]
     private GameObject explosionPrefab;
     [SerializeField]
-    private GameObject restartButton, continueButton,
+    private GameObject gameEndButton, restartButton, continueButton,
         errorObject, gameOverPanel, gameOverTextPanel;
     [SerializeField]
     private Text gameOverText, wonlostText;
+
+    private bool _gameCanEnd;
+    public bool GameCanEnd
+    {
+        get => _gameCanEnd;
+        set
+        {
+            if (_gameCanEnd == value) return;
+            _gameCanEnd = value;
+            gameEndButton.SetActive(value);
+        }
+    }
 
     private void Awake()
     {
@@ -29,100 +41,68 @@ public class EndGame : MonoBehaviour
         }
     }
 
-    public void ManualGameWin()
+    public void ManualGameWinButton()
     {
-        if (!GameValues.GamePlay.enableCheat) return;
-
-        #pragma warning disable CS0162 // Unreachable code detected
+        if (GameInput.Instance.InputStopped) return;
+        if (!GameCanEnd)
+        {
+            Debug.LogWarning("trying to end the game when it should not be possible");
+            gameEndButton.SetActive(false);
+            return;
+        }
+        SoundEffectsController.Instance.ButtonPressSound();
         GameOver(true);
-        // to ensure that the full win animation plays for debug
-        Config.Instance.matchCounter = 26;
-        #pragma warning restore CS0162 // Unreachable code detected
     }
 
     public void GameOver(bool didWin)
     {
         Debug.Log($"Game Over, won: {didWin}");
 
-        UtilsScript.Instance.InputStopped = true;
+        GameInput.Instance.InputStopped = true;
         Config.Instance.gameOver = true;
         Config.Instance.gameWin = didWin;
+        GameCanEnd = false;
 
         SaveFile.Delete();
 
-        if (GameValues.Points.enableBonusPoints)
-        {
-            #pragma warning disable CS0162 // Unreachable code detected
-            AddExtraEndGameScore();
-            #pragma warning restore CS0162 // Unreachable code detected
-        }
-
-        // overwritten when manually won (cheated)
-        Config.Instance.matchCounter = MatchedPileScript.Instance.CardList.Count / 2;
+        bool isCheating = Config.Instance.CurrentDifficulty.Equals(GameValues.GamePlay.difficulties[3]);
+        Config.Instance.matchCounter = isCheating ? GameValues.GamePlay.matchCount : MatchedPileScript.Instance.CardList.Count / 2; ;
 
         if (didWin)
         {
-            foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+            gameOverText.color = Config.Instance.CurrentColorMode.Match.Color;
+            wonlostText.color = Config.Instance.CurrentColorMode.Match.Color;
+            wonlostText.text = GameValues.Text.gameWon;
+            SoundEffectsController.Instance.WinSound();
+            foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
             {
                 foundationScript.GlowForGameEnd(true);
             }
         }
         else
         {
-            foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+            errorObject.SetActive(true);
+            gameOverText.color = Config.Instance.CurrentColorMode.Over.Color;
+            wonlostText.color = Config.Instance.CurrentColorMode.Over.Color;
+            wonlostText.text = GameValues.Text.gameLost;
+            SoundEffectsController.Instance.LoseSound();
+            foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
             {
                 if (reactorScript.TryHighlightOverloaded(true)) break;
             }
         }
 
-        StartCoroutine(BeginGameOverTransition());
+        StartCoroutine(BeginGameOverTransition(didWin));
     }
 
-    private void AddExtraEndGameScore()
-    {
-        int extraScore = 0;
-        if (MatchedPileScript.Instance.CardList.Count == 52)
-        {
-            extraScore += GameValues.Points.perfectGamePoints;
-        }
-
-        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
-        {
-            if (foundationScript.CardList.Count == 0)
-            {
-                extraScore += GameValues.Points.emptyReactorPoints;
-            }
-        }
-
-        ScoreScript.Instance.UpdateScore(extraScore);
-    }
-
-    private IEnumerator BeginGameOverTransition()
+    private IEnumerator BeginGameOverTransition(bool didWin)
     {
         gameOverPanel.SetActive(true);
         MusicController.Instance.FadeMusicOut();
 
         Image fadeInScreen = this.gameObject.GetComponent<Image>();
         CanvasGroup textGroup = gameOverTextPanel.GetComponent<CanvasGroup>();
-        Color fadeColor;
-
-        if (Config.Instance.gameWin)
-        {
-            fadeColor = GameValues.FadeColors.grayA1;
-            SoundEffectsController.Instance.WinSound();
-            gameOverText.color = Config.Instance.CurrentColorMode.Match.Color;
-            wonlostText.color = Config.Instance.CurrentColorMode.Match.Color;
-            wonlostText.text = GameValues.Text.gameWon;
-        }
-        else
-        {
-            fadeColor = GameValues.FadeColors.blackA1;
-            errorObject.SetActive(true);
-            SoundEffectsController.Instance.LoseSound();
-            gameOverText.color = Config.Instance.CurrentColorMode.Over.Color;
-            wonlostText.color = Config.Instance.CurrentColorMode.Over.Color;
-            wonlostText.text = GameValues.Text.gameLost;
-        }
+        Color fadeColor = didWin ? GameValues.FadeColors.grayA1 : GameValues.FadeColors.blackA1;
 
         fadeInScreen.enabled = true;
         gameOverTextPanel.SetActive(true);
@@ -142,7 +122,7 @@ public class EndGame : MonoBehaviour
         fadeInScreen.color = fadeColor;
         textGroup.alpha = 1;
 
-        if (Config.Instance.gameWin)
+        if (didWin)
         {
             SpaceBabyController.Instance.BabyHappy();
             MusicController.Instance.WinMusic();
@@ -161,6 +141,7 @@ public class EndGame : MonoBehaviour
     {
         restartButton.SetActive(false);
         continueButton.SetActive(false);
+        errorObject.SetActive(false);
         gameOverTextPanel.SetActive(false);
         gameOverPanel.SetActive(false);
         SpaceBabyController.Instance.ResetBaby();
@@ -171,14 +152,14 @@ public class EndGame : MonoBehaviour
             PersistentSettings.TrySetHighScore(Config.Instance.CurrentDifficulty, Config.Instance.score);
             PersistentSettings.TrySetLeastMoves(Config.Instance.CurrentDifficulty, Config.Instance.moveCounter);
 
-            foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+            foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
             {
                 foundationScript.GlowForGameEnd(false);
             }
         }
         else
         {
-            foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+            foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
             {
                 reactorScript.TryHighlightOverloaded(false);
             }
@@ -187,7 +168,7 @@ public class EndGame : MonoBehaviour
         MusicController.Instance.GameMusic();
         Config.Instance.gameOver = false;
         GameLoader.Instance.RestartGame();
-        UtilsScript.Instance.InputStopped = false;
+        GameInput.Instance.InputStopped = false;
         this.gameObject.GetComponent<Image>().enabled = false;
     }
 
@@ -211,7 +192,7 @@ public class EndGame : MonoBehaviour
     {
         // wait for dramatic effect
         yield return new WaitForSeconds(0.5f);
-        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {
             if (reactorScript.CardList.Count != 0)
             {

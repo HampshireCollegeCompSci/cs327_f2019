@@ -43,7 +43,7 @@ public class TutorialScript : MonoBehaviour
     {
         Debug.Log("tutorial touch");
 
-        if (waiting && !UtilsScript.Instance.InputStopped)
+        if (waiting && !GameInput.Instance.InputStopped)
         {
             waiting = false;
             SoundEffectsController.Instance.ButtonPressSound();
@@ -231,14 +231,14 @@ public class TutorialScript : MonoBehaviour
         Debug.Log("ending tutorial");
 
         tutorialUIPanel.SetActive(false);
-        UtilsScript.Instance.ShowPossibleMoves.TokenMoveable = true;
+        GameInput.Instance.ShowPossibleMoves.TokenMoveable = true;
 
         Config.Instance.SetTutorialOn(false);
         Config.Instance.SetDifficulty(GameValues.GamePlay.difficulties[0]);
         MusicController.Instance.GameMusic();
-        UtilsScript.Instance.InputStopped = true;
+        GameInput.Instance.InputStopped = true;
         GameLoader.Instance.RestartGame();
-        UtilsScript.Instance.InputStopped = false;
+        GameInput.Instance.InputStopped = false;
 
         deckButton.interactable = true;
         undoButton.interactable = true;
@@ -365,14 +365,14 @@ public class TutorialScript : MonoBehaviour
             case sReactors:
                 if (highlightOn)
                 {
-                    foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+                    foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
                     {
                         reactorScript.GlowColor = highlightColor;
                     }
                 }
                 else
                 {
-                    foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+                    foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
                     {
                         reactorScript.Glowing = false;
                     }
@@ -381,29 +381,29 @@ public class TutorialScript : MonoBehaviour
             case sReactor:
                 if (highlightOn)
                 {
-                    UtilsScript.Instance.reactorScripts[index].GlowColor = highlightColor;
+                    GameInput.Instance.reactorScripts[index].GlowColor = highlightColor;
                     if (highlightColor.ColorLevel == Constants.ColorLevel.Over)
                     {
-                        UtilsScript.Instance.reactorScripts[index].Alert = true;
+                        GameInput.Instance.reactorScripts[index].Alert = true;
                     }
                 }
                 else
                 {
-                    UtilsScript.Instance.reactorScripts[index].Glowing = false;
-                    UtilsScript.Instance.reactorScripts[index].Alert = false;
+                    GameInput.Instance.reactorScripts[index].Glowing = false;
+                    GameInput.Instance.reactorScripts[index].Alert = false;
                 }
                 break;
             case sFoundations:
                 if (highlightOn)
                 {
-                    foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+                    foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
                     {
                         foundationScript.GlowColor = highlightColor;
                     }
                 }
                 else
                 {
-                    foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+                    foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
                     {
                         foundationScript.Glowing = false;
                     }
@@ -412,11 +412,11 @@ public class TutorialScript : MonoBehaviour
             case sFoundation:
                 if (highlightOn)
                 {
-                    UtilsScript.Instance.foundationScripts[index].GlowColor = highlightColor;
+                    GameInput.Instance.foundationScripts[index].GlowColor = highlightColor;
                 }
                 else
                 {
-                    UtilsScript.Instance.foundationScripts[index].Glowing = false;
+                    GameInput.Instance.foundationScripts[index].Glowing = false;
                 }
                 break;
             default:
@@ -453,7 +453,7 @@ public class TutorialScript : MonoBehaviour
         switch (NormalizeString(command[1]))
         {
             case sReactor:
-                List<GameObject> reactorCardList = UtilsScript.Instance.reactorScripts[containerIndex].CardList;
+                List<GameObject> reactorCardList = GameInput.Instance.reactorScripts[containerIndex].CardList;
                 if (reactorCardList.Count < tokenIndex - 1)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
@@ -470,7 +470,7 @@ public class TutorialScript : MonoBehaviour
                 }
                 break;
             case sFoundation:
-                List<GameObject> foundationCardList = UtilsScript.Instance.foundationScripts[containerIndex].CardList;
+                List<GameObject> foundationCardList = GameInput.Instance.foundationScripts[containerIndex].CardList;
                 if (foundationCardList.Count < tokenIndex - 1)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
@@ -532,7 +532,7 @@ public class TutorialScript : MonoBehaviour
         switch (NormalizeString(command[1]))
         {
             case sReactor:
-                List<GameObject> reactorCardList = UtilsScript.Instance.reactorScripts[containerIndex].CardList;
+                List<GameObject> reactorCardList = GameInput.Instance.reactorScripts[containerIndex].CardList;
                 if (reactorCardList.Count < tokenIndex - 1)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
@@ -541,7 +541,7 @@ public class TutorialScript : MonoBehaviour
                 reactorCardList[^tokenIndex].GetComponent<CardScript>().Obstructed = obstructed;
                 break;
             case sFoundation:
-                List<GameObject> foundationCardList = UtilsScript.Instance.foundationScripts[containerIndex].CardList;
+                List<GameObject> foundationCardList = GameInput.Instance.foundationScripts[containerIndex].CardList;
                 if (foundationCardList.Count < tokenIndex - 1)
                 {
                     throw new FormatException($"contains an out of bounds token index for command #3. " +
@@ -566,7 +566,7 @@ public class TutorialScript : MonoBehaviour
     {
         Debug.Log("Obstructing all tokens");
 
-        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {
             // only the top reactor token/card is ever not obstructed
             if (reactorScript.CardList.Count != 0)
@@ -575,7 +575,7 @@ public class TutorialScript : MonoBehaviour
             }
         }
 
-        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+        foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
         {
             // from the top of the list downwards, obstruct until a hidden card is reached
             for (int i = foundationScript.CardList.Count - 1; i >= 0; i--)
@@ -599,7 +599,7 @@ public class TutorialScript : MonoBehaviour
         Debug.Log($"changing reactor obstruction: {command[1]}");
 
         bool obstructed = ParseOnOrOff(command, 1);
-        UtilsScript.Instance.ShowPossibleMoves.ReactorObstructed = obstructed;
+        GameInput.Instance.ShowPossibleMoves.ReactorObstructed = obstructed;
     }
 
     private void ChangeTokenMoveability(List<string> command)
@@ -609,7 +609,7 @@ public class TutorialScript : MonoBehaviour
         Debug.Log($"changing token moveability: {command[1]}");
 
         bool moveability = ParseOnOrOff(command, 1);
-        UtilsScript.Instance.ShowPossibleMoves.TokenMoveable = moveability;
+        GameInput.Instance.ShowPossibleMoves.TokenMoveable = moveability;
     }
 
     private void ChangeButtonInteractable(List<string> command)
@@ -650,11 +650,11 @@ public class TutorialScript : MonoBehaviour
     {
         Debug.Log("unhighlighting all tokens");
 
-        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {
             CardListGlowOff(reactorScript.CardList);
         }
-        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+        foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
         {
             CardListGlowOff(foundationScript.CardList);
         }

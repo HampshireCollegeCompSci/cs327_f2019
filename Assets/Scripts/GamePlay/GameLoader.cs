@@ -37,11 +37,10 @@ public class GameLoader : MonoBehaviour
 
         for (int i = 0; i < 4; i++)
         {
-            UtilsScript.Instance.reactorScripts[i].SetReactorSuit(GameValues.GamePlay.suits[i]);
+            GameInput.Instance.reactorScripts[i].SetReactorSuit(GameValues.GamePlay.suits[i]);
         }
 
-        Config.Instance.gameOver = false;
-        Config.Instance.gameWin = false;
+        ResetGameState();
 
         // Figure out what kinda game to start
         if (Config.Instance.tutorialOn)
@@ -103,6 +102,7 @@ public class GameLoader : MonoBehaviour
 
     public void RestartGame()
     {
+        ResetGameState();
         List<GameObject> cards = GetAllCards();
         MoveCardsToLoadPile(cards);
         foreach (GameObject card in cards)
@@ -124,9 +124,23 @@ public class GameLoader : MonoBehaviour
         SetRectorSuitSprites(suitSprites);
     }
 
+    private void ResetGameState()
+    {
+        Config.Instance.gameOver = false;
+        Config.Instance.gameWin = false;
+        Config.Instance.actions = 0;
+        ScoreScript.Instance.SetScore(0);
+        Config.Instance.consecutiveMatches = 0;
+        Config.Instance.moveCounter = 0;
+        Config.Instance.matchCounter = 0;
+        EndGame.Instance.GameCanEnd = false;
+        UndoScript.Instance.GameStart();
+        StateLoader.Instance.GameStart();
+    }
+
     private List<GameObject> GetNewCards()
     {
-        List<GameObject> newCards = new(52);
+        List<GameObject> newCards = new(GameValues.GamePlay.cardCount);
 
         // order: spade ace, 2, 3... 10, jack, queen, king, clubs... diamonds... hearts
         int hFSIndex = 0; // used for assigning holograms
@@ -162,13 +176,13 @@ public class GameLoader : MonoBehaviour
 
     private List<GameObject> GetAllCards()
     {
-        List<GameObject> cards = new(52);
+        List<GameObject> cards = new(GameValues.GamePlay.cardCount);
 
-        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+        foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
         {
             cards.AddRange(foundationScript.CardList);
         }
-        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {
             cards.AddRange(reactorScript.CardList);
         }
@@ -182,23 +196,10 @@ public class GameLoader : MonoBehaviour
     private void StartNewGame(List<GameObject> cards)
     {
         // the game difficultuy should already be set to what is desired for things to work properly
-
-        // remove old stuff
-        UndoScript.Instance.GameStart();
-        StateLoader.Instance.GameStart();
         SaveFile.Delete();
+        Actions.StartNewGameUpdate();
 
-        // reset game values
-        Config.Instance.consecutiveMatches = 0;
-        Config.Instance.moveCounter = 0;
-
-        // these are updated visually as well
-        ScoreScript.Instance.SetScore(0);
-
-        Config.Instance.actions = 0;
-        Actions.UpdateActions(0, startingGame: true);
-
-        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {
             reactorScript.SetReactorScore(0);
             reactorScript.Alert = false;
@@ -207,7 +208,13 @@ public class GameLoader : MonoBehaviour
         ActionCountScript.Instance.AlertLevel = GameValues.Colors.normal;
 
         cards = ShuffleCards(cards);
-        cards = SetUpFoundations(cards);
+        bool isCheating = Config.Instance.CurrentDifficulty.Equals(GameValues.GamePlay.difficulties[3]);
+        cards = isCheating switch
+        {
+            true => SetUpFoundations(cards, 1),
+            false => SetUpFoundations(cards, GameValues.GamePlay.foundationStartingSize - 1)
+        };
+
         MoveCardsToDeck(cards);
 
         DeckScript.Instance.Deal(false);
@@ -224,12 +231,12 @@ public class GameLoader : MonoBehaviour
         return cards;
     }
 
-    private List<GameObject> SetUpFoundations(List<GameObject> cards)
+    private List<GameObject> SetUpFoundations(List<GameObject> cards, int hiddenFoundationCards)
     {
         CardScript currentCardScript;
-        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+        foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
         {
-            for (int i = 0; i < GameValues.GamePlay.foundationStartingSize - 1; i++)
+            for (int i = 0; i < hiddenFoundationCards; i++)
             {
                 currentCardScript = cards[^1].GetComponent<CardScript>();
                 currentCardScript.MoveCard(Constants.CardContainerType.Foundation, foundationScript.gameObject, doLog: false, showHolo: false);

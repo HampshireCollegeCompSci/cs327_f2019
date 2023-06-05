@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,8 +32,8 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         {
             Instance = this;
 
-            cardList = new List<GameObject>(52);
-            cardContainers = new List<GameObject>(52);
+            cardList = new List<GameObject>(GameValues.GamePlay.cardCount);
+            cardContainers = new List<GameObject>(GameValues.GamePlay.cardCount);
 
             cardSpacing = contentPanel.GetComponent<HorizontalLayoutGroup>().spacing + 
                 cardContainerPrefab.GetComponent<RectTransform>().sizeDelta.x;
@@ -68,11 +69,16 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
 
     public void AddCards(List<GameObject> cards, bool doLog = true)
     {
+        bool wastePileWasEmpty = false;
         if (cardList.Count != 0) // hide the current top token now
         {
             CardScript cardScript = cardList[^1].GetComponent<CardScript>();
             cardScript.Hologram = false;
             cardScript.Obstructed = true;
+        }
+        else
+        {
+            wastePileWasEmpty = true;
         }
 
         // add the new cards, for the non-top cards: don't try to show their hologram
@@ -84,10 +90,10 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
 
         if (doLog)
         {
-            Actions.UpdateActions(1);
+            Actions.MoveUpdate();
         }
 
-        StartCoroutine(ScrollBarAdding(cards.Count));
+        StartCoroutine(ScrollBarAdding(cards.Count, wastePileWasEmpty));
     }
 
     public void AddCard(GameObject card, bool showHolo)
@@ -121,6 +127,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
 
         // making a container for the card so that it plays nice with the scroll view
         GameObject newCardContainer = Instantiate(cardContainerPrefab, contentPanel.transform);
+        newCardContainer.transform.SetSiblingIndex(cardList.Count);
         cardContainers.Add(newCardContainer);
 
         // updating the card, set the z offset so that cards appear on top of eachother
@@ -187,30 +194,28 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         StartCoroutine(DeckReset());
     }
 
-    private IEnumerator ScrollBarAdding(int numCardsAdded)
+    private IEnumerator ScrollBarAdding(int numCardsAdded, bool wastePileWasEmpty)
     {
         SetScrolling(true);
 
         // move the scroll rect's content so that the new cards are hidden to the left side of the belt
         Vector2 startPosition = contentRectTransform.anchoredPosition;
-        startPosition.x -= cardSpacing * numCardsAdded;
+        if (wastePileWasEmpty)
+        {
+            startPosition.x = -cardSpacing * (numCardsAdded  + 1);
+        }
+        else
+        {
+            startPosition.x -= cardSpacing * numCardsAdded;
+        }
         contentRectTransform.anchoredPosition = startPosition;
 
         Vector2 endPosition = contentRectTransform.anchoredPosition;
         endPosition.x = 0;
 
         // get the number of cards that have been scrolled away from
-        float numCards = -contentRectTransform.anchoredPosition.x / cardSpacing;
-        // the duration of the scroll back to x=0, scroll faster through cards that were not just dealed 
-        float duration = numCards switch
-        {
-            1 => 0.3f,
-            2 => 0.4f,
-            3 => 0.5f,
-            _ => 0.5f + (numCards - 3) / 10f
-        };
-
-        yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, duration);
+        float numCardsFromStart = -contentRectTransform.anchoredPosition.x / cardSpacing;
+        yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, GetScrollDuration(numCardsFromStart));
 
         DeckScript.Instance.StartButtonUp();
 
@@ -243,13 +248,8 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         Vector2 endPosition = contentRectTransform.anchoredPosition;
         endPosition.x = -cardSpacing * (cardList.Count + 1);
 
-        float duration = cardList.Count switch
-        {
-            < 6 => cardList.Count / 15f,
-            _ => 0.4f + (cardList.Count - 6) / 20f
-        };
-
-        yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, duration);
+        double numCardsFromEnd = cardList.Count + (contentRectTransform.anchoredPosition.x / cardSpacing);
+        yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, GetScrollDuration(numCardsFromEnd));
 
         // move all the tokens
         while (cardList.Count > 0)
@@ -291,6 +291,12 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
             scrollRect.horizontal = true;
             //scrollRect.horizontalScrollbar.interactable = true;
         }
-        UtilsScript.Instance.InputStopped = value;
+        GameInput.Instance.InputStopped = value;
+    }
+
+    private float GetScrollDuration(double numCardsToScroll)
+    {
+        return 0.1f + (float)(numCardsToScroll * Math.Pow(Math.E, -(numCardsToScroll + GameValues.GamePlay.cardCount * 2) / GameValues.GamePlay.cardCount));
+        // y = 0.1f + x * e^((-x + 52 * 2) / 52))
     }
 }

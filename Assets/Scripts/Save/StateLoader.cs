@@ -86,8 +86,8 @@ public class StateLoader : MonoBehaviour
             t = newMove.containerType,
             i = newMove.containerType switch
             {
-                Constants.CardContainerType.Reactor => Array.IndexOf(UtilsScript.Instance.reactors, newMove.origin),
-                Constants.CardContainerType.Foundation => Array.IndexOf(UtilsScript.Instance.foundations, newMove.origin),
+                Constants.CardContainerType.Reactor => Array.IndexOf(GameInput.Instance.reactors, newMove.origin),
+                Constants.CardContainerType.Foundation => Array.IndexOf(GameInput.Instance.foundations, newMove.origin),
                 _ => 0,
             },
             m = newMove.moveType,
@@ -178,9 +178,9 @@ public class StateLoader : MonoBehaviour
             moveLog = saveMoveLog,
         };
 
-        for (int i = 0; i < UtilsScript.Instance.foundationScripts.Length; i++)
+        for (int i = 0; i < GameInput.Instance.foundationScripts.Length; i++)
         {
-            foreach (GameObject card in UtilsScript.Instance.foundationScripts[i].CardList)
+            foreach (GameObject card in GameInput.Instance.foundationScripts[i].CardList)
             {
                 CardScript cardScript = card.GetComponent<CardScript>();
                 if (cardScript.Hidden)
@@ -193,9 +193,9 @@ public class StateLoader : MonoBehaviour
                 }
             }
         }
-        for (int i = 0; i < UtilsScript.Instance.reactorScripts.Length; i++)
+        for (int i = 0; i < GameInput.Instance.reactorScripts.Length; i++)
         {
-            gameState.reactors[i].cards = ConvertCardListToStringList(UtilsScript.Instance.reactorScripts[i].CardList);
+            gameState.reactors[i].cards = ConvertCardListToStringList(GameInput.Instance.reactorScripts[i].CardList);
         }
 
         string content = JsonUtility.ToJson(gameState, Application.isEditor);
@@ -257,14 +257,14 @@ public class StateLoader : MonoBehaviour
         //set up foundations
         for (int i = 0; i < state.foundations.Length; i++)
         {
-            SetUpLocationWithCards(state.foundations[i].hidden, Constants.CardContainerType.Foundation, UtilsScript.Instance.foundations[i], isHidden: true);
-            SetUpLocationWithCards(state.foundations[i].unhidden, Constants.CardContainerType.Foundation, UtilsScript.Instance.foundations[i]);
+            SetUpLocationWithCards(state.foundations[i].hidden, Constants.CardContainerType.Foundation, GameInput.Instance.foundations[i], isHidden: true);
+            SetUpLocationWithCards(state.foundations[i].unhidden, Constants.CardContainerType.Foundation, GameInput.Instance.foundations[i]);
         }
 
         //set up reactors
         for (int i = 0; i < state.reactors.Length; i++)
         {
-            SetUpLocationWithCards(state.reactors[i].cards, Constants.CardContainerType.Reactor, UtilsScript.Instance.reactors[i]);
+            SetUpLocationWithCards(state.reactors[i].cards, Constants.CardContainerType.Reactor, GameInput.Instance.reactors[i]);
         }
 
         //set up wastepile
@@ -297,12 +297,12 @@ public class StateLoader : MonoBehaviour
             throw new NullReferenceException("there are cards still in the load pile after loading the game");
         }
 
-        foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+        foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {
             reactorScript.SetReactorScore();
         }
 
-        Actions.UpdateActions(state.actions, startingGame: true);
+        Actions.StartSavedGameUpdate(state.actions);
         DeckScript.Instance.UpdateDeckCounter();
     }
 
@@ -331,8 +331,8 @@ public class StateLoader : MonoBehaviour
                 containerType = saveMove.t,
                 origin = saveMove.t switch
                 {
-                    Constants.CardContainerType.Reactor => UtilsScript.Instance.reactors[saveMove.i],
-                    Constants.CardContainerType.Foundation => UtilsScript.Instance.foundations[saveMove.i],
+                    Constants.CardContainerType.Reactor => GameInput.Instance.reactors[saveMove.i],
+                    Constants.CardContainerType.Foundation => GameInput.Instance.foundations[saveMove.i],
                     Constants.CardContainerType.Deck => DeckScript.Instance.gameObject,
                     Constants.CardContainerType.WastePile => WastepileScript.Instance.gameObject,
                     Constants.CardContainerType.MatchedPile => MatchedPileScript.Instance.gameObject,

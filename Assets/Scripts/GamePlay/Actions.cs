@@ -1,295 +1,208 @@
-﻿using System.Collections;
-using UnityEngine;
-
-public class Actions : MonoBehaviour
+﻿public static class Actions
 {
-    private static Actions Instance;
-
-    void Awake()
+    public static void MatchUpdate(bool tryGameWon)
     {
-        if (Instance == null)
+        Config.Instance.consecutiveMatches++;
+        Config.Instance.moveCounter++;
+
+        if (tryGameWon || EndGame.Instance.GameCanEnd)
         {
-            Instance = this;
+            bool allCardsHaveBeenMatched = MatchedPileScript.Instance.CardList.Count == GameValues.GamePlay.cardCount;
+            if (allCardsHaveBeenMatched)
+            {
+                EndGame.Instance.GameOver(true);
+                return;
+            }
+            TryEnableGameCanEnd();
         }
-        else if (Instance != this)
-        {
-            throw new System.ArgumentException("there should not already be an instance of this");
-        }
+        StateLoader.Instance.TryWriteState();
+        Alert(IsInAlertThreshold(), isMatchRelated: true);
     }
 
-    public static void UpdateActions(int actionUpdate, bool setAsValue = false, bool checkGameOver = false, bool startingGame = false, bool isMatch = false)
+    public static void MatchUndoUpdate()
     {
-        // so that during a game start consecutiveMatches is not set to 0 after being set from a saved game
-        if (!startingGame)
-        {
-            if (isMatch)
-            {
-                Config.Instance.consecutiveMatches++;
-            }
-            else
-            {
-                Config.Instance.consecutiveMatches = 0;
-            }
-        }
+        Config.Instance.consecutiveMatches = 0;
+        Config.Instance.moveCounter++;
+        StateLoader.Instance.TryWriteState();
+        TryDisableGameCanEnd();
+        Alert(IsInAlertThreshold(), isMatchRelated: true);
+    }
 
-        // so that a nextcycle trigger doesn't save the state before and after, we only need the after
-        bool doSaveState = true;
+    public static void MoveUpdate(bool checkGameOver = false)
+    {
+        Config.Instance.consecutiveMatches = 0;
+        Config.Instance.moveCounter++;
 
-        // detecting if the game is starting or if a nextcycle will be triggered
-        if (startingGame || (!setAsValue && ((Config.Instance.actions + actionUpdate) >= Config.Instance.CurrentDifficulty.MoveLimit)))
-        {
-            doSaveState = false;
-        }
-        else
-        {
-            Config.Instance.moveCounter++;
-        }
-
-        bool wasInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= GameValues.GamePlay.turnAlertThreshold;
-
-        // loading a saved game triggers this
-        if (startingGame)
-        {
-            Config.Instance.actions = actionUpdate;
-        }
-        // a nextcycle after it's done triggers this
-        else if (setAsValue)
-        {
-            // if nextcycle caused a Game Over
-            if (TryGameWon()) return;
-
-            Config.Instance.actions = actionUpdate;
-        }
-        else if (actionUpdate == 0) // a match was made
-        {
-            // check if reactor alerts should be turned off
-            if (wasInAlertThreshold)
-            {
-                Alert(false, true, true);
-            }
-
-            if (!TryGameWon()) // if a match didn't win the game
-            {
-                StateLoader.Instance.TryWriteState();
-            }
-            return;
-        }
-        else if (actionUpdate == -1) // a match undo
-        {
-            if (wasInAlertThreshold)
-            {
-                Alert(false, true, true);
-            }
-            StateLoader.Instance.TryWriteState();
-            return;
-        }
-        else
-        {
-            Config.Instance.actions += actionUpdate;
-        }
-
+        bool wasInAlertThreshold = IsInAlertThreshold();
+        Config.Instance.actions++;
         ActionCountScript.Instance.UpdateActionText();
 
         if (Config.Instance.actions >= Config.Instance.CurrentDifficulty.MoveLimit)
         {
-            StartNextCycle();
+            Config.Instance.moveCounter--; // needed to register this cycle's moves as a part of this move
+            NextCycle.Instance.StartCycle();
             return;
         }
 
         // foundation moves trigger this as they are the only ones that can cause a gameover via winning
         // reactors trigger their own gameovers
-        if (checkGameOver && TryGameWon()) return;
+        if (checkGameOver)
+        {
+            TryEnableGameCanEnd();
+        }
+        else
+        {
+            TryDisableGameCanEnd();
+        }
 
-        if (doSaveState && !Config.Instance.gameOver)
+        if (!Config.Instance.gameOver)
         {
             StateLoader.Instance.TryWriteState();
         }
 
-        // time to determine if the alert should be turned on
-        bool isInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= GameValues.GamePlay.turnAlertThreshold;
-        if (!wasInAlertThreshold && !isInAlertThreshold)
-        {
-            // do nothing
-        }
-        else if (wasInAlertThreshold && isInAlertThreshold)
-        {
-            Alert(false, true);
-        }
-        else if (wasInAlertThreshold && !isInAlertThreshold)
-        {
-            Alert(false);
-        }
-        else if (!wasInAlertThreshold && isInAlertThreshold)
-        {
-            Alert(true);
-        }
+        Alert(wasInAlertThreshold);
     }
 
-    public static void MakeActionsMaxButton()
+    public static void StartSavedGameUpdate(int actionUpdate)
     {
-        if (UtilsScript.Instance.InputStopped) return;
-        Debug.Log("make actions max button");
-        ActionCountScript.Instance.KnobDown();
-        SoundEffectsController.Instance.VibrateMedium();
-        StartNextCycle(manuallyTriggered: true);
+        bool wasInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= GameValues.GamePlay.turnAlertThreshold;
+        Config.Instance.actions = actionUpdate;
+        ActionCountScript.Instance.UpdateActionText();
+        Alert(wasInAlertThreshold);
+        TryEnableGameCanEnd();
     }
 
-    private static void StartNextCycle(bool manuallyTriggered = false)
+    public static void StartNewGameUpdate()
     {
-        if (Config.Instance.tutorialOn)
+        bool wasInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= GameValues.GamePlay.turnAlertThreshold;
+        Config.Instance.actions = 0;
+        ActionCountScript.Instance.UpdateActionText();
+        Alert(wasInAlertThreshold);
+    }
+
+    public static void UndoUpdate(int actionUpdate, bool checkGameOver = false)
+    {
+        if (checkGameOver)
         {
-            if (Config.Instance.nextCycleEnabled)
+            TryEnableGameCanEnd();
+        }
+        else
+        {
+            TryDisableGameCanEnd();
+        }
+        TypicalUpdate(actionUpdate);
+    }
+
+    public static void NextCycleUpdate()
+    {
+        TryEnableGameCanEnd();
+        TypicalUpdate(0);
+    }
+
+    private static void TypicalUpdate(int actionUpdate)
+    {
+        Config.Instance.consecutiveMatches = 0;
+        Config.Instance.moveCounter++;
+        bool wasInAlertThreshold = IsInAlertThreshold();
+        Config.Instance.actions = actionUpdate;
+        ActionCountScript.Instance.UpdateActionText();
+        StateLoader.Instance.TryWriteState();
+        Alert(wasInAlertThreshold);
+    }
+
+    private static void Alert(bool wasInAlert, bool isMatchRelated = false)
+    {
+        // rules for alerts
+        // the alert sound effect only plays when the new remaining moves left is equal to the turnAlertThreshold, or when there is only one move left before a next cycle
+        // the baby sound effect only plays when any reactor initially goes into high alert (will be over limit if a next cycle occurs)
+        // the music will only transition when the move counter is reset from 0 or when it reaches the turnAlertThreshold
+
+        bool isInAlert = IsInAlertThreshold();
+        if (!wasInAlert && !isInAlert) return; // no alert
+
+        if (wasInAlert && !isInAlert) // no more alert
+        {
+            foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
             {
-                Config.Instance.nextCycleEnabled = false;
+                reactorScript.Alert = false;
+            }
+            MusicController.Instance.GameMusic();
+            ActionCountScript.Instance.AlertLevel = GameValues.Colors.normal;
+        }
+        else if (!wasInAlert && isInAlert) // new alert
+        {
+            bool reactorsNearOverLimit = CheckReactors();
+            if (reactorsNearOverLimit)
+            {
+                SpaceBabyController.Instance.BabyReactorHigh();
+                ActionCountScript.Instance.AlertLevel = Config.Instance.CurrentColorMode.Over;
             }
             else
             {
-                return;
+                ActionCountScript.Instance.AlertLevel = Config.Instance.CurrentColorMode.Move;
             }
+
+            MusicController.Instance.AlertMusic();
+            SoundEffectsController.Instance.AlertSound();
         }
-        UtilsScript.Instance.InputStopped = true;
-        Instance.StartCoroutine(Instance.NextCycle(manuallyTriggered));
+        else // already in alert
+        {
+            bool reactorsNearOverLimit = CheckReactors();
+            bool currentlyHighAlertLevel = ActionCountScript.Instance.AlertLevel.ColorLevel == Constants.ColorLevel.Over;
+            bool oneMoveBeforeNextCycle = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions == 1;
+
+            if (oneMoveBeforeNextCycle && !isMatchRelated)
+            {
+                SoundEffectsController.Instance.AlertSound();
+            }
+
+            if (reactorsNearOverLimit && !currentlyHighAlertLevel)
+            {
+                SpaceBabyController.Instance.BabyReactorHigh();
+            }
+
+            ActionCountScript.Instance.AlertLevel = reactorsNearOverLimit ?
+                Config.Instance.CurrentColorMode.Over : Config.Instance.CurrentColorMode.Move;
+        }
     }
 
-    private IEnumerator NextCycle(bool manuallyTriggered)
+    private static bool CheckReactors()
     {
-        SpaceBabyController.Instance.BabyActionCounter();
-
-        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+        bool overLimitSoon = false;
+        foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {
-            if (foundationScript.CardList.Count == 0) continue;
-
-            GameObject topFoundationCard = foundationScript.CardList[^1];
-            CardScript topCardScript = topFoundationCard.GetComponent<CardScript>();
-            ReactorScript reactorScript = UtilsScript.Instance.reactorScripts[topCardScript.Card.Suit.Index];
-
-            // turn off the moving cards hologram and make it appear in front of everything
-            topCardScript.Hologram = false;
-            topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = Config.Instance.SelectedCardsLayer;
-            topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = Config.Instance.SelectedCardsLayer;
-
-            // immediately unhide the next possible top foundation card and start its hologram
-            if (foundationScript.CardList.Count > 1)
+            if (reactorScript.OverLimitSoon())
             {
-                CardScript nextTopFoundationCard = foundationScript.CardList[^2].GetComponent<CardScript>();
-                if (nextTopFoundationCard.Hidden)
-                {
-                    nextTopFoundationCard.NextCycleReveal();
-                }
+                overLimitSoon = true;
+                reactorScript.Alert = true;
             }
-
-            yield return Animate.SmoothstepTransform(topFoundationCard.transform,
-                topFoundationCard.transform.position,
-                reactorScript.GetNextCardPosition(),
-                GameValues.AnimationDurataions.cardsToReactor);
-
-            // set the sorting layer back to default
-            topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = Config.Instance.CardLayer;
-            topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = Config.Instance.CardLayer;
-
-            SoundEffectsController.Instance.CardToReactorSound();
-            topCardScript.MoveCard(Constants.CardContainerType.Reactor, reactorScript.gameObject, isCycle: true);
-
-            // if the game is lost during the next cycle stop immediately
-            if (Config.Instance.gameOver)
-            {
-                Config.Instance.moveCounter += 1;
-                UtilsScript.Instance.InputStopped = false;
-                if (manuallyTriggered)
-                {
-                    ActionCountScript.Instance.KnobUp();
-                }
-                yield break;
-            }
-        }
-
-        UtilsScript.Instance.InputStopped = false;
-        if (manuallyTriggered)
-        {
-            ActionCountScript.Instance.KnobUp();
-        }
-        Actions.UpdateActions(0, setAsValue: true);
-    }
-
-    private static void Alert(bool turnOnAlert, bool checkAgain = false, bool matchRelated = false)
-    {
-        bool highAlertTurnedOn = false;
-
-        // if turning on the alert for the first time
-        // or checking again if the previous move changed something
-        if (turnOnAlert || checkAgain)
-        {
-            foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
-            {
-                // if a nextcyle will overload the reactor
-                if (reactorScript.OverLimitSoon())
-                {
-                    highAlertTurnedOn = true;
-                }
-                else if (checkAgain) // try turning the glow off just in case if it already on
-                {
-                    reactorScript.Alert = false;
-                }
-            }
-        }
-        else // we are done with the alert
-        {
-            MusicController.Instance.GameMusic();
-
-            foreach (ReactorScript reactorScript in UtilsScript.Instance.reactorScripts)
+            else
             {
                 reactorScript.Alert = false;
             }
         }
+        return overLimitSoon;
+    }
 
-        if (turnOnAlert || checkAgain)
+    private static void TryEnableGameCanEnd()
+    {
+        if (!EndGame.Instance.GameCanEnd && !Config.Instance.gameOver && AreFoundationsEmpty())
         {
-            MusicController.Instance.AlertMusic();
-        }
-
-        // if there is one move left
-        if (turnOnAlert || (checkAgain && !matchRelated && Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions == 1))
-        {
-            SoundEffectsController.Instance.AlertSound();
-        }
-
-        if (highAlertTurnedOn) // if the high alert was turned on during this check
-        {
-            // if the alert was not already on turn it on
-            if (ActionCountScript.Instance.AlertLevel.ColorLevel != Constants.ColorLevel.Over) 
-            {
-                ActionCountScript.Instance.AlertLevel = Config.Instance.CurrentColorMode.Over;
-                SpaceBabyController.Instance.BabyReactorHigh();
-            }
-            // or if there is only 1 move left now
-            else if (!matchRelated && Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions == 1)
-            {
-                SpaceBabyController.Instance.BabyReactorHigh();
-            }
-        }
-        else if (turnOnAlert || checkAgain)
-        {
-            ActionCountScript.Instance.AlertLevel = Config.Instance.CurrentColorMode.Move;
-        }
-        else // the action counter is not low so turn stuff off
-        {
-            ActionCountScript.Instance.AlertLevel = GameValues.Colors.normal;
+            EndGame.Instance.GameCanEnd = true;
         }
     }
 
-    private static bool TryGameWon()
+    private static void TryDisableGameCanEnd()
     {
-        if (!Config.Instance.gameOver && AreFoundationsEmpty())
+        if (EndGame.Instance.GameCanEnd && !AreFoundationsEmpty())
         {
-            EndGame.Instance.GameOver(true);
-            return true;
+            EndGame.Instance.GameCanEnd = false;
         }
-        return false;
     }
 
-    private static bool AreFoundationsEmpty()
+    public static bool AreFoundationsEmpty()
     {
-        foreach (FoundationScript foundationScript in UtilsScript.Instance.foundationScripts)
+        foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
         {
             if (foundationScript.CardList.Count != 0)
             {
@@ -298,4 +211,7 @@ public class Actions : MonoBehaviour
         }
         return true;
     }
+
+    private static bool IsInAlertThreshold() =>
+        Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= GameValues.GamePlay.turnAlertThreshold;
 }

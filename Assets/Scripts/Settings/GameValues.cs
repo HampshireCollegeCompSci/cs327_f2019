@@ -6,19 +6,24 @@ public static class GameValues
 {
     public static class GamePlay
     {
-        public const bool enableCheat = false;
         public const int foundationStartingSize = 7;
         public const int cardsToDeal = 3;
         public const int turnAlertThreshold = 5;
 
-        public static readonly ReadOnlyCollection<Difficulty> difficulties = Array.AsReadOnly(new Difficulty[3]
+        public const int suitCount = 4;
+        public const int rankCount = 13;
+        public const int cardCount = suitCount * rankCount;
+        public const int matchCount = cardCount / 2;
+
+        public static readonly ReadOnlyCollection<Difficulty> difficulties = Array.AsReadOnly(new Difficulty[4]
         {
             new Difficulty("EASY", 24, 24),
             new Difficulty("MEDIUM", 21, 21),
             new Difficulty("HARD", 18, 18),
+            new Difficulty("CHEAT", 100, 10),
         });
 
-        public static readonly ReadOnlyCollection<Suit> suits = Array.AsReadOnly(new Suit[4]
+        public static readonly ReadOnlyCollection<Suit> suits = Array.AsReadOnly(new Suit[suitCount]
         {
             new Suit("spades", 0, Color.black),
             new Suit("clubs", 1 , Color.black),
@@ -26,7 +31,7 @@ public static class GameValues
             new Suit("hearts", 3, Color.red)
         });
 
-        public static readonly ReadOnlyCollection<Rank> ranks = Array.AsReadOnly(new Rank[13]
+        public static readonly ReadOnlyCollection<Rank> ranks = Array.AsReadOnly(new Rank[rankCount]
         {
             new Rank("A", 1, 1),
             new Rank("2", 2, 2),
@@ -58,9 +63,6 @@ public static class GameValues
     {
         public const int matchPoints = 200;
         public const int scoreMultiplier = 50;
-        public const bool enableBonusPoints = false;
-        public const int emptyReactorPoints = 1000;
-        public const int perfectGamePoints = 2800;
     }
 
     public static class Music
@@ -166,7 +168,7 @@ public static class GameValues
         public const float alertFade = 1; // action counter's alert siren
         public const float reactorExplosionDelay = 0.4f; // the delay between reactors exploding when losing
 
-        public const float gameSummaryBabyFade = 2; // fade in, then out baby win transitioning in the summary scene
+        public const float gameSummaryBabyFade = 1.2f; // fade in, then out baby win transitioning in the summary scene
     }
 
     public static class FadeColors

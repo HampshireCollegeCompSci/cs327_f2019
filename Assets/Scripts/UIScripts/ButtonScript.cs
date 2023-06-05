@@ -36,8 +36,8 @@ public class ButtonScript : MonoBehaviour
     public void PauseGameButton()
     {
         Debug.Log("UI Button pause game");
-        if (UtilsScript.Instance.InputStopped) return;
-        UtilsScript.Instance.InputStopped = true;
+        if (GameInput.Instance.InputStopped) return;
+        GameInput.Instance.InputStopped = true;
         Time.timeScale = 0;
         SoundEffectsController.Instance.PauseMenuButtonSound();
         MusicController.Instance.Paused = true;
@@ -50,7 +50,7 @@ public class ButtonScript : MonoBehaviour
         Time.timeScale = 1;
         SceneManager.UnloadSceneAsync(Constants.ScenesNames.pause);
         MusicController.Instance.Paused = false;
-        UtilsScript.Instance.InputStopped = false;
+        GameInput.Instance.InputStopped = false;
     }
 
     public void RestartGameButton()
@@ -67,7 +67,7 @@ public class ButtonScript : MonoBehaviour
         {
             MusicController.Instance.Paused = false;
         }
-        UtilsScript.Instance.InputStopped = false;
+        GameInput.Instance.InputStopped = false;
     }
 
     public void PlayAgain()
