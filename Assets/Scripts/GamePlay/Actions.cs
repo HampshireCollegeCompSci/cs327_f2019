@@ -1,26 +1,21 @@
-﻿using UnityEngine;
-
-public static class Actions
+﻿public static class Actions
 {
-    public static void MakeActionsMaxButton()
-    {
-        if (GameInput.Instance.InputStopped) return;
-        Debug.Log("make actions max button");
-        ActionCountScript.Instance.KnobDown();
-        SoundEffectsController.Instance.VibrateMedium();
-        NextCycle.Instance.StartCycle(manuallyTriggered: true);
-    }
-
     public static void MatchUpdate(bool tryGameWon)
     {
         Config.Instance.consecutiveMatches++;
         Config.Instance.moveCounter++;
 
-        if (!(tryGameWon && TryGameWon())) // if a match didn't win the game
+        if (tryGameWon)
         {
-            Debug.LogWarning(tryGameWon);
-            StateLoader.Instance.TryWriteState();
+            bool allCardsHaveBeenMatched = MatchedPileScript.Instance.CardList.Count == GameValues.GamePlay.cardCount;
+            if (allCardsHaveBeenMatched)
+            {
+                EndGame.Instance.GameOver(true);
+                return;
+            }
+            TryEnableGameCanEnd();
         }
+        StateLoader.Instance.TryWriteState();
         Alert(IsInAlertThreshold(), isMatchRelated: true);
     }
 
@@ -29,6 +24,7 @@ public static class Actions
         Config.Instance.consecutiveMatches = 0;
         Config.Instance.moveCounter++;
         StateLoader.Instance.TryWriteState();
+        TryDisableGameCanEnd();
         Alert(IsInAlertThreshold(), isMatchRelated: true);
     }
 
@@ -43,13 +39,21 @@ public static class Actions
 
         if (Config.Instance.actions >= Config.Instance.CurrentDifficulty.MoveLimit)
         {
+            Config.Instance.moveCounter--; // needed to register this cycle's moves as a part of this move
             NextCycle.Instance.StartCycle();
             return;
         }
 
         // foundation moves trigger this as they are the only ones that can cause a gameover via winning
         // reactors trigger their own gameovers
-        if (checkGameOver && TryGameWon()) return;
+        if (checkGameOver)
+        {
+            TryEnableGameCanEnd();
+        }
+        else
+        {
+            TryDisableGameCanEnd();
+        }
 
         if (!Config.Instance.gameOver)
         {
@@ -59,27 +63,39 @@ public static class Actions
         Alert(wasInAlertThreshold);
     }
 
-    public static void StartGameUpdate(int actionUpdate = 0)
+    public static void StartSavedGameUpdate(int actionUpdate)
     {
         bool wasInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= GameValues.GamePlay.turnAlertThreshold;
         Config.Instance.actions = actionUpdate;
         ActionCountScript.Instance.UpdateActionText();
         Alert(wasInAlertThreshold);
+        TryEnableGameCanEnd();
     }
 
-    public static void UndoUpdate(int actionUpdate)
+    public static void StartNewGameUpdate()
     {
+        bool wasInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= GameValues.GamePlay.turnAlertThreshold;
+        Config.Instance.actions = 0;
+        ActionCountScript.Instance.UpdateActionText();
+        Alert(wasInAlertThreshold);
+    }
+
+    public static void UndoUpdate(int actionUpdate, bool checkGameOver = false)
+    {
+        if (checkGameOver)
+        {
+            TryEnableGameCanEnd();
+        }
+        else
+        {
+            TryDisableGameCanEnd();
+        }
         TypicalUpdate(actionUpdate);
     }
 
     public static void NextCycleUpdate()
     {
-        // if nextcycle caused a Game Win
-        if (TryGameWon())
-        {
-            Config.Instance.moveCounter++;
-            return;
-        }
+        TryEnableGameCanEnd();
         TypicalUpdate(0);
     }
 
@@ -168,17 +184,23 @@ public static class Actions
         return overLimitSoon;
     }
 
-    private static bool TryGameWon()
+    private static void TryEnableGameCanEnd()
     {
         if (!Config.Instance.gameOver && AreFoundationsEmpty())
         {
-            EndGame.Instance.GameOver(true);
-            return true;
+            EndGame.Instance.GameCanEnd = true;
         }
-        return false;
     }
 
-    private static bool AreFoundationsEmpty()
+    private static void TryDisableGameCanEnd()
+    {
+        if (EndGame.Instance.GameCanEnd && !AreFoundationsEmpty())
+        {
+            EndGame.Instance.GameCanEnd = false;
+        }
+    }
+
+    public static bool AreFoundationsEmpty()
     {
         foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
         {

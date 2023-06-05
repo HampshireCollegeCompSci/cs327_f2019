@@ -11,10 +11,22 @@ public class EndGame : MonoBehaviour
     [SerializeField]
     private GameObject explosionPrefab;
     [SerializeField]
-    private GameObject restartButton, continueButton,
+    private GameObject gameEndButton, restartButton, continueButton,
         errorObject, gameOverPanel, gameOverTextPanel;
     [SerializeField]
     private Text gameOverText, wonlostText;
+
+    private bool _gameCanEnd;
+    public bool GameCanEnd
+    {
+        get => _gameCanEnd;
+        set
+        {
+            if (_gameCanEnd == value) return;
+            _gameCanEnd = value;
+            gameEndButton.SetActive(value);
+        }
+    }
 
     private void Awake()
     {
@@ -29,15 +41,17 @@ public class EndGame : MonoBehaviour
         }
     }
 
-    public void ManualGameWin()
+    public void ManualGameWinButton()
     {
-        if (!GameValues.GamePlay.enableCheat) return;
-
-        #pragma warning disable CS0162 // Unreachable code detected
+        if (GameInput.Instance.InputStopped) return;
+        if (!GameCanEnd)
+        {
+            Debug.LogWarning("trying to end the game when it should not be possible");
+            gameEndButton.SetActive(false);
+            return;
+        }
+        SoundEffectsController.Instance.ButtonPressSound();
         GameOver(true);
-        // to ensure that the full win animation plays for debug
-        Config.Instance.matchCounter = 26;
-        #pragma warning restore CS0162 // Unreachable code detected
     }
 
     public void GameOver(bool didWin)
@@ -47,6 +61,7 @@ public class EndGame : MonoBehaviour
         GameInput.Instance.InputStopped = true;
         Config.Instance.gameOver = true;
         Config.Instance.gameWin = didWin;
+        GameCanEnd = false;
 
         SaveFile.Delete();
 
@@ -62,6 +77,10 @@ public class EndGame : MonoBehaviour
 
         if (didWin)
         {
+            gameOverText.color = Config.Instance.CurrentColorMode.Match.Color;
+            wonlostText.color = Config.Instance.CurrentColorMode.Match.Color;
+            wonlostText.text = GameValues.Text.gameWon;
+            SoundEffectsController.Instance.WinSound();
             foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
             {
                 foundationScript.GlowForGameEnd(true);
@@ -69,13 +88,18 @@ public class EndGame : MonoBehaviour
         }
         else
         {
+            errorObject.SetActive(true);
+            gameOverText.color = Config.Instance.CurrentColorMode.Over.Color;
+            wonlostText.color = Config.Instance.CurrentColorMode.Over.Color;
+            wonlostText.text = GameValues.Text.gameLost;
+            SoundEffectsController.Instance.LoseSound();
             foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
             {
                 if (reactorScript.TryHighlightOverloaded(true)) break;
             }
         }
 
-        StartCoroutine(BeginGameOverTransition());
+        StartCoroutine(BeginGameOverTransition(didWin));
     }
 
     private void AddExtraEndGameScore()
@@ -97,32 +121,14 @@ public class EndGame : MonoBehaviour
         ScoreScript.Instance.UpdateScore(extraScore);
     }
 
-    private IEnumerator BeginGameOverTransition()
+    private IEnumerator BeginGameOverTransition(bool didWin)
     {
         gameOverPanel.SetActive(true);
         MusicController.Instance.FadeMusicOut();
 
         Image fadeInScreen = this.gameObject.GetComponent<Image>();
         CanvasGroup textGroup = gameOverTextPanel.GetComponent<CanvasGroup>();
-        Color fadeColor;
-
-        if (Config.Instance.gameWin)
-        {
-            fadeColor = GameValues.FadeColors.grayA1;
-            SoundEffectsController.Instance.WinSound();
-            gameOverText.color = Config.Instance.CurrentColorMode.Match.Color;
-            wonlostText.color = Config.Instance.CurrentColorMode.Match.Color;
-            wonlostText.text = GameValues.Text.gameWon;
-        }
-        else
-        {
-            fadeColor = GameValues.FadeColors.blackA1;
-            errorObject.SetActive(true);
-            SoundEffectsController.Instance.LoseSound();
-            gameOverText.color = Config.Instance.CurrentColorMode.Over.Color;
-            wonlostText.color = Config.Instance.CurrentColorMode.Over.Color;
-            wonlostText.text = GameValues.Text.gameLost;
-        }
+        Color fadeColor = didWin ? GameValues.FadeColors.grayA1 : GameValues.FadeColors.blackA1;
 
         fadeInScreen.enabled = true;
         gameOverTextPanel.SetActive(true);
@@ -142,7 +148,7 @@ public class EndGame : MonoBehaviour
         fadeInScreen.color = fadeColor;
         textGroup.alpha = 1;
 
-        if (Config.Instance.gameWin)
+        if (didWin)
         {
             SpaceBabyController.Instance.BabyHappy();
             MusicController.Instance.WinMusic();
@@ -161,6 +167,7 @@ public class EndGame : MonoBehaviour
     {
         restartButton.SetActive(false);
         continueButton.SetActive(false);
+        errorObject.SetActive(false);
         gameOverTextPanel.SetActive(false);
         gameOverPanel.SetActive(false);
         SpaceBabyController.Instance.ResetBaby();

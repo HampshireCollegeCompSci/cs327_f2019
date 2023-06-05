@@ -113,7 +113,7 @@ public class UndoScript : MonoBehaviour
 
                     if (lastMove.isAction)
                     {
-                        Actions.UndoUpdate(lastMove.remainingActions);
+                        Actions.UndoUpdate(lastMove.remainingActions, checkGameOver : lastMove.containerType != Constants.CardContainerType.Foundation);
                     }
                     break;
                 case Constants.LogMoveType.Match:

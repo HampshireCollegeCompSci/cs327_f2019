@@ -17,20 +17,36 @@ public class NextCycle : MonoBehaviour
         }
     }
 
-    public void StartCycle(bool manuallyTriggered = false)
+    public void ManualStartCycleButton()
     {
+        if (GameInput.Instance.InputStopped) return;
         if (Config.Instance.tutorialOn)
         {
             if (!Config.Instance.nextCycleEnabled) return;
             Config.Instance.nextCycleEnabled = false;
         }
-        GameInput.Instance.InputStopped = true;
-        StartCoroutine(Cycle(manuallyTriggered));
+
+        SoundEffectsController.Instance.VibrateMedium();
+        StartCycle();
     }
 
-    private IEnumerator Cycle(bool manuallyTriggered)
+    public void StartCycle()
     {
+        GameInput.Instance.InputStopped = true;
+        ActionCountScript.Instance.KnobDown();
         SpaceBabyController.Instance.BabyActionCounter();
+
+        if (Actions.AreFoundationsEmpty())
+        {
+            StartCoroutine(EmptyCycle());
+            return;
+        }
+        StartCoroutine(Cycle());
+    }
+
+    private IEnumerator Cycle()
+    {
+        
 
         foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
         {
@@ -72,19 +88,24 @@ public class NextCycle : MonoBehaviour
             {
                 Config.Instance.moveCounter += 1;
                 GameInput.Instance.InputStopped = false;
-                if (manuallyTriggered)
-                {
-                    ActionCountScript.Instance.KnobUp();
-                }
+                ActionCountScript.Instance.KnobUp();
                 yield break;
             }
         }
+        yield return new WaitForSeconds(0.1f);
+        EndCycle();
+    }
 
+    private IEnumerator EmptyCycle()
+    {
+        yield return new WaitForSeconds(2.2f);
+        EndCycle();
+    }
+
+    private void EndCycle()
+    {
         GameInput.Instance.InputStopped = false;
-        if (manuallyTriggered)
-        {
-            ActionCountScript.Instance.KnobUp();
-        }
+        ActionCountScript.Instance.KnobUp();
         Actions.NextCycleUpdate();
     }
 }

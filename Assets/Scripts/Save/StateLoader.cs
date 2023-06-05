@@ -302,7 +302,7 @@ public class StateLoader : MonoBehaviour
             reactorScript.SetReactorScore();
         }
 
-        Actions.StartGameUpdate(state.actions);
+        Actions.StartSavedGameUpdate(state.actions);
         DeckScript.Instance.UpdateDeckCounter();
     }
 

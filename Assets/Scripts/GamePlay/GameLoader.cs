@@ -132,6 +132,8 @@ public class GameLoader : MonoBehaviour
         ScoreScript.Instance.SetScore(0);
         Config.Instance.consecutiveMatches = 0;
         Config.Instance.moveCounter = 0;
+        Config.Instance.matchCounter = 0;
+        EndGame.Instance.GameCanEnd = false;
         UndoScript.Instance.GameStart();
         StateLoader.Instance.GameStart();
     }
@@ -195,7 +197,7 @@ public class GameLoader : MonoBehaviour
     {
         // the game difficultuy should already be set to what is desired for things to work properly
         SaveFile.Delete();
-        Actions.StartGameUpdate();
+        Actions.StartNewGameUpdate();
 
         foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {
