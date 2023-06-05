@@ -138,7 +138,7 @@ public class GameLoader : MonoBehaviour
 
     private List<GameObject> GetNewCards()
     {
-        List<GameObject> newCards = new(52);
+        List<GameObject> newCards = new(GameValues.GamePlay.cardCount);
 
         // order: spade ace, 2, 3... 10, jack, queen, king, clubs... diamonds... hearts
         int hFSIndex = 0; // used for assigning holograms
@@ -174,7 +174,7 @@ public class GameLoader : MonoBehaviour
 
     private List<GameObject> GetAllCards()
     {
-        List<GameObject> cards = new(52);
+        List<GameObject> cards = new(GameValues.GamePlay.cardCount);
 
         foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
         {

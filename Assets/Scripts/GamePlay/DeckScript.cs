@@ -25,7 +25,7 @@ public class DeckScript : MonoBehaviour, ICardContainer
 
     public DeckScript()
     {
-        cardList = new(52);
+        cardList = new(GameValues.GamePlay.cardCount);
     }
 
     // Initialize the singleton instance.

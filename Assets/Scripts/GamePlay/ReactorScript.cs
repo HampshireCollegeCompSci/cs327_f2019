@@ -36,7 +36,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     void Awake()
     {
-        cardList = new(52);
+        cardList = new(GameValues.GamePlay.cardCount);
         suitGlowSR = suitGlow.GetComponent<SpriteRenderer>();
         glowSR = this.gameObject.GetComponent<SpriteRenderer>();
         hitbox = this.gameObject.GetComponent<BoxCollider2D>();

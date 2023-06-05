@@ -11,7 +11,7 @@ public class MatchedPileScript : MonoBehaviour, ICardContainer
 
     public MatchedPileScript()
     {
-        cardList = new(52);
+        cardList = new(GameValues.GamePlay.cardCount);
     }
 
     // Initialize the singleton instance.

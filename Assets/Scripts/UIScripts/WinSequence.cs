@@ -35,7 +35,7 @@ public class WinSequence : MonoBehaviour
             return;
         }
 
-        int percentage = Config.Instance.matchCounter * 100 / 26;
+        int percentage = Config.Instance.matchCounter * 100 / GameValues.GamePlay.matchCount;
         int amount = foodObjects.Length * percentage / 100;
 
         StartCoroutine(SpaceBabyAnimationDelay());
@@ -67,7 +67,7 @@ public class WinSequence : MonoBehaviour
         }
 
         yield return new WaitForSeconds(0.7f);
-        if (Config.Instance.matchCounter == 26)
+        if (Config.Instance.matchCounter == GameValues.GamePlay.matchCount)
         {
             StartCoroutine(WinTransition());
         }

@@ -16,7 +16,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
 
     void Awake()
     {
-        cardList = new(52);
+        cardList = new(GameValues.GamePlay.cardCount);
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         hitbox = gameObject.GetComponent<BoxCollider2D>();
 

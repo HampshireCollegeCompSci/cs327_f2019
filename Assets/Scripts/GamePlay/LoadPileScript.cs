@@ -11,7 +11,7 @@ public class LoadPileScript : MonoBehaviour, ICardContainer
 
     public LoadPileScript()
     {
-        cardList = new(52);
+        cardList = new(GameValues.GamePlay.cardCount);
     }
 
     // Initialize the singleton instance.

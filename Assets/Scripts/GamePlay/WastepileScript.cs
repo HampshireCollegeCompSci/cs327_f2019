@@ -31,8 +31,8 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         {
             Instance = this;
 
-            cardList = new List<GameObject>(52);
-            cardContainers = new List<GameObject>(52);
+            cardList = new List<GameObject>(GameValues.GamePlay.cardCount);
+            cardContainers = new List<GameObject>(GameValues.GamePlay.cardCount);
 
             cardSpacing = contentPanel.GetComponent<HorizontalLayoutGroup>().spacing + 
                 cardContainerPrefab.GetComponent<RectTransform>().sizeDelta.x;
