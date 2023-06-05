@@ -72,8 +72,8 @@ public class EndGame : MonoBehaviour
             #pragma warning restore CS0162 // Unreachable code detected
         }
 
-        // overwritten when manually won (cheated)
-        Config.Instance.matchCounter = MatchedPileScript.Instance.CardList.Count / 2;
+        bool isCheating = Config.Instance.CurrentDifficulty.Equals(GameValues.GamePlay.difficulties[3]);
+        Config.Instance.matchCounter = isCheating ? GameValues.GamePlay.matchCount : MatchedPileScript.Instance.CardList.Count / 2; ;
 
         if (didWin)
         {

@@ -7,7 +7,7 @@ public class MenuUIScript : MonoBehaviour
     [SerializeField]
     private Image spaceShip;
     [SerializeField]
-    private Sprite spaceShipOn, spaceShipOff;
+    private Sprite spaceShipOn, spaceShipOff, debris;
 
     // MainMenuScene Main buttons
     [SerializeField]
@@ -76,6 +76,14 @@ public class MenuUIScript : MonoBehaviour
 
             NewGame(isContinue: true);
         }
+    }
+
+    public void CheatMode()
+    {
+        spaceShip.sprite = debris;
+        SoundEffectsController.Instance.ExplosionSound();
+        Config.Instance.SetDifficulty(GameValues.GamePlay.difficulties[3]);
+        NewGame();
     }
 
     private void NewGame(bool isContinue = false, bool isTutorial = false)

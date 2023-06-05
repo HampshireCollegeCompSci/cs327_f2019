@@ -6,21 +6,21 @@ public static class GameValues
 {
     public static class GamePlay
     {
-        public const bool enableCheat = false;
         public const int foundationStartingSize = 7;
         public const int cardsToDeal = 3;
         public const int turnAlertThreshold = 5;
 
-        public static readonly ReadOnlyCollection<Difficulty> difficulties = Array.AsReadOnly(new Difficulty[3]
         public const int suitCount = 4;
         public const int rankCount = 13;
         public const int cardCount = suitCount * rankCount;
         public const int matchCount = cardCount / 2;
 
+        public static readonly ReadOnlyCollection<Difficulty> difficulties = Array.AsReadOnly(new Difficulty[4]
         {
             new Difficulty("EASY", 24, 24),
             new Difficulty("MEDIUM", 21, 21),
             new Difficulty("HARD", 18, 18),
+            new Difficulty("CHEAT", 100, 10),
         });
 
         public static readonly ReadOnlyCollection<Suit> suits = Array.AsReadOnly(new Suit[suitCount]

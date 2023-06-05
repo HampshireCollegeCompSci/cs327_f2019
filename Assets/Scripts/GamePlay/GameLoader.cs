@@ -208,7 +208,13 @@ public class GameLoader : MonoBehaviour
         ActionCountScript.Instance.AlertLevel = GameValues.Colors.normal;
 
         cards = ShuffleCards(cards);
-        cards = SetUpFoundations(cards);
+        bool isCheating = Config.Instance.CurrentDifficulty.Equals(GameValues.GamePlay.difficulties[3]);
+        cards = isCheating switch
+        {
+            true => SetUpFoundations(cards, 1),
+            false => SetUpFoundations(cards, GameValues.GamePlay.foundationStartingSize - 1)
+        };
+
         MoveCardsToDeck(cards);
 
         DeckScript.Instance.Deal(false);
@@ -225,12 +231,12 @@ public class GameLoader : MonoBehaviour
         return cards;
     }
 
-    private List<GameObject> SetUpFoundations(List<GameObject> cards)
+    private List<GameObject> SetUpFoundations(List<GameObject> cards, int hiddenFoundationCards)
     {
         CardScript currentCardScript;
         foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
         {
-            for (int i = 0; i < GameValues.GamePlay.foundationStartingSize - 1; i++)
+            for (int i = 0; i < hiddenFoundationCards; i++)
             {
                 currentCardScript = cards[^1].GetComponent<CardScript>();
                 currentCardScript.MoveCard(Constants.CardContainerType.Foundation, foundationScript.gameObject, doLog: false, showHolo: false);
