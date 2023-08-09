@@ -35,11 +35,10 @@ public class SettingsScript : MonoBehaviour
     private Image colorModeMatch, colorModeMove, colorModeOver, colorModeNotify;
 
     [SerializeField]
-    private GameObject confirmObject;
-    [SerializeField]
     private Button confirmYesButton;
 
     private bool lockout;
+    private Coroutine clearButtonCoroutine;
 
     private int musicMultiplier;
     private int soundEffectsMultiplier;
@@ -155,8 +154,11 @@ public class SettingsScript : MonoBehaviour
 
         confirmYesButton.interactable = false;
         Debug.Log("trying to clear records");
-        confirmObject.SetActive(true);
-        StartCoroutine(ButtonDelay());
+        if (clearButtonCoroutine != null)
+        {
+            StopCoroutine(clearButtonCoroutine);
+        }
+        clearButtonCoroutine = StartCoroutine(ButtonDelay());
     }
 
     public void ClearRecordsConfirmationButton()
@@ -320,7 +322,8 @@ public class SettingsScript : MonoBehaviour
 
     private IEnumerator ButtonDelay()
     {
-        yield return new WaitForSecondsRealtime(1.5f);
+        yield return new WaitForSecondsRealtime(2);
         confirmYesButton.interactable = true;
+        clearButtonCoroutine = null;
     }
 }
