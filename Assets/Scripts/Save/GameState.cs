@@ -5,7 +5,9 @@ using System.Collections.Generic;
 public class GameState<T>
 {
     public string difficulty;
+    public string timer;
     public int moveCounter;
+    public int moveTracker;
     public int actions;
     public int score;
     public int consecutiveMatches;
@@ -15,6 +17,7 @@ public class GameState<T>
     public List<T> deck;
     public List<T> matches;
     public List<SaveMove> moveLog;
+    public List<Achievement> achievements;
 
     [Serializable]
     public class ReactorCards
@@ -55,16 +58,18 @@ public class GameState<T>
     }
 }
 
+
 [Serializable]
 public class SaveMove
 {
-    public byte c;
+    // using single character variable names to reduce save file size
+    public byte c; // cardID
     public Constants.CardContainerType t;
-    public int i;
+    public int i; // card container index
     public Constants.LogMoveType m;
-    public byte h;
-    public byte a;
-    public int r;
-    public int s;
-    public int n;
+    public byte h; // next card was hidden
+    public byte a; // was action
+    public int r; // remaining actions
+    public int s; // score
+    public int n; // move number
 }

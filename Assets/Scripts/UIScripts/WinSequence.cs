@@ -29,13 +29,13 @@ public class WinSequence : MonoBehaviour
 
     public void StartWinSequence()
     {
-        if (Config.Instance.matchCounter == 0)
+        if (Actions.MatchCounter == 0)
         {
             Debug.LogWarning("zero matches detected");
             return;
         }
 
-        int percentage = Config.Instance.matchCounter * 100 / GameValues.GamePlay.matchCount;
+        int percentage = Actions.MatchCounter * 100 / GameValues.GamePlay.matchCount;
         int amount = foodObjects.Length * percentage / 100;
 
         StartCoroutine(SpaceBabyAnimationDelay());
@@ -67,7 +67,7 @@ public class WinSequence : MonoBehaviour
         }
 
         yield return new WaitForSeconds(0.7f);
-        if (Config.Instance.matchCounter == GameValues.GamePlay.matchCount)
+        if (Actions.MatchCounter == GameValues.GamePlay.matchCount)
         {
             StartCoroutine(WinTransition());
         }

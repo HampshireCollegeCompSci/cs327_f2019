@@ -22,7 +22,9 @@ public class StartGameSequence : MonoBehaviour
     private Button popupContinueButton;
 
     [SerializeField]
-    private GameObject mainButtons, playButtons;
+    private CanvasGroup allButtons;
+    [SerializeField]
+    private GameObject mainButtons, playButtons, moreButtons;
 
     [SerializeField]
     private GameObject spaceShipWindowObject;
@@ -65,25 +67,11 @@ public class StartGameSequence : MonoBehaviour
         sequenceDone = false;
         MusicController.Instance.FadeMusicOut();
 
-        CanvasGroup buttonGroup = null;
-        if (mainButtons.activeSelf)
-        {
-            buttonGroup = mainButtons.GetComponent<CanvasGroup>();
-            buttonGroup.interactable = false;
-        }
-        else if (playButtons.activeSelf)
-        {
-            buttonGroup = playButtons.GetComponent<CanvasGroup>();
-            buttonGroup.interactable = false;
-        }
-        else
-        {
-            Debug.LogError("both button groups are inactive");
-        }
+        allButtons.interactable = false;
         canvas.renderMode = RenderMode.WorldSpace;
 
         SceneManager.LoadSceneAsync(Constants.ScenesNames.gameplay, LoadSceneMode.Additive);
-        StartCoroutine(FadeMenuOut(buttonGroup));
+        StartCoroutine(FadeMenuOut());
     }
 
     public void GameplayLoaded()
@@ -112,25 +100,15 @@ public class StartGameSequence : MonoBehaviour
         StopAllCoroutines();
         SceneManager.UnloadSceneAsync(Constants.ScenesNames.gameplay);
         loadingTextObject.SetActive(false);
-
-        CanvasGroup buttonGroup;
-        if (mainButtons.activeSelf)
-        {
-            buttonGroup = mainButtons.GetComponent<CanvasGroup>();
-        }
-        else
-        {
-            buttonGroup = playButtons.GetComponent<CanvasGroup>();
-        }
-        buttonGroup.alpha = 1;
-        buttonGroup.interactable = true;
         canvas.renderMode = originalCanvasRenderMode;
-
-        playButtons.SetActive(false);
-        mainButtons.SetActive(true);
-
         cam.orthographicSize = originalCameraSize;
         cameraObject.transform.position = originalCameraPosition;
+
+        playButtons.SetActive(false);
+        moreButtons.SetActive(false);
+        mainButtons.SetActive(true);
+        allButtons.alpha = 1;
+        allButtons.interactable = true;
 
         startSequencePanel.SetActive(false);
         MusicController.Instance.FadeMusicIn();
@@ -139,12 +117,9 @@ public class StartGameSequence : MonoBehaviour
         StartCoroutine(ButtonDelay());
     }
 
-    private IEnumerator FadeMenuOut(CanvasGroup buttonGroup)
+    private IEnumerator FadeMenuOut()
     {
-        if (buttonGroup != null)
-        {
-            yield return Animate.FadeCanvasGroup(buttonGroup, 1, 0, GameValues.AnimationDurataions.buttonFadeOut);
-        }
+        yield return Animate.FadeCanvasGroup(allButtons, 1, 0, GameValues.AnimationDurataions.buttonFadeOut);
         yield return Zoom();
     }
 

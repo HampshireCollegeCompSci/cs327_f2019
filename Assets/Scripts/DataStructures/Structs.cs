@@ -1,22 +1,6 @@
 ﻿using System;
 using UnityEngine;
 
-public readonly struct Difficulty
-{
-    public Difficulty(string name, int reactorLimit, int moveLimit)
-    {
-        Name = name;
-        ReactorLimit = reactorLimit;
-        MoveLimit = moveLimit;
-    }
-
-    public readonly string Name;
-
-    public readonly int ReactorLimit;
-
-    public readonly int MoveLimit;
-}
-
 [Serializable]
 public struct Card
 {

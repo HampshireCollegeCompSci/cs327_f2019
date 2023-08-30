@@ -53,8 +53,11 @@ public class StateLoader : MonoBehaviour
         //Debug.LogWarning("OnApplicationFocus: " + hasFocus);
         if (!hasFocus)
         {
+            Timer.PauseWatch();
             TryForceWriteState();
+            return;
         }
+        Timer.UnPauseWatch();
     }
 
     void OnApplicationPause(bool pauseStatus)
@@ -62,17 +65,21 @@ public class StateLoader : MonoBehaviour
         //Debug.LogWarning("OnApplicationPause: " + pauseStatus);
         if (pauseStatus)
         {
+            Timer.PauseWatch();
             TryForceWriteState();
+            return;
         }
+        Timer.UnPauseWatch();
     }
 
     void OnApplicationQuit()
     {
         //Debug.LogWarning("Application ending after " + Time.time + " seconds");
+        Timer.PauseWatch();
         TryForceWriteState();
     }
 
-    public void GameStart()
+    public void ResetValues()
     {
         saveMoveLog.Clear();
         movesSinceLastSave = 0;
@@ -129,7 +136,7 @@ public class StateLoader : MonoBehaviour
 
     public void TryForceWriteState()
     {
-        if (saveMovesDisabled || Config.Instance.gameOver || lastSavedMove == Config.Instance.moveCounter) return;
+        if (saveMovesDisabled || Actions.GameOver || lastSavedMove == Actions.MoveCounter) return;
         Debug.Log("forcing write state");
         movesSinceLastSave = movesUntilSave;
         TryWriteState();
@@ -141,11 +148,11 @@ public class StateLoader : MonoBehaviour
         movesSinceLastSave++;
         if (saveMovesDisabled || movesSinceLastSave < movesUntilSave) return;
         movesSinceLastSave = 0;
-        lastSavedMove = Config.Instance.moveCounter;
+        lastSavedMove = Actions.MoveCounter;
         Debug.Log("writing state");
 
         // if this isn't running on WebGL (no thread support)
-        #if !UNITY_WEBGL
+#if !UNITY_WEBGL
             if (saveTask != null && !saveTask.IsCompleted)
             {
                 Debug.LogWarning("canceling the previous save task");
@@ -162,20 +169,23 @@ public class StateLoader : MonoBehaviour
                 tokenSource = new CancellationTokenSource();
                 saveTask = null;
             }
-        #endif
+#endif
 
         GameState<int> gameState = new()
         {
             difficulty = Config.Instance.CurrentDifficulty.Name,
-            moveCounter = Config.Instance.moveCounter,
-            actions = Config.Instance.actions,
-            score = Config.Instance.score,
-            consecutiveMatches = Config.Instance.consecutiveMatches,
+            timer = Timer.GetTimeSpan().ToString(),
+            moveCounter = Actions.MoveCounter,
+            moveTracker = Actions.MoveTracker,
+            actions = Actions.ActionsDone,
+            score = Actions.Score,
+            consecutiveMatches = Actions.ConsecutiveMatches,
 
             wastePile = ConvertCardListToStringList(WastepileScript.Instance.CardList),
             deck = ConvertCardListToStringList(DeckScript.Instance.CardList),
             matches = ConvertCardListToStringList(MatchedPileScript.Instance.CardList),
             moveLog = saveMoveLog,
+            achievements = Achievements.achievementList
         };
 
         for (int i = 0; i < GameInput.Instance.foundationScripts.Length; i++)
@@ -217,6 +227,7 @@ public class StateLoader : MonoBehaviour
         // load the save file from the save path and unpack it
         string jsonTextFile = File.ReadAllText(SaveFile.GetPath());
         GameState<int> saveState = JsonUtility.FromJson<GameState<int>>(jsonTextFile);
+        AchievementsManager.LoadAchievementValues(saveState.achievements);
         UnpackGameState(saveState);
     }
 
@@ -237,9 +248,12 @@ public class StateLoader : MonoBehaviour
 
         //set up simple variables
         Config.Instance.SetDifficulty(state.difficulty);
+        if (isTutorial) Timer.LoadTimerOffset(TimeSpan.Zero);
+        else Timer.LoadTimerOffset(state.timer);
         ScoreScript.Instance.SetScore(state.score);
-        Config.Instance.consecutiveMatches = state.consecutiveMatches;
-        Config.Instance.moveCounter = state.moveCounter;
+        Actions.ConsecutiveMatches = state.consecutiveMatches;
+        Actions.MoveCounter = state.moveCounter;
+        Actions.MoveTracker = state.moveTracker;
         lastSavedMove = state.moveCounter;
         // more is done at the end
 

@@ -25,7 +25,7 @@ public class NextCycle : MonoBehaviour
             if (!Config.Instance.nextCycleEnabled) return;
             Config.Instance.nextCycleEnabled = false;
         }
-
+        AchievementsManager.FailedAlwaysMoves();
         SoundEffectsController.Instance.VibrateMedium();
         StartCycle();
     }
@@ -84,9 +84,9 @@ public class NextCycle : MonoBehaviour
             topCardScript.MoveCard(Constants.CardContainerType.Reactor, reactorScript.gameObject, isCycle: true);
 
             // if the game is lost during the next cycle stop immediately
-            if (Config.Instance.gameOver)
+            if (Actions.GameOver)
             {
-                Config.Instance.moveCounter += 1;
+                Actions.MoveCounter++;
                 GameInput.Instance.InputStopped = false;
                 ActionCountScript.Instance.KnobUp();
                 yield break;

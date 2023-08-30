@@ -29,7 +29,7 @@ public class SummaryTransition : MonoBehaviour
     {
         StartCoroutine(FadeIn());
 
-        if (!Config.Instance.gameWin)
+        if (!Actions.GameWin)
         {
             SpaceBabyController.Instance.PlayLoseAnimation();
         }
@@ -60,11 +60,11 @@ public class SummaryTransition : MonoBehaviour
     {
         transitionPanel.SetActive(true);
         yield return Animate.FadeImage(transitionPanel.GetComponent<Image>(),
-            Config.Instance.gameWin ? GameValues.FadeColors.grayFadeOut : GameValues.FadeColors.blackFadeOut,
+            Actions.GameWin ? GameValues.FadeColors.grayFadeOut : GameValues.FadeColors.blackFadeOut,
             GameValues.AnimationDurataions.summaryFadeIn);
         transitionPanel.SetActive(false);
 
-        if (Config.Instance.gameWin)
+        if (Actions.GameWin)
         {
             winSequence.StartWinSequence();
         }

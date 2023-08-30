@@ -76,6 +76,7 @@ public class DeckScript : MonoBehaviour, ICardContainer
         {
             // moves all wastePile cards into the deck
             WastepileScript.Instance.StartDeckReset();
+            AchievementsManager.FailedNoDeckFlip();
             SoundEffectsController.Instance.DeckReshuffle();
         }
         else return;

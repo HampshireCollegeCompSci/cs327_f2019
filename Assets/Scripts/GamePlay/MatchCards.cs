@@ -13,7 +13,7 @@ public class MatchCards : MonoBehaviour
         card1Script.StopAllCoroutines();
         card2Script.StopAllCoroutines();
 
-        int points = GameValues.Points.matchPoints + (Config.Instance.consecutiveMatches * GameValues.Points.scoreMultiplier);
+        int points = GameValues.Points.matchPoints + (Actions.ConsecutiveMatches * GameValues.Points.scoreMultiplier);
         StartCoroutine(MatchEffect(points, selectedCardCopy));
 
         card2Script.MoveCard(Constants.CardContainerType.MatchedPile, MatchedPileScript.Instance.gameObject);
@@ -47,19 +47,19 @@ public class MatchCards : MonoBehaviour
         // set the combo readout
         Text comboText = matchPointsEffect.transform.GetChild(0).GetComponent<Text>();
 
-        comboText.text = (Config.Instance.consecutiveMatches >= 1) switch
+        comboText.text = (Actions.ConsecutiveMatches >= 1) switch
         {
-            true => $"X{Config.Instance.consecutiveMatches + 1} COMBO",
+            true => $"X{Actions.ConsecutiveMatches + 1} COMBO",
             false => "",
         };
 
         // set the color of the points and combo
-        Color pointComboColor = Config.Instance.consecutiveMatches switch
+        Color pointComboColor = Actions.ConsecutiveMatches switch
         {
             0 => Config.Instance.CurrentColorMode.Match.Color,
             1 => Config.Instance.CurrentColorMode.Move.Color,
             >= 2 => Config.Instance.CurrentColorMode.Over.Color,
-            _ => throw new System.NotImplementedException($"how are there {Config.Instance.consecutiveMatches} number of matches?")
+            _ => throw new System.NotImplementedException($"how are there {Actions.ConsecutiveMatches} number of matches?")
         };
 
         pointText.color = pointComboColor;

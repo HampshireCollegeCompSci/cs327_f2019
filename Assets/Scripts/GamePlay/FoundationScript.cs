@@ -84,6 +84,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
         card.transform.SetParent(gameObject.transform);
 
         SetCardPositions();
+        AchievementsManager.TryCardStack(cardList);
     }
 
     public void RemoveCard(GameObject card, bool showHolo)

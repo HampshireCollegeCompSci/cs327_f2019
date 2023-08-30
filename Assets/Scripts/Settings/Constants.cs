@@ -5,7 +5,7 @@
     public static class GameStates
     {
         public const string versionKey = "GameStateVersion";
-        public const string version = "1";
+        public const string version = "2";
 
         public const string saveStatePathInEditor = "Assets/Resources/GameStates/";
         public const string saveStateFileName = "saveState";
@@ -23,10 +23,9 @@
         public const string tutorialStateStartFileName = "tutorialState_default";
     }
 
-    public static class Summary
+    public static class Time
     {
-        public const string highScoreKey = "HighScore";
-        public const string leastMovesKey = "LeastMoves";
+        public const string format = "mm\\:ss\\.ff";
     }
 
     public static class Settings
@@ -58,6 +57,8 @@
         public const string gameplay = "GameplayScene";
         public const string pause = "PauseScene";
         public const string summary = "SummaryScene";
+        public const string achievement = "AchievementsScene";
+        public const string stats = "StatsScene";
     }
 
     public static class SortingLayers

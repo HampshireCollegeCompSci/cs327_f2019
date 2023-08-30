@@ -7,63 +7,40 @@ public class MenuUIScript : MonoBehaviour
     [SerializeField]
     private Image spaceShip;
     [SerializeField]
-    private Sprite spaceShipOn, spaceShipOff, debris;
-
-    // MainMenuScene Main buttons
+    private Button spaceShipButton;
     [SerializeField]
-    private GameObject mainButtons, playButton, tutorialButton, settingsButton, aboutButton;
-
-    // MainMenuScene Play buttons
+    private Sprite spaceShipOn, debris;
     [SerializeField]
-    private GameObject playButtons, continueButton, easyButton, normalButton, hardButton, backButton;
+    private GameObject continueButton;
 
     public void Play()
     {
-        Debug.Log("UI Button play");
         //Preprocessor Directive to make builds work
         #if (UNITY_EDITOR)
                 UnityEditor.AssetDatabase.Refresh();
         #endif
 
-        ToggleMainMenuButtons(false);
-    }
-
-    public void About()
-    {
-        Debug.Log("UI Button about");
-        SceneManager.LoadScene(Constants.ScenesNames.about);
-        MusicController.Instance.AboutMusic();
-    }
-
-    public void MainMenuBackButton()
-    {
-        Debug.Log("UI Button Main Menu Back");
-        // The main menu scene has two sets of buttons that get swapped on/off
-        ToggleMainMenuButtons(true);
+        continueButton.SetActive(SaveFile.Exists());
     }
 
     public void Tutorial()
     {
-        spaceShip.sprite = spaceShipOn;
         NewGame(isTutorial: true);
     }
 
     public void HardDifficulty()
     {
-        Config.Instance.SetDifficulty(GameValues.GamePlay.difficulties[2]);
-        NewGame();
+        NewGame(Difficulties.hard);
     }
 
     public void MediumDifficulty()
     {
-        Config.Instance.SetDifficulty(GameValues.GamePlay.difficulties[1]);
-        NewGame();
+        NewGame(Difficulties.medium);
     }
 
     public void EasyDifficulty()
     {
-        Config.Instance.SetDifficulty(GameValues.GamePlay.difficulties[0]);
-        NewGame();
+        NewGame(Difficulties.easy);
     }
 
     public void Continue()
@@ -80,17 +57,28 @@ public class MenuUIScript : MonoBehaviour
 
     public void CheatMode()
     {
+        spaceShipButton.interactable = false;
         spaceShip.sprite = debris;
         SoundEffectsController.Instance.ExplosionSound();
-        Config.Instance.SetDifficulty(GameValues.GamePlay.difficulties[3]);
+        Config.Instance.SetDifficulty(Difficulties.cheat);
+        NewGame(isCheating: true);
+    }
+
+    private void NewGame(Difficulty difficulty)
+    {
+        Config.Instance.SetDifficulty(difficulty);
         NewGame();
     }
 
-    private void NewGame(bool isContinue = false, bool isTutorial = false)
+    private void NewGame(bool isContinue = false, bool isTutorial = false, bool isCheating = false)
     {
-        Debug.Log("UI Button new game");
         Config.Instance.continuing = isContinue;
         Config.Instance.SetTutorialOn(isTutorial);
+
+        if (!isCheating)
+        {
+            spaceShip.sprite = spaceShipOn;
+        }
 
         if (StartGameSequence.Instance != null)
         {
@@ -99,29 +87,6 @@ public class MenuUIScript : MonoBehaviour
         else
         {
             throw new System.NullReferenceException("A sequence Instance does not exist!");
-        }
-    }
-
-    private void ToggleMainMenuButtons(bool showMain)
-    {
-        Debug.Log($"toggling main menu buttons: {showMain}");
-
-        // Main buttons
-        mainButtons.SetActive(showMain);
-
-        // Play buttons
-        playButtons.SetActive(!showMain);
-
-        // Continue button requires a save to exist
-        if (showMain)
-        {
-            spaceShip.sprite = spaceShipOff;
-            continueButton.SetActive(false);
-        }
-        else
-        {
-            spaceShip.sprite = spaceShipOn;
-            continueButton.SetActive(SaveFile.Exists());
         }
     }
 }

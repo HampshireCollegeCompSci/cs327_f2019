@@ -40,7 +40,7 @@ public class GameLoader : MonoBehaviour
             GameInput.Instance.reactorScripts[i].SetReactorSuit(GameValues.GamePlay.suits[i]);
         }
 
-        ResetGameState();
+        ResetState();
 
         // Figure out what kinda game to start
         if (Config.Instance.tutorialOn)
@@ -102,7 +102,7 @@ public class GameLoader : MonoBehaviour
 
     public void RestartGame()
     {
-        ResetGameState();
+        ResetState();
         List<GameObject> cards = GetAllCards();
         MoveCardsToLoadPile(cards);
         foreach (GameObject card in cards)
@@ -110,6 +110,7 @@ public class GameLoader : MonoBehaviour
             card.GetComponent<CardScript>().SetValuesToDefault();
         }
         StartNewGame(cards);
+        Timer.StartWatch();
     }
 
     public void ChangeSuitSprites()
@@ -124,18 +125,14 @@ public class GameLoader : MonoBehaviour
         SetRectorSuitSprites(suitSprites);
     }
 
-    private void ResetGameState()
+    private void ResetState()
     {
-        Config.Instance.gameOver = false;
-        Config.Instance.gameWin = false;
-        Config.Instance.actions = 0;
+        Actions.ResetValues();
         ScoreScript.Instance.SetScore(0);
-        Config.Instance.consecutiveMatches = 0;
-        Config.Instance.moveCounter = 0;
-        Config.Instance.matchCounter = 0;
         EndGame.Instance.GameCanEnd = false;
-        UndoScript.Instance.GameStart();
-        StateLoader.Instance.GameStart();
+        AchievementsManager.ClearAchievements();
+        UndoScript.Instance.ResetValues();
+        StateLoader.Instance.ResetValues();
     }
 
     private List<GameObject> GetNewCards()
@@ -198,6 +195,7 @@ public class GameLoader : MonoBehaviour
         // the game difficultuy should already be set to what is desired for things to work properly
         SaveFile.Delete();
         Actions.StartNewGameUpdate();
+        Timer.timerOffset = TimeSpan.Zero;
 
         foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {
@@ -208,7 +206,7 @@ public class GameLoader : MonoBehaviour
         ActionCountScript.Instance.AlertLevel = GameValues.Colors.normal;
 
         cards = ShuffleCards(cards);
-        bool isCheating = Config.Instance.CurrentDifficulty.Equals(GameValues.GamePlay.difficulties[3]);
+        bool isCheating = Config.Instance.CurrentDifficulty.Equals(Difficulties.difficultyArray[3]);
         cards = isCheating switch
         {
             true => SetUpFoundations(cards, 1),

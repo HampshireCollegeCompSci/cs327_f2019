@@ -1,9 +1,35 @@
 ﻿public static class Actions
 {
+    public static int ActionsDone { get; set; }
+    public static int MoveCounter { get; set; }
+    public static int MoveTracker { get; set; }
+    public static int MatchCounter { get; set; }
+    public static int ConsecutiveMatches { get; set; }
+
+    public static bool GameOver { get; set; }
+    public static bool GameWin { get; set; }
+    public static int Score { get; set; }
+
+    public static void ResetValues()
+    {
+        ActionsDone = 0;
+        MoveCounter = 0;
+        MoveTracker = 0;
+        MatchCounter = 0;
+        ConsecutiveMatches = 0;
+        GameOver = false;
+        GameWin = false;
+        Score = 0;
+    }
+
     public static void MatchUpdate(bool tryGameWon)
     {
-        Config.Instance.consecutiveMatches++;
-        Config.Instance.moveCounter++;
+        ConsecutiveMatches++;
+        MoveCounter++;
+        MoveTracker++;
+
+        AchievementsManager.TryTripleCombo();
+        Stats.TryUpdateHighestCombo();
 
         if (tryGameWon || EndGame.Instance.GameCanEnd)
         {
@@ -21,8 +47,9 @@
 
     public static void MatchUndoUpdate()
     {
-        Config.Instance.consecutiveMatches = 0;
-        Config.Instance.moveCounter++;
+        ConsecutiveMatches = 0;
+        MoveCounter++;
+        AchievementsManager.TryRemoveAchievement(--MoveTracker);
         StateLoader.Instance.TryWriteState();
         TryDisableGameCanEnd();
         Alert(IsInAlertThreshold(), isMatchRelated: true);
@@ -30,16 +57,18 @@
 
     public static void MoveUpdate(bool checkGameOver = false)
     {
-        Config.Instance.consecutiveMatches = 0;
-        Config.Instance.moveCounter++;
+        ConsecutiveMatches = 0;
+        MoveCounter++;
+        MoveTracker++;
 
         bool wasInAlertThreshold = IsInAlertThreshold();
-        Config.Instance.actions++;
+        ActionsDone++;
         ActionCountScript.Instance.UpdateActionText();
 
-        if (Config.Instance.actions >= Config.Instance.CurrentDifficulty.MoveLimit)
+        if (ActionsDone >= Config.Instance.CurrentDifficulty.MoveLimit)
         {
-            Config.Instance.moveCounter--; // needed to register this cycle's moves as a part of this move
+            MoveCounter--; // needed to register this cycle's moves as a part of this move
+            AchievementsManager.FailedNeverMoves();
             NextCycle.Instance.StartCycle();
             return;
         }
@@ -55,7 +84,7 @@
             TryDisableGameCanEnd();
         }
 
-        if (!Config.Instance.gameOver)
+        if (!Actions.GameOver)
         {
             StateLoader.Instance.TryWriteState();
         }
@@ -65,8 +94,8 @@
 
     public static void StartSavedGameUpdate(int actionUpdate)
     {
-        bool wasInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= GameValues.GamePlay.turnAlertThreshold;
-        Config.Instance.actions = actionUpdate;
+        bool wasInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - ActionsDone <= GameValues.GamePlay.turnAlertThreshold;
+        ActionsDone = actionUpdate;
         ActionCountScript.Instance.UpdateActionText();
         Alert(wasInAlertThreshold);
         TryEnableGameCanEnd();
@@ -74,8 +103,8 @@
 
     public static void StartNewGameUpdate()
     {
-        bool wasInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= GameValues.GamePlay.turnAlertThreshold;
-        Config.Instance.actions = 0;
+        bool wasInAlertThreshold = Config.Instance.CurrentDifficulty.MoveLimit - ActionsDone <= GameValues.GamePlay.turnAlertThreshold;
+        ActionsDone = 0;
         ActionCountScript.Instance.UpdateActionText();
         Alert(wasInAlertThreshold);
     }
@@ -90,6 +119,7 @@
         {
             TryDisableGameCanEnd();
         }
+        AchievementsManager.TryRemoveAchievement(--MoveTracker);
         TypicalUpdate(actionUpdate);
     }
 
@@ -101,10 +131,10 @@
 
     private static void TypicalUpdate(int actionUpdate)
     {
-        Config.Instance.consecutiveMatches = 0;
-        Config.Instance.moveCounter++;
+        ConsecutiveMatches = 0;
+        MoveCounter++;
         bool wasInAlertThreshold = IsInAlertThreshold();
-        Config.Instance.actions = actionUpdate;
+        ActionsDone = actionUpdate;
         ActionCountScript.Instance.UpdateActionText();
         StateLoader.Instance.TryWriteState();
         Alert(wasInAlertThreshold);
@@ -131,7 +161,7 @@
         }
         else if (!wasInAlert && isInAlert) // new alert
         {
-            bool reactorsNearOverLimit = CheckReactors();
+            bool reactorsNearOverLimit = CheckReactorsNearOverLimit();
             if (reactorsNearOverLimit)
             {
                 SpaceBabyController.Instance.BabyReactorHigh();
@@ -147,9 +177,9 @@
         }
         else // already in alert
         {
-            bool reactorsNearOverLimit = CheckReactors();
+            bool reactorsNearOverLimit = CheckReactorsNearOverLimit();
             bool currentlyHighAlertLevel = ActionCountScript.Instance.AlertLevel.ColorLevel == Constants.ColorLevel.Over;
-            bool oneMoveBeforeNextCycle = Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions == 1;
+            bool oneMoveBeforeNextCycle = Config.Instance.CurrentDifficulty.MoveLimit - ActionsDone == 1;
 
             if (oneMoveBeforeNextCycle && !isMatchRelated)
             {
@@ -166,14 +196,14 @@
         }
     }
 
-    private static bool CheckReactors()
+    private static bool CheckReactorsNearOverLimit()
     {
-        bool overLimitSoon = false;
+        int numOverLimit = 0;
         foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {
             if (reactorScript.OverLimitSoon())
             {
-                overLimitSoon = true;
+                numOverLimit++;
                 reactorScript.Alert = true;
             }
             else
@@ -181,12 +211,18 @@
                 reactorScript.Alert = false;
             }
         }
-        return overLimitSoon;
+
+        if (numOverLimit != 0)
+        {
+            AchievementsManager.FailedNeverReactorHighAlert();
+            if (numOverLimit == 4) AchievementsManager.AchievedAllReactorsHighAlert();
+        }
+        return numOverLimit != 0;
     }
 
     private static void TryEnableGameCanEnd()
     {
-        if (!EndGame.Instance.GameCanEnd && !Config.Instance.gameOver && AreFoundationsEmpty())
+        if (!EndGame.Instance.GameCanEnd && !Actions.GameOver && AreFoundationsEmpty())
         {
             EndGame.Instance.GameCanEnd = true;
         }
@@ -213,5 +249,5 @@
     }
 
     private static bool IsInAlertThreshold() =>
-        Config.Instance.CurrentDifficulty.MoveLimit - Config.Instance.actions <= GameValues.GamePlay.turnAlertThreshold;
+        Config.Instance.CurrentDifficulty.MoveLimit - ActionsDone <= GameValues.GamePlay.turnAlertThreshold;
 }

@@ -111,6 +111,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         if (cardList.Count != 0)
         {
             cardList[^1].GetComponent<CardScript>().Obstructed = true;
+            AchievementsManager.FailedReactorSize();
         }
 
         cardList.Add(card);
@@ -122,6 +123,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         SetCardPositions();
 
         cardValueCount += cardScript.Card.Rank.ReactorValue;
+        AchievementsManager.TryReactorAtLimit(cardValueCount);
         SetReactorScore(cardValueCount);
         CheckGameOver(cardValueCount);
     }
@@ -239,7 +241,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     private void CheckGameOver(int cardValCount)
     {
-        if (Config.Instance.tutorialOn || Config.Instance.gameOver) return;
+        if (Config.Instance.tutorialOn || Actions.GameOver) return;
 
         if (cardValCount > Config.Instance.CurrentDifficulty.ReactorLimit)
         {

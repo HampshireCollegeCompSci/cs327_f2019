@@ -11,9 +11,18 @@ public class ButtonScript : MonoBehaviour
         SoundEffectsController.Instance.ButtonPressSound();
     }
 
+    public void BackButton()
+    {
+        Scene lastSceneToBeLoaded = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
+        SceneManager.UnloadSceneAsync(lastSceneToBeLoaded);
+        if (SceneManager.GetSceneByName(Constants.ScenesNames.mainMenu).isLoaded)
+        {
+            MusicController.Instance.MainMenuMusic();
+        }
+    }
+
     public void MainMenuButton()
     {
-        Debug.Log("UI Button main menu");
         if (SceneManager.GetSceneByName(Constants.ScenesNames.pause).isLoaded)
         {
             StateLoader.Instance.TryForceWriteState();
@@ -29,16 +38,33 @@ public class ButtonScript : MonoBehaviour
 
     public void SettingsButton()
     {
-        Debug.Log("UI Button settings");
         SceneManager.LoadScene(Constants.ScenesNames.settings, LoadSceneMode.Additive);
+    }
+
+    public void AchievementsButton()
+    {
+        TryPlayAboutMusic();
+        SceneManager.LoadScene(Constants.ScenesNames.achievement, LoadSceneMode.Additive);
+    }
+
+    public void StatsButton()
+    {
+        TryPlayAboutMusic();
+        SceneManager.LoadScene(Constants.ScenesNames.stats, LoadSceneMode.Additive);
+    }
+
+    public void AboutButton()
+    {
+        TryPlayAboutMusic();
+        SceneManager.LoadScene(Constants.ScenesNames.about, LoadSceneMode.Additive);
     }
 
     public void PauseGameButton()
     {
-        Debug.Log("UI Button pause game");
         if (GameInput.Instance.InputStopped) return;
         GameInput.Instance.InputStopped = true;
         Time.timeScale = 0;
+        Timer.PauseWatch();
         SoundEffectsController.Instance.PauseMenuButtonSound();
         MusicController.Instance.Paused = true;
         SceneManager.LoadScene(Constants.ScenesNames.pause, LoadSceneMode.Additive);
@@ -46,8 +72,8 @@ public class ButtonScript : MonoBehaviour
 
     public void ResumeGameButton()
     {
-        Debug.Log("UI Button resume game");
         Time.timeScale = 1;
+        Timer.UnPauseWatch();
         SceneManager.UnloadSceneAsync(Constants.ScenesNames.pause);
         MusicController.Instance.Paused = false;
         GameInput.Instance.InputStopped = false;
@@ -55,7 +81,6 @@ public class ButtonScript : MonoBehaviour
 
     public void RestartGameButton()
     {
-        Debug.Log("UI Button restart");
         if (SceneManager.GetSceneByName(Constants.ScenesNames.pause).isLoaded)
         {
             SceneManager.UnloadSceneAsync(Constants.ScenesNames.pause);
@@ -72,7 +97,6 @@ public class ButtonScript : MonoBehaviour
 
     public void PlayAgain()
     {
-        Debug.Log("UI Button play again");
         if (PlayAgainSequence.Instance != null)
         {
             PlayAgainSequence.Instance.StartLoadingGame();
@@ -91,5 +115,13 @@ public class ButtonScript : MonoBehaviour
     public void ButtonReleased()
     {
         pressAnimation.SetActive(false);
+    }
+
+    private void TryPlayAboutMusic()
+    {
+        if (SceneManager.GetSceneByName(Constants.ScenesNames.mainMenu).isLoaded)
+        {
+            MusicController.Instance.AboutMusic();
+        }
     }
 }

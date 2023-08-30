@@ -95,12 +95,6 @@ public class SettingsScript : MonoBehaviour
         lockout = false;
     }
 
-    public void BackButton()
-    {
-        Debug.Log("UI Button Settings Back");
-        SceneManager.UnloadSceneAsync(Constants.ScenesNames.settings);
-    }
-
     public void MusicVolumeChange(float update)
     {
         if (lockout) return;
@@ -163,8 +157,7 @@ public class SettingsScript : MonoBehaviour
 
     public void ClearRecordsConfirmationButton()
     {
-        Debug.Log("clearing saved records");
-        PersistentSettings.ClearScores();
+        Debug.LogWarning("This doesn't do anything!");
     }
 
     public void FrameRateChange(float update)

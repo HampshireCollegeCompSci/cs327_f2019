@@ -28,7 +28,7 @@ public class ScoreScript : MonoBehaviour
 
     public void SetScore(int setTo)
     {
-        Config.Instance.score = setTo;
+        Actions.Score = setTo;
         if (scoreCoroutine != null)
         {
             StopCoroutine(scoreCoroutine);
@@ -39,9 +39,9 @@ public class ScoreScript : MonoBehaviour
 
     public void UpdateScore(int addValue)
     {
-        int oldScore = Config.Instance.score;
-        Config.Instance.score += addValue;
-        newScore = Config.Instance.score;
+        int oldScore = Actions.Score;
+        Actions.Score += addValue;
+        newScore = Actions.Score;
         if (scoreCoroutine != null) return;
         scoreCoroutine = StartCoroutine(AddToScoreText(oldScore));
     }

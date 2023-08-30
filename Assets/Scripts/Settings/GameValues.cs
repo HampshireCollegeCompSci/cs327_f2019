@@ -15,14 +15,6 @@ public static class GameValues
         public const int cardCount = suitCount * rankCount;
         public const int matchCount = cardCount / 2;
 
-        public static readonly ReadOnlyCollection<Difficulty> difficulties = Array.AsReadOnly(new Difficulty[4]
-        {
-            new Difficulty("EASY", 24, 24),
-            new Difficulty("MEDIUM", 21, 21),
-            new Difficulty("HARD", 18, 18),
-            new Difficulty("CHEAT", 100, 10),
-        });
-
         public static readonly ReadOnlyCollection<Suit> suits = Array.AsReadOnly(new Suit[suitCount]
         {
             new Suit("spades", 0, Color.black),
@@ -97,6 +89,7 @@ public static class GameValues
 
     public static class Colors
     {
+        public static readonly Color whiteAlphaLow = new(1, 1, 1, 0.6f);
         public const float selectedCardOpacity = 0.25f;
         public static readonly Color cardObstructedColor = new(0.6f, 0.6f, 0.6f);
         public static readonly HighLightColor normal = new(Color.white, Constants.ColorLevel.None);

@@ -59,14 +59,18 @@ public class EndGame : MonoBehaviour
         Debug.Log($"Game Over, won: {didWin}");
 
         GameInput.Instance.InputStopped = true;
-        Config.Instance.gameOver = true;
-        Config.Instance.gameWin = didWin;
+        Actions.GameOver = true;
+        Actions.GameWin = didWin;
         GameCanEnd = false;
 
+        Timer.PauseWatch();
         SaveFile.Delete();
 
-        bool isCheating = Config.Instance.CurrentDifficulty.Equals(GameValues.GamePlay.difficulties[3]);
-        Config.Instance.matchCounter = isCheating ? GameValues.GamePlay.matchCount : MatchedPileScript.Instance.CardList.Count / 2; ;
+        Actions.MatchCounter = Config.Instance.CurrentDifficulty.Equals(Difficulties.cheat) ?
+            GameValues.GamePlay.matchCount : MatchedPileScript.Instance.CardList.Count / 2;
+
+        Config.Instance.PreserveOldStats();
+        Stats.SaveResults(didWin);
 
         if (didWin)
         {
@@ -78,6 +82,7 @@ public class EndGame : MonoBehaviour
             {
                 foundationScript.GlowForGameEnd(true);
             }
+            AchievementsManager.GameWinLogAchievements();
         }
         else
         {
@@ -146,12 +151,8 @@ public class EndGame : MonoBehaviour
         gameOverPanel.SetActive(false);
         SpaceBabyController.Instance.ResetBaby();
 
-        if (Config.Instance.gameWin)
+        if (Actions.GameWin)
         {
-            // save the results
-            PersistentSettings.TrySetHighScore(Config.Instance.CurrentDifficulty, Config.Instance.score);
-            PersistentSettings.TrySetLeastMoves(Config.Instance.CurrentDifficulty, Config.Instance.moveCounter);
-
             foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
             {
                 foundationScript.GlowForGameEnd(false);
@@ -166,7 +167,7 @@ public class EndGame : MonoBehaviour
         }
 
         MusicController.Instance.GameMusic();
-        Config.Instance.gameOver = false;
+        Actions.GameOver = false;
         GameLoader.Instance.RestartGame();
         GameInput.Instance.InputStopped = false;
         this.gameObject.GetComponent<Image>().enabled = false;
@@ -177,7 +178,7 @@ public class EndGame : MonoBehaviour
         restartButton.SetActive(false);
         continueButton.SetActive(false);
 
-        if (Config.Instance.gameWin)
+        if (Actions.GameWin)
         {
             SoundEffectsController.Instance.WinTransition();
             StartCoroutine(FadeGameplayOut(true));

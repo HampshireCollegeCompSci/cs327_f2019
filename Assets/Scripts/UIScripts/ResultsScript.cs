@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class ResultsScript : MonoBehaviour
@@ -8,7 +9,9 @@ public class ResultsScript : MonoBehaviour
         currentScoreText, currentScoreStatText,
         oldHighScoreText, oldHighScoreStatText,
         currentMovesText, currentMovesStatText,
-        oldLeastMovesText, oldLeastMovesStatText;
+        oldLeastMovesText, oldLeastMovesStatText,
+        currentTimeText, currentTimeStatText,
+        oldTimeText, oldTimeStatText;
 
     // Start is called before the first frame update
     void Start()
@@ -19,29 +22,25 @@ public class ResultsScript : MonoBehaviour
     private void SetScoreBoard()
     {
         // game won or lost text
-        stateText.text = Config.Instance.gameWin switch
-        {
-            true => GameValues.Text.gameWon,
-            false => GameValues.Text.gameLost
-        };
-        difficultyText.text = Config.Instance.CurrentDifficulty.Name.ToUpper();
+        stateText.text = Actions.GameWin ? GameValues.Text.gameWon : GameValues.Text.gameLost;
+        difficultyText.text = Config.Instance.CurrentDifficulty.Name;
 
         SetScore();
         SetMoves();
+        SetTime();
     }
 
     private void SetScore()
     {
         // Set the current score
-        int currentScoreNum = Config.Instance.score;
-        currentScoreStatText.text = currentScoreNum.ToString();
+        int currentScoreNum = Actions.Score;
+        currentScoreStatText.text = Actions.Score.ToString();
 
-        int oldHighScoreNum = PersistentSettings.GetHighScore(Config.Instance.CurrentDifficulty);
+        int oldHighScoreNum = Config.Instance.oldStats.HighScore;
         if (oldHighScoreNum == 0)
         {
-            // Set the text to indicate no saved high scores
-            oldHighScoreStatText.fontSize = oldHighScoreText.fontSize;
-            oldHighScoreStatText.text = "NONE";
+            oldHighScoreText.color = GameValues.Colors.whiteAlphaLow;
+            oldHighScoreStatText.text = "";
         }
         else
         {
@@ -52,33 +51,55 @@ public class ResultsScript : MonoBehaviour
         if (currentScoreNum > oldHighScoreNum)
         {
             UpdateHigh(currentScoreText, currentScoreStatText, oldHighScoreText, oldHighScoreStatText);
-            PersistentSettings.SetHighScore(Config.Instance.CurrentDifficulty, currentScoreNum);
         }
     }
 
     private void SetMoves()
     {
         // Set the current moves
-        int currentMovesNum = Config.Instance.moveCounter;
+        int currentMovesNum = Actions.MoveCounter;
         currentMovesStatText.text = currentMovesNum.ToString();
 
-        int oldLeastMovesNum = PersistentSettings.GetLeastMoves(Config.Instance.CurrentDifficulty);
+        int oldLeastMovesNum = Config.Instance.oldStats.LeastMoves;
         if (oldLeastMovesNum == 0)
         {
-            // Set the text to indicate no saved least moves
-            oldLeastMovesStatText.fontSize = oldLeastMovesText.fontSize;
-            oldLeastMovesStatText.text = "NONE";
+            oldLeastMovesText.color = GameValues.Colors.whiteAlphaLow;
+            oldLeastMovesStatText.text = "";
         }
         else
         {
-            oldLeastMovesStatText.text = oldLeastMovesNum.ToString();
+            oldLeastMovesStatText.text= oldLeastMovesNum.ToString();
         }
 
         // If game won, check for a new least moves and update if need be
-        if (Config.Instance.gameWin && (oldLeastMovesNum == 0 || currentMovesNum < oldLeastMovesNum))
+        if (Actions.GameWin && (oldLeastMovesNum == 0 || currentMovesNum < oldLeastMovesNum))
         {
             UpdateHigh(currentMovesText, currentMovesStatText, oldLeastMovesText, oldLeastMovesStatText);
-            PersistentSettings.SetLeastMoves(Config.Instance.CurrentDifficulty, currentMovesNum);
+        }
+    }
+
+    private void SetTime()
+    {
+        TimeSpan currentTime = Timer.GetTimeSpan();
+        currentTimeStatText.text = Timer.GetTimeSpan().ToString(Constants.Time.format);
+
+        TimeSpan oldTimerNum = Config.Instance.oldStats.FastestTime;
+        bool noOldTime = oldTimerNum.Equals(TimeSpan.Zero);
+        if (noOldTime)
+        {
+            oldTimeText.color = GameValues.Colors.whiteAlphaLow;
+            oldTimeStatText.text = "";
+        }
+        else
+        {
+            oldTimeStatText.text = oldTimerNum.ToString(Constants.Time.format);
+        }
+
+        if (!Actions.GameWin) return;
+
+        if (noOldTime || currentTime.CompareTo(oldTimerNum) < 0)
+        {
+            UpdateHigh(currentTimeText, currentTimeStatText, oldTimeText, oldTimeStatText);
         }
     }
 
@@ -87,7 +108,12 @@ public class ResultsScript : MonoBehaviour
         newTitle.color = Config.Instance.CurrentColorMode.Match.Color;
         newStat.color = Config.Instance.CurrentColorMode.Match.Color;
 
-        oldTitle.color = Config.Instance.CurrentColorMode.Over.Color;
-        oldStat.color = Config.Instance.CurrentColorMode.Over.Color;
+        Color oldColor = Config.Instance.CurrentColorMode.Over.Color;
+        if (oldTitle.color.a != 1)
+        {
+            oldColor.a = oldTitle.color.a;
+        }
+        oldTitle.color = oldColor;
+        oldStat.color = oldColor;
     }
 }

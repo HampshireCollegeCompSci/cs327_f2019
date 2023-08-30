@@ -31,7 +31,7 @@ public class UndoScript : MonoBehaviour
         moveLog = newMoves;
     }
 
-    public void GameStart()
+    public void ResetValues()
     {
         moveLog.Clear();
     }
@@ -50,9 +50,9 @@ public class UndoScript : MonoBehaviour
             moveType = moveType,
             nextCardWasHidden = nextCardWasHidden,
             isAction = isAction,
-            remainingActions = Config.Instance.actions,
-            score = Config.Instance.score,
-            moveNum = Config.Instance.moveCounter,
+            remainingActions = Actions.ActionsDone,
+            score = Actions.Score,
+            moveNum = Actions.MoveCounter,
         };
         moveLog.Push(move); //push the log to the undo stack
         StateLoader.Instance.AddMove(move);
@@ -65,6 +65,7 @@ public class UndoScript : MonoBehaviour
         if (GameInput.Instance.InputStopped) return;
         Debug.Log("undo button");
         SoundEffectsController.Instance.UndoPressSound();
+        AchievementsManager.FailedNoUndo();
         Undo();
     }
 

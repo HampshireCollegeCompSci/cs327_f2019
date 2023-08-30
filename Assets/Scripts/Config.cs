@@ -10,20 +10,9 @@ public class Config : MonoBehaviour
     // game settings
     public bool tutorialOn, nextCycleEnabled;
     public bool continuing;
-
     public bool prettyColors;
 
-    // game values
-    public bool gameOver;
-    public bool gameWin;
-
-    public int actions;
-    public int score;
-    public int consecutiveMatches;
-
-    // long term tracking
-    public int moveCounter;
-    public int matchCounter;
+    public Stats oldStats;
 
     private ColorMode _currentColorMode;
     private bool _hintsEnabled;
@@ -50,7 +39,6 @@ public class Config : MonoBehaviour
             // Check if the game state version needs updating and if the save file needs deleting
             SaveFile.CheckNewGameStateVersion();
             // Set the application frame rate to what was saved
-            Debug.Log($"setting frame rate to: {PersistentSettings.FrameRate}");
             Application.targetFrameRate = PersistentSettings.FrameRate;
 
             SetHints(PersistentSettings.HintsEnabled);
@@ -110,16 +98,21 @@ public class Config : MonoBehaviour
 
     public void SetDifficulty(string dif)
     {
-        for (int i = 0; i < GameValues.GamePlay.difficulties.Count; i++)
+        foreach (Difficulty difficlty in Difficulties.difficultyArray)
         {
-            if (dif == GameValues.GamePlay.difficulties[i].Name)
+            if (dif == difficlty.Name)
             {
-                SetDifficulty(GameValues.GamePlay.difficulties[i]);
+                SetDifficulty(difficlty);
                 return;
             }
         }
 
         throw new KeyNotFoundException($"the difficulty \"{dif}\" was not found");
+    }
+
+    public void PreserveOldStats()
+    {
+        oldStats = CurrentDifficulty.Stats.ShallowCopy();
     }
 
     public void SetTutorialOn(bool value)

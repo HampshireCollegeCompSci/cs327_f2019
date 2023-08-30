@@ -234,7 +234,7 @@ public class TutorialScript : MonoBehaviour
         GameInput.Instance.ShowPossibleMoves.TokenMoveable = true;
 
         Config.Instance.SetTutorialOn(false);
-        Config.Instance.SetDifficulty(GameValues.GamePlay.difficulties[0]);
+        Config.Instance.SetDifficulty(Difficulties.easy);
         MusicController.Instance.GameMusic();
         GameInput.Instance.InputStopped = true;
         GameLoader.Instance.RestartGame();
