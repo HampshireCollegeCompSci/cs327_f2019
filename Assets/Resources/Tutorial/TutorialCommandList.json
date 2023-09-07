@@ -26,7 +26,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"The goal of this game is to survive and clear the middle section of all tokens.\n\nTo do this, you will need to know how to eliminate tokens, move them around, and avoid the lose condition."
+				"The goal of this game is to survive and clear the middle section of all cards.\n\nTo do this, you will need to know how to eliminate cards, move them around, and avoid the lose condition."
 			]
 		},
 		{
@@ -37,7 +37,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"Tokens can be moved by pressing and dragging them around.\n\nTokens that are moveable have white displays on them.\n\nTry moving some around now."
+				"Cards can be moved by pressing and dragging them around.\n\nCards that are moveable have white displays on them.\n\nTry moving some around now."
 			]
 		},
 		{
@@ -48,7 +48,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"Tokens can be eliminated by combining similar ones together.\n\nOnly tokens that share their rank and color can be combined together.\n\nTry combining some tokens now."
+				"Cards can be eliminated by combining similar ones together.\n\nOnly cards that share their rank and color can be combined together.\n\nTry combining some cards now."
 			]
 		},
 		{
@@ -92,7 +92,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"The middle section is where tokens can be moved around on stacks.\n\nAt the beginning of a game, only the top token on each stack is revealed with the rest hidden underneath."
+				"The middle section is where cards can be moved around on stacks.\n\nAt the beginning of a game, only the top card on each stack is revealed with the rest hidden underneath."
 			]
 		},
 		{
@@ -122,7 +122,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"Here, tokens can be stacked in order of their rank, with ace counting as one.\nSuit color does not matter.\n\nTry stacking a token now."
+				"Here, cards can be stacked in order of their rank, with ace counting as one.\nSuit color does not matter.\n\nTry stacking a card now."
 			]
 		},
 		{
@@ -166,7 +166,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"Multiple tokens in a stack can even be moved at the same time by pressing on a lower token and dragging it to an allowed location.\n\nTry moving a stack of tokens now."
+				"Multiple cards in a stack can even be moved at the same time by pressing on a lower card and dragging it to an allowed location.\n\nTry moving a stack of cards now."
 			]
 		},
 		{
@@ -210,7 +210,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"The bottom section contains the conveyor belt, where you can draw or take away tokens as need be."
+				"The bottom section contains the conveyor belt, where you can draw or take away cards as need be."
 			]
 		},
 		{
@@ -255,7 +255,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"The button on the conveyor box can be pressed to draw at most three new tokens to the belt.\n\nTry drawing some more tokens now."
+				"The button on the conveyor box can be pressed to draw at most three new cards to the belt.\n\nTry drawing some more cards now."
 			]
 		},
 		{
@@ -280,7 +280,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"Only the first token on the conveyor belt can be moved.\n\nThe belt can be scrolled through to view tokens hidden in the back."
+				"Only the first card on the conveyor belt can be moved.\n\nThe belt can be scrolled through to view cards hidden in the back."
 			]
 		},
 		{
@@ -305,7 +305,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"The top section contains the storage containers, where tokens can be sent to for limited storage."
+				"The top section contains the storage containers, where cards can be sent to for limited storage."
 			]
 		},
 		{
@@ -343,7 +343,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"Tokens can be moved here one at a time, but they can not be removed except for their elimination.\n\nTry moving some tokens into the containers now."
+				"Cards can be moved here one at a time, but they can not be removed except for their elimination.\n\nTry moving some cards into the containers now."
 			]
 		},
 		{
@@ -431,7 +431,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"Another thing to watch out for is the move counter.\n\nAll token moves except for combinations decrease the move counter by one."
+				"Another thing to watch out for is the move counter.\n\nAll card moves except for combinations decrease the move counter by one."
 			]
 		},
 		{
