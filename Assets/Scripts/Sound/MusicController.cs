@@ -82,25 +82,31 @@ public class MusicController : MonoBehaviour, ISound
                 {
                     audioSource_2.clip = newTrack;
                 }
+                return;
+            }
+
+            StopAllCoroutines();
+            AudioSource audioSourceFadeIn, audioSourceFadeOut;
+            string trackFadeIn, trackFadeOut;
+            if (AudioSourcePlaying == 1)
+            {
+                audioSourceFadeIn = audioSource_2;
+                audioSourceFadeOut = audioSource_1;
+                trackFadeIn = Constants.AudioMixerNames.track2;
+                trackFadeOut = Constants.AudioMixerNames.track1;
+                AudioSourcePlaying = 2;
             }
             else
             {
-                StopAllCoroutines();
-                if (AudioSourcePlaying == 1)
-                {
-                    audioSource_2.clip = newTrack;
-                    StartFadeIn(Constants.AudioMixerNames.track2, GameValues.Music.musicFadeInDurationSec, audioSource_2);
-                    StartFadeOut(Constants.AudioMixerNames.track1, GameValues.Music.musicFadeOutDurationSec, audioSource_1);
-                    AudioSourcePlaying = 2;
-                }
-                else
-                {
-                    audioSource_1.clip = newTrack;
-                    StartFadeIn(Constants.AudioMixerNames.track1, GameValues.Music.musicFadeInDurationSec, audioSource_1);
-                    StartFadeOut(Constants.AudioMixerNames.track2, GameValues.Music.musicFadeOutDurationSec, audioSource_2);
-                    AudioSourcePlaying = 1;
-                }
+                audioSourceFadeIn = audioSource_1;
+                audioSourceFadeOut = audioSource_2;
+                trackFadeIn = Constants.AudioMixerNames.track1;
+                trackFadeOut = Constants.AudioMixerNames.track2;
+                AudioSourcePlaying = 1;
             }
+
+            StartFadeIn(trackFadeIn, GameValues.Music.musicFadeInDurationSec, audioSourceFadeIn, newTrack);
+            StartFadeOut(trackFadeOut, GameValues.Music.musicFadeOutDurationSec, audioSourceFadeOut);
         }
     }
 
@@ -289,13 +295,29 @@ public class MusicController : MonoBehaviour, ISound
         audioSource_2.Pause();
     }
 
-    private void StartFadeIn(string fadeInAudioMixerName, float duration, AudioSource audioSource)
+    private void StartFadeIn(string fadeInAudioMixerName, float duration, AudioSource audioSource, AudioClip newClip = null)
     {
-        fadeInCoroutine = StartCoroutine(FadeMixerGroup.StartFade(audioMixer, fadeInAudioMixerName, duration, 1, audioSource, false));
+        FadeMixerGroup.FadeType fadeType = FadeMixerGroup.FadeType.play;
+        if (newClip != null)
+        {
+            bool sameClip = newClip.Equals(audioSource.clip);
+            if (sameClip)
+            {
+                fadeType = FadeMixerGroup.FadeType.persist;
+            }
+            else
+            {
+                audioSource.clip = newClip;
+            }
+        }
+
+        fadeInCoroutine = StartCoroutine(FadeMixerGroup.StartFade(audioMixer,
+            fadeInAudioMixerName, duration, 1, audioSource, fadeType));
     }
 
     private void StartFadeOut(string fadeOutAudioMixerName, float duration, AudioSource audioSource)
     {
-        fadeOutCoroutine = StartCoroutine(FadeMixerGroup.StartFade(audioMixer, fadeOutAudioMixerName, duration, 0, audioSource, true));
+        fadeOutCoroutine = StartCoroutine(FadeMixerGroup.StartFade(audioMixer,
+            fadeOutAudioMixerName, duration, 0, audioSource, FadeMixerGroup.FadeType.stop));
     }
 }

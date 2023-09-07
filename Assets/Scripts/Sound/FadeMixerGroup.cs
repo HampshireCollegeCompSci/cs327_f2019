@@ -5,12 +5,23 @@ using UnityEngine;
 // https://johnleonardfrench.com/how-to-fade-audio-in-unity-i-tested-every-method-this-ones-the-best/
 public static class FadeMixerGroup
 {
-    public static IEnumerator StartFade(AudioMixer audioMixer, string exposedParam, float duration, float targetVolume,
-        AudioSource audioSource, bool stopWhenDone)
+    public enum FadeType
     {
-        if (!stopWhenDone)
+        play,
+        stop,
+        persist
+    }
+
+    public static IEnumerator StartFade(AudioMixer audioMixer, string exposedParam, float duration, float targetVolume,
+        AudioSource audioSource, FadeType type)
+    {
+        if (type == FadeType.play)
         {
             audioSource.Play();
+        }
+        else if (type == FadeType.persist)
+        {
+            audioSource.UnPause();
         }
 
         float currentTime = 0;
@@ -25,9 +36,9 @@ public static class FadeMixerGroup
             yield return null;
         }
 
-        if (stopWhenDone)
+        if (type == FadeType.stop)
         {
-            audioSource.Stop();
+            audioSource.Pause();
         }
     }
 }
