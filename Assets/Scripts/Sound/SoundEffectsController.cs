@@ -17,7 +17,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
         tokenInReactorSound,
         deckDealSound, deckReshuffleSound,
         winSound, loseSound, alertSound, winTransition,
-        explosionSound;
+        explosionSound, achievementSound;
 
     [SerializeField]
     private AudioClip[] tokenSelectSounds, tokenStackSounds, foodMatchSounds;
@@ -130,6 +130,11 @@ public class SoundEffectsController : MonoBehaviour, ISound
     {
         soundController.PlayOneShot(explosionSound, 0.6f);
         VibrateMedium();
+    }
+
+    public void AchievementSound()
+    {
+        soundController.PlayOneShot(achievementSound, 0.7f);
     }
 
     public void FoodMatch(Suit suit)

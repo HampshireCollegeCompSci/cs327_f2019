@@ -9,6 +9,9 @@ public class StartGameSequence : MonoBehaviour
     public static StartGameSequence Instance;
 
     [SerializeField]
+    private MenuUIScript menuUIScript;
+
+    [SerializeField]
     private GameObject cameraObject;
     private Camera cam;
 
@@ -109,6 +112,7 @@ public class StartGameSequence : MonoBehaviour
         mainButtons.SetActive(true);
         allButtons.alpha = 1;
         allButtons.interactable = true;
+        menuUIScript.ResetSpaceShip();
 
         startSequencePanel.SetActive(false);
         MusicController.Instance.FadeMusicIn();

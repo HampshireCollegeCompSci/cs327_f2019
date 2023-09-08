@@ -50,7 +50,6 @@ public class EndGame : MonoBehaviour
             gameEndButton.SetActive(false);
             return;
         }
-        SoundEffectsController.Instance.ButtonPressSound();
         GameOver(true);
     }
 

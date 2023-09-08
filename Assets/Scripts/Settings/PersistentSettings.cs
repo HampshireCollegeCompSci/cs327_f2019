@@ -30,6 +30,9 @@ public static class PersistentSettings
             MusicVolume = GameValues.Settings.musicDefaultVolume;
         }
 
+        _achievementPopupsEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.achievementPopupsEnabledKey,
+                Convert.ToInt32(GameValues.Settings.achievementPopupsEnabledDefault)));
+
         if (Vibration.HasVibrator())
         {
             _vibrationEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.vibrationEnabledKey,
@@ -94,6 +97,21 @@ public static class PersistentSettings
             {
                 _soundEffectsVolume = value;
                 PlayerPrefs.SetInt(Constants.Settings.soundEffectsVolumeKey, value);
+            }
+        }
+    }
+
+    private static bool _achievementPopupsEnabled;
+    public static bool AchievementPopupsEnabled
+    {
+        get => _achievementPopupsEnabled;
+        set
+        {
+            if (_achievementPopupsEnabled != value)
+            {
+                _achievementPopupsEnabled = value;
+                PlayerPrefs.SetInt(Constants.Settings.achievementPopupsEnabledKey,
+                    Convert.ToInt32(value));
             }
         }
     }

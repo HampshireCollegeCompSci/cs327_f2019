@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MenuUIScript : MonoBehaviour
@@ -9,7 +8,7 @@ public class MenuUIScript : MonoBehaviour
     [SerializeField]
     private Button spaceShipButton;
     [SerializeField]
-    private Sprite spaceShipOn, debris;
+    private Sprite spaceShipOff, spaceShipOn, debris;
     [SerializeField]
     private GameObject continueButton;
 
@@ -57,11 +56,16 @@ public class MenuUIScript : MonoBehaviour
 
     public void CheatMode()
     {
-        spaceShipButton.interactable = false;
         spaceShip.sprite = debris;
         SoundEffectsController.Instance.ExplosionSound();
         Config.Instance.SetDifficulty(Difficulties.cheat);
         NewGame(isCheating: true);
+    }
+
+    public void ResetSpaceShip()
+    {
+        spaceShip.sprite = spaceShipOff;
+        spaceShipButton.interactable = true;
     }
 
     private void NewGame(Difficulty difficulty)
@@ -72,6 +76,7 @@ public class MenuUIScript : MonoBehaviour
 
     private void NewGame(bool isContinue = false, bool isTutorial = false, bool isCheating = false)
     {
+        spaceShipButton.interactable = false;
         Config.Instance.continuing = isContinue;
         Config.Instance.SetTutorialOn(isTutorial);
 

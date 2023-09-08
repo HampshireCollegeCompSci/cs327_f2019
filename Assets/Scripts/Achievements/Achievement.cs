@@ -48,9 +48,13 @@ public class Achievement
         set
         {
             if (_achieved == value) return;
-            if (value)
-                Tracker = Actions.MoveTracker;
             _achieved = value;
+            if (value)
+            {
+                Tracker = Actions.MoveTracker;
+                if (!PersistentSettings.AchievementPopupsEnabled) return;
+                AchievementPopup.Instance.ShowAchievement(this);
+            }
         }
     }
 
@@ -88,19 +92,16 @@ public class Achievement
         Tracker = 0;
     }
 
-    public bool TryGameWinAchieved()
+    public void TryGameWinAchieved()
     {
-        if (!Achieved) return false;
+        if (!Achieved) return;
         Debug.Log($"achieved {Name}");
         Value++;
-        return true;
     }
     
-    public bool TryGameWinNoFail()
+    public void TryGameWinNoFail()
     {
-        if (Failed) return false;
-        Debug.Log($"achieved {Name}");
-        Value++;
-        return true;
+        if (Failed) return;
+        Achieved = true;
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+
 public static class AchievementsManager
 {
     private static readonly Stack<Achievement> achievementStack = new(14);
@@ -52,28 +53,23 @@ public static class AchievementsManager
 
         if (Config.Instance.prettyColors)
         {
-            Achievements.prettyColors.Value++;
+            Achievements.prettyColors.Achieved = true;
         }
         if (Actions.MatchCounter == GameValues.GamePlay.matchCount)
         {
-            Achievements.matchAll.Value++;
+            Achievements.matchAll.Achieved = true;
         }
 
         TimeSpan timeSpan = Timer.GetTimeSpan();
         if (timeSpan.CompareTo(TimeSpan.FromMinutes(2)) <= 0)
         {
-            Achievements.speedrun2.Value++;
-            Achievements.speedrun5.Value++;
+            Achievements.speedrun2.Achieved = true;
+            Achievements.speedrun5.Achieved = true;
         }
         else if (timeSpan.CompareTo(TimeSpan.FromMinutes(5)) <= 0)
         {
-            Achievements.speedrun5.Value++;
+            Achievements.speedrun5.Achieved = true;
         }
-
-        Achievements.tripleCombo.TryGameWinAchieved();
-        Achievements.cardStack.TryGameWinAchieved();
-        Achievements.reactorAtLimit.TryGameWinAchieved();
-        Achievements.allReactorsHighAlert.TryGameWinAchieved();
 
         Achievements.neverReactorHighAlert.TryGameWinNoFail();
         Achievements.reactorSize.TryGameWinNoFail();
@@ -81,6 +77,8 @@ public static class AchievementsManager
         Achievements.noDeckFlip.TryGameWinNoFail();
         Achievements.neverMoves.TryGameWinNoFail();
         Achievements.alwaysMoves.TryGameWinNoFail();
+
+        Achievements.achievementList.ForEach(achievement => achievement.TryGameWinAchieved());
     }
 
     public static void TryTripleCombo()

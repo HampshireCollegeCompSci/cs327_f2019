@@ -33,6 +33,7 @@
         public const string soundEffectsVolumeKey = "SoundEffectsVolume";
         public const string musicVolumeKey = "MusicVolume";
         public const string vibrationEnabledKey = "VibrationEnabled";
+        public const string achievementPopupsEnabledKey = "AchievementPopupsEnabled";
         public const string foodSuitsEnabledKey = "FoodSuitsEnabled";
         public const string frameRateKey = "FrameRate";
         public const string saveGameStateKey = "SaveGameState";

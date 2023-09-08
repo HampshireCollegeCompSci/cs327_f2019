@@ -275,7 +275,7 @@ public class GameInput : MonoBehaviour
     {
         Vector3 cardPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
                                                                           Input.mousePosition.y,
-                                                                          1));
+                                                                          0));
         foreach (GameObject card in selectedCardsCopy)
         {
             card.transform.position = cardPosition;

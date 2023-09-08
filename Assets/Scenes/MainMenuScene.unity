@@ -345,6 +345,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spaceShip: {fileID: 153595821}
   spaceShipButton: {fileID: 153595823}
+  spaceShipOff: {fileID: 21300000, guid: 6882bc7aa6daa9743bf331e519f86362, type: 3}
   spaceShipOn: {fileID: 21300000, guid: 6dfad89b4de0b674aa14cd0a7bf41742, type: 3}
   debris: {fileID: 21300000, guid: b9f1206bbc9b65b43b271346326ec323, type: 3}
   continueButton: {fileID: 2125820082}
@@ -1761,12 +1762,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 681140569bdef064aa7ee601e60a8a86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  menuUIScript: {fileID: 126415475}
   cameraObject: {fileID: 235367410}
   canvas: {fileID: 1115895158}
   popupWindow: {fileID: 1927384829}
   popupContinueButton: {fileID: 706747454}
   allButtons: {fileID: 411041896}
-  mainButtons: {fileID: 0}
+  mainButtons: {fileID: 1745077753}
   playButtons: {fileID: 489388907}
   moreButtons: {fileID: 926860009}
   spaceShipWindowObject: {fileID: 267931884}
@@ -1912,6 +1914,7 @@ MonoBehaviour:
   alertSound: {fileID: 8300000, guid: 2418f3d0f2e889642a4271259699c938, type: 3}
   winTransition: {fileID: 8300000, guid: cb16d367a7831494481670b741a4caca, type: 3}
   explosionSound: {fileID: 8300000, guid: a267165a944a94bdbaca11eb7050a845, type: 3}
+  achievementSound: {fileID: 8300000, guid: e6c07a02ea4ebaa4786e7a44c7cd0bd3, type: 3}
   tokenSelectSounds:
   - {fileID: 8300000, guid: 212692e81ff51b54cab0cf55e7d64bc5, type: 3}
   - {fileID: 8300000, guid: f950caf6c16483b4c8ed03d015bebea9, type: 3}

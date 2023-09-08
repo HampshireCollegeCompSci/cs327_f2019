@@ -18,7 +18,7 @@ public class SettingsScript : MonoBehaviour
     private Text frameRateText;
 
     [SerializeField]
-    private Toggle vibrationToggle, foodSuitsToggle;
+    private Toggle achievementPopupToggle, vibrationToggle, foodSuitsToggle;
 
     private List<int> frameRates;
 
@@ -62,6 +62,8 @@ public class SettingsScript : MonoBehaviour
         volume = PersistentSettings.SoundEffectsVolume;
         soundEffectsSlider.value = volume;
         soundEffectsVolumeText.text = $"{volume * soundEffectsMultiplier}%";
+
+        achievementPopupToggle.isOn = PersistentSettings.AchievementPopupsEnabled;
 
         if (Vibration.HasVibrator())
         {
@@ -119,6 +121,14 @@ public class SettingsScript : MonoBehaviour
         {
             SpaceBabyController.Instance.UpdateMaxVolume(volumeUpdate);
         }
+    }
+
+    public void AchievementPopupOnToggle(bool update)
+    {
+        if (lockout) return;
+
+        PersistentSettings.AchievementPopupsEnabled = update;
+        SoundEffectsController.Instance.ButtonPressSound();
     }
 
     public void VibrationEnabledOnToggle(bool update)

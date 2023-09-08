@@ -72,6 +72,7 @@ public static class GameValues
         public const int soundEffectsDefaultVolume = 15;
         public const int soundEffectsVolumeDenominator = 20;
 
+        public const bool achievementPopupsEnabledDefault = true;
         public const bool vibrationEnabledDefault = true;
         public const bool foodSuitsEnabledDefault = false;
 
@@ -149,6 +150,10 @@ public static class GameValues
         public const float gameEndLostFade = 1f; // fades out of the gameplay scene to summary - game was lost
         public const float summaryFadeIn = 0.5f; // fades into the summary scene
         public const float playAgainFadeOut = 1; // fades out of the summary scene to gameplay
+
+        // Achievements
+        public const float achievementPopup = 2;
+        public const float achievementPopupFade = 0.5f;
 
         // gameplay
         public const float cardHologramFadeIn = 2; // fades in the cards holograms
