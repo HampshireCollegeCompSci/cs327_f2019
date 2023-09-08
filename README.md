@@ -29,11 +29,11 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-Cosmia, Cosmic Solitaire is the result of the course of CS327 at Hampshire College during the Fall of 2019. Teams from different disciplines were formed to create a new solitare like game that could be published on the mobile app stores. At the end of the semester, the project was over halfway completed.
+Cosmia, Cosmic Solitaire is the result of the course of CS327 at Hampshire College during the Fall of 2019. Teams from different disciplines were formed to create a new solitaire-like game that could be published on the mobile app stores. At the end of the semester, the project was over halfway completed.
 
-During the 2020 Spring semester, a small group of developers consiting of members from various teams stayed to finish Cosmia. These members are indicated by a ⭐ in the credits section. They managed to get the game near completion.
+During the 2020 Spring semester, a small group of developers consisting of members from various teams stayed to finish Cosmia. These members are indicated by a ⭐ in the credits section. They managed to get the game near completion.
 
-Afterwards in 2021, the programmer Jona began work to finalize the game. In early 2022, Cosmia was stable and feature rich enough to start the distribution of builds for final playtesting.
+Afterwards, in 2021 the programmer Jona began work to finalize the game. In early 2022, Cosmia was stable and feature-rich enough to start the distribution of builds for final playtesting.
 
 <details>
   <summary><b>Credits</b> (click to expand)</summary>
@@ -71,13 +71,14 @@ Afterwards in 2021, the programmer Jona began work to finalize the game. In earl
 - Granger Smith-Massa - Audio Designer
 - Zofia Shura - Audio Designer
 
-#### Programing
+#### Programming
 - Shan Jiang - Lead Programmer
 - Ian Macpherson - Programmer
-- Jona Lawrence ⭐ - Programmer
+- Jona Lawrence ⭐ - Everything
 - Max Mark - Programmer
 - Noah Brinton - Programmer
 - Per Van Dyke ⭐ - Programmer
+- Sophia Berger - Programmer
 </details>
 <br/>
 
@@ -107,6 +108,7 @@ Afterwards in 2021, the programmer Jona began work to finalize the game. In earl
 - [x] Add More Settings Options
 - [x] Address Aspect Ratio Issues
 - [ ] Launch On App Stores
+- [x] Add Achievements and More Statistics
 - [ ] Multi-language Support?
 
 See the [open issues](https://github.com/HampshireCollegeCompSci/cs327_f2019/issues) for a full list of proposed features (and known issues).
