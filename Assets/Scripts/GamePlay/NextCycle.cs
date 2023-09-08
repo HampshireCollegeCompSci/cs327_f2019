@@ -46,8 +46,6 @@ public class NextCycle : MonoBehaviour
 
     private IEnumerator Cycle()
     {
-        
-
         foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
         {
             if (foundationScript.CardList.Count == 0) continue;

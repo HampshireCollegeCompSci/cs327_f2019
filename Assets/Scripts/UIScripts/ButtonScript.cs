@@ -55,7 +55,6 @@ public class ButtonScript : MonoBehaviour
 
     public void AboutButton()
     {
-        TryPlayAboutMusic();
         SceneManager.LoadScene(Constants.ScenesNames.about, LoadSceneMode.Additive);
     }
 

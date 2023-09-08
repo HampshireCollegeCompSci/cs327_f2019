@@ -23,11 +23,18 @@ public class StatsSceneScript : MonoBehaviour
                 throw new Exception("the achievement prefab doesn't have 11 text components to use");
             }
             statTexts[0].text = dif.Name;
-            statTexts[2].text = dif.Stats.TimesWon.ToString();
-            statTexts[4].text = dif.Stats.HighScore.ToString();
-            statTexts[6].text = dif.Stats.LeastMoves.ToString();
-            statTexts[8].text = dif.Stats.HighestCombo.ToString();
-            statTexts[10].text = dif.Stats.FastestTime.ToString(Constants.Time.format);
+            PopoulateText(statTexts[2], dif.Stats.TimesWon);
+            PopoulateText(statTexts[4], dif.Stats.HighScore);
+            PopoulateText(statTexts[6], dif.Stats.LeastMoves);
+            PopoulateText(statTexts[8], dif.Stats.HighestCombo);
+
+            TimeSpan ts = dif.Stats.FastestTime;
+            statTexts[10].text = ts == TimeSpan.Zero ? "--" : ts.ToString(Constants.Time.format);
         }
+    }
+
+    private void PopoulateText(Text txt, int num)
+    {
+       txt.text = num != 0 ? num.ToString() : "--";
     }
 }

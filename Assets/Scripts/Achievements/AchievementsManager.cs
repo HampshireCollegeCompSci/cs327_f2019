@@ -49,24 +49,22 @@ public static class AchievementsManager
 
     public static void GameWinLogAchievements()
     {
-        if (Config.Instance.CurrentDifficulty.Equals(Difficulties.cheat)) return;
-
-        if (Config.Instance.prettyColors)
-        {
-            Achievements.prettyColors.Achieved = true;
-        }
+        //if (Config.Instance.prettyColors)
+        //{
+        //    Achievements.prettyColors.Achieved = true;
+        //}
         if (Actions.MatchCounter == GameValues.GamePlay.matchCount)
         {
             Achievements.matchAll.Achieved = true;
         }
 
         TimeSpan timeSpan = Timer.GetTimeSpan();
-        if (timeSpan.CompareTo(TimeSpan.FromMinutes(2)) <= 0)
-        {
-            Achievements.speedrun2.Achieved = true;
-            Achievements.speedrun5.Achieved = true;
-        }
-        else if (timeSpan.CompareTo(TimeSpan.FromMinutes(5)) <= 0)
+        //if (timeSpan.CompareTo(TimeSpan.FromMinutes(2)) <= 0)
+        //{
+        //    Achievements.speedrun2.Achieved = true;
+        //    Achievements.speedrun5.Achieved = true;
+        //}
+        if (timeSpan.CompareTo(TimeSpan.FromMinutes(5)) <= 0)
         {
             Achievements.speedrun5.Achieved = true;
         }

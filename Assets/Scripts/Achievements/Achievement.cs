@@ -96,6 +96,7 @@ public class Achievement
     {
         if (!Achieved) return;
         Debug.Log($"achieved {Name}");
+        if (Config.Instance.CurrentDifficulty.Equals(Difficulties.cheat)) return;
         Value++;
     }
     

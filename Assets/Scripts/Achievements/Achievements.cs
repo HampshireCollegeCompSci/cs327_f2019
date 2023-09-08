@@ -86,6 +86,6 @@ public static class Achievements
         alwaysMoves,
         speedrun5,
         //speedrun2,
-        prettyColors
+        //prettyColors
     };
 }

@@ -335,8 +335,8 @@ PrefabInstance:
       value: 'All achievements are granted at the end of a winning game.
 
 
-        Undoing
-        can cancel achievement progress, but not for ones that are failure based.'
+        No
+        cheating! Undoing will undo achievement progress, but not for failures.'
       objectReference: {fileID: 0}
     - target: {fileID: 9048685150882462339, guid: 9238f0a695aac854dafeaf352f20f4b5,
         type: 3}

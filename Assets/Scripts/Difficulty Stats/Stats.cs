@@ -1,5 +1,4 @@
 using System;
-using TreeEditor;
 using UnityEngine;
 
 public class Stats
@@ -96,7 +95,7 @@ public class Stats
         if (!didWin) return;
         currentStats.TimesWon++;
 
-        if (Actions.MoveCounter < currentStats.LeastMoves)
+        if (currentStats.LeastMoves == 0 || Actions.MoveCounter < currentStats.LeastMoves)
         {
             currentStats.LeastMoves = Actions.MoveCounter;
         }
