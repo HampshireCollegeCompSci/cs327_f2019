@@ -59,8 +59,7 @@ public class UndoScript : MonoBehaviour
         return;
     }
 
-    [SerializeField]
-    private void UndoButton()
+    public void UndoButton()
     {
         if (GameInput.Instance.InputStopped) return;
         Debug.Log("undo button");
