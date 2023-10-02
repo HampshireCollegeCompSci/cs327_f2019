@@ -40,7 +40,7 @@ public class ResultsScript : MonoBehaviour
         if (oldHighScoreNum == 0)
         {
             oldHighScoreText.color = GameValues.Colors.whiteAlphaLow;
-            oldHighScoreStatText.text = "";
+            oldHighScoreStatText.text = GameValues.Text.noValue;
         }
         else
         {
@@ -64,7 +64,7 @@ public class ResultsScript : MonoBehaviour
         if (oldLeastMovesNum == 0)
         {
             oldLeastMovesText.color = GameValues.Colors.whiteAlphaLow;
-            oldLeastMovesStatText.text = "";
+            oldLeastMovesStatText.text = GameValues.Text.noValue;
         }
         else
         {
@@ -88,7 +88,7 @@ public class ResultsScript : MonoBehaviour
         if (noOldTime)
         {
             oldTimeText.color = GameValues.Colors.whiteAlphaLow;
-            oldTimeStatText.text = "";
+            oldTimeStatText.text = GameValues.Text.noValue;
         }
         else
         {

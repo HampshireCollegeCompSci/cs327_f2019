@@ -86,6 +86,7 @@ public static class GameValues
     {
         public const string gameWon = "YOU WON";
         public const string gameLost = "YOU LOST";
+        public const string noValue = "---";
     }
 
     public static class Colors
