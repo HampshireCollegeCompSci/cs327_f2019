@@ -11,6 +11,8 @@ public class MenuUIScript : MonoBehaviour
     private Sprite spaceShipOff, spaceShipOn, debris;
     [SerializeField]
     private GameObject continueButton;
+    [SerializeField]
+    private GameObject explosionPrefab;
 
     public void Play()
     {
@@ -56,6 +58,10 @@ public class MenuUIScript : MonoBehaviour
 
     public void CheatMode()
     {
+        GameObject explosion = Instantiate(explosionPrefab, spaceShip.gameObject.transform);
+        explosion.transform.localScale = new Vector3(75, 75, 1);
+        explosion.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
+
         spaceShip.sprite = debris;
         SoundEffectsController.Instance.ExplosionSound();
         Config.Instance.SetDifficulty(Difficulties.cheat);
