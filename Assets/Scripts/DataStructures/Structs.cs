@@ -104,6 +104,14 @@ public readonly struct FadeColorPair
 public struct HighLightColor
 #pragma warning restore CS0660, CS0661
 {
+    [SerializeField]
+    private Color color;
+    public Color Color => color;
+    public readonly Color GlowColor;
+    public readonly Color HoloColor;
+    public readonly Color ScreenColor;
+    public readonly Constants.ColorLevel ColorLevel;
+
     private const float glowAlpha = 0.6f;
     private const float screenDiv = 1.6f;
 
@@ -114,6 +122,8 @@ public struct HighLightColor
             this.color = newCol;
             GlowColor = color;
             GlowColor.a = glowAlpha;
+            HoloColor = color;
+            HoloColor.a = GameValues.Colors.cardHologramAlpha;
             ScreenColor = color / screenDiv;
             ScreenColor.a = 1;
             this.ColorLevel = colorLevel;
@@ -129,17 +139,12 @@ public struct HighLightColor
         this.color = color;
         GlowColor = color;
         GlowColor.a = glowAlpha;
+        HoloColor = color;
+        HoloColor.a = GameValues.Colors.cardHologramAlpha;
         ScreenColor = color / screenDiv;
         ScreenColor.a = 1;
         this.ColorLevel = colorLevel;
     }
-
-    [SerializeField]
-    private Color color;
-    public Color Color => color;
-    public readonly Color GlowColor;
-    public readonly Color ScreenColor;
-    public readonly Constants.ColorLevel ColorLevel;
 
     public static bool operator ==(HighLightColor left, HighLightColor right)
     {

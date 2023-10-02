@@ -93,6 +93,8 @@ public static class GameValues
         public static readonly Color whiteAlphaLow = new(1, 1, 1, 0.6f);
         public const float selectedCardOpacity = 0.25f;
         public static readonly Color cardObstructedColor = new(0.6f, 0.6f, 0.6f);
+        public const float cardHologramAlpha = 0.8f;
+        public static readonly Color cardHologramColor = new(0, 0, 0, 1 - cardHologramAlpha);
         public static readonly HighLightColor normal = new(Color.white, Constants.ColorLevel.None);
         public static readonly HighLightColor card = new("#1af4ff", Constants.ColorLevel.None);
 
