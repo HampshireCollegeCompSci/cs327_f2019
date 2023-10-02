@@ -8,6 +8,8 @@ public class DeckScript : MonoBehaviour, ICardContainer
     private const string deckFlipText = "FLIP";
     private const string deckEmptyText = "EMPTY";
 
+    private static readonly WaitForSeconds buttonWait = new(0.07f);
+
     // Singleton instance.
     public static DeckScript Instance;
 
@@ -161,7 +163,7 @@ public class DeckScript : MonoBehaviour, ICardContainer
         for (int i = 1; i < buttonAnimation.Length; i++)
         {
             buttonImage.sprite = buttonAnimation[i];
-            yield return new WaitForSeconds(0.07f);
+            yield return buttonWait;
         }
         buttonCoroutine = null;
     }
@@ -171,7 +173,7 @@ public class DeckScript : MonoBehaviour, ICardContainer
         for (int i = buttonAnimation.Length - 2; i >= 0; i--)
         {
             buttonImage.sprite = buttonAnimation[i];
-            yield return new WaitForSeconds(0.07f);
+            yield return buttonWait;
         }
         buttonCoroutine = null;
     }

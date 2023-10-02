@@ -15,6 +15,8 @@ public class LetterBoxer : MonoBehaviour
     private const float minRatio = minX / minY;
     private const float maxRatio = maxX / maxY;
 
+    private static readonly WaitForSecondsRealtime screenCheckWait = new(2f);
+
     private Camera cam, letterBoxerCamera;
 #if UNITY_WEBGL
     private int currentScreenWidth, currentScreenHeight;
@@ -47,7 +49,7 @@ public class LetterBoxer : MonoBehaviour
     {
         while(true)
         {
-            yield return new WaitForSecondsRealtime(2);
+            yield return screenCheckWait;
             if (currentScreenWidth != Screen.width ||
                 currentScreenHeight != Screen.height)
             {

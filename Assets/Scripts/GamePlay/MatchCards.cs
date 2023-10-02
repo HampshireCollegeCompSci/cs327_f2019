@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class MatchCards : MonoBehaviour
 {
+    private static readonly WaitForSeconds comboWait = new(GameValues.AnimationDurataions.comboWait);
+
     [SerializeField]
     private GameObject gameUI, matchExplosionPrefab, matchPointsPrefab;
 
@@ -87,7 +89,7 @@ public class MatchCards : MonoBehaviour
             yield return null;
         }
 
-        yield return new WaitForSeconds(GameValues.AnimationDurataions.comboWait);
+        yield return comboWait;
 
         // how much the scale up will be
         Vector2 scaleMulti = new(1.2f, 1.2f);

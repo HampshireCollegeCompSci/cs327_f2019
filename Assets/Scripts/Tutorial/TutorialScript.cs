@@ -14,6 +14,7 @@ public class TutorialScript : MonoBehaviour
     private const string sFoundation = "FOUNDATION";
     private const string sWastepile = "WASTEPILE";
     private static readonly Regex sWhitespace = new Regex(@"\s+");
+    private static readonly WaitForSeconds nextButtonDelay = new(1);
 
     private Queue<List<string>> commandQueue;
     private bool waiting;
@@ -260,7 +261,7 @@ public class TutorialScript : MonoBehaviour
     private System.Collections.IEnumerator DelayNextButtonInteraction()
     {
         tutorialNextButton.interactable = false;
-        yield return new WaitForSeconds(1);
+        yield return nextButtonDelay;
         tutorialNextButton.interactable = true;
     }
 

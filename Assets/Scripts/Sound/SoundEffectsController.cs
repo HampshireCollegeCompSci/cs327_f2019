@@ -6,6 +6,9 @@ public class SoundEffectsController : MonoBehaviour, ISound
 {
     // Singleton instance.
     public static SoundEffectsController Instance;
+    private static readonly WaitForSecondsRealtime alertDelay0 = new(0.5f),
+        alertDelay1 = new(0.1f),
+        alertDelay2 = new(0.3f);
 
     // Audio players component
     [SerializeField]
@@ -164,11 +167,11 @@ public class SoundEffectsController : MonoBehaviour, ISound
 
     private IEnumerator AlertVibration()
     {
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return alertDelay0;
         soundController.PlayOneShot(alertSound, 0.2f);
-        yield return new WaitForSecondsRealtime(0.1f);
+        yield return alertDelay1;
         VibrateMedium();
-        yield return new WaitForSecondsRealtime(0.3f);
+        yield return alertDelay2;
         VibrateMedium();
     }
 }

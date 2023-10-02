@@ -8,6 +8,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
 {
     // Singleton instance.
     public static WastepileScript Instance;
+    private static readonly WaitForSeconds deckResetDelay = new(0.5f);
 
     [SerializeField]
     private List<GameObject> cardList;
@@ -261,7 +262,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         endPosition.x = 0;
         contentRectTransform.anchoredPosition = endPosition;
 
-        yield return new WaitForSeconds(0.5f);
+        yield return deckResetDelay;
         DeckScript.Instance.Deal();
         // do not set scrolling to false yet as the deck deal will do that at the end
     }

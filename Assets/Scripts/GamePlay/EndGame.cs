@@ -7,6 +7,9 @@ public class EndGame : MonoBehaviour
 {
     // Singleton instance.
     public static EndGame Instance;
+    private static readonly WaitForSeconds explosionWait = new(0.5f),
+        explosionDelay = new(GameValues.AnimationDurataions.reactorExplosionDelay),
+        cardDelay = new(0.2f);
 
     [SerializeField]
     private GameObject explosionPrefab;
@@ -191,13 +194,13 @@ public class EndGame : MonoBehaviour
     private IEnumerator ReactorsMeltdown()
     {
         // wait for dramatic effect
-        yield return new WaitForSeconds(0.5f);
+        yield return explosionWait;
         foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {
             if (reactorScript.CardList.Count != 0)
             {
                 StartCoroutine(ReactorMeltdown(reactorScript));
-                yield return new WaitForSeconds(GameValues.AnimationDurataions.reactorExplosionDelay);
+                yield return explosionDelay;
             }
         }
         StartCoroutine(FadeGameplayOut(false));
@@ -210,7 +213,7 @@ public class EndGame : MonoBehaviour
             GameObject matchExplosion = Instantiate(explosionPrefab, card.transform.position, Quaternion.Euler(0, 0, Random.Range(0, 360)));
             matchExplosion.transform.localScale = new Vector3(GameValues.Transforms.matchExplosionScale, GameValues.Transforms.matchExplosionScale);
         }
-        yield return new WaitForSeconds(0.2f);
+        yield return cardDelay;
         foreach (GameObject card in reactorScript.CardList)
         {
             card.SetActive(false);

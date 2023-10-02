@@ -4,6 +4,8 @@ using UnityEngine;
 public class NextCycle : MonoBehaviour
 {
     public static NextCycle Instance;
+    private static readonly WaitForSeconds endCycleDelay = new(0.1f),
+        emptyCycleDelay = new(2.2f);
 
     void Awake()
     {
@@ -90,13 +92,13 @@ public class NextCycle : MonoBehaviour
                 yield break;
             }
         }
-        yield return new WaitForSeconds(0.1f);
+        yield return endCycleDelay;
         EndCycle();
     }
 
     private IEnumerator EmptyCycle()
     {
-        yield return new WaitForSeconds(2.2f);
+        yield return emptyCycleDelay;
         EndCycle();
     }
 

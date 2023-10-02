@@ -5,6 +5,8 @@ public class SpaceBabyController : MonoBehaviour, ISound
 {
     // Singleton instance.
     public static SpaceBabyController Instance;
+    private static readonly WaitForSeconds loseDelay = new(1.6f),
+        idleDelay = new(2.1f);
 
     [SerializeField]
     private AudioSource audioSource;
@@ -112,7 +114,7 @@ public class SpaceBabyController : MonoBehaviour, ISound
 
     private IEnumerator LoseAnimTrans()
     {
-        yield return new WaitForSeconds(1.6f);
+        yield return loseDelay;
         animator.Play("Lose");
     }
 
@@ -133,7 +135,7 @@ public class SpaceBabyController : MonoBehaviour, ISound
 
     private IEnumerator BabyAnimTrans()
     {
-        yield return new WaitForSeconds(2.1f);
+        yield return idleDelay;
         BabyIdle();
         idleCoroutine = null;
     }
