@@ -222,7 +222,7 @@ public class EndGame : MonoBehaviour
 
         GameObject reactorExplosion = Instantiate(explosionPrefab, reactorScript.gameObject.transform.position, Quaternion.Euler(0, 0, Random.Range(0, 360)));
         reactorExplosion.transform.localScale = new Vector3(GameValues.Transforms.matchExplosionScale / 2, GameValues.Transforms.matchExplosionScale / 2);
-        reactorExplosion.GetComponent<Animator>().Play("LoseExplosionAnim");
+        reactorExplosion.GetComponent<Animator>().Play(Constants.AnimatorIDs.loseExplosionID);
     }
 
     private IEnumerator FadeGameplayOut(bool won)

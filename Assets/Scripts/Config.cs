@@ -18,7 +18,6 @@ public class Config : MonoBehaviour
     private bool _hintsEnabled;
 
     private Difficulty _currentDifficulty;
-    private int _selectedCardsLayer, _cardLayer;
 
     private List<Camera> cameras;
 
@@ -44,8 +43,6 @@ public class Config : MonoBehaviour
             SetHints(PersistentSettings.HintsEnabled);
             SetColorMode(GameValues.Colors.Modes.List[PersistentSettings.ColorMode]);
 
-            _selectedCardsLayer = SortingLayer.NameToID(Constants.SortingLayers.selectedCards);
-            _cardLayer = SortingLayer.NameToID(Constants.SortingLayers.card);
             cameras = new List<Camera>(6);
         }
         else if (Instance != this)
@@ -59,10 +56,6 @@ public class Config : MonoBehaviour
     public ColorMode CurrentColorMode => _currentColorMode;
 
     public Difficulty CurrentDifficulty => _currentDifficulty;
-
-    public int SelectedCardsLayer => _selectedCardsLayer;
-
-    public int CardLayer => _cardLayer;
 
     public void AddCamera(Camera newCamera)
     {
