@@ -31,6 +31,7 @@ public class GameInput : MonoBehaviour
     [SerializeField]
     private int inputStopRequests;
 
+    private Vector3 oldPointerPosition, currentPointerPosition;
     private ShowPossibleMoves showPossibleMoves;
 
     // Initialize the singleton instance.
@@ -81,9 +82,14 @@ public class GameInput : MonoBehaviour
     {
         if (dragOn)
         {
-            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
             if (Input.GetMouseButtonUp(0))
             {
+                RaycastHit2D hit = Physics2D.Raycast(
+                    Camera.main.ScreenToWorldPoint(Input.mousePosition),
+                    Vector2.zero,
+                    0,
+                    Constants.LayerMaskIDs.cards | Constants.LayerMaskIDs.cardContainers);
+
                 DragGlowRevert(isPlacing: true);
                 TryToPlaceCards(hit);
                 UnselectCards();
@@ -93,28 +99,41 @@ public class GameInput : MonoBehaviour
             }
             else
             {
+                currentPointerPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                if (currentPointerPosition == oldPointerPosition) return;
+                oldPointerPosition = currentPointerPosition;
+
+                RaycastHit2D hit = Physics2D.Raycast(
+                    currentPointerPosition,
+                    Vector2.zero,
+                    0,
+                    Constants.LayerMaskIDs.cards | Constants.LayerMaskIDs.cardContainers);
+
                 DragSelectedCards(hit);
             }
         }
         else if (Input.GetMouseButtonDown(0) && !InputStopped)
         {
-            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-            if (TrySelectCards(hit))
-            {
-                dragOn = true;
-                InputStopped = true;
-                SoundEffectsController.Instance.CardPressSound();
-                DragSelectedCards(hit);
-            }
+            currentPointerPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            oldPointerPosition = currentPointerPosition;
+            RaycastHit2D hit = Physics2D.Raycast(
+                currentPointerPosition,
+                Vector2.zero,
+                1,
+                Constants.LayerMaskIDs.cards);
+            if (hit.collider == null) return;
+
+            dragOn = true;
+            InputStopped = true;
+            SelectCards(hit);
+            SoundEffectsController.Instance.CardPressSound();
+            DragSelectedCards(hit);
         }
     }
 
-    private bool TrySelectCards(RaycastHit2D hit)
+    private void SelectCards(RaycastHit2D hit)
     {
-        if (hit.collider == null) return false;
         GameObject hitGameObject = hit.collider.gameObject;
-        if (!hitGameObject.CompareTag(Constants.Tags.card)) return false;
-
         selectedCards.Add(hitGameObject);
         CardScript hitCardScript = hitGameObject.GetComponent<CardScript>();
 
@@ -157,7 +176,6 @@ public class GameInput : MonoBehaviour
         wasOnMatch = false;
         changedSuitGlowColor = false;
         hidFoodHologram = false;
-        return true;
     }
 
     private void TryToPlaceCards(RaycastHit2D hit)
@@ -168,7 +186,7 @@ public class GameInput : MonoBehaviour
         // hit object is what the card will attempt to go into
         GameObject newContainer = hit.collider.gameObject;
 
-        if (newContainer == selectedCardsCopy[0].GetComponent<CardScript>().gameObject)
+        if (newContainer.Equals(selectedCardsCopy[0].GetComponent<CardScript>().gameObject))
         {
             Debug.LogError("tried to place card on its own copy");
             return;
@@ -273,14 +291,11 @@ public class GameInput : MonoBehaviour
 
     private void DragSelectedCards(RaycastHit2D hit)
     {
-        Vector3 cardPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
-                                                                          Input.mousePosition.y,
-                                                                          0));
         foreach (GameObject card in selectedCardsCopy)
         {
-            card.transform.position = cardPosition;
-            cardPosition.y += GameValues.Transforms.draggedCardYOffset;
-            cardPosition.z -= 0.01f;
+            card.transform.position = currentPointerPosition;
+            currentPointerPosition.y += GameValues.Transforms.draggedCardYOffset;
+            currentPointerPosition.z -= 0.01f;
         }
 
         // glow time

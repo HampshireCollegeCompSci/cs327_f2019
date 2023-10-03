@@ -416,7 +416,7 @@ GameObject:
   - component: {fileID: -6604757475557862161}
   - component: {fileID: -1626085816929887301}
   - component: {fileID: 5589543899514788396}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Card
   m_TagString: Card
   m_Icon: {fileID: 0}

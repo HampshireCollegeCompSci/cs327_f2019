@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 3465283733490406802}
   - component: {fileID: 6584834730880525759}
   - component: {fileID: 3465283733490406800}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ReactorPile
   m_TagString: Reactor
   m_Icon: {fileID: 0}
@@ -136,9 +136,12 @@ MonoBehaviour:
     name: 
     index: 0
     color: {r: 0, g: 0, b: 0, a: 0}
-  reactorScore: {fileID: 0}
+  reactorScoreImage: {fileID: 0}
+  reactorScoreText: {fileID: 0}
   suitGlow: {fileID: 2848916833999962054}
   _glowing: 0
+  _glowColor:
+    color: {r: 0, g: 0, b: 0, a: 0}
   _alert: 0
 --- !u!212 &6584834730880525759
 SpriteRenderer:
@@ -202,6 +205,25 @@ BoxCollider2D:
   m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0

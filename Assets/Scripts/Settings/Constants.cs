@@ -1,4 +1,6 @@
-﻿public static class Constants
+﻿using UnityEngine;
+
+public static class Constants
 {
     public const string projectWebsite = "https://github.com/HampshireCollegeCompSci/cs327_f2019#readme";
 
@@ -77,6 +79,36 @@
         public const string wastepile = "Wastepile";
         public const string matchedPile = "MatchedPile";
         public const string loadPile = "LoadPile";
+    }
+
+    public static class AnimatorIDs
+    {
+        public static class SpaceBaby
+        {
+            public static readonly int
+                idleID = Animator.StringToHash("IdlingAnim"),
+                happyID = Animator.StringToHash("HappyAnim"),
+                eatingID = Animator.StringToHash("EatingAnim"),
+                angryID = Animator.StringToHash("AngryAnim"),
+                loseID = Animator.StringToHash("Lose"),
+                winID = Animator.StringToHash("WinStart");
+        }
+
+        public static readonly int loseExplosionID = Animator.StringToHash("LoseExplosionAnim");
+    }
+
+    public static class SortingLayerIDs
+    {
+        public static readonly int
+            selectedCards = SortingLayer.NameToID("SelectedCards"),
+            cards = SortingLayer.NameToID("Card");
+    }
+
+    public static class LayerMaskIDs
+    {
+        public static readonly int
+            cards = 1 << LayerMask.NameToLayer("Card"),
+            cardContainers = 1 << LayerMask.NameToLayer("Card Container");
     }
 
     public enum CardContainerType
