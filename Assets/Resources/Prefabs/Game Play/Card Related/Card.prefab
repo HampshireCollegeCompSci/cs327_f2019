@@ -515,6 +515,7 @@ MonoBehaviour:
       name: 
       value: 0
       reactorValue: 0
+    id: 0
   cardFrontSprite: {fileID: 21300000, guid: d7429ac0871f26d42813ea0e65d2b6b4, type: 3}
   cardBackSprite: {fileID: 21300000, guid: b2acde3c6f5c55a4298f960e500a2e80, type: 3}
   hologramFoodSprite: {fileID: 0}
@@ -525,7 +526,6 @@ MonoBehaviour:
   glow: {fileID: 1699734583824506818}
   hologram: {fileID: 2950253550288827638}
   hologramFood: {fileID: 1869234980773205396}
-  _cardID: 0
   _enabled: 0
   _hidden: 0
   _hitBox: 0

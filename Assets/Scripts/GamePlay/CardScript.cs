@@ -17,9 +17,6 @@ public class CardScript : MonoBehaviour, IGlow
     private Animator hologramAnimator;
 
     [SerializeField]
-    private byte _cardID;
-
-    [SerializeField]
     private bool _enabled, _hidden, _hitBox, _obstructed, _dragging;
     [SerializeField]
     private bool _hologram;
@@ -48,8 +45,6 @@ public class CardScript : MonoBehaviour, IGlow
     }
 
     public Card Card => _card;
-
-    public byte CardID => _cardID;
 
     public Constants.CardContainerType CurrentContainerType => _currentContainerType;
 
@@ -244,7 +239,6 @@ public class CardScript : MonoBehaviour, IGlow
         _currentContainerType = Constants.CardContainerType.None;
         _container = null;
 
-        _cardID = (byte)(card.Rank.Value + card.Suit.Index * 13);
         this.name = $"{card.Suit.Name}_{card.Rank.Value}";
 
         hologramFoodSR.sprite = hologramFoodSprite;

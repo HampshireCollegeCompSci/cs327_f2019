@@ -8,6 +8,7 @@ public struct Card
     {
         this.suit = suit;
         this.rank = rank;
+        id = rank.Value + suit.Index * 13;
     }
 
     [SerializeField]
@@ -17,6 +18,10 @@ public struct Card
     [SerializeField]
     private Rank rank;
     public Rank Rank => rank;
+
+    [SerializeField]
+    private int id;
+    public int ID => id;
 
     public static bool CanMatch(Card card1, Card card2)
     {

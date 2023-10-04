@@ -63,7 +63,7 @@ public class GameState<T>
 public class SaveMove
 {
     // using single character variable names to reduce save file size
-    public byte c; // cardID
+    public int c; // cardID
     public Constants.CardContainerType t;
     public int i; // card container index
     public Constants.LogMoveType m;
