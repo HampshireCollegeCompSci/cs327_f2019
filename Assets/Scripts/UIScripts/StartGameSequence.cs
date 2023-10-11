@@ -28,6 +28,10 @@ public class StartGameSequence : MonoBehaviour
     private CanvasGroup allButtons;
     [SerializeField]
     private GameObject mainButtons, playButtons, moreButtons;
+    [SerializeField]
+    private GameObject spaceShip;
+    [SerializeField]
+    private Sprite spaceShipOff;
 
     [SerializeField]
     private GameObject spaceShipWindowObject;
@@ -71,6 +75,7 @@ public class StartGameSequence : MonoBehaviour
         MusicController.Instance.FadeMusicOut();
 
         allButtons.interactable = false;
+        spaceShip.GetComponent<Button>().interactable = false;
         canvas.renderMode = RenderMode.WorldSpace;
 
         SceneManager.LoadSceneAsync(Constants.ScenesNames.gameplay, LoadSceneMode.Additive);
@@ -112,7 +117,8 @@ public class StartGameSequence : MonoBehaviour
         mainButtons.SetActive(true);
         allButtons.alpha = 1;
         allButtons.interactable = true;
-        menuUIScript.ResetSpaceShip();
+        spaceShip.GetComponent<Button>().interactable = true;
+        spaceShip.GetComponent<Image>().sprite = spaceShipOff;
 
         startSequencePanel.SetActive(false);
         MusicController.Instance.FadeMusicIn();

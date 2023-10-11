@@ -15,7 +15,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"Welcome to the interactive tutorial!\n\nNormal gameplay interactions are modified during this and hints are turned on.\n\nTo continue, press on next below."
+				"Welcome to the long interactive tutorial!\n\nNormal gameplay interactions are modified during this.\n\nTo continue, press on next below."
 			]
 		},
 		{
@@ -31,6 +31,13 @@
 		},
 		{
 			"argumentList": [
+				"ChangeObjectHighlight",
+				"Foundations",
+				"ON"
+			]
+		},
+		{
+			"argumentList": [
 				"WaitForTouch"
 			]
 		},
@@ -38,6 +45,13 @@
 			"argumentList": [
 				"ChangeShownText",
 				"Cards can be moved by pressing and dragging them around.\n\nCards that are moveable have white displays on them.\n\nTry moving some around now."
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"Foundations",
+				"OFF"
 			]
 		},
 		{
@@ -385,15 +399,6 @@
 		},
 		{
 			"argumentList": [
-				"ChangeTokenObstruction",
-				"foundation",
-				"3",
-				"0",
-				"ON"
-			]
-		},
-		{
-			"argumentList": [
 				"WaitForTouch"
 			]
 		},
@@ -599,7 +604,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"That's the end of the tutorial!\n\nContinue to begin playing an easy difficulty game or exit to the main menu now."
+				"That's the end of this tutorial!\n\nContinue to begin playing an easy difficulty game or exit to the main menu now."
 			]
 		},
 		{

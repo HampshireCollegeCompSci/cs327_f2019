@@ -154,7 +154,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
 
             // during the tutorial we don't want the next card avalible for user interaction
             // save for when the deck deal button is unlocked as that can cause a deck flip
-            if (undoingOrDeck || !Config.Instance.tutorialOn)
+            if (undoingOrDeck || !Config.Instance.TutorialOn)
             {
                 // set obstruction to false as it isn't accounted for elsewhere
                 cardScript.Obstructed = false;

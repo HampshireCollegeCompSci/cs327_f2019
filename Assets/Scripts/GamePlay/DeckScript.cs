@@ -101,7 +101,7 @@ public class DeckScript : MonoBehaviour, ICardContainer
 
         if (toMoveList.Count != 0)
         {
-            if (Config.Instance.tutorialOn)
+            if (Config.Instance.TutorialOn)
             {
                 doLog = false;
             }

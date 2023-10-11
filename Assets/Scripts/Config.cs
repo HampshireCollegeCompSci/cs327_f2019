@@ -8,7 +8,7 @@ public class Config : MonoBehaviour
     public static Config Instance;
 
     // game settings
-    public bool tutorialOn, nextCycleEnabled;
+    public bool nextCycleEnabled;
     public bool continuing;
     public bool prettyColors;
 
@@ -18,6 +18,8 @@ public class Config : MonoBehaviour
     private bool _hintsEnabled;
 
     private Difficulty _currentDifficulty;
+    private bool _tutorialOn;
+    private string _tutorialFileName;
 
     private List<Camera> cameras;
 
@@ -57,6 +59,10 @@ public class Config : MonoBehaviour
 
     public Difficulty CurrentDifficulty => _currentDifficulty;
 
+    public bool TutorialOn => _tutorialOn;
+
+    public string TutorialFileName => _tutorialFileName;
+
     public void AddCamera(Camera newCamera)
     {
         if (cameras.Count != 0)
@@ -85,7 +91,7 @@ public class Config : MonoBehaviour
 
     public void SetDifficulty(Difficulty dif)
     {
-        Debug.Log($"setting difficulty to: {dif}");
+        Debug.Log($"setting difficulty to: {dif.Name}");
         _currentDifficulty = dif;
     }
 
@@ -108,10 +114,17 @@ public class Config : MonoBehaviour
         oldStats = CurrentDifficulty.Stats.ShallowCopy();
     }
 
-    public void SetTutorialOn(bool value)
+    public void SetTutorialOn(string tutorialCommandsFileToLoad)
     {
-        tutorialOn = value;
-        _hintsEnabled = value || PersistentSettings.HintsEnabled;
+        _tutorialOn = true;
+        _tutorialFileName = tutorialCommandsFileToLoad;
+        _hintsEnabled = true;
+    }
+
+    public void SetTutorialOff()
+    {
+        _tutorialOn = false;
+        _hintsEnabled = PersistentSettings.HintsEnabled;
     }
 
     public void SetColorMode(ColorMode value)

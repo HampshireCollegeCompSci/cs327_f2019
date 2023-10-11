@@ -101,7 +101,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
 
                 // when the tutorial is active, disable moving the next top card so that
                 // we don't need to deal with some user interactions
-                if (Config.Instance.tutorialOn)
+                if (Config.Instance.TutorialOn)
                 {
                     topCardScript.Obstructed = true;
                 }

@@ -21,7 +21,8 @@ public static class Constants
     public static class Tutorial
     {
         public const string tutorialResourcePath = "Tutorial/";
-        public const string tutorialCommandListFilePath = tutorialResourcePath + "TutorialCommandList";
+        public const string tutorialShortCommandsFileName = "TutorialShortCommandList";
+        public const string tutorialLongCommandsFileName = "TutorialCommandList";
         public const string tutorialStateStartFileName = "tutorialState_default";
     }
 

@@ -27,7 +27,7 @@ public class GameInput : MonoBehaviour
     private bool changedHologramColor, wasOnMatch, changedSuitGlowColor, hidFoodHologram;
 
     [SerializeField]
-    private bool _isNextCycle, _inputStopped;
+    private bool _inputStopped;
     [SerializeField]
     private int inputStopRequests;
 
@@ -44,6 +44,7 @@ public class GameInput : MonoBehaviour
             selectedCards = new(13);
             selectedCardsCopy = new(13);
             InputStopped = true;
+            CardPlacement = true;
             showPossibleMoves = new ShowPossibleMoves();
         }
         else if (Instance != this)
@@ -77,6 +78,8 @@ public class GameInput : MonoBehaviour
             }
         }
     }
+
+    public bool CardPlacement { get; set; }
 
     void Update()
     {
@@ -180,7 +183,7 @@ public class GameInput : MonoBehaviour
 
     private void TryToPlaceCards(RaycastHit2D hit)
     {
-        if (hit.collider == null) return;
+        if (hit.collider == null || !CardPlacement) return;
 
         Constants.CardContainerType oldContainer = selectedCards[0].GetComponent<CardScript>().CurrentContainerType;
         // hit object is what the card will attempt to go into

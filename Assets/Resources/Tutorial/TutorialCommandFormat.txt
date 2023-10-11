@@ -118,13 +118,18 @@ Commands for the argumentList:
 
 -----------------------------------------
 
+	Change Token Placement: turns on or off the ability to place cards anywhere, cards can be interacted with and highlighting potential moves will still work
+		placement: on, off
+
+-----------------------------------------
+
 	Change Button Interactable: enables or disables the intractability of buttons
 		button: deck, undo, timer, (timer = button by the move counter)
 		intractability : on, off
 
 -----------------------------------------
 
-	Enable One Next Cycle: allows the user to press the next-cycle button once for the effect to take place
+	Enable One Next Cycle: allows the user to press the next-cycle button once for the effect to take place, afterwards will set the button to be non-interactable
 
 -----------------------------------------
 

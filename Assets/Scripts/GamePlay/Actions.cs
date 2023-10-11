@@ -98,6 +98,7 @@
         ActionsDone = actionUpdate;
         ActionCountScript.Instance.UpdateActionText();
         Alert(wasInAlertThreshold);
+        if (Config.Instance.TutorialOn) return;
         TryEnableGameCanEnd();
     }
 
@@ -222,7 +223,7 @@
 
     private static void TryEnableGameCanEnd()
     {
-        if (!EndGame.Instance.GameCanEnd && !Actions.GameOver && AreFoundationsEmpty())
+        if (!EndGame.Instance.GameCanEnd && !GameOver && AreFoundationsEmpty())
         {
             EndGame.Instance.GameCanEnd = true;
         }

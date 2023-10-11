@@ -31,7 +31,7 @@ public class TutorialScript : MonoBehaviour
     private void Awake()
     {
         // this is the gateway to turn the tutorial on
-        if (Config.Instance.tutorialOn)
+        if (Config.Instance.TutorialOn)
         {
             StartTutorial();
         }
@@ -79,7 +79,7 @@ public class TutorialScript : MonoBehaviour
         UpdateHighlightObjectsColor(Config.Instance.CurrentColorMode.Notify.GlowColor);
 
         // get the tutorial commands ready
-        commandQueue = CommandEnqueuer(CreateFromJSON());
+        commandQueue = CommandEnqueuer(CreateFromJSON(Config.Instance.TutorialFileName));
 
         // start the tutorial
         waiting = false;
@@ -104,11 +104,11 @@ public class TutorialScript : MonoBehaviour
     /// <summary>
     /// Creates and returns a list of commands to follow from a JSON file.
     /// </summary>
-    private static List<Command> CreateFromJSON()
+    private static List<Command> CreateFromJSON(string fileNameToLoad)
     {
         Debug.Log("creating list from JSON");
-
-        TextAsset jsonTextFile = Resources.Load<TextAsset>(Constants.Tutorial.tutorialCommandListFilePath);
+        string filePath = Constants.Tutorial.tutorialResourcePath + fileNameToLoad;
+        TextAsset jsonTextFile = Resources.Load<TextAsset>(filePath);
         TutorialCommands commandFile = JsonUtility.FromJson<TutorialCommands>(jsonTextFile.ToString());
         return commandFile.commands;
     }
@@ -200,6 +200,9 @@ public class TutorialScript : MonoBehaviour
                 case "CHANGETOKENMOVEABILITY":
                     ChangeTokenMoveability(command);
                     break;
+                case "CHANGETOKENPLACEMENT":
+                    ChangeTokenPlacement(command);
+                    break;
                 case "CHANGEBUTTONINTERACTABLE":
                     ChangeButtonInteractable(command);
                     break;
@@ -234,7 +237,7 @@ public class TutorialScript : MonoBehaviour
         tutorialUIPanel.SetActive(false);
         GameInput.Instance.ShowPossibleMoves.TokenMoveable = true;
 
-        Config.Instance.SetTutorialOn(false);
+        Config.Instance.SetTutorialOff();
         Config.Instance.SetDifficulty(Difficulties.easy);
         MusicController.Instance.GameMusic();
         GameInput.Instance.InputStopped = true;
@@ -613,6 +616,16 @@ public class TutorialScript : MonoBehaviour
         GameInput.Instance.ShowPossibleMoves.TokenMoveable = moveability;
     }
 
+    private void ChangeTokenPlacement(List<string> command)
+    {
+        CheckCommandCount(command, 2);
+
+        Debug.Log($"changing token placement: {command[1]}");
+
+        bool placemenmt = ParseOnOrOff(command, 1);
+        GameInput.Instance.CardPlacement = placemenmt;
+    }
+
     private void ChangeButtonInteractable(List<string> command)
     {
         CheckCommandCount(command, 3);
@@ -640,7 +653,6 @@ public class TutorialScript : MonoBehaviour
     private void EnableOneNextCycle()
     {
         Debug.Log($"enabling one next cycle");
-
         Config.Instance.nextCycleEnabled = true;
     }
 

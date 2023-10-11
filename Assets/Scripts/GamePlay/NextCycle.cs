@@ -7,6 +7,9 @@ public class NextCycle : MonoBehaviour
     private static readonly WaitForSeconds endCycleDelay = new(0.1f),
         emptyCycleDelay = new(2.2f);
 
+    [SerializeField]
+    private UnityEngine.UI.Button nextCycleButton;
+
     void Awake()
     {
         if (Instance == null)
@@ -22,10 +25,11 @@ public class NextCycle : MonoBehaviour
     public void ManualStartCycleButton()
     {
         if (GameInput.Instance.InputStopped) return;
-        if (Config.Instance.tutorialOn)
+        if (Config.Instance.TutorialOn)
         {
             if (!Config.Instance.nextCycleEnabled) return;
             Config.Instance.nextCycleEnabled = false;
+            nextCycleButton.interactable = false;
         }
         AchievementsManager.FailedAlwaysMoves();
         SoundEffectsController.Instance.VibrateMedium();

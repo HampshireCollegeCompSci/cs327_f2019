@@ -43,7 +43,7 @@ public class GameLoader : MonoBehaviour
         ResetState();
 
         // Figure out what kinda game to start
-        if (Config.Instance.tutorialOn)
+        if (Config.Instance.TutorialOn)
         {
             if (Config.Instance.prettyColors)
             {

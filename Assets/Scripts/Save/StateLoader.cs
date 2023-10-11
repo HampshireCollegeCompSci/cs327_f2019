@@ -144,7 +144,7 @@ public class StateLoader : MonoBehaviour
 
     public void TryWriteState()
     {
-        if (Config.Instance.tutorialOn) return;
+        if (Config.Instance.TutorialOn) return;
         movesSinceLastSave++;
         if (saveMovesDisabled || movesSinceLastSave < movesUntilSave) return;
         movesSinceLastSave = 0;

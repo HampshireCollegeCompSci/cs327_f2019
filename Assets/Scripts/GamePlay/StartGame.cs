@@ -71,7 +71,7 @@ public class StartGame : MonoBehaviour
         mainCameraObject.SetActive(true);
         mainCameraObject.GetComponent<EventSystem>().enabled = true;
         // the alert music starts playing ASAP if triggered so make sure not to override it
-        if (Config.Instance.tutorialOn)
+        if (Config.Instance.TutorialOn)
         {
             MusicController.Instance.TutorialMusic();
         }
