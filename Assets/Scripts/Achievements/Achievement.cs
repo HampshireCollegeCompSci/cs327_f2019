@@ -4,21 +4,28 @@ using UnityEngine;
 [Serializable]
 public class Achievement
 {
-    public Achievement(string name, string description, string key)
+    public enum AchieveType
+    {
+        Achieve,
+        Failure
+    }
+
+    public Achievement(string name, string description, string key, AchieveType type)
     {
         this.Name = name;
         this.Description = description;
         this.Key = key;
         _value = PlayerPrefs.GetInt(Key, 0);
         if (Value < 0) Value = 0;
+        this.Type = type;
+        IsFailureBased = type.Equals(AchieveType.Failure);
+        IsAchieveBased = type.Equals(AchieveType.Achieve); ;
     }
 
     public void LoadValues(Achievement toCopy)
     {
         // do not set by Property!
-        _achieved = toCopy.Achieved;
-
-        _failed = toCopy.Failed;
+        _status = toCopy.Status;
         _tracker = toCopy.Tracker;
     }
 
@@ -40,34 +47,35 @@ public class Achievement
         }
     }
 
-    [SerializeField]
-    private bool _achieved;
-    public bool Achieved
-    {
-        get => _achieved;
-        set
-        {
-            if (_achieved == value) return;
-            _achieved = value;
-            if (value)
-            {
-                Tracker = Actions.MoveTracker;
-                if (!PersistentSettings.AchievementPopupsEnabled) return;
-                AchievementPopup.Instance.ShowAchievement(this);
-            }
-        }
-    }
+    private AchieveType Type { get; set; }
+
+    public bool IsFailureBased { get; private set;}
+    public bool IsAchieveBased { get; private set; }
 
     [SerializeField]
-    private bool _failed;
-    public bool Failed
+    private bool _status;
+    /// <summary>
+    /// The current status of the achievement which depends on the achievement's type.
+    /// </summary>
+    public bool Status
     {
-        get => _failed;
+        get => _status;
         set
         {
-            if (value == _failed) return;
-            if (value) Debug.Log($"failed achievement {Name}");
-            _failed = value;
+            if (value == _status) return;
+            _status = value;
+
+            if (IsAchieveBased)
+            {
+                if (!value) return;
+                Tracker = Actions.MoveTracker;
+                TryShowPopup();
+            }
+            else
+            {
+                if (value) return;
+                Debug.Log($"failed {Name}");
+            }
         }
     }
 
@@ -87,22 +95,22 @@ public class Achievement
 
     public void Reset()
     {
-        Achieved = false;
-        Failed = false;
+        Status = Type.Equals(AchieveType.Failure);
         Tracker = 0;
     }
 
     public void TryGameWinAchieved()
     {
-        if (!Achieved) return;
+        if (!Status) return;
         Debug.Log($"achieved {Name}");
+        if (IsFailureBased) TryShowPopup();
         if (Config.Instance.CurrentDifficulty.Equals(Difficulties.cheat)) return;
         Value++;
     }
-    
-    public void TryGameWinNoFail()
+
+    private void TryShowPopup()
     {
-        if (Failed) return;
-        Achieved = true;
+        if (!PersistentSettings.AchievementPopupsEnabled) return;
+        AchievementPopup.Instance.ShowAchievement(this);
     }
 }

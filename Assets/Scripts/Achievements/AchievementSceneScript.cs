@@ -38,11 +38,11 @@ public class AchievementSceneScript : MonoBehaviour
 
             if (!gameIsActive) continue;
 
-            if (achievement.Achieved)
+            if (achievement.Status)
             {
                 achievementTexts[0].color = Config.Instance.CurrentColorMode.Match.Color;
             }
-            else if (achievement.Failed)
+            else if (achievement.IsFailureBased)
             {
                 achievementTexts[0].color = Config.Instance.CurrentColorMode.Over.Color;
             }

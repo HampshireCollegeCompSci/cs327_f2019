@@ -45,7 +45,7 @@ public class AchievementPopup : MonoBehaviour
         while (popupQueue.Count > 0)
         {
             Achievement achievement = popupQueue.Dequeue();
-            if (!achievement.Achieved) continue;
+            if (!achievement.Status) continue;
             GameObject popup = Instantiate(popupPrefab, UICanvasTransform);
             popup.GetComponentInChildren<Text>().text = $"Achievement: {achievement.Name}";
             CanvasGroup popupCG = popup.GetComponent<CanvasGroup>();
