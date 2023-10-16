@@ -64,6 +64,7 @@ public class StartGame : MonoBehaviour
         {
             throw new NullReferenceException("A sequence Instance does not exist!");
         }
+        Config.Instance.IsGamePlayActive = true;
     }
 
     public void TransitionToGamePlay()

@@ -23,10 +23,11 @@ public class ButtonScript : MonoBehaviour
 
     public void MainMenuButton()
     {
-        if (SceneManager.GetSceneByName(Constants.ScenesNames.pause).isLoaded)
+        if (Config.Instance.IsGamePlayActive)
         {
             StateLoader.Instance.TryForceWriteState();
             Time.timeScale = 1;
+            Config.Instance.IsGamePlayActive = false;
         }
         SceneManager.LoadScene(Constants.ScenesNames.mainMenu);
         MusicController.Instance.MainMenuMusic();

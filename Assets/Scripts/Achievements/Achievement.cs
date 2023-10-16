@@ -62,7 +62,7 @@ public class Achievement
         get => _status;
         set
         {
-            if (value == _status) return;
+            if (value == _status || Config.Instance.TutorialOn) return;
             _status = value;
 
             if (IsAchieveBased)

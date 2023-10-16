@@ -20,6 +20,9 @@ public static class AchievementsManager
         }
         trackedAchievements.Sort((x, y) => x.Tracker.CompareTo(y.Tracker));
         trackedAchievements.ForEach(achievement => PushAchievement(achievement));
+
+        if (Achievements.noHints.Status && Config.Instance.HintsEnabled)
+            Achievements.noHints.Status = false;
     }
 
     public static void PushAchievement(Achievement achievement)
@@ -45,6 +48,7 @@ public static class AchievementsManager
             achievement.Reset();
         }
         achievementStack.Clear();
+        Achievements.noHints.Status = !Config.Instance.HintsEnabled;
     }
 
     public static void GameWinLogAchievements()
@@ -59,14 +63,21 @@ public static class AchievementsManager
         }
 
         TimeSpan timeSpan = Timer.GetTimeSpan();
-        //if (timeSpan.CompareTo(TimeSpan.FromMinutes(2)) <= 0)
-        //{
-        //    Achievements.speedrun2.Achieved = true;
-        //    Achievements.speedrun5.Achieved = true;
-        //}
-        if (timeSpan.CompareTo(TimeSpan.FromMinutes(5)) <= 0)
+        if (timeSpan.CompareTo(TimeSpan.FromMinutes(2)) <= 0)
+        {
+            Achievements.speedrun2.Status = true;
+            Achievements.speedrun5.Status = true;
+        }
+        else if (timeSpan.CompareTo(TimeSpan.FromMinutes(5)) <= 0)
         {
             Achievements.speedrun5.Status = true;
+        }
+
+        if (Config.Instance.CurrentDifficulty.Equals(Difficulties.hard) &&
+            Achievements.noHints.Status == true &&
+            Achievements.noUndo.Status == true)
+        {
+            Achievements.superHard.Status = true;
         }
 
         Achievements.achievementList.ForEach(achievement => achievement.TryGameWinAchieved());
@@ -128,5 +139,10 @@ public static class AchievementsManager
     public static void FailedAlwaysMoves()
     {
         Achievements.alwaysMoves.Status = false;
+    }
+
+    public static void FailedNoHints()
+    {
+        Achievements.noHints.Status = false;
     }
 }

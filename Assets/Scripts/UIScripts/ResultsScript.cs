@@ -36,7 +36,7 @@ public class ResultsScript : MonoBehaviour
         int currentScoreNum = Actions.Score;
         currentScoreStatText.text = Actions.Score.ToString();
 
-        int oldHighScoreNum = Config.Instance.oldStats.HighScore;
+        int oldHighScoreNum = Config.Instance.OldStats.HighScore;
         if (oldHighScoreNum == 0)
         {
             oldHighScoreText.color = GameValues.Colors.whiteAlphaLow;
@@ -60,7 +60,7 @@ public class ResultsScript : MonoBehaviour
         int currentMovesNum = Actions.MoveCounter;
         currentMovesStatText.text = currentMovesNum.ToString();
 
-        int oldLeastMovesNum = Config.Instance.oldStats.LeastMoves;
+        int oldLeastMovesNum = Config.Instance.OldStats.LeastMoves;
         if (oldLeastMovesNum == 0)
         {
             oldLeastMovesText.color = GameValues.Colors.whiteAlphaLow;
@@ -83,7 +83,7 @@ public class ResultsScript : MonoBehaviour
         TimeSpan currentTime = Timer.GetTimeSpan();
         currentTimeStatText.text = Timer.GetTimeSpan().ToString(Constants.Time.format);
 
-        TimeSpan oldTimerNum = Config.Instance.oldStats.FastestTime;
+        TimeSpan oldTimerNum = Config.Instance.OldStats.FastestTime;
         bool noOldTime = oldTimerNum.Equals(TimeSpan.Zero);
         if (noOldTime)
         {

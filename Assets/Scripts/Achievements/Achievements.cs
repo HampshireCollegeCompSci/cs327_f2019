@@ -68,6 +68,18 @@ public static class Achievements
         "Achievement Always Moves",
         Achievement.AchieveType.Failure);
 
+    public static readonly Achievement noHints = new(
+        "Can't Take a Hint",
+        "Win a game with hints off.",
+        "Achievement No Hints",
+        Achievement.AchieveType.Failure);
+
+    public static readonly Achievement superHard = new(
+        "Super Hard",
+        "Win a hard game with hints off and never undoing.",
+        "Achievement Super Hard",
+        Achievement.AchieveType.Achieve);
+
     public static readonly Achievement speedrun5 = new(
         "Gotta Go Fast",
         "Win a game in under five minutes.",
@@ -80,11 +92,11 @@ public static class Achievements
         "Achievement Speedrun 2",
         Achievement.AchieveType.Achieve);
 
-    public static readonly Achievement prettyColors = new(
-        "Pretty Colors",
-        "Win a game with Max's effect on!",
-        "Achievement Pretty Colors",
-        Achievement.AchieveType.Achieve);
+    //public static readonly Achievement prettyColors = new(
+    //    "Pretty Colors",
+    //    "Win a game with Max's effect on!",
+    //    "Achievement Pretty Colors",
+    //    Achievement.AchieveType.Achieve);
 
     public static readonly List<Achievement> achievementList = new() {
         matchAll,
@@ -94,12 +106,14 @@ public static class Achievements
         reactorAtLimit,
         neverReactorHighAlert,
         allReactorsHighAlert,
-        noUndo,
-        noDeckFlip,
         neverMoves,
         alwaysMoves,
+        noDeckFlip,
+        noUndo,
+        noHints,
+        superHard,
         speedrun5,
-        //speedrun2,
+        speedrun2,
         //prettyColors
     };
 }

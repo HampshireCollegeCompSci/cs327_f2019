@@ -254,5 +254,6 @@ public class EndGame : MonoBehaviour
     private void TransitionToSummaryScene()
     {
         SceneManager.LoadScene(Constants.ScenesNames.summary);
+        Config.Instance.IsGamePlayActive = false;
     }
 }

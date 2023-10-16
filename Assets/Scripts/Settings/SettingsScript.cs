@@ -229,7 +229,7 @@ public class SettingsScript : MonoBehaviour
         if (lockout) return;
         Debug.Log($"seting hints enabled to: {update}");
         PersistentSettings.HintsEnabled = update;
-        Config.Instance.SetHints(update);
+        Config.Instance.HintsEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
     }
 
@@ -248,7 +248,7 @@ public class SettingsScript : MonoBehaviour
 
         PersistentSettings.ColorMode = update;
         UpdateColorModeImages(GameValues.Colors.Modes.List[update]);
-        Config.Instance.SetColorMode(GameValues.Colors.Modes.List[update]);
+        Config.Instance.CurrentColorMode = GameValues.Colors.Modes.List[update];
         SoundEffectsController.Instance.ButtonPressSound();
     }
 

@@ -5,63 +5,89 @@ using UnityEngine.SceneManagement;
 public class Config : MonoBehaviour
 {
     // Singleton instance.
-    public static Config Instance;
+    public static Config Instance { get; private set; }
 
     // game settings
     public bool nextCycleEnabled;
     public bool continuing;
     public bool prettyColors;
 
-    public Stats oldStats;
-
-    private ColorMode _currentColorMode;
     private bool _hintsEnabled;
-
-    private Difficulty _currentDifficulty;
-    private bool _tutorialOn;
-    private string _tutorialFileName;
-
+    private ColorMode _currentColorMode;
     private List<Camera> cameras;
 
     // Initialize the singleton instance.
     private void Awake()
     {
-        if (Instance == null)
+        // If there is an instance, and it's not me, delete myself.
+        if (Instance != null && Instance != this)
         {
-            // make instance persist across scenes
-            DontDestroyOnLoad(this.gameObject);
-            Instance = this;
-
-            // These must be done in this order
-            // Setup the Vibration Package
-            Vibration.Init();
-            // Check Player Preferences
-            PersistentSettings.TryCheckKeys();
-            // Check if the game state version needs updating and if the save file needs deleting
-            SaveFile.CheckNewGameStateVersion();
-            // Set the application frame rate to what was saved
-            Application.targetFrameRate = PersistentSettings.FrameRate;
-
-            SetHints(PersistentSettings.HintsEnabled);
-            SetColorMode(GameValues.Colors.Modes.List[PersistentSettings.ColorMode]);
-
-            cameras = new List<Camera>(6);
+            Destroy(this);
+            return;
         }
-        else if (Instance != this)
+
+        Instance = this;
+        // make instance persist across scenes
+        DontDestroyOnLoad(this.gameObject);
+
+#if !UNITY_WEBGL
+        // all non-mobile platforms write debug to log files without this
+        // WEBGL only writes to the console
+        Debug.unityLogger.logEnabled = Debug.isDebugBuild;
+#endif
+
+        // These must be done in this order
+        // Setup the Vibration Package
+        Vibration.Init();
+        // Check Player Preferences
+        PersistentSettings.TryCheckKeys();
+        // Check if the game state version needs updating and if the save file needs deleting
+        SaveFile.CheckNewGameStateVersion();
+        // Set the application frame rate to what was saved
+        Application.targetFrameRate = PersistentSettings.FrameRate;
+
+        HintsEnabled = PersistentSettings.HintsEnabled;
+        CurrentColorMode = GameValues.Colors.Modes.List[PersistentSettings.ColorMode];
+
+        cameras = new List<Camera>(SceneManager.sceneCountInBuildSettings);
+    }
+
+    public bool IsGamePlayActive { get; set; }
+
+    public bool HintsEnabled
+    {
+        get => _hintsEnabled;
+        set
         {
-            Destroy(gameObject); //deletes copies of global which do not need to exist, so right version is used to get info from
+            if (value == _hintsEnabled) return;
+            _hintsEnabled = value;
+            TryUpdateGameplayColors();
+
+            if (value && IsGamePlayActive)
+            {
+                AchievementsManager.FailedNoHints();
+            }
         }
     }
 
-    public bool HintsEnabled => _hintsEnabled;
+    public ColorMode CurrentColorMode
+    {
+        get => _currentColorMode;
+        set
+        {
+            if (_currentColorMode.Equals(value)) return;
+            _currentColorMode = value;
+            TryUpdateGameplayColors();
+        }
+    }
 
-    public ColorMode CurrentColorMode => _currentColorMode;
+    public Difficulty CurrentDifficulty { get; private set; }
 
-    public Difficulty CurrentDifficulty => _currentDifficulty;
+    public bool TutorialOn { get; private set; }
 
-    public bool TutorialOn => _tutorialOn;
+    public string TutorialFileName { get; private set; }
 
-    public string TutorialFileName => _tutorialFileName;
+    public Stats OldStats { get; private set; }
 
     public void AddCamera(Camera newCamera)
     {
@@ -92,7 +118,7 @@ public class Config : MonoBehaviour
     public void SetDifficulty(Difficulty dif)
     {
         Debug.Log($"setting difficulty to: {dif.Name}");
-        _currentDifficulty = dif;
+        CurrentDifficulty = dif;
     }
 
     public void SetDifficulty(string dif)
@@ -111,40 +137,25 @@ public class Config : MonoBehaviour
 
     public void PreserveOldStats()
     {
-        oldStats = CurrentDifficulty.Stats.ShallowCopy();
+        OldStats = CurrentDifficulty.Stats.ShallowCopy();
     }
 
     public void SetTutorialOn(string tutorialCommandsFileToLoad)
     {
-        _tutorialOn = true;
-        _tutorialFileName = tutorialCommandsFileToLoad;
-        _hintsEnabled = true;
+        TutorialOn = true;
+        TutorialFileName = tutorialCommandsFileToLoad;
+        HintsEnabled = true;
     }
 
     public void SetTutorialOff()
     {
-        _tutorialOn = false;
-        _hintsEnabled = PersistentSettings.HintsEnabled;
+        TutorialOn = false;
+        HintsEnabled = PersistentSettings.HintsEnabled;
     }
-
-    public void SetColorMode(ColorMode value)
-    {
-        if (_currentColorMode.Equals(value)) return;
-        _currentColorMode = value;
-        TryUpdateGameplayColors();
-    }
-
-    public void SetHints(bool update)
-    {
-        if (_hintsEnabled == update) return;
-        _hintsEnabled = update;
-        TryUpdateGameplayColors();
-    }
-
+    
     private void TryUpdateGameplayColors()
     {
-        if (!SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
-            return;
+        if (!IsGamePlayActive) return;
 
         // reactor's score color
         foreach (var reactor in GameInput.Instance.reactorScripts)
