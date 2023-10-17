@@ -4,7 +4,7 @@ using UnityEngine;
 public class UndoScript : MonoBehaviour
 {
     // Singleton instance.
-    public static UndoScript Instance;
+    public static UndoScript Instance { get; private set; }
 
     private Stack<Move> moveLog;
 

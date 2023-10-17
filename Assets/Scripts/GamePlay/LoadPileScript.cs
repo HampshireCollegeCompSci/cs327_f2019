@@ -4,7 +4,7 @@ using UnityEngine;
 public class LoadPileScript : MonoBehaviour, ICardContainer
 {
     // Singleton instance.
-    public static LoadPileScript Instance;
+    public static LoadPileScript Instance { get; private set; }
 
     [SerializeField]
     private List<GameObject> cardList;

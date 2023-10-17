@@ -5,7 +5,7 @@ using UnityEngine;
 public class SoundEffectsController : MonoBehaviour, ISound
 {
     // Singleton instance.
-    public static SoundEffectsController Instance;
+    public static SoundEffectsController Instance { get; private set; }
     private static readonly WaitForSecondsRealtime alertDelay0 = new(0.5f),
         alertDelay1 = new(0.1f),
         alertDelay2 = new(0.3f);
@@ -28,17 +28,16 @@ public class SoundEffectsController : MonoBehaviour, ISound
     // Initialize the singleton instance.
     private void Awake()
     {
-        // If there is not already an instance, set it to this.
-        if (Instance == null)
+        // If there is an instance, and it's not me, delete myself.
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            Destroy(this);
+            return;
         }
-        //If an instance already exists, destroy whatever this object is to enforce the singleton.
-        else if (Instance != this)
-        {
-            Destroy(gameObject);
-        }
+
+        Instance = this;
+        // make instance persist across scenes
+        DontDestroyOnLoad(this.gameObject);
     }
 
     private void Start()

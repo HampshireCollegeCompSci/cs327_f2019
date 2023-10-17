@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class EndGame : MonoBehaviour
 {
     // Singleton instance.
-    public static EndGame Instance;
+    public static EndGame Instance { get; private set; }
     private static readonly WaitForSeconds explosionWait = new(0.5f),
         explosionDelay = new(GameValues.AnimationDurataions.reactorExplosionDelay),
         cardDelay = new(0.2f);

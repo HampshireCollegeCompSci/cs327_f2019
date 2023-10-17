@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class AchievementPopup : MonoBehaviour
 {
     // Singleton instance.
-    public static AchievementPopup Instance;
+    public static AchievementPopup Instance { get; private set; }
     private static readonly WaitForSeconds popupDelay = new(1),
         popupDuration = new(GameValues.AnimationDurataions.achievementPopup);
 

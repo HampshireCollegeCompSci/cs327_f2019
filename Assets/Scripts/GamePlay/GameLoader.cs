@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameLoader : MonoBehaviour
 {
     // Singleton instance.
-    public static GameLoader Instance;
+    public static GameLoader Instance { get; private set; }
 
     [SerializeField]
     private GameObject cardPrefab;

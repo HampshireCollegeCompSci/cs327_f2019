@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class WastepileScript : MonoBehaviour, ICardContainerHolo
 {
     // Singleton instance.
-    public static WastepileScript Instance;
+    public static WastepileScript Instance { get; private set; }
     private static readonly WaitForSeconds deckResetDelay = new(0.5f);
 
     [SerializeField]

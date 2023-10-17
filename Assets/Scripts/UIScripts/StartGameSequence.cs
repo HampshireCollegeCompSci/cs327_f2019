@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class StartGameSequence : MonoBehaviour
 {
     // Singleton instance.
-    public static StartGameSequence Instance;
+    public static StartGameSequence Instance { get; private set; }
 
     [SerializeField]
     private MenuUIScript menuUIScript;

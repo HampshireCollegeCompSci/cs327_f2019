@@ -11,7 +11,7 @@ public class DeckScript : MonoBehaviour, ICardContainer
     private static readonly WaitForSeconds buttonWait = new(0.07f);
 
     // Singleton instance.
-    public static DeckScript Instance;
+    public static DeckScript Instance { get; private set; }
 
     [SerializeField]
     private List<GameObject> cardList;

@@ -12,7 +12,7 @@ using UnityEngine;
 public class StateLoader : MonoBehaviour
 {
     // Singleton instance.
-    public static StateLoader Instance;
+    public static StateLoader Instance { get; private set; }
 
     #if !UNITY_WEBGL
         private CancellationTokenSource tokenSource;

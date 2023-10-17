@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class ScoreScript : MonoBehaviour
 {
     // Singleton instance.
-    public static ScoreScript Instance;
+    public static ScoreScript Instance { get; private set; }
     private static readonly WaitForSeconds textDelay = new(0.05f);
 
     [SerializeField]

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class NextCycle : MonoBehaviour
 {
-    public static NextCycle Instance;
+    public static NextCycle Instance { get; private set; }
     private static readonly WaitForSeconds endCycleDelay = new(0.1f),
         emptyCycleDelay = new(2.2f);
 

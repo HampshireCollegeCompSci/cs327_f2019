@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class ActionCountScript : MonoBehaviour
 {
     // Singleton instance.
-    public static ActionCountScript Instance;
+    public static ActionCountScript Instance { get; private set; }
     private static readonly WaitForSeconds textDelay = new(0.05f);
 
     [SerializeField]

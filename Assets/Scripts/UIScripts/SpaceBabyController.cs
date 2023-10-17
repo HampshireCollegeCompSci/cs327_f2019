@@ -4,7 +4,7 @@ using UnityEngine;
 public class SpaceBabyController : MonoBehaviour, ISound
 {
     // Singleton instance.
-    public static SpaceBabyController Instance;
+    public static SpaceBabyController Instance { get; private set; }
     private static readonly WaitForSeconds loseDelay = new(1.6f),
         idleDelay = new(2.1f);
 
@@ -35,6 +35,11 @@ public class SpaceBabyController : MonoBehaviour, ISound
     {
         UpdateMaxVolume(PersistentSettings.SoundEffectsVolume);
         BabyIdle();
+    }
+
+    public void SetInstanceNull()
+    {
+        Instance = null;
     }
 
     public void UpdateMaxVolume(int newVolume)

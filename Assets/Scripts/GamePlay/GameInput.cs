@@ -4,7 +4,7 @@ using UnityEngine;
 public class GameInput : MonoBehaviour
 {
     // Singleton instance.
-    public static GameInput Instance;
+    public static GameInput Instance { get; private set; }
 
     public GameObject[] reactors;
     public ReactorScript[] reactorScripts;

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class StartGame : MonoBehaviour
 {
     // Singleton instance.
-    public static StartGame Instance;
+    public static StartGame Instance { get; private set; }
 
     [SerializeField]
     private GameObject mainCameraObject;
