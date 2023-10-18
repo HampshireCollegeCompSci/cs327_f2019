@@ -1,0 +1,287 @@
+{
+	"commands": [
+		{
+			"argumentList": [
+				"ChangeTokenPlacement",
+				"OFF"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeShownText",
+				"Welcome to the short interactive tutorial!\n\nCard placement is disabled during this.\n\nTo continue, press on next below."
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeShownText",
+				"To win the game, the middle section needs to be cleared of cards."
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_clear"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"Foundations",
+				"ON"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeShownText",
+				"Here, cards can be stacked in order of their rank, with ace counting as one.\nSuit color does not matter."
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_stacked"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeShownText",
+				"Cards can be eliminated by combining similar ones together.\n\nOnly cards that share their rank and color can be combined together."
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_combo"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"Foundations",
+				"OFF"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeShownText",
+				"You can move cards into their respective storage container, but you can't move them out.\n\nYou can still eliminate the top cards in each container."
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"Reactors",
+				"ON"
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_reactor_match"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeShownText",
+				"You will lose the game if a storage container goes above their limit.\n\nAces count as one and all face cards count as 10 towards this."
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_over"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"Reactors",
+				"OFF"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeContainerHighlight",
+				"reactor",
+				"ON",
+				"0",
+				"3"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeContainerHighlight",
+				"reactor",
+				"OFF",
+				"0",
+				"0"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeShownText",
+				"When the move counter reaches zero, each top card in the middle stacks move up to their respective containers automatically.\n\nAfterwards, the move counter is reset."
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_default"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"Movecounter",
+				"ON"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"Foundations",
+				"ON"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeMoveCounterText",
+				"0"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeShownText",
+				"This effect can also be triggered manually by pressing the button on the side of the move counter."
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_cycle"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"Foundations",
+				"OFF"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeShownText",
+				"The bottom section contains the conveyor belt, where you can draw or take away cards as need be.\n\nAt most, three cards are drawn at a time."
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_default"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"Movecounter",
+				"OFF"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"Wastepile",
+				"ON"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"Deck",
+				"ON"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeShownText",
+				"That's the end of this tutorial!\n\nContinue to begin playing an easy difficulty game or exit to the main menu now."
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"Wastepile",
+				"OFF"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"Deck",
+				"OFF"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeTokenPlacement",
+				"ON"
+			]
+		},
+		{
+			"argumentList": [
+				"endtutorial"
+			]
+		}
+	]
+}

@@ -5,7 +5,10 @@ using UnityEngine;
 public class SoundEffectsController : MonoBehaviour, ISound
 {
     // Singleton instance.
-    public static SoundEffectsController Instance;
+    public static SoundEffectsController Instance { get; private set; }
+    private static readonly WaitForSecondsRealtime alertDelay0 = new(0.5f),
+        alertDelay1 = new(0.1f),
+        alertDelay2 = new(0.3f);
 
     // Audio players component
     [SerializeField]
@@ -25,17 +28,16 @@ public class SoundEffectsController : MonoBehaviour, ISound
     // Initialize the singleton instance.
     private void Awake()
     {
-        // If there is not already an instance, set it to this.
-        if (Instance == null)
+        // If there is an instance, and it's not me, delete myself.
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            Destroy(this);
+            return;
         }
-        //If an instance already exists, destroy whatever this object is to enforce the singleton.
-        else if (Instance != this)
-        {
-            Destroy(gameObject);
-        }
+
+        Instance = this;
+        // make instance persist across scenes
+        DontDestroyOnLoad(this.gameObject);
     }
 
     private void Start()
@@ -164,11 +166,11 @@ public class SoundEffectsController : MonoBehaviour, ISound
 
     private IEnumerator AlertVibration()
     {
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return alertDelay0;
         soundController.PlayOneShot(alertSound, 0.2f);
-        yield return new WaitForSecondsRealtime(0.1f);
+        yield return alertDelay1;
         VibrateMedium();
-        yield return new WaitForSecondsRealtime(0.3f);
+        yield return alertDelay2;
         VibrateMedium();
     }
 }

@@ -6,25 +6,27 @@ public class MenuUIScript : MonoBehaviour
     [SerializeField]
     private Image spaceShip;
     [SerializeField]
-    private Button spaceShipButton;
-    [SerializeField]
-    private Sprite spaceShipOff, spaceShipOn, debris;
+    private Sprite spaceShipOn, debris;
     [SerializeField]
     private GameObject continueButton;
+    [SerializeField]
+    private GameObject explosionPrefab;
 
-    public void Play()
+    public void SetContinueButton()
     {
-        //Preprocessor Directive to make builds work
-        #if (UNITY_EDITOR)
-                UnityEditor.AssetDatabase.Refresh();
-        #endif
-
         continueButton.SetActive(SaveFile.Exists());
     }
 
-    public void Tutorial()
+    public void ShortTutorial()
     {
-        NewGame(isTutorial: true);
+        Debug.Log("loading short tutorial");
+        NewTutorial(Constants.Tutorial.tutorialShortCommandsFileName);
+    }
+
+    public void LongTutorial()
+    {
+        Debug.Log("loading long tutorial");
+        NewTutorial(Constants.Tutorial.tutorialLongCommandsFileName);
     }
 
     public void HardDifficulty()
@@ -50,41 +52,44 @@ public class MenuUIScript : MonoBehaviour
                 UnityEditor.AssetDatabase.Refresh();
             #endif
 
-            NewGame(isContinue: true);
+            Config.Instance.continuing = true;
+            spaceShip.sprite = spaceShipOn;
+            TryStartGame();
+        }
+        else
+        {
+            continueButton.SetActive(false);
+            Debug.LogWarning("the continue button was pressed even though there was no save file", continueButton);
         }
     }
 
     public void CheatMode()
     {
-        spaceShip.sprite = debris;
+        GameObject explosion = Instantiate(explosionPrefab, spaceShip.gameObject.transform);
+        explosion.transform.localScale = new Vector3(75, 75, 1);
+        explosion.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
+
         SoundEffectsController.Instance.ExplosionSound();
-        Config.Instance.SetDifficulty(Difficulties.cheat);
-        NewGame(isCheating: true);
+        NewGame(Difficulties.cheat);
     }
 
-    public void ResetSpaceShip()
+    private void NewTutorial(string tutorialCommandsFileToLoad)
     {
-        spaceShip.sprite = spaceShipOff;
-        spaceShipButton.interactable = true;
+        Config.Instance.SetTutorialOn(tutorialCommandsFileToLoad);
+        spaceShip.sprite = spaceShipOn;
+        TryStartGame();
     }
 
     private void NewGame(Difficulty difficulty)
     {
+        spaceShip.sprite = difficulty.Equals(Difficulties.cheat) ? debris : spaceShipOn;
         Config.Instance.SetDifficulty(difficulty);
-        NewGame();
+        Config.Instance.SetTutorialOff();
+        TryStartGame();
     }
 
-    private void NewGame(bool isContinue = false, bool isTutorial = false, bool isCheating = false)
+    private void TryStartGame()
     {
-        spaceShipButton.interactable = false;
-        Config.Instance.continuing = isContinue;
-        Config.Instance.SetTutorialOn(isTutorial);
-
-        if (!isCheating)
-        {
-            spaceShip.sprite = spaceShipOn;
-        }
-
         if (StartGameSequence.Instance != null)
         {
             StartGameSequence.Instance.StartLoadingGame();

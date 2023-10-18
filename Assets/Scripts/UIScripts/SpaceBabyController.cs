@@ -4,7 +4,9 @@ using UnityEngine;
 public class SpaceBabyController : MonoBehaviour, ISound
 {
     // Singleton instance.
-    public static SpaceBabyController Instance;
+    public static SpaceBabyController Instance { get; private set; }
+    private static readonly WaitForSeconds loseDelay = new(1.6f),
+        idleDelay = new(2.1f);
 
     [SerializeField]
     private AudioSource audioSource;
@@ -35,6 +37,11 @@ public class SpaceBabyController : MonoBehaviour, ISound
         BabyIdle();
     }
 
+    public void SetInstanceNull()
+    {
+        Instance = null;
+    }
+
     public void UpdateMaxVolume(int newVolume)
     {
         Debug.Log($"updating space baby volume to: {newVolume}");
@@ -54,19 +61,19 @@ public class SpaceBabyController : MonoBehaviour, ISound
 
     public void BabyIdle()
     {
-        animator.Play("IdlingAnim");
+        animator.Play(Constants.AnimatorIDs.SpaceBaby.idleID);
     }
 
     public void BabyHappy()
     {
         audioSource.PlayOneShot(happySound, 0.4f);
-        animator.Play("HappyAnim");
+        animator.Play(Constants.AnimatorIDs.SpaceBaby.happyID);
         DelayIdle();
     }
 
     public void BabyEat()
     {
-        animator.Play("EatingAnim");
+        animator.Play(Constants.AnimatorIDs.SpaceBaby.eatingID);
         DelayIdle();
     }
 
@@ -85,7 +92,7 @@ public class SpaceBabyController : MonoBehaviour, ISound
             StopCoroutine(idleCoroutine);
         }
 
-        animator.Play("AngryAnim", -1, 0);
+        animator.Play(Constants.AnimatorIDs.SpaceBaby.angryID, -1, 0);
         idleCoroutine = StartCoroutine(LoseAnimTrans());
     }
 
@@ -97,12 +104,12 @@ public class SpaceBabyController : MonoBehaviour, ISound
 
     public void PlayLoseAnimation()
     {
-        animator.Play("Lose");
+        animator.Play(Constants.AnimatorIDs.SpaceBaby.loseID);
     }
 
     public void PlayWinStartAnimation()
     {
-        animator.Play("WinStart");
+        animator.Play(Constants.AnimatorIDs.SpaceBaby.winID);
     }
 
     public void PlayEatSound()
@@ -112,13 +119,13 @@ public class SpaceBabyController : MonoBehaviour, ISound
 
     private IEnumerator LoseAnimTrans()
     {
-        yield return new WaitForSeconds(1.6f);
-        animator.Play("Lose");
+        yield return loseDelay;
+        animator.Play(Constants.AnimatorIDs.SpaceBaby.loseID);
     }
 
     private void AngryAnimation()
     {
-        animator.Play("AngryAnim");
+        animator.Play(Constants.AnimatorIDs.SpaceBaby.angryID);
         DelayIdle();
     }
 
@@ -133,7 +140,7 @@ public class SpaceBabyController : MonoBehaviour, ISound
 
     private IEnumerator BabyAnimTrans()
     {
-        yield return new WaitForSeconds(2.1f);
+        yield return idleDelay;
         BabyIdle();
         idleCoroutine = null;
     }

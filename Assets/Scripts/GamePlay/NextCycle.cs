@@ -3,7 +3,12 @@ using UnityEngine;
 
 public class NextCycle : MonoBehaviour
 {
-    public static NextCycle Instance;
+    public static NextCycle Instance { get; private set; }
+    private static readonly WaitForSeconds endCycleDelay = new(0.1f),
+        emptyCycleDelay = new(2.2f);
+
+    [SerializeField]
+    private UnityEngine.UI.Button nextCycleButton;
 
     void Awake()
     {
@@ -20,10 +25,11 @@ public class NextCycle : MonoBehaviour
     public void ManualStartCycleButton()
     {
         if (GameInput.Instance.InputStopped) return;
-        if (Config.Instance.tutorialOn)
+        if (Config.Instance.TutorialOn)
         {
             if (!Config.Instance.nextCycleEnabled) return;
             Config.Instance.nextCycleEnabled = false;
+            nextCycleButton.interactable = false;
         }
         AchievementsManager.FailedAlwaysMoves();
         SoundEffectsController.Instance.VibrateMedium();
@@ -56,8 +62,8 @@ public class NextCycle : MonoBehaviour
 
             // turn off the moving cards hologram and make it appear in front of everything
             topCardScript.Hologram = false;
-            topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = Config.Instance.SelectedCardsLayer;
-            topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = Config.Instance.SelectedCardsLayer;
+            topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = Constants.SortingLayerIDs.selectedCards;
+            topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = Constants.SortingLayerIDs.selectedCards;
 
             // immediately unhide the next possible top foundation card and start its hologram
             if (foundationScript.CardList.Count > 1)
@@ -75,8 +81,8 @@ public class NextCycle : MonoBehaviour
                 GameValues.AnimationDurataions.cardsToReactor);
 
             // set the sorting layer back to default
-            topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = Config.Instance.CardLayer;
-            topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = Config.Instance.CardLayer;
+            topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = Constants.SortingLayerIDs.cards;
+            topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = Constants.SortingLayerIDs.cards;
 
             SoundEffectsController.Instance.CardToReactorSound();
             topCardScript.MoveCard(Constants.CardContainerType.Reactor, reactorScript.gameObject, isCycle: true);
@@ -90,13 +96,13 @@ public class NextCycle : MonoBehaviour
                 yield break;
             }
         }
-        yield return new WaitForSeconds(0.1f);
+        yield return endCycleDelay;
         EndCycle();
     }
 
     private IEnumerator EmptyCycle()
     {
-        yield return new WaitForSeconds(2.2f);
+        yield return emptyCycleDelay;
         EndCycle();
     }
 

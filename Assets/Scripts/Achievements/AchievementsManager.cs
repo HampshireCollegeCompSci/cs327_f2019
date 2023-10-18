@@ -20,6 +20,9 @@ public static class AchievementsManager
         }
         trackedAchievements.Sort((x, y) => x.Tracker.CompareTo(y.Tracker));
         trackedAchievements.ForEach(achievement => PushAchievement(achievement));
+
+        if (Achievements.noHints.Status && Config.Instance.HintsEnabled)
+            Achievements.noHints.Status = false;
     }
 
     public static void PushAchievement(Achievement achievement)
@@ -45,6 +48,7 @@ public static class AchievementsManager
             achievement.Reset();
         }
         achievementStack.Clear();
+        Achievements.noHints.Status = !Config.Instance.HintsEnabled;
     }
 
     public static void GameWinLogAchievements()
@@ -55,84 +59,90 @@ public static class AchievementsManager
         //}
         if (Actions.MatchCounter == GameValues.GamePlay.matchCount)
         {
-            Achievements.matchAll.Achieved = true;
+            Achievements.matchAll.Status = true;
         }
 
         TimeSpan timeSpan = Timer.GetTimeSpan();
-        //if (timeSpan.CompareTo(TimeSpan.FromMinutes(2)) <= 0)
-        //{
-        //    Achievements.speedrun2.Achieved = true;
-        //    Achievements.speedrun5.Achieved = true;
-        //}
-        if (timeSpan.CompareTo(TimeSpan.FromMinutes(5)) <= 0)
+        if (timeSpan.CompareTo(TimeSpan.FromMinutes(2)) <= 0)
         {
-            Achievements.speedrun5.Achieved = true;
+            Achievements.speedrun2.Status = true;
+            Achievements.speedrun5.Status = true;
+        }
+        else if (timeSpan.CompareTo(TimeSpan.FromMinutes(5)) <= 0)
+        {
+            Achievements.speedrun5.Status = true;
         }
 
-        Achievements.neverReactorHighAlert.TryGameWinNoFail();
-        Achievements.reactorSize.TryGameWinNoFail();
-        Achievements.noUndo.TryGameWinNoFail();
-        Achievements.noDeckFlip.TryGameWinNoFail();
-        Achievements.neverMoves.TryGameWinNoFail();
-        Achievements.alwaysMoves.TryGameWinNoFail();
+        if (Config.Instance.CurrentDifficulty.Equals(Difficulties.hard) &&
+            Achievements.noHints.Status == true &&
+            Achievements.noUndo.Status == true)
+        {
+            Achievements.superHard.Status = true;
+        }
 
         Achievements.achievementList.ForEach(achievement => achievement.TryGameWinAchieved());
     }
 
     public static void TryTripleCombo()
     {
-        if (Achievements.tripleCombo.Achieved) return;
+        if (Achievements.tripleCombo.Status) return;
         if (Actions.ConsecutiveMatches != 3) return;
-        Achievements.tripleCombo.Achieved = true;
+        Achievements.tripleCombo.Status = true;
     }
 
     public static void TryCardStack(List<GameObject> cards)
     {
-        if (Achievements.cardStack.Achieved) return;
+        if (Achievements.cardStack.Status) return;
         if (cards.Count < 13) return;
         if (cards[^1].GetComponent<CardScript>().Card.Rank.Value != 1) return;
         if (cards[^13].GetComponent<CardScript>().Hidden) return;
-        Achievements.cardStack.Achieved = true;
+        Achievements.cardStack.Status = true;
     }
 
     public static void TryReactorAtLimit(int reactorValue)
     {
+        if (Achievements.reactorAtLimit.Status) return;
         if (reactorValue != Config.Instance.CurrentDifficulty.ReactorLimit) return;
-        Achievements.reactorAtLimit.Achieved = true;
+        Achievements.reactorAtLimit.Status = true;
     }
 
     public static void AchievedAllReactorsHighAlert()
     {
-        Achievements.allReactorsHighAlert.Achieved = true;
+        Achievements.allReactorsHighAlert.Status = true;
     }
 
     public static void FailedNeverReactorHighAlert()
     {
-        Achievements.neverReactorHighAlert.Failed = true;
+        Achievements.neverReactorHighAlert.Status = false;
     }
 
     public static void FailedReactorSize()
     {
-        Achievements.reactorSize.Failed = true;
+        Achievements.reactorSize.Status = false;
     }
 
     public static void FailedNoUndo()
     {
-        Achievements.noUndo.Failed = true;
+        Achievements.noUndo.Status = false;
     }
 
     public static void FailedNoDeckFlip()
     {
-        Achievements.noDeckFlip.Failed = true;
+        Achievements.noDeckFlip.Status = false;
     }
 
     public static void FailedNeverMoves()
     {
-        Achievements.neverMoves.Failed = true;
+        Achievements.neverMoves.Status = false;
     }
 
     public static void FailedAlwaysMoves()
     {
-        Achievements.alwaysMoves.Failed = true;
+        Achievements.alwaysMoves.Status = false;
+    }
+
+    public static void FailedNoHints()
+    {
+        Achievements.noHints.Status = false;
     }
 }

@@ -1,0 +1,68 @@
+{
+    "wastePile": [
+        "clubs_4",
+        "hearts_12",
+        "spades_13"
+    ],
+    "deck": [],
+    "matches": [],
+    "foundations": [
+        {
+            "hidden": [],
+            "unhidden": []
+        },
+        {
+            "hidden": [
+                "diamonds_1"
+            ],
+            "unhidden": [
+                "diamonds_6"
+            ]
+        },
+        {
+            "hidden": [
+                "diamonds_8"
+            ],
+            "unhidden": [
+                "clubs_6"
+            ]
+        },
+        {
+            "hidden": [
+                "clubs_11"
+            ],
+            "unhidden": [
+                "hearts_2"
+            ]
+        }
+    ],
+    "reactors": [
+        {
+            "cards": [
+                "spades_6",
+                "spades_1"
+            ]
+        },
+        {
+            "cards": [
+                "clubs_1"
+            ]
+        },
+        {
+            "cards": [
+                "diamonds_2",
+                "diamonds_10"
+            ]
+        },
+        {
+            "cards": [
+                "hearts_6"
+            ]
+        }
+    ],
+    "score": 0,
+    "consecutiveMatches": 0,
+    "moveCounter": 0,
+    "actions": 0,
+    "difficulty": "HARD"
+}

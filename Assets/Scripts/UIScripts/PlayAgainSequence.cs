@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayAgainSequence : MonoBehaviour
 {
     // Singleton instance.
-    public static PlayAgainSequence Instance;
+    public static PlayAgainSequence Instance { get; private set; }
 
     [SerializeField]
     private GameObject cameraObject, sequencePanel, LoadingTextObject;
@@ -41,7 +41,7 @@ public class PlayAgainSequence : MonoBehaviour
     public void StartLoadingGame()
     {
         sequenceDone = false;
-        SpaceBabyController.Instance = null;
+        SpaceBabyController.Instance.SetInstanceNull();
 
         SceneManager.LoadSceneAsync(Constants.ScenesNames.gameplay, LoadSceneMode.Additive);
 

@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameLoader : MonoBehaviour
 {
     // Singleton instance.
-    public static GameLoader Instance;
+    public static GameLoader Instance { get; private set; }
 
     [SerializeField]
     private GameObject cardPrefab;
@@ -43,7 +43,7 @@ public class GameLoader : MonoBehaviour
         ResetState();
 
         // Figure out what kinda game to start
-        if (Config.Instance.tutorialOn)
+        if (Config.Instance.TutorialOn)
         {
             if (Config.Instance.prettyColors)
             {
@@ -195,7 +195,7 @@ public class GameLoader : MonoBehaviour
         // the game difficultuy should already be set to what is desired for things to work properly
         SaveFile.Delete();
         Actions.StartNewGameUpdate();
-        Timer.timerOffset = TimeSpan.Zero;
+        Timer.LoadTimerOffset(TimeSpan.Zero);
 
         foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {

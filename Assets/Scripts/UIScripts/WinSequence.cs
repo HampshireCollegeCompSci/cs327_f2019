@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class WinSequence : MonoBehaviour
 {
+    private static readonly WaitForSeconds feedWait = new(0.75f);
+
     [SerializeField]
     private SpaceBabyController spaceBabyController;
     [SerializeField]
@@ -63,7 +65,7 @@ public class WinSequence : MonoBehaviour
         for (int i = 0; i < matches; i++)
         {
             StartCoroutine(FoodMove(foodObjects[i]));
-            yield return new WaitForSeconds(0.75f);
+            yield return feedWait;
         }
 
         yield return new WaitForSeconds(0.7f);

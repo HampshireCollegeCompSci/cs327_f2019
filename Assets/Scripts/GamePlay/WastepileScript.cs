@@ -7,7 +7,8 @@ using UnityEngine.UI;
 public class WastepileScript : MonoBehaviour, ICardContainerHolo
 {
     // Singleton instance.
-    public static WastepileScript Instance;
+    public static WastepileScript Instance { get; private set; }
+    private static readonly WaitForSeconds deckResetDelay = new(0.5f);
 
     [SerializeField]
     private List<GameObject> cardList;
@@ -153,7 +154,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
 
             // during the tutorial we don't want the next card avalible for user interaction
             // save for when the deck deal button is unlocked as that can cause a deck flip
-            if (undoingOrDeck || !Config.Instance.tutorialOn)
+            if (undoingOrDeck || !Config.Instance.TutorialOn)
             {
                 // set obstruction to false as it isn't accounted for elsewhere
                 cardScript.Obstructed = false;
@@ -261,7 +262,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         endPosition.x = 0;
         contentRectTransform.anchoredPosition = endPosition;
 
-        yield return new WaitForSeconds(0.5f);
+        yield return deckResetDelay;
         DeckScript.Instance.Deal();
         // do not set scrolling to false yet as the deck deal will do that at the end
     }

@@ -241,7 +241,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
 
     private void CheckGameOver(int cardValCount)
     {
-        if (Config.Instance.tutorialOn || Actions.GameOver) return;
+        if (Config.Instance.TutorialOn || Actions.GameOver) return;
 
         if (cardValCount > Config.Instance.CurrentDifficulty.ReactorLimit)
         {

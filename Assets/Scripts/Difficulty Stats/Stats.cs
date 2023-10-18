@@ -110,6 +110,7 @@ public class Stats
 
     public static void TryUpdateHighestCombo()
     {
+        if (Config.Instance.TutorialOn) return;
         Stats currentStats = Config.Instance.CurrentDifficulty.Stats;
         if (Actions.ConsecutiveMatches > currentStats.HighestCombo)
         {

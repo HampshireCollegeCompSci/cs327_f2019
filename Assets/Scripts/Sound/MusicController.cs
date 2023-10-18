@@ -5,7 +5,8 @@ using UnityEngine.Audio;
 public class MusicController : MonoBehaviour, ISound
 {
     // Singleton instance.
-    public static MusicController Instance;
+    public static MusicController Instance { get; private set; }
+    private static readonly WaitForSecondsRealtime pauseDelay = new(0.05f);
 
     [SerializeField]
     private AudioMixer audioMixer;
@@ -30,25 +31,25 @@ public class MusicController : MonoBehaviour, ISound
     // Initialize the singleton instance.
     void Awake()
     {
-        // If there is not already an instance, set it to this.
-        if (Instance == null)
+        // If there is an instance, and it's not me, delete myself.
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            audioClips = new AudioClip[7]
-            {
-                menuMusic, themeMusic, transitionMusic, loseMusic, winMusic, aboutMusic, tutorialMusic
-            };
-            AudioSourcePlaying = 1;
-            _playingTrack = -1;
-            _muted = false;
-            _paused = false;
+            Destroy(this);
+            return;
         }
-        //If an instance already exists, destroy whatever this object is to enforce the singleton.
-        else if (Instance != this)
+
+        Instance = this;
+        // make instance persist across scenes
+        DontDestroyOnLoad(this.gameObject);
+
+        audioClips = new AudioClip[7]
         {
-            Destroy(gameObject);
-        }
+            menuMusic, themeMusic, transitionMusic, loseMusic, winMusic, aboutMusic, tutorialMusic
+        };
+        AudioSourcePlaying = 1;
+        _playingTrack = -1;
+        _muted = false;
+        _paused = false;
     }
 
     void Start()
@@ -290,7 +291,7 @@ public class MusicController : MonoBehaviour, ISound
         audioMixer.SetFloat(Constants.AudioMixerNames.track1, -80);
         audioMixer.SetFloat(Constants.AudioMixerNames.track2, -80);
         // to prevent audio blips lower the volume first and then pause the music
-        yield return new WaitForSecondsRealtime(0.05f);
+        yield return pauseDelay;
         audioSource_1.Pause();
         audioSource_2.Pause();
     }

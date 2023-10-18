@@ -39,11 +39,10 @@
         {
             "hidden": [
                 "clubs_11",
-                "diamonds_5",
-                "spades_3"
+                "diamonds_5"
             ],
             "unhidden": [
-                "clubs_1"
+                "spades_3"
             ]
         }
     ],
@@ -55,7 +54,9 @@
             ]
         },
         {
-            "cards": []
+            "cards": [
+                "clubs_1"
+            ]
         },
         {
             "cards": []

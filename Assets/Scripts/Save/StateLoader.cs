@@ -12,7 +12,7 @@ using UnityEngine;
 public class StateLoader : MonoBehaviour
 {
     // Singleton instance.
-    public static StateLoader Instance;
+    public static StateLoader Instance { get; private set; }
 
     #if !UNITY_WEBGL
         private CancellationTokenSource tokenSource;
@@ -89,7 +89,7 @@ public class StateLoader : MonoBehaviour
     {
         SaveMove newSaveMove = new()
         {
-            c = newMove.card.GetComponent<CardScript>().CardID,
+            c = newMove.card.GetComponent<CardScript>().Card.ID,
             t = newMove.containerType,
             i = newMove.containerType switch
             {
@@ -144,7 +144,7 @@ public class StateLoader : MonoBehaviour
 
     public void TryWriteState()
     {
-        if (Config.Instance.tutorialOn) return;
+        if (Config.Instance.TutorialOn) return;
         movesSinceLastSave++;
         if (saveMovesDisabled || movesSinceLastSave < movesUntilSave) return;
         movesSinceLastSave = 0;
@@ -195,11 +195,11 @@ public class StateLoader : MonoBehaviour
                 CardScript cardScript = card.GetComponent<CardScript>();
                 if (cardScript.Hidden)
                 {
-                    gameState.foundations[i].hidden.Add(cardScript.CardID);
+                    gameState.foundations[i].hidden.Add(cardScript.Card.ID);
                 }
                 else
                 {
-                    gameState.foundations[i].unhidden.Add(cardScript.CardID);
+                    gameState.foundations[i].unhidden.Add(cardScript.Card.ID);
                 }
             }
         }
@@ -325,7 +325,7 @@ public class StateLoader : MonoBehaviour
         List<int> newCardList = new(cardList.Count);
         foreach (GameObject card in cardList)
         {
-            newCardList.Add(card.GetComponent<CardScript>().CardID);
+            newCardList.Add(card.GetComponent<CardScript>().Card.ID);
         }
         return newCardList;
     }
@@ -399,11 +399,11 @@ public class StateLoader : MonoBehaviour
         {
             int mid = left + (right - left) / 2;
             CardScript cs = list[mid].GetComponent<CardScript>();
-            if (cs.CardID == ID)
+            if (cs.Card.ID == ID)
             {
                 return list[mid];
             }
-            else if (cs.CardID < ID)
+            else if (cs.Card.ID < ID)
             {
                 left = mid + 1;
             }

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class StartGame : MonoBehaviour
 {
     // Singleton instance.
-    public static StartGame Instance;
+    public static StartGame Instance { get; private set; }
 
     [SerializeField]
     private GameObject mainCameraObject;
@@ -64,6 +64,7 @@ public class StartGame : MonoBehaviour
         {
             throw new NullReferenceException("A sequence Instance does not exist!");
         }
+        Config.Instance.IsGamePlayActive = true;
     }
 
     public void TransitionToGamePlay()
@@ -71,7 +72,7 @@ public class StartGame : MonoBehaviour
         mainCameraObject.SetActive(true);
         mainCameraObject.GetComponent<EventSystem>().enabled = true;
         // the alert music starts playing ASAP if triggered so make sure not to override it
-        if (Config.Instance.tutorialOn)
+        if (Config.Instance.TutorialOn)
         {
             MusicController.Instance.TutorialMusic();
         }

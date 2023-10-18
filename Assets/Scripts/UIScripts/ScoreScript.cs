@@ -5,7 +5,8 @@ using UnityEngine.UI;
 public class ScoreScript : MonoBehaviour
 {
     // Singleton instance.
-    public static ScoreScript Instance;
+    public static ScoreScript Instance { get; private set; }
+    private static readonly WaitForSeconds textDelay = new(0.05f);
 
     [SerializeField]
     private Text scoreText;
@@ -50,7 +51,7 @@ public class ScoreScript : MonoBehaviour
     {
         while (currentValue < newScore)
         {
-            yield return new WaitForSeconds(0.05f);
+            yield return textDelay;
             currentValue += 10;
             scoreText.text = currentValue.ToString();
         }

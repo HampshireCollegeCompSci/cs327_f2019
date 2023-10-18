@@ -1,11 +1,13 @@
-﻿public static class Constants
+﻿using UnityEngine;
+
+public static class Constants
 {
     public const string projectWebsite = "https://github.com/HampshireCollegeCompSci/cs327_f2019#readme";
 
     public static class GameStates
     {
         public const string versionKey = "GameStateVersion";
-        public const string version = "2";
+        public const string version = "3";
 
         public const string saveStatePathInEditor = "Assets/Resources/GameStates/";
         public const string saveStateFileName = "saveState";
@@ -19,7 +21,8 @@
     public static class Tutorial
     {
         public const string tutorialResourcePath = "Tutorial/";
-        public const string tutorialCommandListFilePath = tutorialResourcePath + "TutorialCommandList";
+        public const string tutorialShortCommandsFileName = "TutorialShortCommandList";
+        public const string tutorialLongCommandsFileName = "TutorialCommandList";
         public const string tutorialStateStartFileName = "tutorialState_default";
     }
 
@@ -77,6 +80,36 @@
         public const string wastepile = "Wastepile";
         public const string matchedPile = "MatchedPile";
         public const string loadPile = "LoadPile";
+    }
+
+    public static class AnimatorIDs
+    {
+        public static class SpaceBaby
+        {
+            public static readonly int
+                idleID = Animator.StringToHash("IdlingAnim"),
+                happyID = Animator.StringToHash("HappyAnim"),
+                eatingID = Animator.StringToHash("EatingAnim"),
+                angryID = Animator.StringToHash("AngryAnim"),
+                loseID = Animator.StringToHash("Lose"),
+                winID = Animator.StringToHash("WinStart");
+        }
+
+        public static readonly int loseExplosionID = Animator.StringToHash("LoseExplosionAnim");
+    }
+
+    public static class SortingLayerIDs
+    {
+        public static readonly int
+            selectedCards = SortingLayer.NameToID("SelectedCards"),
+            cards = SortingLayer.NameToID("Card");
+    }
+
+    public static class LayerMaskIDs
+    {
+        public static readonly int
+            cards = 1 << LayerMask.NameToLayer("Card"),
+            cardContainers = 1 << LayerMask.NameToLayer("Card Container");
     }
 
     public enum CardContainerType

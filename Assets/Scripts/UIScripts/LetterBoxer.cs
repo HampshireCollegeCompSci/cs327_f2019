@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class LetterBoxer : MonoBehaviour
@@ -14,7 +15,9 @@ public class LetterBoxer : MonoBehaviour
     private const float minRatio = minX / minY;
     private const float maxRatio = maxX / maxY;
 
-    private Camera cam, letterBoxerCamera;
+    private static readonly WaitForSecondsRealtime screenCheckWait = new(2f);
+
+    private Camera cam;// letterBoxerCamera;
 #if UNITY_WEBGL
     private int currentScreenWidth, currentScreenHeight;
 #endif
@@ -24,7 +27,7 @@ public class LetterBoxer : MonoBehaviour
         // store reference to the camera
         cam = GetComponent<Camera>();
         // add the letterboxing camera
-        AddLetterBoxingCamera();
+        //AddLetterBoxingCamera();
 
         PerformSizing();
         #if UNITY_WEBGL
@@ -46,18 +49,20 @@ public class LetterBoxer : MonoBehaviour
     {
         while(true)
         {
-            yield return new WaitForSecondsRealtime(2);
+            yield return screenCheckWait;
             if (currentScreenWidth != Screen.width ||
                 currentScreenHeight != Screen.height)
             {
+                Debug.LogWarning("screen size has changed!");
                 currentScreenWidth = Screen.width;
                 currentScreenHeight = Screen.height;
-                PerformSizing();
+                PerformSizing(again : true);
             }
         }
     }
 #endif
 
+    /*
     private void AddLetterBoxingCamera()
     {
         // create a camera to render bcakground used for matte bars
@@ -72,12 +77,14 @@ public class LetterBoxer : MonoBehaviour
         letterBoxerCamera.clearFlags = CameraClearFlags.Color;
         letterBoxerCamera.name = "Letter Boxer Camera";
     }
+    */
 
     // based on logic here from http://gamedesigntheory.blogspot.com/2010/09/controlling-aspect-ratio-in-unity.html
-    private void PerformSizing()
+    private void PerformSizing(bool again = false)
     {
         // determine the game window's current aspect ratio
-        float windowaspect = (float)Screen.width / (float)Screen.height;
+        float windowaspect = Screen.width / (float)Screen.height;
+        windowaspect = (float) Math.Round(windowaspect, 2);
 
         // current viewport height should be scaled by this amount
         float scaleheight;
@@ -89,6 +96,16 @@ public class LetterBoxer : MonoBehaviour
         {
             scaleheight = windowaspect / maxRatio;
         }
+        else if (again)
+        {
+            Rect rect1 = cam.rect;
+            rect1.width = 1;
+            rect1.height = 1;
+            rect1.x = 0;
+            rect1.y = 0;
+            cam.rect = rect1;
+            return;
+        }
         else
         {
             return;
@@ -96,20 +113,19 @@ public class LetterBoxer : MonoBehaviour
 
         Rect rect = cam.rect;
         // if scaled height is less than current height, add letterbox
-        if (scaleheight < 1.0f)
+        if (scaleheight < 1)
         {
-            rect.width = 1.0f;
+            rect.width = 1;
             rect.height = scaleheight;
             rect.x = 0;
-            rect.y = (1.0f - scaleheight) / 2.0f;
+            rect.y = (1 - scaleheight) / 2;
         }
         else // add pillarbox
         {
-            float scalewidth = 1.0f / scaleheight;
-
+            float scalewidth = 1 / scaleheight;
             rect.width = scalewidth;
-            rect.height = 1.0f;
-            rect.x = (1.0f - scalewidth) / 2.0f;
+            rect.height = 1;
+            rect.x = (1 - scalewidth) / 2;
             rect.y = 0;
         }
         cam.rect = rect;

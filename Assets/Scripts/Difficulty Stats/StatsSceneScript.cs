@@ -29,12 +29,12 @@ public class StatsSceneScript : MonoBehaviour
             PopoulateText(statTexts[8], dif.Stats.HighestCombo);
 
             TimeSpan ts = dif.Stats.FastestTime;
-            statTexts[10].text = ts == TimeSpan.Zero ? "--" : ts.ToString(Constants.Time.format);
+            statTexts[10].text = ts == TimeSpan.Zero ? GameValues.Text.noValue : ts.ToString(Constants.Time.format);
         }
     }
 
     private void PopoulateText(Text txt, int num)
     {
-       txt.text = num != 0 ? num.ToString() : "--";
+       txt.text = num != 0 ? num.ToString() : GameValues.Text.noValue;
     }
 }

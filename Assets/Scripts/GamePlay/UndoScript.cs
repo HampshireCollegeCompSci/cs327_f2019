@@ -4,7 +4,7 @@ using UnityEngine;
 public class UndoScript : MonoBehaviour
 {
     // Singleton instance.
-    public static UndoScript Instance;
+    public static UndoScript Instance { get; private set; }
 
     private Stack<Move> moveLog;
 
@@ -59,8 +59,7 @@ public class UndoScript : MonoBehaviour
         return;
     }
 
-    [SerializeField]
-    private void UndoButton()
+    public void UndoButton()
     {
         if (GameInput.Instance.InputStopped) return;
         Debug.Log("undo button");

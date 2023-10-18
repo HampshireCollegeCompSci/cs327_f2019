@@ -6,7 +6,10 @@ using UnityEngine.UI;
 public class EndGame : MonoBehaviour
 {
     // Singleton instance.
-    public static EndGame Instance;
+    public static EndGame Instance { get; private set; }
+    private static readonly WaitForSeconds explosionWait = new(0.5f),
+        explosionDelay = new(GameValues.AnimationDurataions.reactorExplosionDelay),
+        cardDelay = new(0.2f);
 
     [SerializeField]
     private GameObject explosionPrefab;
@@ -191,13 +194,13 @@ public class EndGame : MonoBehaviour
     private IEnumerator ReactorsMeltdown()
     {
         // wait for dramatic effect
-        yield return new WaitForSeconds(0.5f);
+        yield return explosionWait;
         foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {
             if (reactorScript.CardList.Count != 0)
             {
                 StartCoroutine(ReactorMeltdown(reactorScript));
-                yield return new WaitForSeconds(GameValues.AnimationDurataions.reactorExplosionDelay);
+                yield return explosionDelay;
             }
         }
         StartCoroutine(FadeGameplayOut(false));
@@ -210,7 +213,7 @@ public class EndGame : MonoBehaviour
             GameObject matchExplosion = Instantiate(explosionPrefab, card.transform.position, Quaternion.Euler(0, 0, Random.Range(0, 360)));
             matchExplosion.transform.localScale = new Vector3(GameValues.Transforms.matchExplosionScale, GameValues.Transforms.matchExplosionScale);
         }
-        yield return new WaitForSeconds(0.2f);
+        yield return cardDelay;
         foreach (GameObject card in reactorScript.CardList)
         {
             card.SetActive(false);
@@ -219,7 +222,7 @@ public class EndGame : MonoBehaviour
 
         GameObject reactorExplosion = Instantiate(explosionPrefab, reactorScript.gameObject.transform.position, Quaternion.Euler(0, 0, Random.Range(0, 360)));
         reactorExplosion.transform.localScale = new Vector3(GameValues.Transforms.matchExplosionScale / 2, GameValues.Transforms.matchExplosionScale / 2);
-        reactorExplosion.GetComponent<Animator>().Play("LoseExplosionAnim");
+        reactorExplosion.GetComponent<Animator>().Play(Constants.AnimatorIDs.loseExplosionID);
     }
 
     private IEnumerator FadeGameplayOut(bool won)
@@ -251,5 +254,6 @@ public class EndGame : MonoBehaviour
     private void TransitionToSummaryScene()
     {
         SceneManager.LoadScene(Constants.ScenesNames.summary);
+        Config.Instance.IsGamePlayActive = false;
     }
 }

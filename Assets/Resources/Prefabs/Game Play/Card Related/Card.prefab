@@ -109,8 +109,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1869234980773205396}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 5, z: 0}
-  m_LocalScale: {x: 1.2, y: 1.2, z: 1}
+  m_LocalPosition: {x: 0, y: 5.4, z: 0}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5176008346855944175}
@@ -278,7 +278,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2950253550288827638}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.35, y: 5, z: 0}
+  m_LocalPosition: {x: 0.3, y: 5.41, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -327,7 +327,7 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: c56deb2d267337b48be6cd24f520cd24, type: 3}
-  m_Color: {r: 0.101960786, g: 0.95686275, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -416,7 +416,7 @@ GameObject:
   - component: {fileID: -6604757475557862161}
   - component: {fileID: -1626085816929887301}
   - component: {fileID: 5589543899514788396}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Card
   m_TagString: Card
   m_Icon: {fileID: 0}
@@ -515,6 +515,7 @@ MonoBehaviour:
       name: 
       value: 0
       reactorValue: 0
+    id: 0
   cardFrontSprite: {fileID: 21300000, guid: d7429ac0871f26d42813ea0e65d2b6b4, type: 3}
   cardBackSprite: {fileID: 21300000, guid: b2acde3c6f5c55a4298f960e500a2e80, type: 3}
   hologramFoodSprite: {fileID: 0}
@@ -525,7 +526,6 @@ MonoBehaviour:
   glow: {fileID: 1699734583824506818}
   hologram: {fileID: 2950253550288827638}
   hologramFood: {fileID: 1869234980773205396}
-  _cardID: 0
   _enabled: 0
   _hidden: 0
   _hitBox: 0
@@ -569,7 +569,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 1}
+  m_Offset: {x: 0, y: 0.5}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -580,7 +580,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 8.5, y: 7}
+  m_Size: {x: 8.5, y: 6}
   m_EdgeRadius: 0
 --- !u!1 &8513407764132339850
 GameObject:

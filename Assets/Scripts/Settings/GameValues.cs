@@ -61,7 +61,7 @@ public static class GameValues
     {
         public const float musicFadeInDurationSec = 2.5f;
         public const float musicFadeOutDurationSec = 1;
-        public const float musicFadeOutSlowDurationSec = 2.5f;
+        public const float musicFadeOutSlowDurationSec = 2f;
     }
 
     public static class Settings
@@ -86,6 +86,7 @@ public static class GameValues
     {
         public const string gameWon = "YOU WON";
         public const string gameLost = "YOU LOST";
+        public const string noValue = "---";
     }
 
     public static class Colors
@@ -93,6 +94,8 @@ public static class GameValues
         public static readonly Color whiteAlphaLow = new(1, 1, 1, 0.6f);
         public const float selectedCardOpacity = 0.25f;
         public static readonly Color cardObstructedColor = new(0.6f, 0.6f, 0.6f);
+        public const float cardHologramAlpha = 0.8f;
+        public static readonly Color cardHologramColor = new(0, 0, 0, 1 - cardHologramAlpha);
         public static readonly HighLightColor normal = new(Color.white, Constants.ColorLevel.None);
         public static readonly HighLightColor card = new("#1af4ff", Constants.ColorLevel.None);
 
@@ -139,8 +142,8 @@ public static class GameValues
 
         // main menu
         public const float logoDelay = 2;
-        public const float buttonFadeOut = 0.5f;
-        public const float zoomAndFade = 2;
+        public const float buttonFadeOut = 0.3f;
+        public const float zoomAndFade = 1.7f;
 
         // screen fades 
         public const float startGameFadeIn = 0.5f; // fades out the game startup logos

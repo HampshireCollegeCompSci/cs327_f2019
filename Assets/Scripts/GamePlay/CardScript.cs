@@ -17,9 +17,6 @@ public class CardScript : MonoBehaviour, IGlow
     private Animator hologramAnimator;
 
     [SerializeField]
-    private byte _cardID;
-
-    [SerializeField]
     private bool _enabled, _hidden, _hitBox, _obstructed, _dragging;
     [SerializeField]
     private bool _hologram;
@@ -31,7 +28,6 @@ public class CardScript : MonoBehaviour, IGlow
     private HighLightColor _glowColor;
 
     private Coroutine holoCoroutine;
-    private Color holoCoroutineColor;
     private Color originalColor;
     private Color draggingColor;
     private Constants.CardContainerType _currentContainerType;
@@ -49,8 +45,6 @@ public class CardScript : MonoBehaviour, IGlow
     }
 
     public Card Card => _card;
-
-    public byte CardID => _cardID;
 
     public Constants.CardContainerType CurrentContainerType => _currentContainerType;
 
@@ -201,10 +195,9 @@ public class CardScript : MonoBehaviour, IGlow
         get => _hologramColor;
         set
         {
-            if (_hologramColor == value) return;
+            if (_hologramColor.Equals(value)) return;
             _hologramColor = value;
-            hologramSR.color = value.Color;
-            hologramFoodSR.color = value.Color;
+            hologramSR.color = value.HoloColor;
         }
     }
 
@@ -246,7 +239,6 @@ public class CardScript : MonoBehaviour, IGlow
         _currentContainerType = Constants.CardContainerType.None;
         _container = null;
 
-        _cardID = (byte)(card.Rank.Value + card.Suit.Index * 13);
         this.name = $"{card.Suit.Name}_{card.Rank.Value}";
 
         hologramFoodSR.sprite = hologramFoodSprite;
@@ -283,9 +275,9 @@ public class CardScript : MonoBehaviour, IGlow
         _obstructed = false;
         _hologram = false;
         _dragging = false;
-        _glowing = false;
         _glowColor = GameValues.Colors.normal;
-        _hologramColor = GameValues.Colors.normal;
+        _glowing = false;
+        HologramColor = GameValues.Colors.card;
     }
 
     public void SetValuesToDefault()
@@ -318,12 +310,6 @@ public class CardScript : MonoBehaviour, IGlow
     public void MatchChangeFoodHologram(bool turnOn)
     {
         hologramFoodSR.sprite = turnOn ? hologramComboSprite : hologramFoodSprite;
-        if (holoCoroutine != null)
-        {
-            Color temp = HologramColor.Color;
-            temp.a = holoCoroutineColor.a;
-            holoCoroutineColor = temp;
-        }
     }
 
     /// <summary>
@@ -334,11 +320,11 @@ public class CardScript : MonoBehaviour, IGlow
         gameObject.transform.localScale = new Vector3(GameValues.Transforms.draggedCardScale, GameValues.Transforms.draggedCardScale, 1);
         _container = null;
 
-        values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = Config.Instance.SelectedCardsLayer;
+        values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = Constants.SortingLayerIDs.selectedCards;
 
         foreach (Renderer renderers in this.gameObject.GetComponentsInChildren<Renderer>(includeInactive: true))
         {
-            renderers.sortingLayerID = Config.Instance.SelectedCardsLayer;
+            renderers.sortingLayerID = Constants.SortingLayerIDs.selectedCards;
             // TODO : A Unity bug requires this
             renderers.material.color = renderers.material.color;
         }
@@ -346,9 +332,9 @@ public class CardScript : MonoBehaviour, IGlow
         // when picking up a card that has a hologram that's just starting up
         // make the dragged card's hologram have full alpha
         Color holoColor = hologramSR.color;
-        holoColor.a = 1;
+        holoColor.a = GameValues.Colors.cardHologramAlpha;
         hologramSR.color = holoColor;
-        hologramFoodSR.color = holoColor;
+        hologramFoodSR.color = Color.white;
 
         HitBox = false;
     }
@@ -472,21 +458,24 @@ public class CardScript : MonoBehaviour, IGlow
         // start the animation at a random frame
         hologramAnimator.Play(0, -1, Random.Range(0.0f, 1.0f));
 
-        holoCoroutineColor = hologramSR.color;
+        Color holoCoroutineColor = hologramSR.color;
+        Color holoFoodCoroutineColor = hologramFoodSR.color;
 
         float duration = GameValues.AnimationDurataions.cardHologramFadeIn;
         float timeElapsed = 0;
         while (timeElapsed < duration)
         {
-            holoCoroutineColor.a = Mathf.Lerp(0, 1, timeElapsed / duration);
+            holoCoroutineColor.a = Mathf.Lerp(0, GameValues.Colors.cardHologramAlpha, timeElapsed / duration);
             hologramSR.color = holoCoroutineColor;
-            hologramFoodSR.color = holoCoroutineColor;
+            holoFoodCoroutineColor.a = Mathf.Lerp(0, 1, timeElapsed / duration);
+            hologramFoodSR.color = holoFoodCoroutineColor;
             timeElapsed += Time.deltaTime;
             yield return null;
         }
-        holoCoroutineColor.a = 1;
+        holoCoroutineColor.a = GameValues.Colors.cardHologramAlpha;
         hologramSR.color = holoCoroutineColor;
-        hologramFoodSR.color = holoCoroutineColor;
+        holoFoodCoroutineColor.a = 1;
+        hologramFoodSR.color = holoFoodCoroutineColor;
         holoCoroutine = null;
     }
 }
