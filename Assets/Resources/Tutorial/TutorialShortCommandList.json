@@ -85,7 +85,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"You can move cards into their respective storage container, but you can't move them out.\n\nYou can still eliminate the top cards in each."
+				"You can move cards into their respective storage container, but you can't move them out.\n\nYou can still eliminate the top cards in each container."
 			]
 		},
 		{
@@ -212,7 +212,13 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"That's the end of this tutorial!\n\nContinue to begin playing an easy difficulty game or exit to the main menu now."
+				"The bottom section contains the conveyor belt, where you can draw or take away cards as need be.\n\nAt most, three cards are drawn at a time."
+			]
+		},
+		{
+			"argumentList": [
+				"LoadSave",
+				"tutorialState_default"
 			]
 		},
 		{
@@ -224,7 +230,52 @@
 		},
 		{
 			"argumentList": [
+				"ChangeObjectHighlight",
+				"Wastepile",
+				"ON"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"Deck",
+				"ON"
+			]
+		},
+		{
+			"argumentList": [
 				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeShownText",
+				"That's the end of this tutorial!\n\nContinue to begin playing an easy difficulty game or exit to the main menu now."
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"Wastepile",
+				"OFF"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"Deck",
+				"OFF"
+			]
+		},
+		{
+			"argumentList": [
+				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeTokenPlacement",
+				"ON"
 			]
 		},
 		{

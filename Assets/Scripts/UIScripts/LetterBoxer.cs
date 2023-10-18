@@ -17,7 +17,7 @@ public class LetterBoxer : MonoBehaviour
 
     private static readonly WaitForSecondsRealtime screenCheckWait = new(2f);
 
-    private Camera cam, letterBoxerCamera;
+    private Camera cam;// letterBoxerCamera;
 #if UNITY_WEBGL
     private int currentScreenWidth, currentScreenHeight;
 #endif
@@ -27,7 +27,7 @@ public class LetterBoxer : MonoBehaviour
         // store reference to the camera
         cam = GetComponent<Camera>();
         // add the letterboxing camera
-        AddLetterBoxingCamera();
+        //AddLetterBoxingCamera();
 
         PerformSizing();
         #if UNITY_WEBGL
@@ -62,6 +62,7 @@ public class LetterBoxer : MonoBehaviour
     }
 #endif
 
+    /*
     private void AddLetterBoxingCamera()
     {
         // create a camera to render bcakground used for matte bars
@@ -76,6 +77,7 @@ public class LetterBoxer : MonoBehaviour
         letterBoxerCamera.clearFlags = CameraClearFlags.Color;
         letterBoxerCamera.name = "Letter Boxer Camera";
     }
+    */
 
     // based on logic here from http://gamedesigntheory.blogspot.com/2010/09/controlling-aspect-ratio-in-unity.html
     private void PerformSizing(bool again = false)

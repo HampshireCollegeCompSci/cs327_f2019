@@ -195,7 +195,7 @@ public class GameLoader : MonoBehaviour
         // the game difficultuy should already be set to what is desired for things to work properly
         SaveFile.Delete();
         Actions.StartNewGameUpdate();
-        Timer.timerOffset = TimeSpan.Zero;
+        Timer.LoadTimerOffset(TimeSpan.Zero);
 
         foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {

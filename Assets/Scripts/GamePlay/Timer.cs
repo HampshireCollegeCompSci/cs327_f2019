@@ -4,7 +4,7 @@ using System.Diagnostics;
 public static class Timer
 {
     private static readonly Stopwatch stopWatch = new();
-    public static TimeSpan timerOffset;
+    private static TimeSpan timerOffset;
 
     public static void LoadTimerOffset(string timeSpan)
     {
@@ -18,6 +18,7 @@ public static class Timer
 
     public static void LoadTimerOffset(TimeSpan timeSpan)
     {
+        // note: a saved game's timer is the time at the last save, not exactly when the game was exited
         timerOffset = timeSpan;
     }
 
