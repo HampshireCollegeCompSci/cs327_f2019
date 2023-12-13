@@ -197,7 +197,33 @@ public class CardScript : MonoBehaviour, IGlow
         {
             if (_hologramColor.Equals(value)) return;
             _hologramColor = value;
-            hologramSR.color = value.HoloColor;
+
+            // when hints are not enabled, don't show certain colors
+            if (Config.Instance.HintsEnabled ||
+                value.ColorLevel == Constants.ColorLevel.None)
+            {
+                hologramSR.color = value.HoloColor;
+            }
+            else
+            {
+                hologramSR.color = Config.Instance.CurrentColorMode.Move.Color;
+            }
+
+            // custom coloring logic for the hologram's food object
+            if (value.ColorLevel == Constants.ColorLevel.None ||
+                value.ColorLevel == Constants.ColorLevel.Match)
+            {
+                // keep the color netural by default and when matching
+                hologramFoodSR.color = Color.white;
+            }
+            else if (Config.Instance.HintsEnabled)
+            {
+                hologramFoodSR.color = value.Color;
+            }
+            else
+            {
+                hologramFoodSR.color = Config.Instance.CurrentColorMode.Move.Color;
+            }
         }
     }
 

@@ -326,8 +326,7 @@ public class GameInput : MonoBehaviour
             if (!hoveringOverCS.Glowing) return;
 
             // change the dragged card hologram color to what it's hovering over
-            topSelectedCopyCardScript.HologramColor = Config.Instance.HintsEnabled ?
-                hoveringOverCS.GlowColor : Config.Instance.CurrentColorMode.Notify;
+            topSelectedCopyCardScript.HologramColor = hoveringOverCS.GlowColor;
             changedHologramColor = true;
 
             if (hoveringOverCS.GlowColor.ColorLevel != Constants.ColorLevel.Match) return;
@@ -348,8 +347,7 @@ public class GameInput : MonoBehaviour
             ReactorScript hoveringOverRS = hoveringOver.GetComponent<ReactorScript>();
             if (!hoveringOverRS.Glowing) return;
 
-            topSelectedCopyCardScript.HologramColor = Config.Instance.HintsEnabled ?
-                hoveringOverRS.GlowColor : Config.Instance.CurrentColorMode.Notify;
+            topSelectedCopyCardScript.HologramColor = hoveringOverRS.GlowColor;
             changedHologramColor = true;
 
             hoveringOverRS.ChangeSuitGlow(Config.Instance.CurrentColorMode.Notify);
@@ -361,8 +359,7 @@ public class GameInput : MonoBehaviour
             FoundationScript hoveringOverFS = hoveringOver.GetComponent<FoundationScript>();
             if (!hoveringOverFS.Glowing) return;
 
-            topSelectedCopyCardScript.HologramColor = Config.Instance.HintsEnabled ?
-                hoveringOverFS.GlowColor : Config.Instance.CurrentColorMode.Notify;
+            topSelectedCopyCardScript.HologramColor = hoveringOverFS.GlowColor;
             changedHologramColor = true;
         }
     }
