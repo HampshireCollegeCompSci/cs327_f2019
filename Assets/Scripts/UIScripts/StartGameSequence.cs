@@ -9,9 +9,6 @@ public class StartGameSequence : MonoBehaviour
     public static StartGameSequence Instance { get; private set; }
 
     [SerializeField]
-    private MenuUIScript menuUIScript;
-
-    [SerializeField]
     private GameObject cameraObject;
     private Camera cam;
 
@@ -27,7 +24,7 @@ public class StartGameSequence : MonoBehaviour
     [SerializeField]
     private CanvasGroup allButtons;
     [SerializeField]
-    private GameObject mainButtons, playButtons, moreButtons;
+    private GameObject mainButtons, playButtons;
     [SerializeField]
     private GameObject spaceShip;
     [SerializeField]
@@ -113,7 +110,6 @@ public class StartGameSequence : MonoBehaviour
         cameraObject.transform.position = originalCameraPosition;
 
         playButtons.SetActive(false);
-        moreButtons.SetActive(false);
         mainButtons.SetActive(true);
         allButtons.alpha = 1;
         allButtons.interactable = true;
