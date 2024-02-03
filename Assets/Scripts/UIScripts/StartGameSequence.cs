@@ -76,7 +76,8 @@ public class StartGameSequence : MonoBehaviour
         canvas.renderMode = RenderMode.WorldSpace;
 
         SceneManager.LoadSceneAsync(Constants.ScenesNames.gameplay, LoadSceneMode.Additive);
-        StartCoroutine(FadeMenuOut());
+        StartCoroutine(Animate.FadeCanvasGroup(allButtons, 1, 0, GameValues.AnimationDurataions.buttonFadeOut));
+        StartCoroutine(PanAndZoom());
     }
 
     public void GameplayLoaded()
@@ -123,13 +124,7 @@ public class StartGameSequence : MonoBehaviour
         StartCoroutine(ButtonDelay());
     }
 
-    private IEnumerator FadeMenuOut()
-    {
-        yield return Animate.FadeCanvasGroup(allButtons, 1, 0, GameValues.AnimationDurataions.buttonFadeOut);
-        yield return Zoom();
-    }
-
-    private IEnumerator Zoom()
+    private IEnumerator PanAndZoom()
     {
         float startingSize = originalCameraSize;
         float targetSize = GameValues.Transforms.zoomFactor;

@@ -25,6 +25,7 @@ public class NextCycle : MonoBehaviour
     public void ManualStartCycleButton()
     {
         if (GameInput.Instance.InputStopped) return;
+        if (Actions.ActionsDone == 0 && Actions.AreFoundationsEmpty()) return;
         if (Config.Instance.TutorialOn)
         {
             if (!Config.Instance.nextCycleEnabled) return;

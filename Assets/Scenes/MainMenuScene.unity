@@ -1666,7 +1666,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -175.00002, y: 5}
+  m_AnchoredPosition: {x: -175, y: 5}
   m_SizeDelta: {x: 597.18, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1141023922
@@ -2963,7 +2963,7 @@ GameObject:
   - component: {fileID: 1691565093}
   - component: {fileID: 1691565092}
   m_Layer: 0
-  m_Name: Letter Boxer Camera (1)
+  m_Name: Letter Boxer Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

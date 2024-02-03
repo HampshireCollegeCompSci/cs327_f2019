@@ -66,11 +66,11 @@ public static class GameValues
 
     public static class Settings
     {
-        public const int musicDefaultVolume = 15;
-        public const int musicVolumeDenominator = 20;
+        public const int musicDefaultVolume = 20; // 0-20
+        public const int musicVolumeDenominator = 20; // how many steps
 
-        public const int soundEffectsDefaultVolume = 15;
-        public const int soundEffectsVolumeDenominator = 20;
+        public const int soundEffectsDefaultVolume = 20; // 0-20
+        public const int soundEffectsVolumeDenominator = 20; // how many steps
 
         public const bool achievementPopupsEnabledDefault = true;
         public const bool vibrationEnabledDefault = true;
@@ -142,7 +142,7 @@ public static class GameValues
 
         // main menu
         public const float logoDelay = 2;
-        public const float buttonFadeOut = 0.3f;
+        public const float buttonFadeOut = 0.5f;
         public const float zoomAndFade = 1.7f;
 
         // screen fades 
