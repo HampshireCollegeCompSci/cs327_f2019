@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class DeckScript : MonoBehaviour, ICardContainer
+public class DeckScript : MonoBehaviour, ICardContainer, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
     private const string deckFlipText = "FLIP";
     private const string deckEmptyText = "EMPTY";
 
-    private static readonly WaitForSeconds buttonWait = new(0.07f);
+    private static readonly WaitForSeconds buttonWait = new(0.06f);
+
+    private int buttonAnimationIndex;
 
     // Singleton instance.
     public static DeckScript Instance { get; private set; }
@@ -62,33 +65,6 @@ public class DeckScript : MonoBehaviour, ICardContainer
         UpdateDeckCounter(dealed: true);
     }
 
-    [SerializeField]
-    private void DealButton()
-    {
-        // don't allow dealing when other stuff is happening
-        if (GameInput.Instance.InputStopped) return;
-
-        if (cardList.Count != 0) // can the deck can be drawn from
-        {
-            SoundEffectsController.Instance.DeckDeal();
-            Deal();
-        }
-        // if it is possible to repopulate the deck
-        else if (WastepileScript.Instance.CardList.Count > GameValues.GamePlay.cardsToDeal)
-        {
-            // moves all wastePile cards into the deck
-            WastepileScript.Instance.StartDeckReset();
-            AchievementsManager.FailedNoDeckFlip();
-            SoundEffectsController.Instance.DeckReshuffle();
-        }
-        else return;
-        if (buttonCoroutine != null)
-        {
-            StopCoroutine(buttonCoroutine);
-        }
-        buttonCoroutine = StartCoroutine(ButtonDown());
-    }
-
     public void Deal(bool doLog = true)
     {
         List<GameObject> toMoveList = new(GameValues.GamePlay.cardsToDeal);
@@ -108,15 +84,6 @@ public class DeckScript : MonoBehaviour, ICardContainer
 
             WastepileScript.Instance.AddCards(toMoveList, doLog);
         }
-    }
-
-    public void StartButtonUp()
-    {
-        if (buttonCoroutine != null)
-        {
-            StopCoroutine(buttonCoroutine);
-        }
-        buttonCoroutine = StartCoroutine(ButtonUp());
     }
 
     public void UpdateDeckCounter(bool dealed = false)
@@ -158,11 +125,57 @@ public class DeckScript : MonoBehaviour, ICardContainer
         }
     }
 
+    public static bool mouseOverButton;
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        mouseOverButton = true;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        mouseOverButton = false;
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (buttonCoroutine != null)
+        {
+            StopCoroutine(buttonCoroutine);
+        }
+        buttonCoroutine = StartCoroutine(ButtonDown());
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (mouseOverButton)
+        {
+            TryDealing();
+        }
+        else
+        {
+            StartButtonUp();
+        }
+    }
+
+    public void StartButtonUp()
+    {
+        if (buttonCoroutine != null)
+        {
+            StopCoroutine(buttonCoroutine);
+        }
+        buttonCoroutine = StartCoroutine(ButtonUp());
+    }
+
     private IEnumerator ButtonDown()
     {
-        for (int i = 1; i < buttonAnimation.Length; i++)
+        if (buttonAnimationIndex <= 0)
         {
-            buttonImage.sprite = buttonAnimation[i];
+            buttonAnimationIndex = 1;
+        }
+
+        for (; buttonAnimationIndex < buttonAnimation.Length; buttonAnimationIndex++)
+        {
+            buttonImage.sprite = buttonAnimation[buttonAnimationIndex];
             yield return buttonWait;
         }
         buttonCoroutine = null;
@@ -170,11 +183,36 @@ public class DeckScript : MonoBehaviour, ICardContainer
 
     private IEnumerator ButtonUp()
     {
-        for (int i = buttonAnimation.Length - 2; i >= 0; i--)
+        if (buttonAnimationIndex >= buttonAnimation.Length - 1)
         {
-            buttonImage.sprite = buttonAnimation[i];
+            buttonAnimationIndex = buttonAnimation.Length - 2;
+        }
+
+        for (; buttonAnimationIndex >= 0; buttonAnimationIndex--)
+        {
+            buttonImage.sprite = buttonAnimation[buttonAnimationIndex];
             yield return buttonWait;
         }
         buttonCoroutine = null;
+    }
+
+    private void TryDealing()
+    {
+        // don't allow dealing when other stuff is happening
+        if (GameInput.Instance.InputStopped) return;
+
+        if (cardList.Count != 0) // can the deck can be drawn from
+        {
+            SoundEffectsController.Instance.DeckDeal();
+            Deal();
+        }
+        // if it is possible to repopulate the deck
+        else if (WastepileScript.Instance.CardList.Count > GameValues.GamePlay.cardsToDeal)
+        {
+            // moves all wastePile cards into the deck
+            WastepileScript.Instance.StartDeckReset();
+            AchievementsManager.FailedNoDeckFlip();
+            SoundEffectsController.Instance.DeckReshuffle();
+        }
     }
 }
