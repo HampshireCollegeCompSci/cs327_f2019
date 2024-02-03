@@ -43,7 +43,6 @@ public class GameInput : MonoBehaviour
 
             selectedCards = new(13);
             selectedCardsCopy = new(13);
-            InputStopped = true;
             CardPlacement = true;
             showPossibleMoves = new ShowPossibleMoves();
         }
@@ -51,6 +50,11 @@ public class GameInput : MonoBehaviour
         {
             throw new System.ArgumentException("there should not already be an instance of this");
         }
+    }
+
+    void Start()
+    {
+        InputStopped = true;
     }
 
     public ShowPossibleMoves ShowPossibleMoves => showPossibleMoves;
@@ -66,6 +70,7 @@ public class GameInput : MonoBehaviour
                 if (!_inputStopped)
                 {
                     _inputStopped = true;
+                    EndGame.Instance.TrySetInteraction(false);
                 }
             }
             else
@@ -74,6 +79,7 @@ public class GameInput : MonoBehaviour
                 if (inputStopRequests == 0)
                 {
                     _inputStopped = false;
+                    EndGame.Instance.TrySetInteraction(true);
                 }
             }
         }

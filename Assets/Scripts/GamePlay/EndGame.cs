@@ -19,6 +19,8 @@ public class EndGame : MonoBehaviour
     [SerializeField]
     private Text gameOverText, wonlostText;
 
+    private Button gameEndButtonButton;
+
     private bool _gameCanEnd;
     public bool GameCanEnd
     {
@@ -28,6 +30,8 @@ public class EndGame : MonoBehaviour
             if (_gameCanEnd == value) return;
             _gameCanEnd = value;
             gameEndButton.SetActive(value);
+            if (value)
+                gameEndButtonButton.interactable = true;
         }
     }
 
@@ -37,11 +41,18 @@ public class EndGame : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            gameEndButtonButton = gameEndButton.GetComponent<Button>();
         }
         else if (Instance != this)
         {
             throw new System.Exception("two of these scripts should not exist at the same time");
         }
+    }
+
+    public void TrySetInteraction(bool setTo)
+    {
+        if (!GameCanEnd) return;
+        gameEndButtonButton.interactable = setTo;
     }
 
     public void ManualGameWinButton()
