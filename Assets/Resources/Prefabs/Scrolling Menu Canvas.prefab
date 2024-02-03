@@ -33,7 +33,6 @@ RectTransform:
   m_Children:
   - {fileID: 3697479020986470435}
   m_Father: {fileID: 7318318671163196013}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -122,7 +121,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7147245364190922389}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -203,7 +201,6 @@ RectTransform:
   m_Children:
   - {fileID: 7318318671163196013}
   m_Father: {fileID: 7147245364190922389}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -281,7 +278,6 @@ RectTransform:
   - {fileID: 6612386391824549425}
   - {fileID: 6661807020012525176}
   m_Father: {fileID: 4089349757011953894}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -314,7 +310,7 @@ MonoBehaviour:
   m_MovementType: 2
   m_Elasticity: 0.1
   m_Inertia: 1
-  m_DecelerationRate: 0.2
+  m_DecelerationRate: 0.05
   m_ScrollSensitivity: 50
   m_Viewport: {fileID: 6612386391824549425}
   m_HorizontalScrollbar: {fileID: 0}
@@ -359,7 +355,6 @@ RectTransform:
   m_Children:
   - {fileID: 3046557337800877615}
   m_Father: {fileID: 7318318671163196013}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -447,7 +442,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4778742513256649609}
   m_HandleRect: {fileID: 3172066147035574}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -483,7 +478,6 @@ RectTransform:
   m_Children:
   - {fileID: 3172066147035574}
   m_Father: {fileID: 6661807020012525176}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -521,7 +515,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6612386391824549425}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -599,7 +592,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3046557337800877615}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
