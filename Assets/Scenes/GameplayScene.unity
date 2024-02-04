@@ -1760,9 +1760,6 @@ MonoBehaviour:
   screenImage: {fileID: 1140924761}
   lightsImage: {fileID: 978445190}
   sirenImage: {fileID: 1158270922}
-  buttonImage: {fileID: 341220270}
-  buttonDown: {fileID: 21300000, guid: 0f9a997c3582842a2a42982f783d0c5a, type: 3}
-  buttonUp: {fileID: 21300000, guid: 471c585ab2bf84cc1bd46c3ddbc7fbe9, type: 3}
 --- !u!1 &341220267
 GameObject:
   m_ObjectHideFlags: 0
@@ -1774,7 +1771,6 @@ GameObject:
   - component: {fileID: 341220268}
   - component: {fileID: 341220271}
   - component: {fileID: 341220270}
-  - component: {fileID: 341220269}
   - component: {fileID: 341220272}
   m_Layer: 5
   m_Name: TimerButton
@@ -1802,62 +1798,6 @@ RectTransform:
   m_AnchoredPosition: {x: -107.8, y: -13.3}
   m_SizeDelta: {x: 83.38, y: 82.62}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &341220269
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 341220267}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Navigation:
-    m_Mode: 0
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 0
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 341220270}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1202057899}
-        m_TargetAssemblyTypeName: NextCycle, Assembly-CSharp
-        m_MethodName: ManualStartCycleButton
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &341220270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1905,42 +1845,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 341220267}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Script: {fileID: 11500000, guid: 118c45e479202f648a7e1f035b8f76fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 2
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 338821816}
-          m_TargetAssemblyTypeName: ActionCountScript, Assembly-CSharp
-          m_MethodName: KnobDown
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 3
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 338821816}
-          m_TargetAssemblyTypeName: ActionCountScript, Assembly-CSharp
-          m_MethodName: KnobUp
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+  buttonUp: {fileID: 21300000, guid: 471c585ab2bf84cc1bd46c3ddbc7fbe9, type: 3}
+  buttonDown: {fileID: 21300000, guid: 0f9a997c3582842a2a42982f783d0c5a, type: 3}
 --- !u!1 &342374250
 GameObject:
   m_ObjectHideFlags: 0
@@ -4803,7 +4712,6 @@ GameObject:
   - component: {fileID: 1202057896}
   - component: {fileID: 1202057893}
   - component: {fileID: 1202057898}
-  - component: {fileID: 1202057899}
   - component: {fileID: 1202057900}
   m_Layer: 0
   m_Name: Scripts
@@ -4824,9 +4732,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c378afb05c5fd047a6c5aa0a2e3de4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deckButton: {fileID: 1524850554}
   undoButton: {fileID: 305181226}
-  timerButton: {fileID: 341220269}
   pauseButton: {fileID: 612237310}
   tutorialNextButton: {fileID: 54388024}
   tutorialUIPanel: {fileID: 952914867}
@@ -4992,19 +4898,6 @@ MonoBehaviour:
     type: 3}
   matchPointsPrefab: {fileID: 5801631464807042985, guid: 614ce32a7efa12342824cb70c9aacc46,
     type: 3}
---- !u!114 &1202057899
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1202057892}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 118c45e479202f648a7e1f035b8f76fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nextCycleButton: {fileID: 341220269}
 --- !u!114 &1202057900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6376,7 +6269,6 @@ GameObject:
   - component: {fileID: 1524850556}
   - component: {fileID: 1524850552}
   - component: {fileID: 1524850550}
-  - component: {fileID: 1524850554}
   m_Layer: 0
   m_Name: Deck Button
   m_TagString: Deck
@@ -6441,50 +6333,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1524850547}
   m_CullTransparentMesh: 0
---- !u!114 &1524850554
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1524850547}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Navigation:
-    m_Mode: 0
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 0
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 1524850550}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1524850556
 MonoBehaviour:
   m_ObjectHideFlags: 0

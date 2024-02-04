@@ -8,7 +8,6 @@ public class Config : MonoBehaviour
     public static Config Instance { get; private set; }
 
     // game settings
-    public bool nextCycleEnabled;
     public bool continuing;
     public bool prettyColors;
 

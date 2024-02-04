@@ -9,7 +9,7 @@ public class DeckScript : MonoBehaviour, ICardContainer, IPointerEnterHandler, I
     private const string deckFlipText = "FLIP";
     private const string deckEmptyText = "EMPTY";
 
-    private static readonly WaitForSeconds buttonWait = new(0.06f);
+    private static readonly WaitForSeconds buttonWait = new(0.04f);
 
     private int buttonAnimationIndex;
 
@@ -26,11 +26,15 @@ public class DeckScript : MonoBehaviour, ICardContainer, IPointerEnterHandler, I
     [SerializeField]
     private Sprite[] buttonAnimation;
 
+    private bool mouseOverButton, mousePressingButton;
     private Coroutine buttonCoroutine;
+
+    public bool ButtonReady { get; set; }
 
     public DeckScript()
     {
         cardList = new(GameValues.GamePlay.cardCount);
+        ButtonReady = true;
     }
 
     // Initialize the singleton instance.
@@ -125,7 +129,6 @@ public class DeckScript : MonoBehaviour, ICardContainer, IPointerEnterHandler, I
         }
     }
 
-    public static bool mouseOverButton;
     public void OnPointerEnter(PointerEventData eventData)
     {
         mouseOverButton = true;
@@ -138,6 +141,11 @@ public class DeckScript : MonoBehaviour, ICardContainer, IPointerEnterHandler, I
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        if (!ButtonReady || GameInput.Instance.InputStopped) return;
+        ButtonReady = false;
+        mousePressingButton = true;
+        GameInput.Instance.InputStopped = true;
+
         if (buttonCoroutine != null)
         {
             StopCoroutine(buttonCoroutine);
@@ -147,6 +155,9 @@ public class DeckScript : MonoBehaviour, ICardContainer, IPointerEnterHandler, I
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        if (!mousePressingButton) return;
+        mousePressingButton = false;
+        GameInput.Instance.InputStopped = false;
         if (mouseOverButton)
         {
             TryDealing();
@@ -194,13 +205,11 @@ public class DeckScript : MonoBehaviour, ICardContainer, IPointerEnterHandler, I
             yield return buttonWait;
         }
         buttonCoroutine = null;
+        ButtonReady = true;
     }
 
     private void TryDealing()
     {
-        // don't allow dealing when other stuff is happening
-        if (GameInput.Instance.InputStopped) return;
-
         if (cardList.Count != 0) // can the deck can be drawn from
         {
             SoundEffectsController.Instance.DeckDeal();
@@ -213,6 +222,11 @@ public class DeckScript : MonoBehaviour, ICardContainer, IPointerEnterHandler, I
             WastepileScript.Instance.StartDeckReset();
             AchievementsManager.FailedNoDeckFlip();
             SoundEffectsController.Instance.DeckReshuffle();
+        }
+        else
+        {
+            // nothing is in the deck
+            StartButtonUp();
         }
     }
 }
