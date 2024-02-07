@@ -148,11 +148,11 @@ public static class GameValues
         // screen fades 
         public const float startGameFadeIn = 0.5f; // fades out the game startup logos
         public const float gameplayFadeIn = 0.5f; // fades in the gameplay scene
-        public const float gameOverFade = 1f; // fades in the game over pop-up
+        public const float gameOverFade = 0.5f; // fades in the game over pop-up
         public const float gameEndWonFade = 1.7f; // fades out of the gameplay scene to summary - game was won
-        public const float gameEndLostFade = 1f; // fades out of the gameplay scene to summary - game was lost
-        public const float summaryFadeIn = 0.5f; // fades into the summary scene
-        public const float playAgainFadeOut = 1; // fades out of the summary scene to gameplay
+        public const float gameEndLostFade = 0.7f; // fades out of the gameplay scene to summary - game was lost
+        public const float summaryFadeIn = 0.3f; // fades into the summary scene
+        public const float playAgainFadeOut = 0.6f; // fades out of the summary scene to gameplay
 
         // Achievements
         public const float achievementPopup = 2;

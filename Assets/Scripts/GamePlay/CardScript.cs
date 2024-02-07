@@ -487,17 +487,21 @@ public class CardScript : MonoBehaviour, IGlow
         Color holoCoroutineColor = hologramSR.color;
         Color holoFoodCoroutineColor = hologramFoodSR.color;
 
-        float duration = GameValues.AnimationDurataions.cardHologramFadeIn;
-        float timeElapsed = 0;
-        while (timeElapsed < duration)
+        if (!Config.Instance.TutorialOn)
         {
-            holoCoroutineColor.a = Mathf.Lerp(0, GameValues.Colors.cardHologramAlpha, timeElapsed / duration);
-            hologramSR.color = holoCoroutineColor;
-            holoFoodCoroutineColor.a = Mathf.Lerp(0, 1, timeElapsed / duration);
-            hologramFoodSR.color = holoFoodCoroutineColor;
-            timeElapsed += Time.deltaTime;
-            yield return null;
+            float duration = GameValues.AnimationDurataions.cardHologramFadeIn;
+            float timeElapsed = 0;
+            while (timeElapsed < duration)
+            {
+                holoCoroutineColor.a = Mathf.Lerp(0, GameValues.Colors.cardHologramAlpha, timeElapsed / duration);
+                hologramSR.color = holoCoroutineColor;
+                holoFoodCoroutineColor.a = Mathf.Lerp(0, 1, timeElapsed / duration);
+                hologramFoodSR.color = holoFoodCoroutineColor;
+                timeElapsed += Time.deltaTime;
+                yield return null;
+            }
         }
+
         holoCoroutineColor.a = GameValues.Colors.cardHologramAlpha;
         hologramSR.color = holoCoroutineColor;
         holoFoodCoroutineColor.a = 1;

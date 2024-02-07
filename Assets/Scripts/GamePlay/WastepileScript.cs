@@ -297,9 +297,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
 
     private float GetScrollDuration(double numCardsToScroll)
     {
-        // for the more cards to scroll, the duration per card will be shorter
-        return 0.1f + (float)(numCardsToScroll * Math.Pow(Math.E, -(numCardsToScroll + GameValues.GamePlay.cardCount * 2) / GameValues.GamePlay.cardCount));
-        // y = 0.1f + x * e^(-(x + 52 * 2) / 52))
-        // see the graph here: https://www.desmos.com/calculator/ilxwms4vjm
+        // for the more cards to scroll, the shorter the duration per card
+        return (float) (0.3 * Math.Pow(numCardsToScroll, 0.4));
     }
 }

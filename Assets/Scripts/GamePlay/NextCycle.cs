@@ -15,7 +15,8 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     private bool mouseOverButton, mousePressingButton;
 
-    public bool ButtonReady { get; set; }
+    public bool EnableOneCycle{ get; set; }
+    private bool ButtonReady { get; set; }
 
     void Awake()
     {
@@ -44,6 +45,7 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     public void OnPointerDown(PointerEventData eventData)
     {
         if (!ButtonReady || GameInput.Instance.InputStopped) return;
+        if (Config.Instance.TutorialOn && !EnableOneCycle) return;
         ButtonReady = false;
         mousePressingButton = true;
         GameInput.Instance.InputStopped = true;
@@ -150,7 +152,11 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         GameInput.Instance.InputStopped = false;
         KnobUp();
         Actions.NextCycleUpdate();
-        //ButtonReady = !Config.Instance.TutorialOn;
+
+        if (EnableOneCycle)
+        {
+            EnableOneCycle = false;
+        }
     }
 
     public void KnobDown()
@@ -161,7 +167,7 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     public void KnobUp()
     {
         buttonImage.sprite = buttonUp;
-        ButtonReady = !Config.Instance.TutorialOn;
+        ButtonReady = true;
     }
 
 }

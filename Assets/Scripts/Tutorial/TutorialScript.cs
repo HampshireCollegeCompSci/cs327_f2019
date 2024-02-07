@@ -53,7 +53,7 @@ public class TutorialScript : MonoBehaviour
 
         // prevent the user from interacting with buttons during the tutorial
         DeckScript.Instance.ButtonReady = false;
-        NextCycle.Instance.ButtonReady = false;
+        NextCycle.Instance.EnableOneCycle = false;
         undoButton.interactable = false;
         pauseButton.interactable = false;
     }
@@ -243,7 +243,7 @@ public class TutorialScript : MonoBehaviour
         GameInput.Instance.InputStopped = false;
 
         DeckScript.Instance.ButtonReady = true;
-        NextCycle.Instance.ButtonReady = true;
+        NextCycle.Instance.EnableOneCycle = true;
         undoButton.interactable = true;
         pauseButton.interactable = true;
     }
@@ -641,7 +641,7 @@ public class TutorialScript : MonoBehaviour
                 undoButton.interactable = interactable;
                 break;
             case "TIMER":
-                NextCycle.Instance.ButtonReady = interactable;
+                NextCycle.Instance.EnableOneCycle = interactable;
                 break;
             default:
                 throw new FormatException("contains an invalid button for command #2");
@@ -651,7 +651,7 @@ public class TutorialScript : MonoBehaviour
     private void EnableOneNextCycle()
     {
         Debug.Log($"enabling one next cycle");
-        NextCycle.Instance.ButtonReady = true;
+        NextCycle.Instance.EnableOneCycle = true;
     }
 
     /// <summary>

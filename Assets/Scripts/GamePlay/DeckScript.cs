@@ -96,37 +96,22 @@ public class DeckScript : MonoBehaviour, ICardContainer, IPointerEnterHandler, I
         {
             deckCounter.fontSize = 25;
             deckCounter.text = cardList.Count.ToString();
+            return;
         }
-        else
-        {
-            // if there are enough cards that a deck flip will do something worthwhile
-            // notice: cards are removed from containers before they are added to a new one
-            if (WastepileScript.Instance.CardList.Count > GameValues.GamePlay.cardsToDeal ||
-                (dealed && WastepileScript.Instance.CardList.Count == GameValues.GamePlay.cardsToDeal))
-            {
-                deckCounter.text = deckFlipText;
-            }
-            else
-            {
-                deckCounter.text = deckEmptyText;
-            }
-            deckCounter.fontSize = 18;
-        }
+
+        // if there are enough cards that a deck flip will do something worthwhile
+        // notice: cards are removed from containers before they are added to a new one
+        bool cardsToFlip = (WastepileScript.Instance.CardList.Count > GameValues.GamePlay.cardsToDeal) ||
+            (dealed && WastepileScript.Instance.CardList.Count == GameValues.GamePlay.cardsToDeal);
+        deckCounter.text = cardsToFlip ? deckFlipText : deckEmptyText;
+        deckCounter.fontSize = 18;
     }
 
     public void TryUpdateDeckCounter(bool canFlip)
     {
-        if (cardList.Count == 0)
-        {
-            if (canFlip)
-            {
-                deckCounter.text = deckFlipText;
-            }
-            else
-            {
-                deckCounter.text = deckEmptyText;
-            }
-        }
+        if (cardList.Count != 0) return;
+        deckCounter.text = canFlip ? deckFlipText : deckEmptyText;
+        deckCounter.fontSize = 18;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
