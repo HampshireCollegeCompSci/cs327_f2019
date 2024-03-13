@@ -2093,18 +2093,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundController: {fileID: 1182164525}
-  buttonPressSound: {fileID: 8300000, guid: 34ed478bbbcfe724ba5b88616341ecba, type: 3}
-  undoPressSound: {fileID: 8300000, guid: 5325705503cfe8f43b7d3e63bb133618, type: 3}
-  pauseButtonSound: {fileID: 8300000, guid: ba15e855626b48044895a57434db0fa9, type: 3}
-  tokenInReactorSound: {fileID: 8300000, guid: 1b2e6dca67a0f5b41bb5c3edb6d4cdec, type: 3}
+  buttonPressSound: {fileID: 8300000, guid: e4431cacf65c0374eb9e755b21282579, type: 3}
+  undoPressSound: {fileID: 8300000, guid: 9a26383266e1e0645a22bf502c088459, type: 3}
+  pauseButtonSound: {fileID: 8300000, guid: 99ba293da2b3edd4dbb475e3e0e53c50, type: 3}
+  tokenInReactorSound: {fileID: 8300000, guid: 94548eb30b0a56c45ab4f693d5d5ed1e, type: 3}
   deckDealSound: {fileID: 8300000, guid: ed2e65bc4a8cb8c41a05fd9d643eb156, type: 3}
   deckReshuffleSound: {fileID: 8300000, guid: 6b04e724c719a1949a8020f46201a09c, type: 3}
-  winSound: {fileID: 8300000, guid: 8bbf4512d419ead46830bd1062c6fafe, type: 3}
-  loseSound: {fileID: 8300000, guid: ba41c84e8ee1195438a876cfff7a7c6f, type: 3}
-  alertSound: {fileID: 8300000, guid: 2418f3d0f2e889642a4271259699c938, type: 3}
-  winTransition: {fileID: 8300000, guid: cb16d367a7831494481670b741a4caca, type: 3}
-  explosionSound: {fileID: 8300000, guid: a267165a944a94bdbaca11eb7050a845, type: 3}
-  achievementSound: {fileID: 8300000, guid: e6c07a02ea4ebaa4786e7a44c7cd0bd3, type: 3}
+  winSound: {fileID: 8300000, guid: a879a93847145054faf5569554bee655, type: 3}
+  loseSound: {fileID: 8300000, guid: e6746e75aee1bb14a954a43e1526c6ec, type: 3}
+  alertSound: {fileID: 8300000, guid: 08668df11ebe1f341975555a8cf26940, type: 3}
+  winTransition: {fileID: 8300000, guid: 4865eb42e8a92534face6c77b8874af0, type: 3}
+  explosionSound: {fileID: 8300000, guid: 1b6ebb81eff8689498db19fd6def7d38, type: 3}
+  achievementSound: {fileID: 8300000, guid: 81d3b6cead113fa43a63d36ed73fca98, type: 3}
   tokenSelectSounds:
   - {fileID: 8300000, guid: 212692e81ff51b54cab0cf55e7d64bc5, type: 3}
   - {fileID: 8300000, guid: f950caf6c16483b4c8ed03d015bebea9, type: 3}
