@@ -2106,14 +2106,14 @@ MonoBehaviour:
   explosionSound: {fileID: 8300000, guid: 1b6ebb81eff8689498db19fd6def7d38, type: 3}
   achievementSound: {fileID: 8300000, guid: 81d3b6cead113fa43a63d36ed73fca98, type: 3}
   tokenSelectSounds:
-  - {fileID: 8300000, guid: 212692e81ff51b54cab0cf55e7d64bc5, type: 3}
-  - {fileID: 8300000, guid: f950caf6c16483b4c8ed03d015bebea9, type: 3}
-  - {fileID: 8300000, guid: 2bc4dbf393ca2d34da0a30ba75542d82, type: 3}
+  - {fileID: 8300000, guid: 56798b75a6a137c409dcae17e046948e, type: 3}
+  - {fileID: 8300000, guid: 29fb2f76358be71499ae9881b19b5507, type: 3}
+  - {fileID: 8300000, guid: f657b49b6425f7c43bf1c71f76453c05, type: 3}
   tokenStackSounds:
-  - {fileID: 8300000, guid: df7bc6be8f67f7144901ec57e773d6aa, type: 3}
-  - {fileID: 8300000, guid: f63127cf10ef9d14d8c5b9e1940ddf27, type: 3}
-  - {fileID: 8300000, guid: e67b80efe1a1e334f8f31187663a056b, type: 3}
-  - {fileID: 8300000, guid: 8152b8da3e2e6114992de169a66b596b, type: 3}
+  - {fileID: 8300000, guid: 54fed1c418f05664897f7ebd6aef9230, type: 3}
+  - {fileID: 8300000, guid: dbcbc150a95a87f4ea284f0e1a6b938f, type: 3}
+  - {fileID: 8300000, guid: 5ab41775197e6994d827f2b74d67887f, type: 3}
+  - {fileID: 8300000, guid: ddcd0798c3904a244834aa72ea1b2b49, type: 3}
   foodMatchSounds:
   - {fileID: 8300000, guid: eb59a86103aed0541a40042ebc110d46, type: 3}
   - {fileID: 8300000, guid: 9df40cdb76cca4e2cab06d66a2f5b56d, type: 3}
