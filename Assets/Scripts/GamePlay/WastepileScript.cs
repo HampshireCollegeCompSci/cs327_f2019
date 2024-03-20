@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WastepileScript : MonoBehaviour, ICardContainerHolo
+public class WastepileScript : MonoBehaviour, ICardContainer
 {
     // Singleton instance.
     public static WastepileScript Instance { get; private set; }
@@ -163,6 +163,10 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
             // will the new top card stay
             if (showHolo)
             {
+                if (undoingOrDeck)
+                {
+                    cardScript.EnableHologramImmediately();
+                }
                 cardScript.Hologram = true;
 
                 if (cardList.Count == GameValues.GamePlay.cardsToDeal)

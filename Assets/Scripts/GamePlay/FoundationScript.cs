@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
+public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
 {
     [SerializeField]
     private List<GameObject> cardList;
@@ -87,7 +87,7 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
         AchievementsManager.TryCardStack(cardList);
     }
 
-    public void RemoveCard(GameObject card, bool showHolo)
+    public void RemoveCard(GameObject card, bool showHolo, bool showHoloImmediately = false)
     {
         RemoveCard(card);
 
@@ -113,6 +113,10 @@ public class FoundationScript : MonoBehaviour, ICardContainerHolo, IGlow
 
             if (showHolo)
             {
+                if (showHoloImmediately)
+                {
+                    topCardScript.EnableHologramImmediately();
+                }
                 topCardScript.Hologram = true;
             }
         }

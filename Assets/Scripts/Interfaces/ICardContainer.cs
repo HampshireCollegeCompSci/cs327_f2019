@@ -11,10 +11,3 @@ interface ICardContainer
 
     public void RemoveCard(UnityEngine.GameObject card);
 }
-
-interface ICardContainerHolo : ICardContainer
-{
-    public void AddCard(UnityEngine.GameObject card, bool showHolo);
-
-    public void RemoveCard(UnityEngine.GameObject card, bool showHolo);
-}

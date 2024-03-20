@@ -32,6 +32,7 @@ public class CardScript : MonoBehaviour, IGlow
     private Color draggingColor;
     private Constants.CardContainerType _currentContainerType;
     private GameObject _container;
+    private bool hologramOnImmediatelyFlag;
 
     void Awake()
     {
@@ -170,7 +171,15 @@ public class CardScript : MonoBehaviour, IGlow
             if (_hologram == value) return;
             if (value && !_hologram)
             {
-                holoCoroutine = StartCoroutine(StartHologram());
+                if (hologramOnImmediatelyFlag)
+                {
+                    hologramOnImmediatelyFlag = false;
+                    JumpStartHologram();
+                }
+                else
+                {
+                    holoCoroutine = StartCoroutine(StartHologram());
+                }
             }
             else if (!value && _hologram)
             {
@@ -325,12 +334,13 @@ public class CardScript : MonoBehaviour, IGlow
     }
 
     /// <summary>
-    /// Reveals the card without setting the flag that it is hidden (for undo purposes).
+    /// Reveals the card without setting the flag that it is hidden (for undo purposes), and start the hologram.
     /// </summary>
     public void NextCycleReveal()
     {
         Hidden = false;
         _hidden = true;
+        Hologram = true;
     }
 
     public void MatchChangeFoodHologram(bool turnOn)
@@ -377,6 +387,7 @@ public class CardScript : MonoBehaviour, IGlow
     public void MoveCard(Constants.CardContainerType newContainerType, GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool showHolo = true)
     {
         bool nextCardWasHidden = false;
+        hologramOnImmediatelyFlag = !doLog;
 
         switch (_currentContainerType)
         {
@@ -388,7 +399,7 @@ public class CardScript : MonoBehaviour, IGlow
                 {
                     nextCardWasHidden = true;
                 }
-                foundationScript.RemoveCard(gameObject, showHolo: showHolo);
+                foundationScript.RemoveCard(gameObject, showHolo: showHolo, showHoloImmediately: hologramOnImmediatelyFlag);
                 break;
             case Constants.CardContainerType.Reactor:
                 _container.GetComponent<ReactorScript>().RemoveCard(gameObject);
@@ -471,6 +482,12 @@ public class CardScript : MonoBehaviour, IGlow
 
         _currentContainerType = newContainerType;
         _container = destination;
+        hologramOnImmediatelyFlag = false;
+    }
+
+    public void EnableHologramImmediately()
+    {
+        hologramOnImmediatelyFlag = true;
     }
 
     /// <summary>
@@ -507,5 +524,21 @@ public class CardScript : MonoBehaviour, IGlow
         holoFoodCoroutineColor.a = 1;
         hologramFoodSR.color = holoFoodCoroutineColor;
         holoCoroutine = null;
+    }
+
+    private void JumpStartHologram()
+    {
+        hologram.SetActive(true);
+        hologramFood.SetActive(true);
+
+        Color holoCoroutineColor = hologramSR.color;
+        Color holoFoodCoroutineColor = hologramFoodSR.color;
+        holoCoroutineColor.a = GameValues.Colors.cardHologramAlpha;
+        hologramSR.color = holoCoroutineColor;
+        holoFoodCoroutineColor.a = 1;
+        hologramFoodSR.color = holoFoodCoroutineColor;
+
+        // start the animation at a random frame
+        hologramAnimator.Play(0, -1, Random.Range(0.0f, 1.0f));
     }
 }
