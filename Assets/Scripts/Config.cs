@@ -96,6 +96,7 @@ public class Config : MonoBehaviour
         }
         cameras.Add(newCamera);
         newCamera.enabled = true;
+        AchievementPopup.Instance.CameraChange(newCamera);
     }
 
     public void RemoveCamera(Camera oldCamera)
@@ -112,6 +113,7 @@ public class Config : MonoBehaviour
         }
         if (cameras.Count == 0) return;
         cameras[^1].enabled = true;
+        AchievementPopup.Instance.CameraChange(cameras[^1]);
     }
 
     public void SetDifficulty(Difficulty dif)

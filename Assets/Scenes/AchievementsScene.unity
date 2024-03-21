@@ -332,7 +332,7 @@ PrefabInstance:
     - target: {fileID: 8985224034205886051, guid: 9238f0a695aac854dafeaf352f20f4b5,
         type: 3}
       propertyPath: m_Text
-      value: 'All achievements are granted at the end of a winning game.
+      value: 'All achievements are added at the end of a winning game.
 
 
         No

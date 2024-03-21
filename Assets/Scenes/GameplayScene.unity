@@ -4735,7 +4735,6 @@ GameObject:
   - component: {fileID: 1202057896}
   - component: {fileID: 1202057893}
   - component: {fileID: 1202057898}
-  - component: {fileID: 1202057900}
   m_Layer: 0
   m_Name: Scripts
   m_TagString: Untagged
@@ -4921,21 +4920,6 @@ MonoBehaviour:
     type: 3}
   matchPointsPrefab: {fileID: 5801631464807042985, guid: 614ce32a7efa12342824cb70c9aacc46,
     type: 3}
---- !u!114 &1202057900
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1202057892}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49b65f485d134ba438c4c82f11cd000d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  popupPrefab: {fileID: 5902117523232607633, guid: f8ebfa36718ceb64f9fdd6bb34b3e139,
-    type: 3}
-  UICanvasTransform: {fileID: 2058941301}
 --- !u!1001 &1204289923
 PrefabInstance:
   m_ObjectHideFlags: 0
