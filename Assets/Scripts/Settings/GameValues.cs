@@ -66,6 +66,7 @@ public static class GameValues
 
     public static class Music
     {
+        public const float musicLimit = 0.7f;
         public const float musicFadeInDurationSec = 2.5f;
         public const float musicFadeOutDurationSec = 1;
         public const float musicFadeOutSlowDurationSec = 2f;
@@ -149,8 +150,8 @@ public static class GameValues
 
         // main menu
         public const float logoDelay = 2;
-        public const float buttonFadeOut = 0.5f;
-        public const float zoomAndFade = 1.7f;
+        public const float buttonFadeOut = 0.3f;
+        public const float zoomAndFade = 1.5f;
 
         // screen fades 
         public const float startGameFadeIn = 0.5f; // fades out the game startup logos

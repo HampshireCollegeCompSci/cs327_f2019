@@ -183,7 +183,7 @@ public class MusicController : MonoBehaviour, ISound
                 Muted = false;
             }
 
-            maxVolume = ((float)newVolume) / GameValues.Settings.musicVolumeDenominator;
+            maxVolume = (float)newVolume / GameValues.Settings.musicVolumeDenominator * GameValues.Music.musicLimit;
             audioMixer.SetFloat(Constants.AudioMixerNames.master, Mathf.Log10(maxVolume) * 20);
         }
         else

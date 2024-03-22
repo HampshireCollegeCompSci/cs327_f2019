@@ -46,8 +46,9 @@ public static class PersistentSettings
         _foodSuitsEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.foodSuitsEnabledKey,
                 Convert.ToInt32(GameValues.Settings.foodSuitsEnabledDefault)));
 
-        _frameRate = PlayerPrefs.GetInt(Constants.Settings.frameRateKey, -1);
         int maxDeviceScreenRefreshRate = (int)Math.Round(Screen.currentResolution.refreshRateRatio.value);
+        int defaultFrameRate = Application.platform == RuntimePlatform.WebGLPlayer ? -1 : maxDeviceScreenRefreshRate;
+        _frameRate = PlayerPrefs.GetInt(Constants.Settings.frameRateKey, defaultFrameRate);
         if (FrameRate == 0 || FrameRate < -1 || maxDeviceScreenRefreshRate % FrameRate != 0)
         {
             Debug.LogError($"the unsupported frame rate of {FrameRate} was saved, defaulting to the device's default");

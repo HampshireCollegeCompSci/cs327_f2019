@@ -32,7 +32,7 @@ public class TutorialScript : MonoBehaviour
     {
         // this is the gateway to turn the tutorial on
         if (!Config.Instance.TutorialOn) return;
-        Debug.Log("starting the tutorial");
+        Debug.Log("setting up the tutorial");
 
         // start the tutorial
         tutorialUIPanel.SetActive(true);
@@ -41,10 +41,6 @@ public class TutorialScript : MonoBehaviour
 
         // get the tutorial commands ready
         commandQueue = CommandEnqueuer(CreateFromJSON(Config.Instance.TutorialFileName));
-
-        // start the tutorial
-        waiting = false;
-        NextStep();
     }
 
     private void Start()
@@ -56,6 +52,11 @@ public class TutorialScript : MonoBehaviour
         NextCycle.Instance.EnableOneCycle = false;
         undoButton.interactable = false;
         pauseButton.interactable = false;
+
+        // start the tutorial
+        Debug.Log("starting the tutorial");
+        waiting = false;
+        NextStep();
     }
 
     /// <summary>

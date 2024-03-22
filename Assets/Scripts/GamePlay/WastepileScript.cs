@@ -236,7 +236,7 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         Vector2 endPosition = contentRectTransform.anchoredPosition;
         endPosition.x = -cardSpacing;
 
-        float duration = (cardSpacing + contentRectTransform.anchoredPosition.x) / (cardSpacing * 3);
+        float duration = (cardSpacing + contentRectTransform.anchoredPosition.x) / (cardSpacing * 6);
 
         yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, duration);
 
@@ -302,6 +302,6 @@ public class WastepileScript : MonoBehaviour, ICardContainer
     private float GetScrollDuration(double numCardsToScroll)
     {
         // for the more cards to scroll, the shorter the duration per card
-        return (float) (0.3 * Math.Pow(numCardsToScroll, 0.4));
+        return (float) (0.25 * Math.Pow(numCardsToScroll, 0.4));
     }
 }

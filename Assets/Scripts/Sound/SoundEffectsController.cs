@@ -53,7 +53,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
 
     public void ButtonPressSound(bool vibrate = true)
     {
-        soundController.PlayOneShot(buttonPressSound, 0.6f);
+        soundController.PlayOneShot(buttonPressSound, 0.8f);
 
         if (vibrate)
         {
@@ -69,13 +69,13 @@ public class SoundEffectsController : MonoBehaviour, ISound
 
     public void CardPressSound()
     {
-        soundController.PlayOneShot(tokenSelectSounds[UnityEngine.Random.Range(0, tokenSelectSounds.Length)], 0.3f);
+        soundController.PlayOneShot(tokenSelectSounds[UnityEngine.Random.Range(0, tokenSelectSounds.Length)], 0.6f);
         VibrateSmall();
     }
 
     public void CardToReactorSound()
     {
-        soundController.PlayOneShot(tokenInReactorSound, 0.5f);
+        soundController.PlayOneShot(tokenInReactorSound, 0.3f);
         VibrateSmall();
     }
 
@@ -87,21 +87,20 @@ public class SoundEffectsController : MonoBehaviour, ISound
 
     public void DeckDeal()
     {
-        soundController.PlayOneShot(deckDealSound, 0.6f);
+        soundController.PlayOneShot(deckDealSound, 0.3f);
         VibrateMedium();
     }
 
     public void DeckReshuffle()
     {
-        soundController.PlayOneShot(deckReshuffleSound, 0.6f);
+        soundController.PlayOneShot(deckReshuffleSound, 0.3f);
         VibrateLarge();
     }
 
     public void PauseMenuButtonSound()
     {
         soundController.Stop();
-        soundController.clip = pauseButtonSound;
-        soundController.Play();
+        soundController.PlayOneShot(pauseButtonSound, 0.4f);
         VibrateMedium();
     }
 
@@ -136,7 +135,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
 
     public void AchievementSound()
     {
-        soundController.PlayOneShot(achievementSound, 0.7f);
+        soundController.PlayOneShot(achievementSound, 1);
     }
 
     public void FoodMatch(Suit suit)
@@ -145,7 +144,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
         {
             throw new IndexOutOfRangeException($"the suit {suit}'s index is not between 0-{foodMatchSounds.Length}");
         }
-        soundController.PlayOneShot(foodMatchSounds[suit.Index], 1);
+        soundController.PlayOneShot(foodMatchSounds[suit.Index], 0.5f);
         VibrateMedium();
     }
 
@@ -167,7 +166,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
     private IEnumerator AlertVibration()
     {
         yield return alertDelay0;
-        soundController.PlayOneShot(alertSound, 0.2f);
+        soundController.PlayOneShot(alertSound, 0.5f);
         yield return alertDelay1;
         VibrateMedium();
         yield return alertDelay2;
