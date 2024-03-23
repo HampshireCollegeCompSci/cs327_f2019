@@ -69,7 +69,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
 
     public void CardPressSound()
     {
-        soundController.PlayOneShot(tokenSelectSounds[UnityEngine.Random.Range(0, tokenSelectSounds.Length)], 0.6f);
+        soundController.PlayOneShot(tokenSelectSounds[UnityEngine.Random.Range(0, tokenSelectSounds.Length)], 0.7f);
         VibrateSmall();
     }
 
