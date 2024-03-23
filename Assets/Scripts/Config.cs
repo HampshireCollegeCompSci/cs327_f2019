@@ -8,7 +8,6 @@ public class Config : MonoBehaviour
     public static Config Instance { get; private set; }
 
     // game settings
-    public bool nextCycleEnabled;
     public bool continuing;
     public bool prettyColors;
 
@@ -97,6 +96,7 @@ public class Config : MonoBehaviour
         }
         cameras.Add(newCamera);
         newCamera.enabled = true;
+        AchievementPopup.Instance.CameraChange(newCamera);
     }
 
     public void RemoveCamera(Camera oldCamera)
@@ -113,6 +113,7 @@ public class Config : MonoBehaviour
         }
         if (cameras.Count == 0) return;
         cameras[^1].enabled = true;
+        AchievementPopup.Instance.CameraChange(cameras[^1]);
     }
 
     public void SetDifficulty(Difficulty dif)

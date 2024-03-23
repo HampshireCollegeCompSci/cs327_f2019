@@ -208,10 +208,11 @@ public class SettingsScript : MonoBehaviour
     public void MovesUntilSaveOnEndEdit(string update)
     {
         if (lockout) return;
-        Debug.Log($"seting moves until save to: {update}");
 
         if (Int32.TryParse(update, out int movesUntilSave) && movesUntilSave > 0)
         {
+            if (PersistentSettings.MovesUntilSave == movesUntilSave) return;
+            Debug.Log($"seting moves until save to: {movesUntilSave}");
             PersistentSettings.MovesUntilSave = movesUntilSave;
             if (SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
             {
@@ -220,6 +221,7 @@ public class SettingsScript : MonoBehaviour
         }
         else
         {
+            Debug.LogWarning($"invalid moves until save detected: {update}");
             movesUntilSaveInputField.text = PersistentSettings.MovesUntilSave.ToString();
         }
     }

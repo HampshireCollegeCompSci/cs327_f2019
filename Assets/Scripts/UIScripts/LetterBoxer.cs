@@ -1,10 +1,12 @@
 ﻿using System;
+#if UNITY_WEBGL
 using System.Collections;
+#endif
 using UnityEngine;
 
 public class LetterBoxer : MonoBehaviour
 {
-    // started from here: https://github.com/rabidgremlin/LetterBoxer
+    // modified and improved script that started from here: https://github.com/rabidgremlin/LetterBoxer
 
     private const float minX = 9;
     private const float minY = 20;
@@ -15,10 +17,10 @@ public class LetterBoxer : MonoBehaviour
     private const float minRatio = minX / minY;
     private const float maxRatio = maxX / maxY;
 
-    private static readonly WaitForSecondsRealtime screenCheckWait = new(2f);
+    private Camera cam;
 
-    private Camera cam;// letterBoxerCamera;
 #if UNITY_WEBGL
+    private static readonly WaitForSecondsRealtime screenCheckWait = new(1);
     private int currentScreenWidth, currentScreenHeight;
 #endif
 
@@ -26,14 +28,12 @@ public class LetterBoxer : MonoBehaviour
     {
         // store reference to the camera
         cam = GetComponent<Camera>();
-        // add the letterboxing camera
-        //AddLetterBoxingCamera();
 
         PerformSizing();
-        #if UNITY_WEBGL
-            currentScreenWidth = Screen.width;
-            currentScreenHeight = Screen.height;
-        #endif
+#if UNITY_WEBGL
+        currentScreenWidth = Screen.width;
+        currentScreenHeight = Screen.height;
+#endif
     }
 
 #if UNITY_WEBGL
@@ -61,23 +61,6 @@ public class LetterBoxer : MonoBehaviour
         }
     }
 #endif
-
-    /*
-    private void AddLetterBoxingCamera()
-    {
-        // create a camera to render bcakground used for matte bars
-        letterBoxerCamera = new GameObject().AddComponent<Camera>();
-        letterBoxerCamera.backgroundColor = Color.black;
-        letterBoxerCamera.cullingMask = 0;
-        letterBoxerCamera.depth = -10;
-        letterBoxerCamera.farClipPlane = 1;
-        letterBoxerCamera.useOcclusionCulling = false;
-        letterBoxerCamera.allowHDR = false;
-        letterBoxerCamera.allowMSAA = false;
-        letterBoxerCamera.clearFlags = CameraClearFlags.Color;
-        letterBoxerCamera.name = "Letter Boxer Camera";
-    }
-    */
 
     // based on logic here from http://gamedesigntheory.blogspot.com/2010/09/controlling-aspect-ratio-in-unity.html
     private void PerformSizing(bool again = false)

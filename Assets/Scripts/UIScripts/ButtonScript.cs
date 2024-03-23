@@ -3,9 +3,6 @@ using UnityEngine.SceneManagement;
 
 public class ButtonScript : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject pressAnimation;
-
     public void ButtonClicked()
     {
         SoundEffectsController.Instance.ButtonPressSound();
@@ -85,16 +82,6 @@ public class ButtonScript : MonoBehaviour
         {
             throw new System.NullReferenceException("A sequence Instance does not exist!");
         }
-    }
-
-    public void ButtonPressed()
-    {
-        pressAnimation.SetActive(true);
-    }
-
-    public void ButtonReleased()
-    {
-        pressAnimation.SetActive(false);
     }
 
     private void TryPlayAboutMusic()

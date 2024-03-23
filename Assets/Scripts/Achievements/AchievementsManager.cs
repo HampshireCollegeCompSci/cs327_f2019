@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class AchievementsManager
 {
-    private static readonly Stack<Achievement> achievementStack = new(14);
+    private static readonly Stack<Achievement> achievementStack = new(Achievements.achievementList.Count);
 
     public static void LoadAchievementValues(List<Achievement> savedAchievements)
     {

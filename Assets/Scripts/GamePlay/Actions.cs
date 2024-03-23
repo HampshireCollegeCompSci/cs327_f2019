@@ -162,8 +162,7 @@
         }
         else if (!wasInAlert && isInAlert) // new alert
         {
-            bool reactorsNearOverLimit = CheckReactorsNearOverLimit();
-            if (reactorsNearOverLimit)
+            if (CheckReactorsNearOverLimit())
             {
                 SpaceBabyController.Instance.BabyReactorHigh();
                 ActionCountScript.Instance.AlertLevel = Config.Instance.CurrentColorMode.Over;

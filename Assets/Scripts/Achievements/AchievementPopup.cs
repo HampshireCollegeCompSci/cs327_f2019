@@ -7,29 +7,38 @@ public class AchievementPopup : MonoBehaviour
 {
     // Singleton instance.
     public static AchievementPopup Instance { get; private set; }
-    private static readonly WaitForSeconds popupDelay = new(1),
-        popupDuration = new(GameValues.AnimationDurataions.achievementPopup);
+    private static readonly WaitForSeconds popupDelay = new(GameValues.Achievements.delayDuration),
+        popupDuration = new(GameValues.Achievements.fullVisibleDuration);
 
     [SerializeField]
     private GameObject popupPrefab;
-    [SerializeField]
-    private Transform UICanvasTransform;
 
+    private Transform UICanvasTransform;
+    private Canvas canvas;
     private Queue<Achievement> popupQueue;
     private Coroutine achievementCoroutine;
 
     // Initialize the singleton instance.
     void Awake()
     {
-        if (Instance == null)
+        // If there is an instance, and it's not me, delete myself.
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
-            popupQueue = new Queue<Achievement>();
+            Destroy(this);
+            return;
         }
-        else if (Instance != this)
-        {
-            throw new System.ArgumentException("there should not already be an instance of this");
-        }
+
+        Instance = this;
+        // make instance persist across scenes
+        DontDestroyOnLoad(this.gameObject);
+        UICanvasTransform = GetComponent<Transform>();
+        canvas = GetComponent<Canvas>();
+        popupQueue = new Queue<Achievement>(Achievements.achievementList.Count);
+    }
+
+    public void CameraChange(Camera newCam)
+    {
+        canvas.worldCamera = newCam;
     }
 
     public void ShowAchievement(Achievement achievement)
@@ -50,9 +59,9 @@ public class AchievementPopup : MonoBehaviour
             popup.GetComponentInChildren<Text>().text = $"Achievement: {achievement.Name}";
             CanvasGroup popupCG = popup.GetComponent<CanvasGroup>();
             SoundEffectsController.Instance.AchievementSound();
-            yield return Animate.FadeCanvasGroup(popupCG, 0, 1, GameValues.AnimationDurataions.achievementPopupFade);
+            yield return Animate.FadeCanvasGroup(popupCG, 0, 1, GameValues.Achievements.fadeDuration);
             yield return popupDuration;
-            yield return Animate.FadeCanvasGroup(popupCG, 1, 0, GameValues.AnimationDurataions.achievementPopupFade);
+            yield return Animate.FadeCanvasGroup(popupCG, 1, 0, GameValues.Achievements.fadeDuration);
             Destroy(popup);
         }
         achievementCoroutine = null;

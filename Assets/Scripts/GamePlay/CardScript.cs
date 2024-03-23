@@ -32,6 +32,7 @@ public class CardScript : MonoBehaviour, IGlow
     private Color draggingColor;
     private Constants.CardContainerType _currentContainerType;
     private GameObject _container;
+    private bool hologramOnImmediatelyFlag;
 
     void Awake()
     {
@@ -170,7 +171,15 @@ public class CardScript : MonoBehaviour, IGlow
             if (_hologram == value) return;
             if (value && !_hologram)
             {
-                holoCoroutine = StartCoroutine(StartHologram());
+                if (hologramOnImmediatelyFlag)
+                {
+                    hologramOnImmediatelyFlag = false;
+                    JumpStartHologram();
+                }
+                else
+                {
+                    holoCoroutine = StartCoroutine(StartHologram());
+                }
             }
             else if (!value && _hologram)
             {
@@ -197,7 +206,33 @@ public class CardScript : MonoBehaviour, IGlow
         {
             if (_hologramColor.Equals(value)) return;
             _hologramColor = value;
-            hologramSR.color = value.HoloColor;
+
+            // when hints are not enabled, don't show certain colors
+            if (Config.Instance.HintsEnabled ||
+                value.ColorLevel == Constants.ColorLevel.None)
+            {
+                hologramSR.color = value.HoloColor;
+            }
+            else
+            {
+                hologramSR.color = Config.Instance.CurrentColorMode.Move.Color;
+            }
+
+            // custom coloring logic for the hologram's food object
+            if (value.ColorLevel == Constants.ColorLevel.None ||
+                value.ColorLevel == Constants.ColorLevel.Match)
+            {
+                // keep the color netural by default and when matching
+                hologramFoodSR.color = Color.white;
+            }
+            else if (Config.Instance.HintsEnabled)
+            {
+                hologramFoodSR.color = value.Color;
+            }
+            else
+            {
+                hologramFoodSR.color = Config.Instance.CurrentColorMode.Move.Color;
+            }
         }
     }
 
@@ -299,12 +334,13 @@ public class CardScript : MonoBehaviour, IGlow
     }
 
     /// <summary>
-    /// Reveals the card without setting the flag that it is hidden (for undo purposes).
+    /// Reveals the card without setting the flag that it is hidden (for undo purposes), and start the hologram.
     /// </summary>
     public void NextCycleReveal()
     {
         Hidden = false;
         _hidden = true;
+        Hologram = true;
     }
 
     public void MatchChangeFoodHologram(bool turnOn)
@@ -351,6 +387,7 @@ public class CardScript : MonoBehaviour, IGlow
     public void MoveCard(Constants.CardContainerType newContainerType, GameObject destination, bool doLog = true, bool isAction = true, bool isCycle = false, bool isStack = false, bool showHolo = true)
     {
         bool nextCardWasHidden = false;
+        hologramOnImmediatelyFlag = !doLog;
 
         switch (_currentContainerType)
         {
@@ -362,7 +399,7 @@ public class CardScript : MonoBehaviour, IGlow
                 {
                     nextCardWasHidden = true;
                 }
-                foundationScript.RemoveCard(gameObject, showHolo: showHolo);
+                foundationScript.RemoveCard(gameObject, showHolo: showHolo, showHoloImmediately: hologramOnImmediatelyFlag);
                 break;
             case Constants.CardContainerType.Reactor:
                 _container.GetComponent<ReactorScript>().RemoveCard(gameObject);
@@ -445,6 +482,12 @@ public class CardScript : MonoBehaviour, IGlow
 
         _currentContainerType = newContainerType;
         _container = destination;
+        hologramOnImmediatelyFlag = false;
+    }
+
+    public void EnableHologramImmediately()
+    {
+        hologramOnImmediatelyFlag = true;
     }
 
     /// <summary>
@@ -461,21 +504,41 @@ public class CardScript : MonoBehaviour, IGlow
         Color holoCoroutineColor = hologramSR.color;
         Color holoFoodCoroutineColor = hologramFoodSR.color;
 
-        float duration = GameValues.AnimationDurataions.cardHologramFadeIn;
-        float timeElapsed = 0;
-        while (timeElapsed < duration)
+        if (!Config.Instance.TutorialOn)
         {
-            holoCoroutineColor.a = Mathf.Lerp(0, GameValues.Colors.cardHologramAlpha, timeElapsed / duration);
-            hologramSR.color = holoCoroutineColor;
-            holoFoodCoroutineColor.a = Mathf.Lerp(0, 1, timeElapsed / duration);
-            hologramFoodSR.color = holoFoodCoroutineColor;
-            timeElapsed += Time.deltaTime;
-            yield return null;
+            float duration = GameValues.AnimationDurataions.cardHologramFadeIn;
+            float timeElapsed = 0;
+            while (timeElapsed < duration)
+            {
+                holoCoroutineColor.a = Mathf.Lerp(0, GameValues.Colors.cardHologramAlpha, timeElapsed / duration);
+                hologramSR.color = holoCoroutineColor;
+                holoFoodCoroutineColor.a = Mathf.Lerp(0, 1, timeElapsed / duration);
+                hologramFoodSR.color = holoFoodCoroutineColor;
+                timeElapsed += Time.deltaTime;
+                yield return null;
+            }
         }
+
         holoCoroutineColor.a = GameValues.Colors.cardHologramAlpha;
         hologramSR.color = holoCoroutineColor;
         holoFoodCoroutineColor.a = 1;
         hologramFoodSR.color = holoFoodCoroutineColor;
         holoCoroutine = null;
+    }
+
+    private void JumpStartHologram()
+    {
+        hologram.SetActive(true);
+        hologramFood.SetActive(true);
+
+        Color holoCoroutineColor = hologramSR.color;
+        Color holoFoodCoroutineColor = hologramFoodSR.color;
+        holoCoroutineColor.a = GameValues.Colors.cardHologramAlpha;
+        hologramSR.color = holoCoroutineColor;
+        holoFoodCoroutineColor.a = 1;
+        hologramFoodSR.color = holoFoodCoroutineColor;
+
+        // start the animation at a random frame
+        hologramAnimator.Play(0, -1, Random.Range(0.0f, 1.0f));
     }
 }

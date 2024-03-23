@@ -1,20 +1,30 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class NextCycle : MonoBehaviour
+public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
     public static NextCycle Instance { get; private set; }
     private static readonly WaitForSeconds endCycleDelay = new(0.1f),
         emptyCycleDelay = new(2.2f);
 
     [SerializeField]
-    private UnityEngine.UI.Button nextCycleButton;
+    private Sprite buttonUp, buttonDown;
+    private Image buttonImage;
+
+    private bool mouseOverButton, mousePressingButton;
+
+    public bool EnableOneCycle{ get; set; }
+    private bool ButtonReady { get; set; }
 
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+            buttonImage = this.GetComponent<Image>();
+            ButtonReady = true;
         }
         else if (Instance != this)
         {
@@ -22,15 +32,45 @@ public class NextCycle : MonoBehaviour
         }
     }
 
-    public void ManualStartCycleButton()
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        if (GameInput.Instance.InputStopped) return;
-        if (Config.Instance.TutorialOn)
+        mouseOverButton = true;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        mouseOverButton = false;
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (!ButtonReady || GameInput.Instance.InputStopped) return;
+        if (Config.Instance.TutorialOn && !EnableOneCycle) return;
+        ButtonReady = false;
+        mousePressingButton = true;
+        GameInput.Instance.InputStopped = true;
+        KnobDown();
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (!mousePressingButton) return;
+        mousePressingButton = false;
+        GameInput.Instance.InputStopped = false;
+
+        bool somethingWillHappen = Actions.ActionsDone != 0 || !Actions.AreFoundationsEmpty();
+        if (mouseOverButton && somethingWillHappen)
         {
-            if (!Config.Instance.nextCycleEnabled) return;
-            Config.Instance.nextCycleEnabled = false;
-            nextCycleButton.interactable = false;
+            ManualStartCycleButton();
         }
+        else
+        {
+            KnobUp();
+        }
+    }
+
+    private void ManualStartCycleButton()
+    {
         AchievementsManager.FailedAlwaysMoves();
         SoundEffectsController.Instance.VibrateMedium();
         StartCycle();
@@ -39,7 +79,8 @@ public class NextCycle : MonoBehaviour
     public void StartCycle()
     {
         GameInput.Instance.InputStopped = true;
-        ActionCountScript.Instance.KnobDown();
+        ButtonReady = false;
+        KnobDown();
         SpaceBabyController.Instance.BabyActionCounter();
 
         if (Actions.AreFoundationsEmpty())
@@ -92,7 +133,7 @@ public class NextCycle : MonoBehaviour
             {
                 Actions.MoveCounter++;
                 GameInput.Instance.InputStopped = false;
-                ActionCountScript.Instance.KnobUp();
+                KnobUp();
                 yield break;
             }
         }
@@ -109,7 +150,24 @@ public class NextCycle : MonoBehaviour
     private void EndCycle()
     {
         GameInput.Instance.InputStopped = false;
-        ActionCountScript.Instance.KnobUp();
+        KnobUp();
         Actions.NextCycleUpdate();
+
+        if (EnableOneCycle)
+        {
+            EnableOneCycle = false;
+        }
     }
+
+    public void KnobDown()
+    {
+        buttonImage.sprite = buttonDown;
+    }
+
+    public void KnobUp()
+    {
+        buttonImage.sprite = buttonUp;
+        ButtonReady = true;
+    }
+
 }

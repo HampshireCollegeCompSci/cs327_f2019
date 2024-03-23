@@ -57,8 +57,16 @@ public static class GameValues
         public const int scoreMultiplier = 50;
     }
 
+    public static class Achievements
+    {
+        public const float delayDuration = 1;
+        public const float fullVisibleDuration = 2;
+        public const float fadeDuration = 0.5f;
+    }
+
     public static class Music
     {
+        public const float musicLimit = 0.7f;
         public const float musicFadeInDurationSec = 2.5f;
         public const float musicFadeOutDurationSec = 1;
         public const float musicFadeOutSlowDurationSec = 2f;
@@ -66,11 +74,11 @@ public static class GameValues
 
     public static class Settings
     {
-        public const int musicDefaultVolume = 15;
-        public const int musicVolumeDenominator = 20;
+        public const int musicDefaultVolume = 20; // 0-20
+        public const int musicVolumeDenominator = 20; // how many steps
 
-        public const int soundEffectsDefaultVolume = 15;
-        public const int soundEffectsVolumeDenominator = 20;
+        public const int soundEffectsDefaultVolume = 20; // 0-20
+        public const int soundEffectsVolumeDenominator = 20; // how many steps
 
         public const bool achievementPopupsEnabledDefault = true;
         public const bool vibrationEnabledDefault = true;
@@ -143,20 +151,16 @@ public static class GameValues
         // main menu
         public const float logoDelay = 2;
         public const float buttonFadeOut = 0.3f;
-        public const float zoomAndFade = 1.7f;
+        public const float zoomAndFade = 1.5f;
 
         // screen fades 
         public const float startGameFadeIn = 0.5f; // fades out the game startup logos
         public const float gameplayFadeIn = 0.5f; // fades in the gameplay scene
-        public const float gameOverFade = 1f; // fades in the game over pop-up
+        public const float gameOverFade = 0.5f; // fades in the game over pop-up
         public const float gameEndWonFade = 1.7f; // fades out of the gameplay scene to summary - game was won
-        public const float gameEndLostFade = 1f; // fades out of the gameplay scene to summary - game was lost
-        public const float summaryFadeIn = 0.5f; // fades into the summary scene
-        public const float playAgainFadeOut = 1; // fades out of the summary scene to gameplay
-
-        // Achievements
-        public const float achievementPopup = 2;
-        public const float achievementPopupFade = 0.5f;
+        public const float gameEndLostFade = 0.7f; // fades out of the gameplay scene to summary - game was lost
+        public const float summaryFadeIn = 0.3f; // fades into the summary scene
+        public const float playAgainFadeOut = 0.6f; // fades out of the summary scene to gameplay
 
         // gameplay
         public const float cardHologramFadeIn = 2; // fades in the cards holograms

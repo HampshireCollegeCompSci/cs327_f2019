@@ -20,7 +20,7 @@ public class TutorialScript : MonoBehaviour
     private bool waiting;
 
     [SerializeField]
-    private Button deckButton, undoButton, timerButton, pauseButton, tutorialNextButton;
+    private Button undoButton, pauseButton, tutorialNextButton;
 
     [SerializeField]
     private GameObject tutorialUIPanel, tutorialText,
@@ -31,10 +31,32 @@ public class TutorialScript : MonoBehaviour
     private void Awake()
     {
         // this is the gateway to turn the tutorial on
-        if (Config.Instance.TutorialOn)
-        {
-            StartTutorial();
-        }
+        if (!Config.Instance.TutorialOn) return;
+        Debug.Log("setting up the tutorial");
+
+        // start the tutorial
+        tutorialUIPanel.SetActive(true);
+        // update colors via script instead of having to do it in editor each time
+        UpdateHighlightObjectsColor(Config.Instance.CurrentColorMode.Notify.GlowColor);
+
+        // get the tutorial commands ready
+        commandQueue = CommandEnqueuer(CreateFromJSON(Config.Instance.TutorialFileName));
+    }
+
+    private void Start()
+    {
+        if (!Config.Instance.TutorialOn) return;
+
+        // prevent the user from interacting with buttons during the tutorial
+        DeckScript.Instance.ButtonReady = false;
+        NextCycle.Instance.EnableOneCycle = false;
+        undoButton.interactable = false;
+        pauseButton.interactable = false;
+
+        // start the tutorial
+        Debug.Log("starting the tutorial");
+        waiting = false;
+        NextStep();
     }
 
     /// <summary>
@@ -61,29 +83,6 @@ public class TutorialScript : MonoBehaviour
         SoundEffectsController.Instance.ButtonPressSound();
         SceneManager.LoadScene(Constants.ScenesNames.mainMenu);
         MusicController.Instance.MainMenuMusic();
-    }
-
-    private void StartTutorial()
-    {
-        Debug.Log("starting the tutorial");
-
-        // prevent the user from interacting with buttons during the tutorial
-        deckButton.interactable = false;
-        undoButton.interactable = false;
-        timerButton.interactable = false;
-        pauseButton.interactable = false;
-
-        // start the tutorial
-        tutorialUIPanel.SetActive(true);
-        // update colors via script instead of having to do it in editor each time
-        UpdateHighlightObjectsColor(Config.Instance.CurrentColorMode.Notify.GlowColor);
-
-        // get the tutorial commands ready
-        commandQueue = CommandEnqueuer(CreateFromJSON(Config.Instance.TutorialFileName));
-
-        // start the tutorial
-        waiting = false;
-        NextStep();
     }
 
     /// <summary>
@@ -244,9 +243,9 @@ public class TutorialScript : MonoBehaviour
         GameLoader.Instance.RestartGame();
         GameInput.Instance.InputStopped = false;
 
-        deckButton.interactable = true;
+        DeckScript.Instance.ButtonReady = true;
+        NextCycle.Instance.EnableOneCycle = true;
         undoButton.interactable = true;
-        timerButton.interactable = true;
         pauseButton.interactable = true;
     }
 
@@ -637,13 +636,13 @@ public class TutorialScript : MonoBehaviour
         switch (NormalizeString(command[1]))
         {
             case "DECK":
-                deckButton.interactable = interactable;
+                DeckScript.Instance.ButtonReady = interactable;
                 break;
             case "UNDO":
                 undoButton.interactable = interactable;
                 break;
             case "TIMER":
-                timerButton.interactable = interactable;
+                NextCycle.Instance.EnableOneCycle = interactable;
                 break;
             default:
                 throw new FormatException("contains an invalid button for command #2");
@@ -653,7 +652,7 @@ public class TutorialScript : MonoBehaviour
     private void EnableOneNextCycle()
     {
         Debug.Log($"enabling one next cycle");
-        Config.Instance.nextCycleEnabled = true;
+        NextCycle.Instance.EnableOneCycle = true;
     }
 
     /// <summary>

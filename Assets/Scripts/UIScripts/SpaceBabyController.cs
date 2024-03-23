@@ -79,6 +79,7 @@ public class SpaceBabyController : MonoBehaviour, ISound
 
     public void BabyReactorHigh()
     {
+        if (!Config.Instance.HintsEnabled) return;
         audioSource.PlayOneShot(reactorHighSound, 0.2f);
         AngryAnimation();
     }

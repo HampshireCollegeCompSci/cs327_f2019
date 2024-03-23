@@ -9,9 +9,6 @@ public class StartGameSequence : MonoBehaviour
     public static StartGameSequence Instance { get; private set; }
 
     [SerializeField]
-    private MenuUIScript menuUIScript;
-
-    [SerializeField]
     private GameObject cameraObject;
     private Camera cam;
 
@@ -27,7 +24,7 @@ public class StartGameSequence : MonoBehaviour
     [SerializeField]
     private CanvasGroup allButtons;
     [SerializeField]
-    private GameObject mainButtons, playButtons, moreButtons;
+    private GameObject mainButtons, playButtons;
     [SerializeField]
     private GameObject spaceShip;
     [SerializeField]
@@ -79,7 +76,8 @@ public class StartGameSequence : MonoBehaviour
         canvas.renderMode = RenderMode.WorldSpace;
 
         SceneManager.LoadSceneAsync(Constants.ScenesNames.gameplay, LoadSceneMode.Additive);
-        StartCoroutine(FadeMenuOut());
+        StartCoroutine(Animate.FadeCanvasGroup(allButtons, 1, 0, GameValues.AnimationDurataions.buttonFadeOut));
+        StartCoroutine(PanAndZoom());
     }
 
     public void GameplayLoaded()
@@ -113,7 +111,6 @@ public class StartGameSequence : MonoBehaviour
         cameraObject.transform.position = originalCameraPosition;
 
         playButtons.SetActive(false);
-        moreButtons.SetActive(false);
         mainButtons.SetActive(true);
         allButtons.alpha = 1;
         allButtons.interactable = true;
@@ -127,13 +124,7 @@ public class StartGameSequence : MonoBehaviour
         StartCoroutine(ButtonDelay());
     }
 
-    private IEnumerator FadeMenuOut()
-    {
-        yield return Animate.FadeCanvasGroup(allButtons, 1, 0, GameValues.AnimationDurataions.buttonFadeOut);
-        yield return Zoom();
-    }
-
-    private IEnumerator Zoom()
+    private IEnumerator PanAndZoom()
     {
         float startingSize = originalCameraSize;
         float targetSize = GameValues.Transforms.zoomFactor;

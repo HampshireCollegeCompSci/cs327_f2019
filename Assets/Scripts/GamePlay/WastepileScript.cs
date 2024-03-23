@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WastepileScript : MonoBehaviour, ICardContainerHolo
+public class WastepileScript : MonoBehaviour, ICardContainer
 {
     // Singleton instance.
     public static WastepileScript Instance { get; private set; }
@@ -163,6 +163,10 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
             // will the new top card stay
             if (showHolo)
             {
+                if (undoingOrDeck)
+                {
+                    cardScript.EnableHologramImmediately();
+                }
                 cardScript.Hologram = true;
 
                 if (cardList.Count == GameValues.GamePlay.cardsToDeal)
@@ -232,7 +236,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
         Vector2 endPosition = contentRectTransform.anchoredPosition;
         endPosition.x = -cardSpacing;
 
-        float duration = (cardSpacing + contentRectTransform.anchoredPosition.x) / (cardSpacing * 3);
+        float duration = (cardSpacing + contentRectTransform.anchoredPosition.x) / (cardSpacing * 6);
 
         yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, duration);
 
@@ -297,9 +301,7 @@ public class WastepileScript : MonoBehaviour, ICardContainerHolo
 
     private float GetScrollDuration(double numCardsToScroll)
     {
-        // for the more cards to scroll, the duration per card will be shorter
-        return 0.1f + (float)(numCardsToScroll * Math.Pow(Math.E, -(numCardsToScroll + GameValues.GamePlay.cardCount * 2) / GameValues.GamePlay.cardCount));
-        // y = 0.1f + x * e^(-(x + 52 * 2) / 52))
-        // see the graph here: https://www.desmos.com/calculator/ilxwms4vjm
+        // for the more cards to scroll, the shorter the duration per card
+        return (float) (0.25 * Math.Pow(numCardsToScroll, 0.4));
     }
 }

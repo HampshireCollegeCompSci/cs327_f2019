@@ -163,13 +163,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1523162561}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1555157823
 PrefabInstance:
@@ -332,7 +332,7 @@ PrefabInstance:
     - target: {fileID: 8985224034205886051, guid: 9238f0a695aac854dafeaf352f20f4b5,
         type: 3}
       propertyPath: m_Text
-      value: 'All achievements are granted at the end of a winning game.
+      value: 'All achievements are added at the end of a winning game.
 
 
         No
@@ -390,6 +390,11 @@ PrefabInstance:
     - target: {fileID: 6232750234138790371, guid: 5931a8d43d94c204b896f03449eb251f,
         type: 3}
       propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6232750234138790371, guid: 5931a8d43d94c204b896f03449eb251f,
+        type: 3}
+      propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6232750234138790371, guid: 5931a8d43d94c204b896f03449eb251f,
@@ -454,6 +459,26 @@ PrefabInstance:
       value: 'ACHIEVEMENTS
 
 '
+      objectReference: {fileID: 0}
+    - target: {fileID: 3520926835303970293, guid: 2312f190341992f4e974a7f7cf1b2984,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3520926835303970293, guid: 2312f190341992f4e974a7f7cf1b2984,
+        type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3520926835303970293, guid: 2312f190341992f4e974a7f7cf1b2984,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3520926835303970293, guid: 2312f190341992f4e974a7f7cf1b2984,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 3697479020986470435, guid: 2312f190341992f4e974a7f7cf1b2984,
         type: 3}
@@ -625,3 +650,10 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 5095869656266631263}
   m_PrefabAsset: {fileID: 0}
+--- !u!1660057539 &9223372036854775807
+SceneRoots:
+  m_ObjectHideFlags: 0
+  m_Roots:
+  - {fileID: 1742799681}
+  - {fileID: 1523162563}
+  - {fileID: 5095869656266631263}

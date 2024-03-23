@@ -11,10 +11,7 @@ public class ActionCountScript : MonoBehaviour
     [SerializeField]
     private Text actionText;
     [SerializeField]
-    private Image screenImage, lightsImage, sirenImage, buttonImage;
-
-    [SerializeField]
-    private Sprite buttonDown, buttonUp;
+    private Image screenImage, lightsImage, sirenImage;
 
     private Color originalScreenColor, originalLightsColor, originalSirenColor;
     private HighLightColor _currentAlertLevel;
@@ -116,16 +113,6 @@ public class ActionCountScript : MonoBehaviour
 
         // just in case quick moves or undos occur
         actionText.text = (Config.Instance.CurrentDifficulty.MoveLimit - Actions.ActionsDone).ToString();
-    }
-
-    public void KnobDown()
-    {
-        buttonImage.sprite = buttonDown;
-    }
-
-    public void KnobUp()
-    {
-        buttonImage.sprite = buttonUp;
     }
 
     private IEnumerator Flash(Color flashColor)
