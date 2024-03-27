@@ -130,7 +130,9 @@ public class GameInput : MonoBehaviour
                 Vector2.zero,
                 1,
                 Constants.LayerMaskIDs.cards);
-            if (hit.collider == null) return;
+            if (hit.collider == null ||
+                !hit.collider.gameObject.CompareTag(Constants.Tags.card)) return;
+            // the deck's mask has a card layerID with a deck tag
 
             dragOn = true;
             InputStopped = true;

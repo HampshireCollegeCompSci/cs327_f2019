@@ -11,6 +11,7 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     [SerializeField]
     private Sprite buttonUp, buttonDown;
+    [SerializeField]
     private Image buttonImage;
 
     private bool mouseOverButton, mousePressingButton;
@@ -23,7 +24,6 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         if (Instance == null)
         {
             Instance = this;
-            buttonImage = this.GetComponent<Image>();
             ButtonReady = true;
         }
         else if (Instance != this)
