@@ -71,12 +71,12 @@ public class UndoScript : MonoBehaviour
         //only run if there's something in the stack
         if (moveLog.Count == 0) return;
 
-        Debug.Log("undoing move");
         SoundEffectsController.Instance.UndoPressSound();
         Move lastMove;
         switch (moveLog.Peek().moveType)
         {
             case Constants.LogMoveType.Stack:
+                Debug.Log("undoing stack");
                 // the undoList is ordered such that [0] is the top of the stack
                 Move topCardMove = moveLog.Pop();
 
@@ -106,6 +106,7 @@ public class UndoScript : MonoBehaviour
                 Actions.UndoUpdate(topCardMove.remainingActions);
                 break;
             case Constants.LogMoveType.Move:
+                Debug.Log("undoing move");
                 // standard behavior, move a single token back where it was
                 lastMove = moveLog.Pop();
                 StateLoader.Instance.RemoveMove();
@@ -117,6 +118,7 @@ public class UndoScript : MonoBehaviour
                 }
                 break;
             case Constants.LogMoveType.Match:
+                Debug.Log("undoing match");
                 // undo a match, removing the score gained and moving both cards back to their original locations
                 MoveFoundationCard(moveLog.Pop());
                 StateLoader.Instance.RemoveMove();
@@ -129,6 +131,7 @@ public class UndoScript : MonoBehaviour
                 Actions.MatchUndoUpdate();
                 break;
             case Constants.LogMoveType.Draw:
+                Debug.Log("undoing draw");
                 // move the drawn cards back to the deck (assuming the last action was to draw from the deck)
                 while (true)
                 {
@@ -144,8 +147,10 @@ public class UndoScript : MonoBehaviour
 
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.containerType, lastMove.origin, doLog: false, showHolo: false);
                 }
+                DeckCounterScript.Instance.UpdateCounterInstantly();
                 break;
             case Constants.LogMoveType.Cycle:
+                Debug.Log("undoing cycle");
                 // undo a cycle turning over, resets all tokens moved up, along with the move counter
                 lastMove = moveLog.Pop();
                 StateLoader.Instance.RemoveMove();

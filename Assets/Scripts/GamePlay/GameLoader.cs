@@ -214,7 +214,7 @@ public class GameLoader : MonoBehaviour
         };
 
         MoveCardsToDeck(cards);
-
+        DeckCounterScript.Instance.UpdateCounterInstantly();
         DeckScript.Instance.Deal(false);
     }
 

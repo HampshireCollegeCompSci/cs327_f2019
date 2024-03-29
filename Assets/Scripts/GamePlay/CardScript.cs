@@ -407,11 +407,11 @@ public class CardScript : MonoBehaviour, IGlow
             case Constants.CardContainerType.WastePile:
                 if (!doLog || newContainerType == Constants.CardContainerType.Deck)
                 {
-                    WastepileScript.Instance.RemoveCard(gameObject, undoingOrDeck: true, showHolo: showHolo);
+                    WastepileScript.Instance.RemoveCardInstantly(gameObject, showHolo: showHolo);
                 }
                 else
                 {
-                    WastepileScript.Instance.RemoveCard(gameObject, showHolo: showHolo);
+                    WastepileScript.Instance.RemoveCardAndScroll(gameObject);
                 }
                 break;
             case Constants.CardContainerType.Deck:
@@ -457,7 +457,12 @@ public class CardScript : MonoBehaviour, IGlow
                     }
                 }
 
+                bool tryDeckCounter = _currentContainerType != Constants.CardContainerType.Deck;
                 WastepileScript.Instance.AddCard(gameObject, showHolo: showHolo);
+                if (tryDeckCounter)
+                {
+                    DeckCounterScript.Instance.TryChangeStatus();
+                }
                 break;
             case Constants.CardContainerType.Deck:
                 if (doLog)

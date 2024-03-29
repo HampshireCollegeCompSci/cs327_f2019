@@ -2660,6 +2660,7 @@ GameObject:
   m_Component:
   - component: {fileID: 528234765}
   - component: {fileID: 528234766}
+  - component: {fileID: 528234769}
   - component: {fileID: 528234768}
   - component: {fileID: 528234767}
   m_Layer: 0
@@ -2701,13 +2702,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardList: []
-  buttonImage: {fileID: 1524850550}
-  deckCounter: {fileID: 1865176403}
-  buttonAnimation:
-  - {fileID: 21300000, guid: 74da7e6bd4e46774e959055ba0abe631, type: 3}
-  - {fileID: 21300000, guid: 0e3b9af9b8c122e42a4faba2b04736a3, type: 3}
-  - {fileID: 21300000, guid: 5391ea85ae2271548b8c6aadfcc0526f, type: 3}
-  - {fileID: 21300000, guid: 361cd928c8ea328479f9d2c2ad7a9870, type: 3}
 --- !u!114 &528234767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2746,6 +2740,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 528234764}
   m_CullTransparentMesh: 1
+--- !u!114 &528234769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 528234764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4194fbd2e81418d4d9d5fe684ef3811b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonImage: {fileID: 1524850550}
+  buttonAnimation:
+  - {fileID: 21300000, guid: 74da7e6bd4e46774e959055ba0abe631, type: 3}
+  - {fileID: 21300000, guid: 0e3b9af9b8c122e42a4faba2b04736a3, type: 3}
+  - {fileID: 21300000, guid: 5391ea85ae2271548b8c6aadfcc0526f, type: 3}
+  - {fileID: 21300000, guid: 361cd928c8ea328479f9d2c2ad7a9870, type: 3}
 --- !u!1 &533316875
 GameObject:
   m_ObjectHideFlags: 0
@@ -7826,6 +7838,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1865176402}
   - component: {fileID: 1865176404}
+  - component: {fileID: 1865176405}
   - component: {fileID: 1865176403}
   m_Layer: 0
   m_Name: Counter
@@ -7895,6 +7908,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1865176401}
   m_CullTransparentMesh: 0
+--- !u!114 &1865176405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1865176401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af921a176308eeb4b8567eee1000db53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1872904796
 GameObject:
   m_ObjectHideFlags: 0

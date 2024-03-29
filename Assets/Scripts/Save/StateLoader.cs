@@ -317,7 +317,7 @@ public class StateLoader : MonoBehaviour
         }
 
         Actions.StartSavedGameUpdate(state.actions);
-        DeckScript.Instance.UpdateDeckCounter();
+        DeckCounterScript.Instance.UpdateCounterInstantly();
     }
 
     private List<int> ConvertCardListToStringList(List<GameObject> cardList)

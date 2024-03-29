@@ -48,7 +48,7 @@ public class TutorialScript : MonoBehaviour
         if (!Config.Instance.TutorialOn) return;
 
         // prevent the user from interacting with buttons during the tutorial
-        DeckScript.Instance.ButtonReady = false;
+        DeckButtonScript.Instance.ButtonReady = false;
         NextCycle.Instance.EnableOneCycle = false;
         undoButton.interactable = false;
         pauseButton.interactable = false;
@@ -243,7 +243,7 @@ public class TutorialScript : MonoBehaviour
         GameLoader.Instance.RestartGame();
         GameInput.Instance.InputStopped = false;
 
-        DeckScript.Instance.ButtonReady = true;
+        DeckButtonScript.Instance.ButtonReady = true;
         NextCycle.Instance.EnableOneCycle = true;
         undoButton.interactable = true;
         pauseButton.interactable = true;
@@ -636,7 +636,7 @@ public class TutorialScript : MonoBehaviour
         switch (NormalizeString(command[1]))
         {
             case "DECK":
-                DeckScript.Instance.ButtonReady = interactable;
+                DeckButtonScript.Instance.ButtonReady = interactable;
                 break;
             case "UNDO":
                 undoButton.interactable = interactable;
