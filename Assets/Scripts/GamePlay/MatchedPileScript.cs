@@ -27,6 +27,8 @@ public class MatchedPileScript : MonoBehaviour, ICardContainer
         }
     }
 
+    public Constants.CardContainerType ContainerType => Constants.CardContainerType.MatchedPile;
+
     public List<GameObject> CardList => cardList;
 
     public void AddCard(GameObject card)

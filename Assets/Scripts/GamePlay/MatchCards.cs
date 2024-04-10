@@ -11,12 +11,11 @@ public class MatchCards : MonoBehaviour
 
     public void Match(CardScript card1Script, CardScript card2Script, GameObject selectedCardCopy)
     {
-        // stop the hologram fade in coroutine so that its alpha value doesn't change anymore
-        card1Script.StopAllCoroutines();
-        card2Script.StopAllCoroutines();
-
         int points = GameValues.Points.matchPoints + (Actions.ConsecutiveMatches * GameValues.Points.scoreMultiplier);
         StartCoroutine(MatchEffect(points, selectedCardCopy));
+
+        bool cardFromFoundation = card1Script.CurrentContainerType == Constants.CardContainerType.Foundation ||
+            card2Script.CurrentContainerType == Constants.CardContainerType.Foundation;
 
         card2Script.MoveCard(Constants.CardContainerType.MatchedPile, MatchedPileScript.Instance.gameObject);
         card1Script.MoveCard(Constants.CardContainerType.MatchedPile, MatchedPileScript.Instance.gameObject);
@@ -24,6 +23,7 @@ public class MatchCards : MonoBehaviour
         ScoreScript.Instance.UpdateScore(points);
         SoundEffectsController.Instance.FoodMatch(card1Script.Card.Suit);
         SpaceBabyController.Instance.BabyEat();
+        Actions.MatchUpdate(cardFromFoundation);
     }
 
     private IEnumerator MatchEffect(int points, GameObject selectedCardCopy)

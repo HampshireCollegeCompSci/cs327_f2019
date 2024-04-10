@@ -33,9 +33,7 @@ public static class Animate
         float timeElapsed = 0;
         while (timeElapsed < duration)
         {
-            float t = timeElapsed / duration;
-            t = t * t * (3f - 2f * t); // Smoothstep formula
-            toUpdate.anchoredPosition = Vector2.Lerp(start, end, t);
+            toUpdate.anchoredPosition = Vector2.Lerp(start, end, Smoothstep(timeElapsed, duration));
             timeElapsed += Time.deltaTime;
             yield return null;
         }
@@ -47,12 +45,17 @@ public static class Animate
         float timeElapsed = 0;
         while (timeElapsed < duration)
         {
-            float t = timeElapsed / duration;
-            t = t * t * (3f - 2f * t); // Smoothstep formula
-            toUpdate.position = Vector2.Lerp(start, end, t);
+            toUpdate.position = Vector2.Lerp(start, end, Smoothstep(timeElapsed, duration));
             timeElapsed += Time.deltaTime;
             yield return null;
         }
         toUpdate.position = end;
+    }
+
+    private static float Smoothstep(float timeElapsed, float duration)
+    {
+        float t = timeElapsed / duration;
+        t = t * t * (3f - 2f * t); // Smoothstep formula
+        return t;
     }
 }

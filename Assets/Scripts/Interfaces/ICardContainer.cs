@@ -2,10 +2,9 @@
 
 interface ICardContainer
 {
-    List<UnityEngine.GameObject> CardList
-    {
-        get;
-    }
+    Constants.CardContainerType ContainerType { get; }
+
+    List<UnityEngine.GameObject> CardList { get; }
 
     public void AddCard(UnityEngine.GameObject card);
 

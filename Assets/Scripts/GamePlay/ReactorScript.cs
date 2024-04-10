@@ -46,6 +46,8 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         _alert = false;
     }
 
+    public Constants.CardContainerType ContainerType => Constants.CardContainerType.Reactor;
+
     public List<GameObject> CardList => cardList;
 
     public bool Glowing

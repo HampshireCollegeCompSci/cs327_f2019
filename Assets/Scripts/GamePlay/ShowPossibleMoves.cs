@@ -7,9 +7,9 @@ public class ShowPossibleMoves
         moveTokensAreGlowing, matchTokensAreGlowing;
 
     [SerializeField]
-    private GameObject reactorMove;
+    public GameObject reactorMove;
     [SerializeField]
-    private List<GameObject> foundationMoves, cardMoves, cardMatches;
+    public List<GameObject> foundationMoves, cardMoves, cardMatches;
 
     public ShowPossibleMoves()
     {

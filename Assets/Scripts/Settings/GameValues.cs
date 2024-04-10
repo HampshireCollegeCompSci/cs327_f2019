@@ -47,6 +47,7 @@ public static class GameValues
 
         public const float draggedCardScale = 0.15f;
         public const float draggedCardYOffset = 0.4f;
+        public const float draggedCardXOffset = -0.01f;
 
         public const float zoomFactor = 0.3f;
     }

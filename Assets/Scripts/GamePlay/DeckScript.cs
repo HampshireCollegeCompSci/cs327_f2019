@@ -25,6 +25,8 @@ public class DeckScript : MonoBehaviour, ICardContainer
         Instance = this;
     }
 
+    public Constants.CardContainerType ContainerType => Constants.CardContainerType.Deck;
+
     public List<GameObject> CardList => cardList;
 
     public void AddCard(GameObject card)

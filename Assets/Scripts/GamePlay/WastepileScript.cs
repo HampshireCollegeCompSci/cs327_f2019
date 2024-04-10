@@ -45,6 +45,8 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         contentRectTransform = contentPanel.GetComponent<RectTransform>();
     }
 
+    public Constants.CardContainerType ContainerType => Constants.CardContainerType.WastePile;
+
     public List<GameObject> CardList => cardList;
 
     public bool DraggingCard
@@ -52,17 +54,10 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         get => _draggingCard;
         set
         {
+            if (_draggingCard == value) return;
             _draggingCard = value;
-            if (value)
-            {
-                scrollRect.horizontal = false;
-                //scrollRect.horizontalScrollbar.interactable = false;
-            }
-            else
-            {
-                scrollRect.horizontal = true;
-                //scrollRect.horizontalScrollbar.interactable = true;
-            }
+            scrollRect.horizontal = !value;
+            //scrollRect.horizontalScrollbar.interactable = !value;
         }
     }
 

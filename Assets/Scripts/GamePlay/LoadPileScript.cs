@@ -27,6 +27,8 @@ public class LoadPileScript : MonoBehaviour, ICardContainer
         }
     }
 
+    public Constants.CardContainerType ContainerType => Constants.CardContainerType.Loadpile;
+
     public List<GameObject> CardList => cardList;
 
     public void AddCard(GameObject card)
