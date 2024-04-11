@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class TutorialHighlightScript : MonoBehaviour
 {
-    private const int numFlashTimes = 3;
+    private const int numFlashTimes = 5;
     private static readonly WaitForSeconds flashDuration = new(0.5f);
     private Coroutine flashCoroutine;
 

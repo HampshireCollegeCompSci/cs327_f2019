@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -34,12 +33,7 @@ public class SettingsScript : MonoBehaviour
     [SerializeField]
     private Image colorModeMatch, colorModeMove, colorModeOver, colorModeNotify;
 
-    [SerializeField]
-    private Button confirmYesButton;
-
     private bool lockout;
-    private Coroutine clearButtonCoroutine;
-
     private int musicMultiplier;
     private int soundEffectsMultiplier;
 
@@ -126,7 +120,7 @@ public class SettingsScript : MonoBehaviour
     public void AchievementPopupOnToggle(bool update)
     {
         if (lockout) return;
-
+        Debug.Log($"setting achievement popups to: {update}");
         PersistentSettings.AchievementPopupsEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
     }
@@ -134,7 +128,7 @@ public class SettingsScript : MonoBehaviour
     public void VibrationEnabledOnToggle(bool update)
     {
         if (lockout) return;
-
+        Debug.Log($"setting vibration to: {update}");
         PersistentSettings.VibrationEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
     }
@@ -150,24 +144,6 @@ public class SettingsScript : MonoBehaviour
         {
             GameLoader.Instance.ChangeSuitSprites();
         }
-    }
-
-    public void TryToClearRecordsButton()
-    {
-        if (lockout) return;
-
-        confirmYesButton.interactable = false;
-        Debug.Log("trying to clear records");
-        if (clearButtonCoroutine != null)
-        {
-            StopCoroutine(clearButtonCoroutine);
-        }
-        clearButtonCoroutine = StartCoroutine(ButtonDelay());
-    }
-
-    public void ClearRecordsConfirmationButton()
-    {
-        Debug.LogWarning("This doesn't do anything!");
     }
 
     public void FrameRateChange(float update)
@@ -209,7 +185,7 @@ public class SettingsScript : MonoBehaviour
     {
         if (lockout) return;
 
-        if (Int32.TryParse(update, out int movesUntilSave) && movesUntilSave > 0)
+        if (int.TryParse(update, out int movesUntilSave) && movesUntilSave > 0)
         {
             if (PersistentSettings.MovesUntilSave == movesUntilSave) return;
             Debug.Log($"seting moves until save to: {movesUntilSave}");
@@ -224,6 +200,14 @@ public class SettingsScript : MonoBehaviour
             Debug.LogWarning($"invalid moves until save detected: {update}");
             movesUntilSaveInputField.text = PersistentSettings.MovesUntilSave.ToString();
         }
+    }
+
+    public void AutoPlacementEnabledOnToggle(bool update)
+    {
+        if (lockout) return;
+        Debug.Log($"auto placement set to: {update}");
+        PersistentSettings.AutoPlacementEnabled = update;
+        SoundEffectsController.Instance.ButtonPressSound();
     }
 
     public void HintsEnabledOnToggle(bool update)
@@ -265,15 +249,21 @@ public class SettingsScript : MonoBehaviour
         int maxFrameRate = (int) Math.Round(Screen.currentResolution.refreshRateRatio.value);
         frameRates = maxFrameRate switch
         {
-            240 => new List<int>(7) { -1, 30, 40, 60, 80, 120, 240 },
-            144 => new List<int>(5) { -1, 36, 48, 72, 144 },
-            120 => new List<int>(5) { -1, 30, 40, 60, 120 },
-            90 => new List<int>(4) { -1, 30, 45, 90 },
-            60 => new List<int>(3) { -1, 30, 60 },
-            48 => new List<int>(3) { -1, 24, 48 },
-            30 => new List<int>(3) { -1, 15, 30 },
-            _ => new List<int>(2) { -1, maxFrameRate },
+            240 => new(7) { -1, 30, 60, 120, 240 },
+            144 => new(5) { -1, 36, 48, 72, 144 },
+            120 => new(5) { -1, 30, 40, 60, 120 },
+            90 => new(4) { -1, 30, 45, 90 },
+            60 => new(3) { -1, 30, 60 },
+            48 => new(3) { -1, 24, 48 },
+            30 => new(3) { -1, 15, 30 },
+            _ => new(3) { -1, maxFrameRate / 2, maxFrameRate },
         };
+
+        if (maxFrameRate % 2 != 0)
+        {
+            Debug.LogError($"this screen has a max refresh rate of {maxFrameRate}, really?");
+            frameRates = new(2) { -1, maxFrameRate };
+        }
 
         // -1 is the default for the platform
         int frameRateSetting = PersistentSettings.FrameRate;
@@ -323,12 +313,5 @@ public class SettingsScript : MonoBehaviour
         colorModeMove.color = update.Move.Color;
         colorModeOver.color = update.Over.Color;
         colorModeNotify.color = update.Notify.Color;
-    }
-
-    private IEnumerator ButtonDelay()
-    {
-        yield return new WaitForSecondsRealtime(2);
-        confirmYesButton.interactable = true;
-        clearButtonCoroutine = null;
     }
 }
