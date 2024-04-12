@@ -194,6 +194,7 @@ public class GameLoader : MonoBehaviour
     {
         // the game difficultuy should already be set to what is desired for things to work properly
         SaveFile.Delete();
+        AchievementsManager.NewGameSetAchievements();
         Actions.StartNewGameUpdate();
         Timer.LoadTimerOffset(TimeSpan.Zero);
 

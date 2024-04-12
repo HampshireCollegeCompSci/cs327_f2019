@@ -70,15 +70,15 @@ public static class Achievements
 
     public static readonly Achievement noHints = new(
         "Can't Take a Hint",
-        "Win a game with hints off.",
+        "Win a game with hints and auto placement off.",
         "Achievement No Hints",
         Achievement.AchieveType.Failure);
 
     public static readonly Achievement superHard = new(
         "Super Hard",
-        "Win a hard game with hints off and never undoing.",
+        "Win a hard game with hints off, auto placement off, and never undoing.",
         "Achievement Super Hard",
-        Achievement.AchieveType.Achieve);
+        Achievement.AchieveType.Failure);
 
     public static readonly Achievement speedrun5 = new(
         "Gotta Go Fast",

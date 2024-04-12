@@ -52,6 +52,31 @@ public static class Animate
         toUpdate.position = end;
     }
 
+    public static IEnumerator SmoothstepTransformCards(Transform[] toUpdate, Vector2 start, Vector2 end, float duration)
+    {
+        float timeElapsed = 0;
+        Vector3 newPosition;
+        while (timeElapsed < duration)
+        {
+            newPosition = Vector2.Lerp(start, end, Smoothstep(timeElapsed, duration));
+            for (int i = 0; i < toUpdate.Length; i++)
+            {
+                toUpdate[i].position = newPosition;
+                newPosition.y += GameValues.Transforms.draggedCardYOffset;
+                newPosition.z += GameValues.Transforms.draggedCardXOffset;
+            }
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        newPosition = end;
+        for (int i = 0; i < toUpdate.Length; i++)
+        {
+            toUpdate[i].position = newPosition;
+            newPosition.y += GameValues.Transforms.draggedCardYOffset;
+            newPosition.z += GameValues.Transforms.draggedCardXOffset;
+        }
+    }
+
     private static float Smoothstep(float timeElapsed, float duration)
     {
         float t = timeElapsed / duration;

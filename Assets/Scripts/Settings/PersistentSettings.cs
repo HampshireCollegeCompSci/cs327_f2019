@@ -67,6 +67,9 @@ public static class PersistentSettings
             MovesUntilSave = GameValues.Settings.movesUntilSaveDefault;
         }
 
+        _autoPlacementEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.autoPlacementKey,
+                Convert.ToInt32(GameValues.Settings.autoPlacementEnabledDefault)));
+
         _hintsEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.hintsEnabledKey,
                 Convert.ToInt32(GameValues.Settings.hintsEnabledDefault)));
         _colorMode = PlayerPrefs.GetInt(Constants.Settings.colorMode, 0);
@@ -215,6 +218,21 @@ public static class PersistentSettings
             {
                 _colorMode = value;
                 PlayerPrefs.SetInt(Constants.Settings.colorMode, value);
+            }
+        }
+    }
+
+    private static bool _autoPlacementEnabled;
+    public static bool AutoPlacementEnabled
+    {
+        get => _autoPlacementEnabled;
+        set
+        {
+            if (_autoPlacementEnabled != value)
+            {
+                _autoPlacementEnabled = value;
+                PlayerPrefs.SetInt(Constants.Settings.autoPlacementKey,
+                    Convert.ToInt32(value));
             }
         }
     }

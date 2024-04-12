@@ -21,8 +21,10 @@ public static class AchievementsManager
         trackedAchievements.Sort((x, y) => x.Tracker.CompareTo(y.Tracker));
         trackedAchievements.ForEach(achievement => PushAchievement(achievement));
 
-        if (Achievements.noHints.Status && Config.Instance.HintsEnabled)
-            Achievements.noHints.Status = false;
+        if (Achievements.noHints.Status)
+            Achievements.noHints.Status = !(Config.Instance.HintsEnabled || Config.Instance.AutoPlacementEnabled);
+        if (Achievements.superHard.Status)
+            Achievements.superHard.Status = Achievements.noHints.Status;
     }
 
     public static void PushAchievement(Achievement achievement)
@@ -48,7 +50,12 @@ public static class AchievementsManager
             achievement.Reset();
         }
         achievementStack.Clear();
-        Achievements.noHints.Status = !Config.Instance.HintsEnabled;
+    }
+
+    public static void NewGameSetAchievements()
+    {
+        Achievements.noHints.Status = !(Config.Instance.HintsEnabled || Config.Instance.AutoPlacementEnabled);
+        Achievements.superHard.Status = Achievements.noHints.Status && Config.Instance.CurrentDifficulty.Equals(Difficulties.hard);
     }
 
     public static void GameWinLogAchievements()
@@ -124,6 +131,7 @@ public static class AchievementsManager
     public static void FailedNoUndo()
     {
         Achievements.noUndo.Status = false;
+        Achievements.noUndo.Status = false;
     }
 
     public static void FailedNoDeckFlip()
@@ -144,5 +152,6 @@ public static class AchievementsManager
     public static void FailedNoHints()
     {
         Achievements.noHints.Status = false;
+        Achievements.superHard.Status = false;
     }
 }

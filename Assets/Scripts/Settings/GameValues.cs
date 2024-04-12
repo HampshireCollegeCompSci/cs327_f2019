@@ -88,6 +88,7 @@ public static class GameValues
         public const bool saveGameStateDefault = true;
         public const int movesUntilSaveDefault = 50;
 
+        public const bool autoPlacementEnabledDefault = true;
         public const bool hintsEnabledDefault = true;
     }
 
@@ -166,6 +167,8 @@ public static class GameValues
         // gameplay
         public const float cardHologramFadeIn = 2; // fades in the cards holograms
         public const float cardsToReactor = 0.5f; // movement of the cards to reactor during a nextcycle
+        public const float autoPlacementDuration = 0.4f;
+        public const float autoPlacementDelaySec = 0.1f;
         // match effect
         public const float comboPointsFadeIn = 0.5f; // fade in and scale up the point text
         public const float comboWait = 0.5f; // wait a bit

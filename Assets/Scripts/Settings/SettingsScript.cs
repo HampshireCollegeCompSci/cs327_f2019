@@ -27,7 +27,7 @@ public class SettingsScript : MonoBehaviour
     private InputField movesUntilSaveInputField;
 
     [SerializeField]
-    private Toggle hintsToggle;
+    private Toggle autoPlacementToggle, hintsToggle;
     [SerializeField]
     private Dropdown colorModeDropdown;
     [SerializeField]
@@ -77,6 +77,7 @@ public class SettingsScript : MonoBehaviour
         saveGameStateToggle.isOn = PersistentSettings.SaveGameStateEnabled;
         movesUntilSaveInputField.text = PersistentSettings.MovesUntilSave.ToString();
 
+        autoPlacementToggle.isOn = PersistentSettings.AutoPlacementEnabled;
         hintsToggle.isOn = PersistentSettings.HintsEnabled;
 
         var colorModeOptions = new List<Dropdown.OptionData>(GameValues.Colors.Modes.List.Count);
@@ -207,6 +208,7 @@ public class SettingsScript : MonoBehaviour
         if (lockout) return;
         Debug.Log($"auto placement set to: {update}");
         PersistentSettings.AutoPlacementEnabled = update;
+        Config.Instance.AutoPlacementEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
     }
 

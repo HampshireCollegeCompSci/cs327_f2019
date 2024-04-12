@@ -30,8 +30,12 @@ public class GameInput : MonoBehaviour
     [SerializeField]
     private int inputStopRequests;
 
-    private Vector3 oldPointerPosition, currentPointerPosition;
+    private Vector3 oldPointerPosition, currentPointerPosition, clickPosition;
     private ShowPossibleMoves showPossibleMoves;
+
+    private bool autoPlacing;
+    private float autoPlacementDistance = 0.1f;
+    private static readonly WaitForSeconds autoPlacementDelay = new(GameValues.AnimationDurataions.autoPlacementDelaySec);
 
     // Initialize the singleton instance.
     void Awake()
@@ -100,10 +104,19 @@ public class GameInput : MonoBehaviour
 
     void Update()
     {
+        if (autoPlacing) return;
         if (DraggingCard)
         {
             bool continueDragging = !Input.GetMouseButtonUp(0);
             currentPointerPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            // auto placement
+            if (!continueDragging && Config.Instance.AutoPlacementEnabled &&
+                Vector3.Distance(currentPointerPosition, clickPosition) <= autoPlacementDistance)
+            {
+                AutoPlacement();
+                return;
+            }
 
             // no movement detected
             if (continueDragging && currentPointerPosition == oldPointerPosition) return;
@@ -368,5 +381,91 @@ public class GameInput : MonoBehaviour
             hoveringOver.GetComponent<CardScript>().Hologram = true;
             hidFoodHologram = false;
         }
+    }
+
+    private void AutoPlacement()
+    {
+        GameObject target = null;
+        Vector2 endPosition = Vector2.zero;
+        if (showPossibleMoves.matchTokensAreGlowing)
+        {
+            target = showPossibleMoves.cardMatches[0];
+        }
+        else if (showPossibleMoves.moveTokensAreGlowing)
+        {
+            target = showPossibleMoves.cardMoves[0];
+            endPosition = target.transform.position;
+            endPosition.y += 0.4f;
+        }
+        else if (showPossibleMoves.foundationIsGlowing)
+        {
+            target = showPossibleMoves.foundationMoves[0];
+        }
+        else if (showPossibleMoves.reactorIsGlowing)
+        {
+            ReactorScript reactor = showPossibleMoves.reactorMove.GetComponent<ReactorScript>();
+            if (reactor.GlowColor.ColorLevel != Constants.ColorLevel.Over)
+            {
+                target = showPossibleMoves.reactorMove;
+                endPosition = reactor.GetNextCardPosition();
+            }
+        }
+
+        if (target == null)
+        {
+            DragGlowRevert();
+            DraggingCard = false;
+            return;
+        }
+        if (endPosition == Vector2.zero)
+        {
+            endPosition = target.transform.position;
+        }
+
+        autoPlacing = true;
+        if (selectedCardsCopy.Count == 0)
+        {
+            StartCoroutine(MoveCard(selectedCardsCopy[0], target, endPosition));
+        }
+        else
+        {
+            StartCoroutine(MoveCards(target, endPosition));
+        }
+    }
+
+    private IEnumerator MoveCard(GameObject card, GameObject target, Vector2 endPosition)
+    {
+        yield return Animate.SmoothstepTransform(card.transform,
+                card.transform.position,
+                endPosition,
+                GameValues.AnimationDurataions.autoPlacementDuration);
+
+        yield return EndAutoPlacement(target);
+    }
+
+    private IEnumerator MoveCards(GameObject target, Vector2 endPosition)
+    {
+        Transform[] cardTransforms = new Transform[selectedCardsCopy.Count];
+        for (int i = 0; i < selectedCardsCopy.Count; i++)
+        {
+            cardTransforms[i] = selectedCardsCopy[i].transform;
+        }
+
+        yield return Animate.SmoothstepTransformCards(cardTransforms,
+            selectedCardsCopy[0].transform.position,
+            endPosition,
+            GameValues.AnimationDurataions.autoPlacementDuration);
+
+        yield return EndAutoPlacement(target);
+    }
+
+    private IEnumerator EndAutoPlacement(GameObject target)
+    {
+        UpdateDragGlow(target);
+        yield return autoPlacementDelay;
+        DragGlowRevert(isPlacing: true);
+        TryToPlaceCards(target);
+        DraggingCard = false;
+        autoPlacing = false;
     }
 }
