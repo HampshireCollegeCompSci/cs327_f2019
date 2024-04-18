@@ -33,8 +33,7 @@ public class GameInput : MonoBehaviour
     private Vector3 oldPointerPosition, currentPointerPosition, clickPosition;
     private ShowPossibleMoves showPossibleMoves;
 
-    private bool autoPlacing;
-    private float autoPlacementDistance = 0.1f;
+    private bool autoPlacing, autoPlacingOutOfRange;
     private static readonly WaitForSeconds autoPlacementDelay = new(GameValues.AnimationDurataions.autoPlacementDelaySec);
 
     // Initialize the singleton instance.
@@ -85,6 +84,10 @@ public class GameInput : MonoBehaviour
         }
     }
 
+    public bool CardPlacement { get; set; }
+
+    public bool DraggingStack { get; private set; }
+
     private bool DraggingCard
     {
         get => _draggingCard;
@@ -96,11 +99,10 @@ public class GameInput : MonoBehaviour
             {
                 showPossibleMoves.HideMoves();
                 UnselectCards();
+                DraggingStack = false;
             }
         }
     }
-
-    public bool CardPlacement { get; set; }
 
     void Update()
     {
@@ -109,17 +111,23 @@ public class GameInput : MonoBehaviour
         {
             bool continueDragging = !Input.GetMouseButtonUp(0);
             currentPointerPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-            // auto placement
-            if (!continueDragging && Config.Instance.AutoPlacementEnabled &&
-                Vector3.Distance(currentPointerPosition, clickPosition) <= autoPlacementDistance)
-            {
-                AutoPlacement();
-                return;
-            }
-
             // no movement detected
             if (continueDragging && currentPointerPosition == oldPointerPosition) return;
+
+            if (Config.Instance.AutoPlacementEnabled && !autoPlacingOutOfRange)
+            {
+                // disable auto placing if the distance threshold is ever exceeded
+                if (Vector2.Distance(currentPointerPosition, clickPosition) >
+                    GameValues.Settings.autoPlacementDistance)
+                {
+                    autoPlacingOutOfRange = true;
+                }
+                if (!continueDragging && !autoPlacingOutOfRange)
+                {
+                    AutoPlacement();
+                    return;
+                }
+            }
 
             RaycastHit2D hit = Physics2D.Raycast(
                 currentPointerPosition,
@@ -145,7 +153,12 @@ public class GameInput : MonoBehaviour
         {
             currentPointerPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             oldPointerPosition = currentPointerPosition;
-            clickPosition = currentPointerPosition;
+
+            if (Config.Instance.AutoPlacementEnabled)
+            {
+                clickPosition = currentPointerPosition;
+                autoPlacingOutOfRange = false;
+            }
 
             RaycastHit2D hit = Physics2D.Raycast(
                 currentPointerPosition,
@@ -182,6 +195,10 @@ public class GameInput : MonoBehaviour
                 for (int i = foundationCardList.LastIndexOf(hitGameObject) + 1; i < foundationCardList.Count; i++)
                 {
                     selectedCards.Add(foundationCardList[i]);
+                }
+                if (selectedCards.Count > 1)
+                {
+                    DraggingStack = true;
                 }
                 break;
         }
@@ -296,11 +313,18 @@ public class GameInput : MonoBehaviour
 
     private void DragSelectedCards(RaycastHit2D hit)
     {
-        foreach (GameObject card in selectedCardsCopy)
+        if (DraggingStack)
         {
-            card.transform.position = currentPointerPosition;
-            currentPointerPosition.y += GameValues.Transforms.draggedCardYOffset;
-            currentPointerPosition.z += GameValues.Transforms.draggedCardXOffset;
+            foreach (GameObject card in selectedCardsCopy)
+            {
+                card.transform.position = currentPointerPosition;
+                currentPointerPosition.y += GameValues.Transforms.draggedCardYOffset;
+                currentPointerPosition.z += GameValues.Transforms.draggedCardXOffset;
+            }
+        }
+        else
+        {
+            selectedCardsCopy[0].transform.position = currentPointerPosition;
         }
 
         // glow time
@@ -389,7 +413,7 @@ public class GameInput : MonoBehaviour
         Vector2 endPosition = Vector2.zero;
         if (showPossibleMoves.matchTokensAreGlowing)
         {
-            target = showPossibleMoves.cardMatches[0];
+            target = showPossibleMoves.cardMatch;
         }
         else if (showPossibleMoves.moveTokensAreGlowing)
         {
