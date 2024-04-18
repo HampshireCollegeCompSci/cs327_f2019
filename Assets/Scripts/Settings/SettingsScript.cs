@@ -17,7 +17,7 @@ public class SettingsScript : MonoBehaviour
     private Text frameRateText;
 
     [SerializeField]
-    private Toggle achievementPopupToggle, vibrationToggle, foodSuitsToggle;
+    private Toggle achievementPopupToggle, vibrationToggle, suitArtToggle, deckOrientationToggle;
 
     private List<int> frameRates;
 
@@ -65,12 +65,12 @@ public class SettingsScript : MonoBehaviour
         }
         else
         {
-            // disable vibration toggle
-            vibrationToggle.interactable = false;
-            vibrationToggle.isOn = false;
+            // disable vibration toggle section
+            vibrationToggle.gameObject.transform.parent.gameObject.SetActive(false);
         }
 
-        foodSuitsToggle.isOn = PersistentSettings.FoodSuitsEnabled;
+        suitArtToggle.isOn = PersistentSettings.FoodSuitsEnabled;
+        deckOrientationToggle.isOn = PersistentSettings.DeckOrientation;
 
         SetupFrameRateSettings();
 
@@ -134,16 +134,29 @@ public class SettingsScript : MonoBehaviour
         SoundEffectsController.Instance.ButtonPressSound();
     }
 
-    public void ThematicSuitArt(bool update)
+    public void SuitArtOnToggle(bool update)
     {
         if (lockout) return;
         Debug.Log($"seting food suits to: {update}");
         PersistentSettings.FoodSuitsEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
 
-        if (SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
+        if (IsGamePlaySceneActive())
         {
             GameLoader.Instance.ChangeSuitSprites();
+        }
+    }
+
+    public void DeckOrientationOnToggle(bool update)
+    {
+        if (lockout) return;
+        Debug.Log($"seting deck orientation to: {update}");
+        PersistentSettings.DeckOrientation = update;
+        SoundEffectsController.Instance.ButtonPressSound();
+
+        if (IsGamePlaySceneActive())
+        {
+            DeckOrientation.Instance.Flip = update;
         }
     }
 
@@ -172,7 +185,7 @@ public class SettingsScript : MonoBehaviour
         PersistentSettings.SaveGameStateEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
 
-        if (SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
+        if (IsGamePlaySceneActive())
         {
             StateLoader.Instance.SetGameStateSaving(update);
         }
@@ -191,7 +204,7 @@ public class SettingsScript : MonoBehaviour
             if (PersistentSettings.MovesUntilSave == movesUntilSave) return;
             Debug.Log($"seting moves until save to: {movesUntilSave}");
             PersistentSettings.MovesUntilSave = movesUntilSave;
-            if (SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
+            if (IsGamePlaySceneActive())
             {
                 StateLoader.Instance.UpdateMovesUntilSave(movesUntilSave);
             }
@@ -315,5 +328,10 @@ public class SettingsScript : MonoBehaviour
         colorModeMove.color = update.Move.Color;
         colorModeOver.color = update.Over.Color;
         colorModeNotify.color = update.Notify.Color;
+    }
+
+    private bool IsGamePlaySceneActive()
+    {
+        return SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay);
     }
 }

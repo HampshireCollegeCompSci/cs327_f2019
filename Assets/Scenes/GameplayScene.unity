@@ -139,11 +139,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
         type: 3}
-      propertyPath: m_RootOrder
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
-        type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
@@ -214,11 +209,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Belt
-      objectReference: {fileID: 0}
-    - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
         type: 3}
@@ -977,7 +967,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 3
-  m_Spacing: -35
+  m_Spacing: -33
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
@@ -1382,11 +1372,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Belt
-      objectReference: {fileID: 0}
-    - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
         type: 3}
@@ -2393,11 +2378,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
         type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
-        type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
@@ -3048,11 +3028,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
         type: 3}
-      propertyPath: m_RootOrder
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
-        type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
@@ -3123,11 +3098,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Belt
-      objectReference: {fileID: 0}
-    - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
         type: 3}
@@ -3671,7 +3641,7 @@ GameObject:
   m_Component:
   - component: {fileID: 716306640}
   m_Layer: 0
-  m_Name: Bottom Center
+  m_Name: Conveyor System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4004,16 +3974,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Belt
-      objectReference: {fileID: 0}
-    - target: {fileID: 4445628893480912193, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
         type: 3}
@@ -4484,7 +4444,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.05
-  m_ScrollSensitivity: 40
+  m_ScrollSensitivity: 42
   m_Viewport: {fileID: 1824632988}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 0}
@@ -4799,6 +4759,7 @@ GameObject:
   - component: {fileID: 1202057896}
   - component: {fileID: 1202057893}
   - component: {fileID: 1202057898}
+  - component: {fileID: 1202057899}
   m_Layer: 0
   m_Name: Scripts
   m_TagString: Untagged
@@ -4881,13 +4842,13 @@ MonoBehaviour:
   matchCards: {fileID: 1202057898}
   selectedCards: []
   selectedCardsCopy: []
-  dragOn: 0
   hoveringOver: {fileID: 0}
   changedHologramColor: 0
   wasOnMatch: 0
   changedSuitGlowColor: 0
   hidFoodHologram: 0
   _inputStopped: 0
+  _draggingCard: 0
   inputStopRequests: 0
 --- !u!114 &1202057896
 MonoBehaviour:
@@ -4984,6 +4945,20 @@ MonoBehaviour:
     type: 3}
   matchPointsPrefab: {fileID: 5801631464807042985, guid: 614ce32a7efa12342824cb70c9aacc46,
     type: 3}
+--- !u!114 &1202057899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1202057892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26bfc85ade610754191588799a0e5f77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  conveyorSystem: {fileID: 716306640}
+  deckCounter: {fileID: 1865176402}
 --- !u!1001 &1204289923
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7198,11 +7173,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
         type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
-        type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
@@ -7424,7 +7394,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 3
-  m_Spacing: -35
+  m_Spacing: -33
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
@@ -8533,11 +8503,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Belt
-      objectReference: {fileID: 0}
-    - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4445628893480912198, guid: f2eb09ee8033ef848baedf3df6e0ffc4,
         type: 3}

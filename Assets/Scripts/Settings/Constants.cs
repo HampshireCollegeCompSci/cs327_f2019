@@ -38,6 +38,7 @@ public static class Constants
         public const string vibrationEnabledKey = "VibrationEnabled";
         public const string achievementPopupsEnabledKey = "AchievementPopupsEnabled";
         public const string foodSuitsEnabledKey = "FoodSuitsEnabled";
+        public const string deckOrientationKey = "DeckOrientation";
         public const string frameRateKey = "FrameRate";
         public const string saveGameStateKey = "SaveGameState";
         public const string movesUntilSaveKey = "MovesUntilSave";

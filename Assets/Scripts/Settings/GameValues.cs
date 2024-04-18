@@ -82,8 +82,9 @@ public static class GameValues
         public const int soundEffectsVolumeDenominator = 20; // how many steps
 
         public const bool achievementPopupsEnabledDefault = true;
-        public const bool vibrationEnabledDefault = true;
+        public const bool vibrationEnabledDefault = false;
         public const bool foodSuitsEnabledDefault = false;
+        public const bool deckOrientationDefault = true;
 
         public const bool saveGameStateDefault = true;
         public const int movesUntilSaveDefault = 50;

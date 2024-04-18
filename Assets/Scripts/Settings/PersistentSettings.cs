@@ -46,6 +46,9 @@ public static class PersistentSettings
         _foodSuitsEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.foodSuitsEnabledKey,
                 Convert.ToInt32(GameValues.Settings.foodSuitsEnabledDefault)));
 
+        _deckOrientation = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.deckOrientationKey,
+                Convert.ToInt32(GameValues.Settings.deckOrientationDefault)));
+
         int maxDeviceScreenRefreshRate = (int)Math.Round(Screen.currentResolution.refreshRateRatio.value);
         int defaultFrameRate = Application.platform == RuntimePlatform.WebGLPlayer ? -1 : maxDeviceScreenRefreshRate;
         _frameRate = PlayerPrefs.GetInt(Constants.Settings.frameRateKey, defaultFrameRate);
@@ -145,6 +148,21 @@ public static class PersistentSettings
             {
                 _foodSuitsEnabled = value;
                 PlayerPrefs.SetInt(Constants.Settings.foodSuitsEnabledKey,
+                    Convert.ToInt32(value));
+            }
+        }
+    }
+
+    private static bool _deckOrientation;
+    public static bool DeckOrientation
+    {
+        get => _deckOrientation;
+        set
+        {
+            if (_deckOrientation != value)
+            {
+                _deckOrientation = value;
+                PlayerPrefs.SetInt(Constants.Settings.deckOrientationKey,
                     Convert.ToInt32(value));
             }
         }
