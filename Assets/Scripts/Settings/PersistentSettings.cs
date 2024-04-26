@@ -33,7 +33,7 @@ public static class PersistentSettings
         _achievementPopupsEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.achievementPopupsEnabledKey,
                 Convert.ToInt32(GameValues.Settings.achievementPopupsEnabledDefault)));
 
-        if (Vibration.HasVibrator())
+        if (Vibration.HasVibrator)
         {
             _vibrationEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.vibrationEnabledKey,
                 Convert.ToInt32(GameValues.Settings.vibrationEnabledDefault)));

@@ -59,7 +59,7 @@ public class SettingsScript : MonoBehaviour
 
         achievementPopupToggle.isOn = PersistentSettings.AchievementPopupsEnabled;
 
-        if (Vibration.HasVibrator())
+        if (Vibration.HasVibrator)
         {
             vibrationToggle.isOn = PersistentSettings.VibrationEnabled;
         }
