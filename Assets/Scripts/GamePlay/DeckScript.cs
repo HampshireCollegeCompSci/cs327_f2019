@@ -60,6 +60,11 @@ public class DeckScript : MonoBehaviour, ICardContainer
             doLog = false;
         }
         WastepileScript.Instance.AddCards(toMoveList, doLog);
+
+        if (Config.Instance.TutorialOn)
+        {
+            toMoveList[^1].GetComponent<CardScript>().Obstructed = true;
+        }
     }
 
     public void TryDealing()

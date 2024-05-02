@@ -50,6 +50,7 @@ public class GameLoader : MonoBehaviour
                 Config.Instance.prettyColors = false;
             }
             LoadTutorial(Constants.Tutorial.tutorialStateStartFileName, gameStart: true);
+            TutorialScript.Instance.StartTutorial();
         }
         else if (Config.Instance.continuing)
         {

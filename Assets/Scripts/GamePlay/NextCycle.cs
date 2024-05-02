@@ -14,9 +14,29 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     [SerializeField]
     private Image buttonImage;
 
+    private bool _buttonDisabled;
     private bool mouseOverButton, mousePressingButton;
 
-    public bool EnableOneCycle{ get; set; }
+    public bool ButtonDisabled
+    {
+        get => _buttonDisabled;
+        set
+        {
+            if (_buttonDisabled == value) return;
+            _buttonDisabled = value;
+            if (value)
+            {
+                KnobDown();
+                buttonImage.color = Color.gray;
+            }
+            else
+            {
+                KnobUp();
+                buttonImage.color = Color.white;
+            }
+        }
+    }
+
     private bool ButtonReady { get; set; }
 
     void Awake()
@@ -44,8 +64,7 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (!ButtonReady || GameInput.Instance.InputStopped) return;
-        if (Config.Instance.TutorialOn && !EnableOneCycle) return;
+        if (ButtonDisabled || !ButtonReady || GameInput.Instance.InputStopped) return;
         ButtonReady = false;
         mousePressingButton = true;
         GameInput.Instance.InputStopped = true;
@@ -112,6 +131,10 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
                 CardScript nextTopFoundationCard = foundationScript.CardList[^2].GetComponent<CardScript>();
                 if (nextTopFoundationCard.Hidden)
                 {
+                    if (Config.Instance.TutorialOn)
+                    {
+                        nextTopFoundationCard.Obstructed = true;
+                    }
                     nextTopFoundationCard.NextCycleReveal();
                 }
             }
@@ -127,6 +150,12 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
             SoundEffectsController.Instance.CardToReactorSound();
             topCardScript.MoveCard(Constants.CardContainerType.Reactor, reactorScript.gameObject, isCycle: true);
+            
+            if (Config.Instance.TutorialOn)
+            {
+                // the cards moved into the reactors are auto set to un-obstructed and need to be set again
+                topCardScript.Obstructed = true;
+            }
 
             // if the game is lost during the next cycle stop immediately
             if (Actions.GameOver)
@@ -153,9 +182,9 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         KnobUp();
         Actions.NextCycleUpdate();
 
-        if (EnableOneCycle)
+        if (Config.Instance.TutorialOn && !ButtonDisabled)
         {
-            EnableOneCycle = false;
+            ButtonDisabled = true;
         }
     }
 
@@ -169,5 +198,4 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         buttonImage.sprite = buttonUp;
         ButtonReady = true;
     }
-
 }

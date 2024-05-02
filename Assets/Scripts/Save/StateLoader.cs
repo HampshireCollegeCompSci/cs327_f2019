@@ -263,10 +263,7 @@ public class StateLoader : MonoBehaviour
             throw new NullReferenceException("there are no cards in the load pile when starting to load the game");
         }
 
-        if (!isTutorial)
-        {
-            SetUpMoveLog(state.moveLog, LoadPileScript.Instance.CardList);
-        }
+        SetUpMoveLog(state.moveLog, LoadPileScript.Instance.CardList);
 
         //set up foundations
         for (int i = 0; i < state.foundations.Length; i++)

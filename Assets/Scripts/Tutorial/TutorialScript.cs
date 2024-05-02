@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class TutorialScript : MonoBehaviour
 {
+    public static TutorialScript Instance { get; private set; }
+
     // command names for switch usage
     private const string sReactors = "REACTORS";
     private const string sReactor = "REACTOR";
@@ -20,16 +22,26 @@ public class TutorialScript : MonoBehaviour
     private bool waiting;
 
     [SerializeField]
-    private Button undoButton, pauseButton, tutorialNextButton;
+    private GameObject undo, pause;
+    [SerializeField]
+    private Button tutorialNextButton;
 
     [SerializeField]
     private GameObject tutorialUIPanel, tutorialText,
-        tutorialReactors, tutorialScore, tutorialMoveCounter,
+        tutorialReactors, tutorialScore,
+        tutorialMoveCounter, tutorialNextCycle,
         tutorialUndo, tutorialPause,
         tutorialFoundations, tutorialDeck, tutorialWastePile;
 
     private void Awake()
     {
+        if (Instance != null)
+        {
+            throw new ArgumentException("there should not already be an instance of this");
+        }
+
+        Instance = this;
+
         // this is the gateway to turn the tutorial on
         if (!Config.Instance.TutorialOn) return;
         Debug.Log("setting up the tutorial");
@@ -43,15 +55,15 @@ public class TutorialScript : MonoBehaviour
         commandQueue = CommandEnqueuer(CreateFromJSON(Config.Instance.TutorialFileName));
     }
 
-    private void Start()
+    public void StartTutorial()
     {
-        if (!Config.Instance.TutorialOn) return;
-
         // prevent the user from interacting with buttons during the tutorial
-        DeckButtonScript.Instance.ButtonReady = false;
-        NextCycle.Instance.EnableOneCycle = false;
-        undoButton.interactable = false;
-        pauseButton.interactable = false;
+        DeckButtonScript.Instance.ButtonDisabled = true;
+        NextCycle.Instance.ButtonDisabled = true;
+        undo.GetComponent<Button>().interactable = false;
+        undo.GetComponent<Image>().color = Color.gray;
+        pause.GetComponent<Button>().interactable = false;
+        pause.GetComponent<Image>().color = Color.gray;
 
         // start the tutorial
         Debug.Log("starting the tutorial");
@@ -145,8 +157,6 @@ public class TutorialScript : MonoBehaviour
     /// </summary>
     private void CommandInterpreter()
     {
-        Debug.Log("interpreting command");
-
         if (commandQueue.Count == 0)
         {
             Debug.Log("the end of the tutorial command list has been reached, ending the tutorial now");
@@ -191,7 +201,7 @@ public class TutorialScript : MonoBehaviour
                     ChangeTokenObstruction(command);
                     break;
                 case "CHANGEALLTOKENOBSTRUCTION":
-                    ChangeAllTokenObstruction();
+                    ChangeAllTokenObstruction(command);
                     break;
                 case "CHANGEREACTOROBSTRUCTION":
                     ChangeReactorObstruction(command);
@@ -243,10 +253,12 @@ public class TutorialScript : MonoBehaviour
         GameLoader.Instance.RestartGame();
         GameInput.Instance.InputStopped = false;
 
-        DeckButtonScript.Instance.ButtonReady = true;
-        NextCycle.Instance.EnableOneCycle = true;
-        undoButton.interactable = true;
-        pauseButton.interactable = true;
+        DeckButtonScript.Instance.ButtonDisabled = false;
+        NextCycle.Instance.ButtonDisabled = false;
+        undo.GetComponent<Button>().interactable = true;
+        undo.GetComponent<Image>().color = Color.white;
+        pause.GetComponent<Button>().interactable = true;
+        pause.GetComponent<Image>().color = Color.white;
     }
 
     /// <summary>
@@ -319,6 +331,9 @@ public class TutorialScript : MonoBehaviour
                 break;
             case "MOVECOUNTER":
                 tutorialMoveCounter.SetActive(highlightOn);
+                break;
+            case "NEXTCYCLE":
+                tutorialNextCycle.SetActive(highlightOn);
                 break;
             case "UNDO":
                 tutorialUndo.SetActive(highlightOn);
@@ -565,16 +580,18 @@ public class TutorialScript : MonoBehaviour
         }
     }
 
-    private void ChangeAllTokenObstruction()
+    private void ChangeAllTokenObstruction(List<string> command)
     {
+        CheckCommandCount(command, 2);
         Debug.Log("Obstructing all tokens");
+        bool obstructed = ParseOnOrOff(command, 1);
 
         foreach (ReactorScript reactorScript in GameInput.Instance.reactorScripts)
         {
             // only the top reactor token/card is ever not obstructed
             if (reactorScript.CardList.Count != 0)
             {
-                reactorScript.CardList[^1].GetComponent<CardScript>().Obstructed = true;
+                reactorScript.CardList[^1].GetComponent<CardScript>().Obstructed = obstructed;
             }
         }
 
@@ -584,14 +601,14 @@ public class TutorialScript : MonoBehaviour
             for (int i = foundationScript.CardList.Count - 1; i >= 0; i--)
             {
                 if (foundationScript.CardList[i].GetComponent<CardScript>().Hidden) break;
-                foundationScript.CardList[i].GetComponent<CardScript>().Obstructed = true;
+                foundationScript.CardList[i].GetComponent<CardScript>().Obstructed = obstructed;
             }
         }
 
         // only the top wastepile token/card is ever not obstructed
         if (WastepileScript.Instance.CardList.Count != 0)
         {
-            WastepileScript.Instance.CardList[^1].GetComponent<CardScript>().Obstructed = true;
+            WastepileScript.Instance.CardList[^1].GetComponent<CardScript>().Obstructed = obstructed;
         }
     }
 
@@ -636,13 +653,13 @@ public class TutorialScript : MonoBehaviour
         switch (NormalizeString(command[1]))
         {
             case "DECK":
-                DeckButtonScript.Instance.ButtonReady = interactable;
+                DeckButtonScript.Instance.ButtonDisabled = !interactable;
                 break;
             case "UNDO":
-                undoButton.interactable = interactable;
+                undo.GetComponent<Button>().interactable = interactable;
                 break;
             case "TIMER":
-                NextCycle.Instance.EnableOneCycle = interactable;
+                NextCycle.Instance.ButtonDisabled = !interactable;
                 break;
             default:
                 throw new FormatException("contains an invalid button for command #2");
@@ -652,7 +669,7 @@ public class TutorialScript : MonoBehaviour
     private void EnableOneNextCycle()
     {
         Debug.Log($"enabling one next cycle");
-        NextCycle.Instance.EnableOneCycle = true;
+        NextCycle.Instance.ButtonDisabled = false;
     }
 
     /// <summary>

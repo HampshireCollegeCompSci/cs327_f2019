@@ -8,6 +8,12 @@
 		},
 		{
 			"argumentList": [
+				"ChangeAllTokenObstruction",
+				"ON"
+			]
+		},
+		{
+			"argumentList": [
 				"ChangeReactorObstruction",
 				"ON"
 			]
@@ -44,13 +50,19 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"Cards can be moved by pressing and dragging them around.\n\nCards that are moveable have white displays on them.\n\nTry moving some around now."
+				"Cards can be moved by pressing and dragging them around.\n\nCards that are moveable have white displays on them.\n\nTry interacting with them now."
 			]
 		},
 		{
 			"argumentList": [
 				"ChangeObjectHighlight",
 				"Foundations",
+				"OFF"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeAllTokenObstruction",
 				"OFF"
 			]
 		},
@@ -123,6 +135,12 @@
 		},
 		{
 			"argumentList": [
+				"ChangeAllTokenObstruction",
+				"ON"
+			]
+		},
+		{
+			"argumentList": [
 				"ChangeObjectHighlight",
 				"Foundations",
 				"ON"
@@ -149,27 +167,18 @@
 			"argumentList": [
 				"ChangeTokenObstruction",
 				"foundation",
+				"2",
 				"0",
-				"0",
-				"ON"
+				"OFF"
 			]
 		},
 		{
 			"argumentList": [
 				"ChangeTokenObstruction",
 				"foundation",
-				"1",
+				"3",
 				"0",
-				"ON"
-			]
-		},
-		{
-			"argumentList": [
-				"ChangeTokenObstruction",
-				"wastepile",
-				"0",
-				"0",
-				"ON"
+				"OFF"
 			]
 		},
 		{
@@ -241,6 +250,12 @@
 		},
 		{
 			"argumentList": [
+				"ChangeAllTokenObstruction",
+				"ON"
+			]
+		},
+		{
+			"argumentList": [
 				"ChangeObjectHighlight",
 				"Foundations",
 				"OFF"
@@ -294,7 +309,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"Only the first card on the conveyor belt can be moved.\n\nThe belt can be scrolled through to view cards hidden in the back."
+				"During gameplay, only the first card on the conveyor belt can be moved.\n\nThe belt can be scrolled through to view cards hidden in the back."
 			]
 		},
 		{
@@ -351,6 +366,12 @@
 		},
 		{
 			"argumentList": [
+				"ChangeAllTokenObstruction",
+				"ON"
+			]
+		},
+		{
+			"argumentList": [
 				"WaitForTouch"
 			]
 		},
@@ -376,6 +397,12 @@
 		{
 			"argumentList": [
 				"ChangeReactorObstruction",
+				"OFF"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeAllTokenObstruction",
 				"OFF"
 			]
 		},
@@ -416,7 +443,8 @@
 		},
 		{
 			"argumentList": [
-				"ChangeAllTokenObstruction"
+				"ChangeAllTokenObstruction",
+				"ON"
 			]
 		},
 		{
@@ -436,7 +464,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"Another thing to watch out for is the move counter.\n\nAll card moves except for combinations decrease the move counter by one."
+				"Another thing to watch out for is the move counter.\n\nAll card moves except for eliminations/combinations decrease the move counter by one."
 			]
 		},
 		{
@@ -458,6 +486,12 @@
 			"argumentList": [
 				"LoadSave",
 				"tutorialState_default"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeAllTokenObstruction",
+				"ON"
 			]
 		},
 		{
@@ -504,6 +538,13 @@
 		},
 		{
 			"argumentList": [
+				"ChangeObjectHighlight",
+				"nextcycle",
+				"ON"
+			]
+		},
+		{
+			"argumentList": [
 				"EnableOneNextCycle"
 			]
 		},
@@ -529,6 +570,13 @@
 		{
 			"argumentList": [
 				"ChangeObjectHighlight",
+				"nextcycle",
+				"OFF"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
 				"Foundations",
 				"OFF"
 			]
@@ -536,7 +584,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"Moves can be completely undone by pressing the undo button.\n\nUndoing does not count against the move counter."
+				"During gameplay, moves can be completely undone by pressing the undo button.\n\nUndoing does not count against the move counter."
 			]
 		},
 		{
@@ -561,7 +609,7 @@
 		{
 			"argumentList": [
 				"ChangeShownText",
-				"The scoreboard shows the cumulative points for each combination made during a game.\n\nCombo chains grant increasing amounts of bonus points."
+				"The scoreboard shows the\ncumulative points for each elimination/combination made\nduring a game.\n\nCombo chains grant increasing amounts of bonus points."
 			]
 		},
 		{

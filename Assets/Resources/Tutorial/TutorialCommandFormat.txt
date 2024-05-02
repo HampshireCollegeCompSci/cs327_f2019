@@ -105,6 +105,7 @@ Commands for the argumentList:
 -----------------------------------------
 
 	Change All Token Obstruction: sets all card's obstructed state to on (they appear darker and are immovable in-game)
+		obstruction: on, off, (on = non-interactable)
 
 -----------------------------------------
 

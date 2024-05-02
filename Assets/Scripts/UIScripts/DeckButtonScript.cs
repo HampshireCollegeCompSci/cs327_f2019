@@ -5,10 +5,6 @@ using UnityEngine.EventSystems;
 
 public class DeckButtonScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
-    private static readonly WaitForSeconds buttonWait = new(0.04f);
-
-    private int buttonAnimationIndex;
-
     // Singleton instance.
     public static DeckButtonScript Instance { get; private set; }
 
@@ -16,11 +12,36 @@ public class DeckButtonScript : MonoBehaviour, IPointerEnterHandler, IPointerExi
     private Image buttonImage;
     [SerializeField]
     private Sprite[] buttonAnimation;
+    private int buttonAnimationIndex;
 
+    private bool _buttonDisabled;
     private bool mouseOverButton, mousePressingButton;
     private Coroutine buttonCoroutine;
+    private static readonly WaitForSeconds buttonWait = new(0.04f);
 
     public bool ButtonReady { get; set; } = true;
+
+    public bool ButtonDisabled
+    {
+        get => _buttonDisabled;
+        set
+        {
+            if (_buttonDisabled == value) return;
+            _buttonDisabled = value;
+            if (value)
+            {
+                TryStopButtonCoroutine();
+                buttonImage.sprite = buttonAnimation[^1];
+                buttonAnimationIndex = buttonAnimation.Length - 1;
+                buttonImage.color = Color.gray;
+            }
+            else
+            {
+                buttonImage.color = Color.white;
+                buttonCoroutine = StartCoroutine(ButtonUp());
+            }
+        }
+    }
 
     // Initialize the singleton instance.
     void Awake()
@@ -47,15 +68,12 @@ public class DeckButtonScript : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (!ButtonReady || GameInput.Instance.InputStopped) return;
+        if (ButtonDisabled || !ButtonReady || GameInput.Instance.InputStopped) return;
         ButtonReady = false;
         mousePressingButton = true;
         GameInput.Instance.InputStopped = true;
 
-        if (buttonCoroutine != null)
-        {
-            StopCoroutine(buttonCoroutine);
-        }
+        TryStopButtonCoroutine();
         buttonCoroutine = StartCoroutine(ButtonDown());
     }
 
@@ -76,10 +94,7 @@ public class DeckButtonScript : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public void StartButtonUp()
     {
-        if (buttonCoroutine != null)
-        {
-            StopCoroutine(buttonCoroutine);
-        }
+        TryStopButtonCoroutine();
         buttonCoroutine = StartCoroutine(ButtonUp());
     }
 
@@ -112,5 +127,11 @@ public class DeckButtonScript : MonoBehaviour, IPointerEnterHandler, IPointerExi
         }
         buttonCoroutine = null;
         ButtonReady = true;
+    }
+
+    private void TryStopButtonCoroutine()
+    {
+        if (buttonCoroutine == null) return;
+        StopCoroutine(buttonCoroutine);
     }
 }
