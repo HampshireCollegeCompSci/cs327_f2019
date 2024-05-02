@@ -14,16 +14,12 @@ public class StartGame : MonoBehaviour
 
     private void Awake()
     {
-        // Initialize the singleton instance.
-        // If there is not already an instance, set it to this.
-        if (Instance == null)
+        if (Instance != null)
         {
-            Instance = this;
+            throw new ArgumentException("there should not already be an instance of this");
         }
-        else if (Instance != this)
-        {
-            throw new Exception("two of these scripts should not exist at the same time");
-        }
+
+        Instance = this;
 
         // disable the camera and audio listener because the previous scene is still loaded
         // and there need to be only one of each
@@ -46,7 +42,7 @@ public class StartGame : MonoBehaviour
             }
             else
             {
-                throw new System.Exception("a start game sequence instance doesn't exist!");
+                throw new Exception("a start game sequence instance doesn't exist!");
             }
         }
 

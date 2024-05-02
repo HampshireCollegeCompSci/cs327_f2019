@@ -73,7 +73,7 @@ public class SpaceBabyController : MonoBehaviour, ISound
 
     public void BabyEat()
     {
-        animator.Play(Constants.AnimatorIDs.SpaceBaby.eatingID);
+        animator.Play(Constants.AnimatorIDs.SpaceBaby.eatingID, -1, 0);
         DelayIdle();
     }
 
@@ -126,7 +126,7 @@ public class SpaceBabyController : MonoBehaviour, ISound
 
     private void AngryAnimation()
     {
-        animator.Play(Constants.AnimatorIDs.SpaceBaby.angryID);
+        animator.Play(Constants.AnimatorIDs.SpaceBaby.angryID, -1, 0);
         DelayIdle();
     }
 

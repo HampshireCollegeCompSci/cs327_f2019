@@ -18,15 +18,12 @@ public class GameLoader : MonoBehaviour
 
     private void Awake()
     {
-        // Initialize the singleton instance.
-        if (Instance == null)
+        if (Instance != null)
         {
-            Instance = this;
+            throw new ArgumentException("there should not already be an instance of this");
         }
-        else if (Instance != this)
-        {
-            throw new Exception("two of these scripts should not exist at the same time");
-        }
+
+        Instance = this;
     }
 
     public bool LoadGame()
