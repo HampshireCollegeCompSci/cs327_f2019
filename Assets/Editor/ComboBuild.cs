@@ -78,7 +78,7 @@ public class ComboBuild
             return;
         }
 
-        string newMobileDataPath = Path.Combine(desktopPath, "Build", mobileBuildName + ".data");
+        string newMobileDataPath = Path.Combine(desktopPath, "Build", mobileBuildName + ".data.br");
         if (File.Exists(newMobileDataPath))
         {
             Debug.Log("Deleting old mobile data");
@@ -86,6 +86,6 @@ public class ComboBuild
         }
 
         // Copy the mobile.data file to the desktop build directory to consolidate them both
-        FileUtil.CopyFileOrDirectory(Path.Combine(mobilePath, "Build", mobileBuildName + ".data"), newMobileDataPath);
+        FileUtil.CopyFileOrDirectory(Path.Combine(mobilePath, "Build", mobileBuildName + ".data.br"), newMobileDataPath);
     }
 }
