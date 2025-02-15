@@ -125,7 +125,7 @@ public class ReactorScript : MonoBehaviour, ICardContainer, IGlow
         SetCardPositions();
 
         cardValueCount += cardScript.Card.Rank.ReactorValue;
-        AchievementsManager.TryReactorAtLimit(cardValueCount);
+        AchievementsManager.TryReactorsAtLimit();
         SetReactorScore(cardValueCount);
         CheckGameOver(cardValueCount);
     }

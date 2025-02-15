@@ -106,11 +106,15 @@ public static class AchievementsManager
         Achievements.cardStack.Status = true;
     }
 
-    public static void TryReactorAtLimit(int reactorValue)
+    public static void TryReactorsAtLimit()
     {
-        if (Achievements.reactorAtLimit.Status) return;
-        if (reactorValue != Config.Instance.CurrentDifficulty.ReactorLimit) return;
-        Achievements.reactorAtLimit.Status = true;
+        if (Achievements.reactorsAtLimit.Status) return;
+        foreach (ReactorScript script in GameInput.Instance.reactorScripts)
+        {
+            if (script.CardValueCount != Config.Instance.CurrentDifficulty.ReactorLimit)
+                return;
+        }
+        Achievements.reactorsAtLimit.Status = true;
     }
 
     public static void AchievedAllReactorsHighAlert()

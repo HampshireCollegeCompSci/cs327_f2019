@@ -14,10 +14,10 @@ public static class Achievements
         "Achievement Overcautious",
         Achievement.AchieveType.Failure);
 
-    public static readonly Achievement reactorAtLimit = new(
+    public static readonly Achievement reactorsAtLimit = new(
         "Redline",
-        "Have a storage container reach its limit.",
-        "Achievement Reactor At Limit",
+        "Have all storage containers be at their limit at the same time.",
+        "Achievement Reactors At Limit",
         Achievement.AchieveType.Achieve);
 
     public static readonly Achievement neverReactorHighAlert = new(
@@ -103,7 +103,7 @@ public static class Achievements
         cardStack,
         tripleCombo,
         reactorSize,
-        reactorAtLimit,
+        reactorsAtLimit,
         neverReactorHighAlert,
         allReactorsHighAlert,
         neverMoves,
