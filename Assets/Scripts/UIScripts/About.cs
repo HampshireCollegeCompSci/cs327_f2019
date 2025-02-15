@@ -1,7 +1,19 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class About : MonoBehaviour
 {
+    public Text info;
+
+    private void Start()
+    {
+        info.text =
+            $"Game Version: {Application.version}\n" +
+            $"Unity Version: {Application.unityVersion}\n" +
+            $"Device Vibration: {Vibration.HasVibrator}\n" +
+            $"Save File Path: {SaveFile.GetPath()}";
+    }
+
     public void OpenProjectWebsite()
     {
         Debug.Log("opening project website");
