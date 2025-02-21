@@ -33,7 +33,7 @@ public static class Animate
         float timeElapsed = 0;
         while (timeElapsed < duration)
         {
-            toUpdate.anchoredPosition = Vector2.Lerp(start, end, Smoothstep(timeElapsed, duration));
+            toUpdate.anchoredPosition = SmoothstepVector2(start, end, timeElapsed / duration);
             timeElapsed += Time.deltaTime;
             yield return null;
         }
@@ -45,7 +45,7 @@ public static class Animate
         float timeElapsed = 0;
         while (timeElapsed < duration)
         {
-            toUpdate.position = Vector2.Lerp(start, end, Smoothstep(timeElapsed, duration));
+            toUpdate.position = SmoothstepVector2(start, end, timeElapsed / duration);
             timeElapsed += Time.deltaTime;
             yield return null;
         }
@@ -58,7 +58,7 @@ public static class Animate
         Vector3 newPosition;
         while (timeElapsed < duration)
         {
-            newPosition = Vector2.Lerp(start, end, Smoothstep(timeElapsed, duration));
+            newPosition = SmoothstepVector2(start, end, timeElapsed / duration);
             for (int i = 0; i < toUpdate.Length; i++)
             {
                 toUpdate[i].position = newPosition;
@@ -77,10 +77,11 @@ public static class Animate
         }
     }
 
-    private static float Smoothstep(float timeElapsed, float duration)
+    private static Vector2 SmoothstepVector2(Vector2 start, Vector2 end, float durationFraction)
     {
-        float t = timeElapsed / duration;
-        t = t * t * (3f - 2f * t); // Smoothstep formula
-        return t;
+        return new Vector2(
+            Mathf.SmoothStep(start.x, end.x, durationFraction),
+            Mathf.SmoothStep(start.y, end.y, durationFraction)
+        );
     }
 }

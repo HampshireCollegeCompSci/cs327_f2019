@@ -38,6 +38,7 @@ public class AchievementPopup : MonoBehaviour
 
     public void CameraChange(Camera newCam)
     {
+        if (canvas == null) return;
         canvas.worldCamera = newCam;
     }
 
