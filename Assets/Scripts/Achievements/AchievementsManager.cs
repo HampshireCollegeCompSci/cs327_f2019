@@ -22,7 +22,7 @@ public static class AchievementsManager
         trackedAchievements.ForEach(achievement => PushAchievement(achievement));
 
         if (Achievements.noHints.Status)
-            Achievements.noHints.Status = !(Config.Instance.HintsEnabled || Config.Instance.AutoPlacementEnabled);
+            Achievements.noHints.Status = !(Config.Instance.HintsEnabled || AutoPlacement.Enabled);
         if (Achievements.superHard.Status)
             Achievements.superHard.Status = Achievements.noHints.Status;
     }
@@ -54,7 +54,7 @@ public static class AchievementsManager
 
     public static void NewGameSetAchievements()
     {
-        Achievements.noHints.Status = !(Config.Instance.HintsEnabled || Config.Instance.AutoPlacementEnabled);
+        Achievements.noHints.Status = !(Config.Instance.HintsEnabled || AutoPlacement.Enabled);
         Achievements.superHard.Status = Achievements.noHints.Status && Config.Instance.CurrentDifficulty.Equals(Difficulties.hard);
     }
 

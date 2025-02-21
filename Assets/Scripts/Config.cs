@@ -11,7 +11,8 @@ public class Config : MonoBehaviour
     public bool continuing;
     public bool prettyColors;
 
-    private bool _autoPlacementEnabled, _hintsEnabled;
+    private bool _hintsEnabled;
+
     private ColorMode _currentColorMode;
     private List<Camera> cameras;
 
@@ -40,12 +41,12 @@ public class Config : MonoBehaviour
         Vibration.Init();
         // Check Player Preferences
         PersistentSettings.TryCheckKeys();
+        AutoPlacement.GameLaunch();
         // Check if the game state version needs updating and if the save file needs deleting
         SaveFile.CheckNewGameStateVersion();
         // Set the application frame rate to what was saved
         Application.targetFrameRate = PersistentSettings.FrameRate;
 
-        AutoPlacementEnabled = PersistentSettings.AutoPlacementEnabled;
         HintsEnabled = PersistentSettings.HintsEnabled;
         CurrentColorMode = GameValues.Colors.Modes.List[PersistentSettings.ColorMode];
 
@@ -53,21 +54,6 @@ public class Config : MonoBehaviour
     }
 
     public bool IsGamePlayActive { get; set; }
-
-    public bool AutoPlacementEnabled
-    {
-        get => _autoPlacementEnabled;
-        set
-        {
-            if (value == _autoPlacementEnabled) return;
-            _autoPlacementEnabled = value;
-
-            if (value && IsGamePlayActive)
-            {
-                AchievementsManager.FailedNoHints();
-            }
-        }
-    }
 
     public bool HintsEnabled
     {

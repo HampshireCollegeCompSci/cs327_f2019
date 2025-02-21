@@ -44,7 +44,6 @@ public static class Constants
         public const string movesUntilSaveKey = "MovesUntilSave";
         public const string hintsEnabledKey = "HintsEnabled";
         public const string colorMode = "ColorMode";
-        public const string autoPlacementKey = "AutoPlacement";
     }
 
     // Music Audio Mixer Exposed Parameters (name)

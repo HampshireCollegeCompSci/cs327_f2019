@@ -27,7 +27,16 @@ public class SettingsScript : MonoBehaviour
     private InputField movesUntilSaveInputField;
 
     [SerializeField]
-    private Toggle autoPlacementToggle, hintsToggle;
+    private Toggle autoPlacementToggle;
+    [SerializeField]
+    private InputField autoPlacementSpeed, autoPlacementTime;
+    [SerializeField]
+    private Slider autoPlacementDistanceIndexes;
+    [SerializeField]
+    private Text autoPlacementDistanceText;
+
+    [SerializeField]
+    private Toggle hintsToggle;
     [SerializeField]
     private Dropdown colorModeDropdown;
     [SerializeField]
@@ -77,7 +86,15 @@ public class SettingsScript : MonoBehaviour
         saveGameStateToggle.isOn = PersistentSettings.SaveGameStateEnabled;
         movesUntilSaveInputField.text = PersistentSettings.MovesUntilSave.ToString();
 
-        autoPlacementToggle.isOn = PersistentSettings.AutoPlacementEnabled;
+        autoPlacementToggle.isOn = AutoPlacement.Enabled;
+        autoPlacementSpeed.text = AutoPlacement.Speed.ToString();
+        autoPlacementTime.text = AutoPlacement.Time.ToString();
+
+        autoPlacementDistanceIndexes.minValue = 0;
+        autoPlacementDistanceIndexes.maxValue = AutoPlacement.DistanceLength - 1;
+        autoPlacementDistanceIndexes.value = AutoPlacement.DistanceIndex;
+        autoPlacementDistanceText.text = AutoPlacement.DistanceText;
+
         hintsToggle.isOn = PersistentSettings.HintsEnabled;
 
         var colorModeOptions = new List<Dropdown.OptionData>(GameValues.Colors.Modes.List.Count);
@@ -137,7 +154,7 @@ public class SettingsScript : MonoBehaviour
     public void SuitArtOnToggle(bool update)
     {
         if (lockout) return;
-        Debug.Log($"seting food suits to: {update}");
+        Debug.Log($"setting food suits to: {update}");
         PersistentSettings.FoodSuitsEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
 
@@ -150,7 +167,7 @@ public class SettingsScript : MonoBehaviour
     public void DeckOrientationOnToggle(bool update)
     {
         if (lockout) return;
-        Debug.Log($"seting deck orientation to: {update}");
+        Debug.Log($"setting deck orientation to: {update}");
         PersistentSettings.DeckOrientation = update;
         SoundEffectsController.Instance.ButtonPressSound();
 
@@ -172,7 +189,7 @@ public class SettingsScript : MonoBehaviour
         }
 
         int frameRateSetting = frameRates[frameRateIndex];
-        Debug.Log($"seting the targetFrameRate to: {frameRateSetting}");
+        Debug.Log($"setting the targetFrameRate to: {frameRateSetting}");
         Application.targetFrameRate = frameRateSetting;
         PersistentSettings.FrameRate = frameRateSetting;
         UpdateFrameRateText(frameRateSetting);
@@ -181,7 +198,7 @@ public class SettingsScript : MonoBehaviour
     public void SaveGameStateOnToggle(bool update)
     {
         if (lockout) return;
-        Debug.Log($"seting save game state to: {update}");
+        Debug.Log($"setting save game state to: {update}");
         PersistentSettings.SaveGameStateEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
 
@@ -199,10 +216,10 @@ public class SettingsScript : MonoBehaviour
     {
         if (lockout) return;
 
-        if (int.TryParse(update, out int movesUntilSave) && movesUntilSave > 0)
+        if (int.TryParse(update, out int movesUntilSave) &&
+            movesUntilSave > 0 && movesUntilSave < 1000)
         {
-            if (PersistentSettings.MovesUntilSave == movesUntilSave) return;
-            Debug.Log($"seting moves until save to: {movesUntilSave}");
+            Debug.Log($"setting moves until save to: {movesUntilSave}");
             PersistentSettings.MovesUntilSave = movesUntilSave;
             if (IsGamePlaySceneActive())
             {
@@ -211,7 +228,7 @@ public class SettingsScript : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"invalid moves until save detected: {update}");
+            Debug.LogWarning($"invalid moves until save input detected: {update}");
             movesUntilSaveInputField.text = PersistentSettings.MovesUntilSave.ToString();
         }
     }
@@ -219,16 +236,61 @@ public class SettingsScript : MonoBehaviour
     public void AutoPlacementEnabledOnToggle(bool update)
     {
         if (lockout) return;
-        Debug.Log($"auto placement set to: {update}");
-        PersistentSettings.AutoPlacementEnabled = update;
-        Config.Instance.AutoPlacementEnabled = update;
+        Debug.Log($"setting auto placement to: {update}");
+        AutoPlacement.Enabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
+    }
+
+    public void AutoPlacementSpeed(string update)
+    {
+        if (lockout) return;
+        if (float.TryParse(update, out float value) && value >= 0)
+        {
+            Debug.Log($"setting the auto placement speed to: {value}");
+            AutoPlacement.Speed = value;
+        }
+        else
+        {
+            Debug.LogWarning($"invalid auto placement speed input detected: {update}");
+            autoPlacementSpeed.text = AutoPlacement.Speed.ToString();
+        }
+    }
+
+    public void AutoPlacementTime(string update)
+    {
+        if (lockout) return;
+        if (float.TryParse(update, out float value) && value > 0)
+        {
+            Debug.Log($"setting the auto placement time to: {update}");
+            AutoPlacement.Time = value;
+        }
+        else
+        {
+            Debug.LogWarning($"invalid auto placement time input detected: {update}");
+            autoPlacementTime.text = AutoPlacement.Time.ToString();
+        }
+    }
+
+    public void AutoPlacementDistanceIndex(float update)
+    {
+        if (lockout) return;
+        int value = (int)update;
+        if (value < 0 || value >= AutoPlacement.DistanceLength)
+        {
+            Debug.LogWarning($"invalid auto placement distance index input detected: {update}");
+            autoPlacementDistanceIndexes.value = AutoPlacement.DistanceIndex;
+            autoPlacementDistanceText.text = AutoPlacement.DistanceText;
+            return;
+        }
+        Debug.Log($"setting the auto placement distance index to: {update}");
+        AutoPlacement.DistanceIndex = value;
+        autoPlacementDistanceText.text = AutoPlacement.DistanceText;
     }
 
     public void HintsEnabledOnToggle(bool update)
     {
         if (lockout) return;
-        Debug.Log($"seting hints enabled to: {update}");
+        Debug.Log($"setting hints enabled to: {update}");
         PersistentSettings.HintsEnabled = update;
         Config.Instance.HintsEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
@@ -237,7 +299,7 @@ public class SettingsScript : MonoBehaviour
     public void ColorModeOnValueChange(int update)
     {
         if (lockout) return;
-        Debug.Log($"seting color mode to: {update}");
+        Debug.Log($"setting color mode to: {update}");
         if (update < 0 || update >= GameValues.Colors.Modes.List.Count)
         {
             update = 0;

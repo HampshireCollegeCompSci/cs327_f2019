@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 302158527737373804}
   - component: {fileID: 7325521328193865557}
   m_Layer: 5
-  m_Name: Volume Number
+  m_Name: Number
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

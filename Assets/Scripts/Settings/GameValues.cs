@@ -89,8 +89,6 @@ public static class GameValues
         public const bool saveGameStateDefault = true;
         public const int movesUntilSaveDefault = 50;
 
-        public const bool autoPlacementEnabledDefault = true;
-        public const float autoPlacementDistance = 0.1f;
         public const bool hintsEnabledDefault = true;
     }
 
