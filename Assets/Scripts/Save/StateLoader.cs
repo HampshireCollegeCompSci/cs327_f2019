@@ -31,6 +31,7 @@ public class StateLoader : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+
             #if !UNITY_WEBGL
                 tokenSource = new CancellationTokenSource();
             #endif
@@ -153,62 +154,25 @@ public class StateLoader : MonoBehaviour
 
         // if this isn't running on WebGL (no thread support)
 #if !UNITY_WEBGL
-            if (saveTask != null && !saveTask.IsCompleted)
+        if (saveTask != null && !saveTask.IsCompleted)
+        {
+            Debug.LogWarning("canceling the previous save task");
+            tokenSource.Cancel();
+            try
             {
-                Debug.LogWarning("canceling the previous save task");
-                tokenSource.Cancel();
-                try
-                {
-                    saveTask.Wait();
-                }
-                // TaskCanceledException is being thrown as expected, but I can't catch it for some reason
-                catch (Exception)
-                {
-                    Debug.LogWarning("the save task was successfully canceled");
-                }
-                tokenSource = new CancellationTokenSource();
-                saveTask = null;
+                saveTask.Wait();
             }
+            // TaskCanceledException is being thrown as expected, but I can't catch it for some reason
+            catch (Exception)
+            {
+                Debug.LogWarning("the save task was successfully canceled");
+            }
+            tokenSource = new CancellationTokenSource();
+            saveTask = null;
+        }
 #endif
 
-        GameState<int> gameState = new()
-        {
-            difficulty = Config.Instance.CurrentDifficulty.Name,
-            timer = Timer.GetTimeSpan().ToString(),
-            moveCounter = Actions.MoveCounter,
-            moveTracker = Actions.MoveTracker,
-            actions = Actions.ActionsDone,
-            score = Actions.Score,
-            consecutiveMatches = Actions.ConsecutiveMatches,
-
-            wastePile = ConvertCardListToStringList(WastepileScript.Instance.CardList),
-            deck = ConvertCardListToStringList(DeckScript.Instance.CardList),
-            matches = ConvertCardListToStringList(MatchedPileScript.Instance.CardList),
-            moveLog = saveMoveLog,
-            achievements = Achievements.achievementList
-        };
-
-        for (int i = 0; i < GameInput.Instance.foundationScripts.Length; i++)
-        {
-            foreach (GameObject card in GameInput.Instance.foundationScripts[i].CardList)
-            {
-                CardScript cardScript = card.GetComponent<CardScript>();
-                if (cardScript.Hidden)
-                {
-                    gameState.foundations[i].hidden.Add(cardScript.Card.ID);
-                }
-                else
-                {
-                    gameState.foundations[i].unhidden.Add(cardScript.Card.ID);
-                }
-            }
-        }
-        for (int i = 0; i < GameInput.Instance.reactorScripts.Length; i++)
-        {
-            gameState.reactors[i].cards = ConvertCardListToStringList(GameInput.Instance.reactorScripts[i].CardList);
-        }
-
-        string content = JsonUtility.ToJson(gameState, Application.isEditor);
+        string content = JsonUtility.ToJson(CreateGameState(), Application.isEditor);
 
         // again, WebGL has no thread support
         #if !UNITY_WEBGL
@@ -240,6 +204,49 @@ public class StateLoader : MonoBehaviour
         string jsonTextFile = Resources.Load<TextAsset>(filePath).ToString();
         GameState<string> tutorialState = JsonUtility.FromJson<GameState<string>>(jsonTextFile);
         UnpackGameState(tutorialState, isTutorial: true);
+    }
+
+    private GameState<int> CreateGameState()
+    {
+        GameState<int> gameState = new()
+        {
+            difficulty = Config.Instance.CurrentDifficulty.Name,
+            timer = Timer.GetTimeSpan().ToString(),
+            moveCounter = Actions.MoveCounter,
+            moveTracker = Actions.MoveTracker,
+            actions = Actions.ActionsDone,
+            score = Actions.Score,
+            consecutiveMatches = Actions.ConsecutiveMatches,
+
+            wastePile = ConvertCardListToStringList(WastepileScript.Instance.CardList),
+            deck = ConvertCardListToStringList(DeckScript.Instance.CardList),
+            matches = ConvertCardListToStringList(MatchedPileScript.Instance.CardList),
+            moveLog = saveMoveLog,
+            achievements = AchievementsManager.GetCurrentAchievements
+        };
+
+        for (int i = 0; i < GameInput.Instance.foundationScripts.Length; i++)
+        {
+            foreach (GameObject card in GameInput.Instance.foundationScripts[i].CardList)
+            {
+                CardScript cardScript = card.GetComponent<CardScript>();
+                if (cardScript.Hidden)
+                {
+                    gameState.foundations[i].hidden.Add(cardScript.Card.ID);
+                }
+                else
+                {
+                    gameState.foundations[i].unhidden.Add(cardScript.Card.ID);
+                }
+            }
+        }
+
+        for (int i = 0; i < GameInput.Instance.reactorScripts.Length; i++)
+        {
+            gameState.reactors[i].cards = ConvertCardListToStringList(GameInput.Instance.reactorScripts[i].CardList);
+        }
+
+        return gameState;
     }
 
     private void UnpackGameState<T>(GameState<T> state, bool isTutorial = false)

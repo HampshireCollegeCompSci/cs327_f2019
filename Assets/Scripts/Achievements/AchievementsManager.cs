@@ -5,19 +5,44 @@ using UnityEngine;
 public static class AchievementsManager
 {
     private static readonly Stack<Achievement> achievementStack = new(Achievements.achievementList.Count);
+    private static readonly List<Achievement> achievementFailList = new(Achievements.achievementList.Count);
+
+    public static List<Achievement> GetCurrentAchievements
+    {
+        get 
+        {
+            List<Achievement> result = new(achievementStack);
+            result.AddRange(achievementFailList);
+            return result;
+        }
+    }
 
     public static void LoadAchievementValues(List<Achievement> savedAchievements)
     {
+        // achievements that need to be sorted though to put in order at the end
         List<Achievement> trackedAchievements = new(savedAchievements.Count);
+
         foreach (Achievement savedAchievement in savedAchievements)
         {
-            Achievement achievementToLoad = Achievements.achievementList.Find(x => x.Key == savedAchievement.Key);
-            achievementToLoad?.LoadValues(savedAchievement);
-            if (achievementToLoad.Tracker != 0)
+            Achievement achievementToLoad = Achievements.achievementList.Find(x => x.ID == savedAchievement.ID);
+            if (achievementToLoad == null)
+            {
+                Debug.LogWarning($"Achievement not found, Name: {savedAchievement.Name}, ID: {savedAchievement.ID}");
+                continue;
+            }
+
+            achievementToLoad.LoadValues(savedAchievement);
+
+            if (achievementToLoad.IsAchieveBased)
             {
                 trackedAchievements.Add(achievementToLoad);
             }
+            else
+            {
+                AddFailedAchievement(achievementToLoad);
+            }
         }
+
         trackedAchievements.Sort((x, y) => x.Tracker.CompareTo(y.Tracker));
         trackedAchievements.ForEach(achievement => PushAchievement(achievement));
 
@@ -31,6 +56,12 @@ public static class AchievementsManager
     {
         Debug.Log($"adding achievement to the stack: {achievement.Name}, {achievement.Tracker}");
         achievementStack.Push(achievement);
+    }
+
+    public static void AddFailedAchievement(Achievement achievement)
+    {
+        Debug.Log($"failed {achievement.Name}");
+        achievementFailList.Add(achievement);
     }
 
     public static void TryRemoveAchievement(int move)
@@ -50,6 +81,7 @@ public static class AchievementsManager
             achievement.Reset();
         }
         achievementStack.Clear();
+        achievementFailList.Clear();
     }
 
     public static void NewGameSetAchievements()
