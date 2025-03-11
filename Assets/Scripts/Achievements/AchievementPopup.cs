@@ -7,13 +7,12 @@ public class AchievementPopup : MonoBehaviour
 {
     // Singleton instance.
     public static AchievementPopup Instance { get; private set; }
-    private static readonly WaitForSeconds popupDelay = new(GameValues.Achievements.delayDuration),
+    private static readonly WaitForSecondsRealtime popupDelay = new(GameValues.Achievements.delayDuration),
         popupDuration = new(GameValues.Achievements.fullVisibleDuration);
 
     [SerializeField]
-    private GameObject popupPrefab;
-
-    private Transform UICanvasTransform;
+    private GameObject popup;
+    private CanvasGroup popupCG;
     private Canvas canvas;
     private Queue<Achievement> popupQueue;
     private Coroutine achievementCoroutine;
@@ -31,7 +30,7 @@ public class AchievementPopup : MonoBehaviour
         Instance = this;
         // make instance persist across scenes
         DontDestroyOnLoad(this.gameObject);
-        UICanvasTransform = GetComponent<Transform>();
+        popupCG = popup.GetComponent<CanvasGroup>();
         canvas = GetComponent<Canvas>();
         popupQueue = new Queue<Achievement>(Achievements.achievementList.Count);
     }
@@ -52,19 +51,19 @@ public class AchievementPopup : MonoBehaviour
     private IEnumerator AnimateAchievements()
     {
         yield return popupDelay;
+        popupCG.alpha = 0;
+        popup.SetActive(true);
         while (popupQueue.Count > 0)
         {
             Achievement achievement = popupQueue.Dequeue();
             if (!achievement.Status) continue;
-            GameObject popup = Instantiate(popupPrefab, UICanvasTransform);
             popup.GetComponentInChildren<Text>().text = $"Achievement: {achievement.Name}";
-            CanvasGroup popupCG = popup.GetComponent<CanvasGroup>();
             SoundEffectsController.Instance.AchievementSound();
             yield return Animate.FadeCanvasGroup(popupCG, 0, 1, GameValues.Achievements.fadeDuration);
             yield return popupDuration;
             yield return Animate.FadeCanvasGroup(popupCG, 1, 0, GameValues.Achievements.fadeDuration);
-            Destroy(popup);
         }
+        popup.SetActive(false);
         achievementCoroutine = null;
     }
 }

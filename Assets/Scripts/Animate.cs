@@ -22,7 +22,7 @@ public static class Animate
         while (timeElapsed < duration)
         {
             toUpdate.alpha = Mathf.Lerp(start, end, timeElapsed / duration);
-            timeElapsed += Time.deltaTime;
+            timeElapsed += Time.unscaledDeltaTime; // avoid being effected by setting timeScale = 0 when pausing
             yield return null;
         }
         toUpdate.alpha = end;
