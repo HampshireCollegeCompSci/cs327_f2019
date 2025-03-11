@@ -152,8 +152,8 @@ public static class GameValues
         // all durations are in seconds
 
         // main menu
-        public const float logoDelay = 2;
-        public const float buttonFadeOut = 0.3f;
+        public const float logoDelay = 1.5f;
+        public const float buttonFadeOut = 0.5f;
         public const float zoomAndFade = 1.5f;
 
         // screen fades 
