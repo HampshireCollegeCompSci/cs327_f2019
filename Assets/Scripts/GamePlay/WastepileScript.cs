@@ -205,7 +205,7 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         float numCardsFromStart = -contentRectTransform.anchoredPosition.x / cardSpacing;
         float scrollDuration = GetScrollDuration(numCardsFromStart);
         DeckCounterScript.Instance.UpdateCounter(-numCardsAdded, scrollDuration);
-        yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, scrollDuration);
+        yield return Animate.MoveRectTransformSmoothStep(contentRectTransform, endPosition, scrollDuration);
 
         DeckButtonScript.Instance.StartButtonUp();
 
@@ -216,14 +216,13 @@ public class WastepileScript : MonoBehaviour, ICardContainer
     {
         SetScrolling(true);
 
-        Vector2 startPosition = contentRectTransform.anchoredPosition;
         // back 1 token distance
         Vector2 endPosition = contentRectTransform.anchoredPosition;
         endPosition.x = -cardSpacing;
+        
+        float scrollDuration = AutoPlacement.WastePileSpeed * (cardSpacing + contentRectTransform.anchoredPosition.x) / (cardSpacing * 6);
 
-        float duration = (cardSpacing + contentRectTransform.anchoredPosition.x) / (cardSpacing * 6);
-
-        yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, duration);
+        yield return Animate.MoveRectTransformSmoothStep(contentRectTransform, endPosition, scrollDuration);
 
         Destroy(parentCardContainer);
         SetScrolling(false);
@@ -234,14 +233,13 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         SetScrolling(true);
 
         // move the scroll rect's content so that the new cards are hidden to the left side of the belt
-        Vector2 startPosition = contentRectTransform.anchoredPosition;
         Vector2 endPosition = contentRectTransform.anchoredPosition;
         endPosition.x = -cardSpacing * (cardList.Count + 1);
 
         double numCardsFromEnd = cardList.Count + (contentRectTransform.anchoredPosition.x / cardSpacing);
         float scrollDuration = GetScrollDuration(numCardsFromEnd);
         DeckCounterScript.Instance.UpdateCounter(cardList.Count, scrollDuration);
-        yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, scrollDuration);
+        yield return Animate.MoveRectTransformSmoothStep(contentRectTransform, endPosition, scrollDuration);
 
         // move all the tokens
         while (cardList.Count > 0)
@@ -289,6 +287,6 @@ public class WastepileScript : MonoBehaviour, ICardContainer
     private float GetScrollDuration(double numCardsToScroll)
     {
         // for the more cards to scroll, the shorter the duration per card
-        return (float) (0.25 * Math.Pow(numCardsToScroll, 0.4));
+        return (float) (AutoPlacement.WastePileSpeed * 0.25 * Math.Pow(numCardsToScroll, 0.4));
     }
 }

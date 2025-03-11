@@ -47,7 +47,7 @@ public static class GameValues
 
         public const float draggedCardScale = 0.15f;
         public const float draggedCardYOffset = 0.4f;
-        public const float draggedCardXOffset = -0.01f;
+        public const float draggedCardZOffset = -0.01f;
 
         public const float zoomFactor = 0.3f;
     }
@@ -166,9 +166,7 @@ public static class GameValues
 
         // gameplay
         public const float cardHologramFadeIn = 2; // fades in the cards holograms
-        public const float cardsToReactor = 0.5f; // movement of the cards to reactor during a nextcycle
-        public const float autoPlacementDuration = 0.4f;
-        public const float autoPlacementDelaySec = 0.1f;
+
         // match effect
         public const float comboPointsFadeIn = 0.5f; // fade in and scale up the point text
         public const float comboWait = 0.5f; // wait a bit

@@ -29,11 +29,11 @@ public class SettingsScript : MonoBehaviour
     [SerializeField]
     private Toggle autoPlacementToggle;
     [SerializeField]
-    private InputField autoPlacementSpeed, autoPlacementTime;
+    private InputField autoPlacementTime;
     [SerializeField]
-    private Slider autoPlacementDistanceIndexes;
+    private Slider autoPlacementSpeedIndexes, autoPlacementDistanceIndexes;
     [SerializeField]
-    private Text autoPlacementDistanceText;
+    private Text autoPlacementSpeedText, autoPlacementDistanceText;
 
     [SerializeField]
     private Toggle hintsToggle;
@@ -87,11 +87,15 @@ public class SettingsScript : MonoBehaviour
         movesUntilSaveInputField.text = PersistentSettings.MovesUntilSave.ToString();
 
         autoPlacementToggle.isOn = AutoPlacement.Enabled;
-        autoPlacementSpeed.text = AutoPlacement.Speed.ToString();
         autoPlacementTime.text = AutoPlacement.Time.ToString();
 
+        autoPlacementSpeedIndexes.minValue = 0;
+        autoPlacementSpeedIndexes.maxValue = AutoPlacement.SpeedsLength - 1;
+        autoPlacementSpeedIndexes.value = AutoPlacement.SpeedIndex;
+        autoPlacementSpeedText.text = AutoPlacement.SpeedText;
+
         autoPlacementDistanceIndexes.minValue = 0;
-        autoPlacementDistanceIndexes.maxValue = AutoPlacement.DistanceLength - 1;
+        autoPlacementDistanceIndexes.maxValue = AutoPlacement.DistancesLength - 1;
         autoPlacementDistanceIndexes.value = AutoPlacement.DistanceIndex;
         autoPlacementDistanceText.text = AutoPlacement.DistanceText;
 
@@ -241,21 +245,6 @@ public class SettingsScript : MonoBehaviour
         SoundEffectsController.Instance.ButtonPressSound();
     }
 
-    public void AutoPlacementSpeed(string update)
-    {
-        if (lockout) return;
-        if (float.TryParse(update, out float value) && value >= 0)
-        {
-            Debug.Log($"setting the auto placement speed to: {value}");
-            AutoPlacement.Speed = value;
-        }
-        else
-        {
-            Debug.LogWarning($"invalid auto placement speed input detected: {update}");
-            autoPlacementSpeed.text = AutoPlacement.Speed.ToString();
-        }
-    }
-
     public void AutoPlacementTime(string update)
     {
         if (lockout) return;
@@ -271,11 +260,27 @@ public class SettingsScript : MonoBehaviour
         }
     }
 
+    public void AutoPlacementSpeedIndex(float update)
+    {
+        if (lockout) return;
+        int value = (int)update;
+        if (value < 0 || value >= AutoPlacement.SpeedsLength)
+        {
+            Debug.LogWarning($"invalid auto placement speed index input detected: {update}");
+            autoPlacementSpeedIndexes.value = AutoPlacement.SpeedIndex;
+            autoPlacementSpeedText.text = AutoPlacement.SpeedText;
+            return;
+        }
+        Debug.Log($"setting the auto placement speed index to: {update}");
+        AutoPlacement.SpeedIndex = value;
+        autoPlacementSpeedText.text = AutoPlacement.SpeedText;
+    }
+
     public void AutoPlacementDistanceIndex(float update)
     {
         if (lockout) return;
         int value = (int)update;
-        if (value < 0 || value >= AutoPlacement.DistanceLength)
+        if (value < 0 || value >= AutoPlacement.DistancesLength)
         {
             Debug.LogWarning($"invalid auto placement distance index input detected: {update}");
             autoPlacementDistanceIndexes.value = AutoPlacement.DistanceIndex;

@@ -30,12 +30,11 @@ public class GameInput : MonoBehaviour
     [SerializeField]
     private int inputStopRequests;
 
-    private Vector3 oldPointerPosition, currentPointerPosition, clickPosition;
+    private Vector3 clickPosition, oldPointerPosition;
     private float clickStartTime;
     private ShowPossibleMoves showPossibleMoves;
 
     private bool autoPlacing;
-    private static readonly WaitForSeconds autoPlacementDelay = new(GameValues.AnimationDurataions.autoPlacementDelaySec);
 
     // Initialize the singleton instance.
     void Awake()
@@ -123,18 +122,18 @@ public class GameInput : MonoBehaviour
 
     private void InputStart()
     {
-        currentPointerPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        oldPointerPosition = currentPointerPosition;
+        Vector3 pointerPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        oldPointerPosition = pointerPosition;
 
         if (AutoPlacement.Enabled)
         {
-            clickPosition = currentPointerPosition;
+            clickPosition = pointerPosition;
             clickStartTime = Time.time;
         }
 
         RaycastHit2D hit = Physics2D.Raycast(
-            currentPointerPosition,
-            currentPointerPosition,
+            pointerPosition,
+            pointerPosition,
             0,
             Constants.LayerMaskIDs.cards);
 
@@ -144,16 +143,16 @@ public class GameInput : MonoBehaviour
 
         DraggingCard = true;
         SelectCards(hit);
-        DragSelectedCards(hit);
+        DragSelectedCards(pointerPosition, hit);
     }
 
     private void InputContinue()
     {
-        currentPointerPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        if (currentPointerPosition == oldPointerPosition) return;
-        RaycastHit2D hit = GetCardPlacementHit(currentPointerPosition);
-        DragSelectedCards(hit);
-        oldPointerPosition = currentPointerPosition;
+        Vector3 pointerPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if (pointerPosition == oldPointerPosition) return;
+        RaycastHit2D hit = GetCardPlacementHit(pointerPosition);
+        DragSelectedCards(pointerPosition, hit);
+        oldPointerPosition = pointerPosition;
     }
 
     private void InputStop()
@@ -168,8 +167,9 @@ public class GameInput : MonoBehaviour
         }
         else if (AutoPlacement.Enabled)
         {
-            float movementDistance = Vector2.Distance(currentPointerPosition, clickPosition);
+            float movementDistance = Vector2.Distance(pointerPosition, clickPosition);
             float pressDuration = Time.time - clickStartTime;
+            //Debug.Log($"Move Distance: {movementDistance}, Duration: {pressDuration}");
 
             if (movementDistance <= AutoPlacement.DistanceValue &&
                 pressDuration <= AutoPlacement.Time)
@@ -328,20 +328,20 @@ public class GameInput : MonoBehaviour
         topSelectedCopyCardScript = null;
     }
 
-    private void DragSelectedCards(RaycastHit2D hit)
+    private void DragSelectedCards(Vector3 position, RaycastHit2D hit)
     {
         if (DraggingStack)
         {
             foreach (GameObject card in selectedCardsCopy)
             {
-                card.transform.position = currentPointerPosition;
-                currentPointerPosition.y += GameValues.Transforms.draggedCardYOffset;
-                currentPointerPosition.z += GameValues.Transforms.draggedCardXOffset;
+                card.transform.position = position;
+                position.y += GameValues.Transforms.draggedCardYOffset;
+                position.z += GameValues.Transforms.draggedCardZOffset;
             }
         }
         else
         {
-            selectedCardsCopy[0].transform.position = currentPointerPosition;
+            selectedCardsCopy[0].transform.position = position;
         }
 
         // glow time
@@ -431,6 +431,7 @@ public class GameInput : MonoBehaviour
         if (showPossibleMoves.matchTokensAreGlowing)
         {
             target = showPossibleMoves.cardMatch;
+            endPosition = target.transform.position;
         }
         else if (showPossibleMoves.moveTokensAreGlowing)
         {
@@ -441,6 +442,7 @@ public class GameInput : MonoBehaviour
         else if (showPossibleMoves.foundationIsGlowing)
         {
             target = showPossibleMoves.foundationMoves[0];
+            endPosition = target.transform.position;
         }
         else if (showPossibleMoves.reactorIsGlowing)
         {
@@ -457,52 +459,43 @@ public class GameInput : MonoBehaviour
             DraggingCard = false;
             return;
         }
-        if (endPosition == Vector2.zero)
-        {
-            endPosition = target.transform.position;
-        }
 
         autoPlacing = true;
-        if (selectedCardsCopy.Count == 0)
-        {
-            StartCoroutine(MoveCard(selectedCardsCopy[0], target, endPosition));
-        }
-        else
-        {
-            StartCoroutine(MoveCards(target, endPosition));
-        }
-    }
-
-    private IEnumerator MoveCard(GameObject card, GameObject target, Vector2 endPosition)
-    {
-        yield return Animate.SmoothstepTransform(card.transform,
-                card.transform.position,
-                endPosition,
-                AutoPlacement.Speed);
-
-        yield return EndAutoPlacement(target);
+        StartCoroutine(MoveCards(target, endPosition));
     }
 
     private IEnumerator MoveCards(GameObject target, Vector2 endPosition)
     {
-        Transform[] cardTransforms = new Transform[selectedCardsCopy.Count];
-        for (int i = 0; i < selectedCardsCopy.Count; i++)
+        if (AutoPlacement.SpeedValue == 0)
         {
-            cardTransforms[i] = selectedCardsCopy[i].transform;
+            Vector3 newPosition = endPosition;
+            foreach (GameObject card in selectedCardsCopy)
+            {
+                card.transform.position = newPosition;
+                newPosition.y += GameValues.Transforms.draggedCardYOffset;
+                newPosition.z += GameValues.Transforms.draggedCardZOffset;
+            }
+        }
+        else if (selectedCardsCopy.Count == 1)
+        {
+            yield return Animate.MoveTransformSmoothDamp(selectedCardsCopy[0].transform,
+                endPosition,
+                AutoPlacement.SpeedValue);
+        }
+        else
+        {
+            Transform[] cardTransforms = new Transform[selectedCardsCopy.Count];
+            for (int i = 0; i < selectedCardsCopy.Count; i++)
+                cardTransforms[i] = selectedCardsCopy[i].transform;
+
+            yield return Animate.MoveTransformsSmoothDamp(cardTransforms,
+                endPosition,
+                AutoPlacement.SpeedValue);
         }
 
-        yield return Animate.SmoothstepTransformCards(cardTransforms,
-            selectedCardsCopy[0].transform.position,
-            endPosition,
-            AutoPlacement.Speed);
-
-        yield return EndAutoPlacement(target);
-    }
-
-    private IEnumerator EndAutoPlacement(GameObject target)
-    {
+        yield return null;
         UpdateDragGlow(target);
-        yield return autoPlacementDelay;
+        yield return null;
         TryToPlaceCards(target);
         DraggingCard = false;
         autoPlacing = false;

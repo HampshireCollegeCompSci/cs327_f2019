@@ -3,39 +3,49 @@ using UnityEngine;
 
 public static class AutoPlacement
 {
-    private const string enabledKey = "AutoPlacement",
-        speedKey = "AutoPlacementSpeed",
+    public const string enabledKey = "AutoPlacement",
         timeKey = "AutoPlacementTime",
+        speedIndexKey = "SpeedIndex",
         distanceIndexKey = "AutoPlacementDistance";
     
-    private const bool enabledDefault = true;
-    private const float speedDefault = 0.4f; // seconds
-    private const float timeDefault = 2; // seconds
-    private const int distanceIndexDefault = 1; // an index from distances
+    public const bool enabledDefault = true;
+    public const float timeDefault = 2; // seconds
+
+    public const int speedIndexDefault = 2; // an index from speeds
+    private static readonly float[] speeds = { 0.24f, 0.18f, 0.12f, 0.08f, 0 };
+    private static readonly string[] speedsText = { "Slower", "Slow", "Default", "Fast", "Instant" };
+    private static readonly float[] wastePileSpeedMulti = { 1.5f, 1.2f, 1, 0.5f, 0 };
+
+    public const int distanceIndexDefault = 1; // an index from distances
     private static readonly float[] distances = { 0.1f, 0.25f, 0.5f };
     private static readonly string[] distancesText = { "Small", "Medium", "Large"};
 
     private static bool _enabled;
-    private static float _speed, _time;
-    private static int _distanceIndex;
+    private static float _time;
+    private static int _speedIndex, _distanceIndex;
 
     public static void GameLaunch()
     {
         _enabled = Convert.ToBoolean(PlayerPrefs.GetInt(enabledKey, 
             Convert.ToInt32(enabledDefault)));
 
-        _speed = PlayerPrefs.GetFloat(speedKey, speedDefault);
-        if (_speed < 0)
-        {
-            Debug.LogError($"The unsupported auto placement speed of \"{_speed}\" was saved, defaulting to {speedDefault}.");
-            Speed = speedDefault;
-        }
-
         _time = PlayerPrefs.GetFloat(timeKey, timeDefault);
         if (_time < 0)
         {
             Debug.LogError($"The unsupported auto placement speed of \"{_time}\" was saved, defaulting to {timeDefault}.");
             Time = timeDefault;
+        }
+
+        _speedIndex = PlayerPrefs.GetInt(speedIndexKey, speedIndexDefault);
+        if (_speedIndex < 0 || _speedIndex >= speeds.Length)
+        {
+            Debug.LogError($"The unsupported auto placement speed of \"{_speedIndex}\" was saved, defaulting to {speedIndexDefault}.");
+            SpeedIndex = speedIndexDefault;
+        }
+        else
+        {
+            SpeedValue = speeds[_speedIndex];
+            WastePileSpeed = wastePileSpeedMulti[_speedIndex];
         }
 
         _distanceIndex = PlayerPrefs.GetInt(distanceIndexKey, distanceIndexDefault);
@@ -66,17 +76,6 @@ public static class AutoPlacement
         }
     }
 
-    public static float Speed
-    {
-        get => _speed;
-        set
-        {
-            if (value == _speed) return;
-            _speed = value;
-            PlayerPrefs.SetFloat(speedKey, value);
-        }
-    }
-
     public static float Time
     {
         get => _time;
@@ -86,6 +85,35 @@ public static class AutoPlacement
             _time = value;
             PlayerPrefs.SetFloat(timeKey, value);
         }
+    }
+
+    public static int SpeedIndex
+    {
+        get => _speedIndex;
+        set
+        {
+            if (value == _speedIndex) return;
+            _speedIndex = value;
+            SpeedValue = speeds[value];
+            WastePileSpeed = wastePileSpeedMulti[value];
+            PlayerPrefs.SetInt(speedIndexKey, value);
+        }
+    }
+
+    public static int SpeedsLength => speeds.Length;
+
+    public static string SpeedText => speedsText[SpeedIndex];
+
+    public static float SpeedValue
+    {
+        get;
+        private set;
+    }
+
+    public static float WastePileSpeed
+    {
+        get;
+        private set;
     }
 
     public static int DistanceIndex
@@ -100,7 +128,9 @@ public static class AutoPlacement
         }
     }
 
-    public static int DistanceLength => distances.Length;
+    public static int DistancesLength => distances.Length;
+
     public static string DistanceText => distancesText[DistanceIndex];
+
     public static float DistanceValue;
 }

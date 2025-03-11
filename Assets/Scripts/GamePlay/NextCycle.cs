@@ -139,10 +139,9 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
                 }
             }
 
-            yield return Animate.SmoothstepTransform(topFoundationCard.transform,
-                topFoundationCard.transform.position,
+            yield return Animate.MoveTransformSmoothDamp(topFoundationCard.transform,
                 reactorScript.GetNextCardPosition(),
-                GameValues.AnimationDurataions.cardsToReactor);
+                AutoPlacement.SpeedValue);
 
             // set the sorting layer back to default
             topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = Constants.SortingLayerIDs.cards;
