@@ -33,6 +33,9 @@ public static class PersistentSettings
         _achievementPopupsEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.achievementPopupsEnabledKey,
                 Convert.ToInt32(GameValues.Settings.achievementPopupsEnabledDefault)));
 
+        _matchEffectEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.matchEffectEnabledKey,
+            Convert.ToInt32(GameValues.Settings.matchEffectEnabledDefault)));
+
         if (Vibration.HasVibrator)
         {
             _vibrationEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.vibrationEnabledKey,
@@ -115,6 +118,21 @@ public static class PersistentSettings
             {
                 _achievementPopupsEnabled = value;
                 PlayerPrefs.SetInt(Constants.Settings.achievementPopupsEnabledKey,
+                    Convert.ToInt32(value));
+            }
+        }
+    }
+
+    private static bool _matchEffectEnabled;
+    public static bool MatchEffectEnabled
+    {
+        get => _matchEffectEnabled;
+        set
+        {
+            if (_matchEffectEnabled != value)
+            {
+                _matchEffectEnabled = value;
+                PlayerPrefs.SetInt(Constants.Settings.matchEffectEnabledKey,
                     Convert.ToInt32(value));
             }
         }

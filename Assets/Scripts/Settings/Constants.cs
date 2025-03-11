@@ -37,6 +37,7 @@ public static class Constants
         public const string musicVolumeKey = "MusicVolume";
         public const string vibrationEnabledKey = "VibrationEnabled";
         public const string achievementPopupsEnabledKey = "AchievementPopupsEnabled";
+        public const string matchEffectEnabledKey = "MatchEffectEnabled";
         public const string foodSuitsEnabledKey = "FoodSuitsEnabled";
         public const string deckOrientationKey = "DeckOrientation";
         public const string frameRateKey = "FrameRate";

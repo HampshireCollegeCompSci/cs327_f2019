@@ -17,7 +17,7 @@ public class SettingsScript : MonoBehaviour
     private Text frameRateText;
 
     [SerializeField]
-    private Toggle achievementPopupToggle, vibrationToggle, suitArtToggle, deckOrientationToggle;
+    private Toggle achievementPopupToggle, matchEffectToggle, vibrationToggle, suitArtToggle, deckOrientationToggle;
 
     private List<int> frameRates;
 
@@ -67,6 +67,7 @@ public class SettingsScript : MonoBehaviour
         soundEffectsVolumeText.text = $"{volume * soundEffectsMultiplier}%";
 
         achievementPopupToggle.isOn = PersistentSettings.AchievementPopupsEnabled;
+        matchEffectToggle.isOn = PersistentSettings.MatchEffectEnabled;
 
         if (Vibration.HasVibrator)
         {
@@ -144,6 +145,14 @@ public class SettingsScript : MonoBehaviour
         if (lockout) return;
         Debug.Log($"setting achievement popups to: {update}");
         PersistentSettings.AchievementPopupsEnabled = update;
+        SoundEffectsController.Instance.ButtonPressSound();
+    }
+
+    public void MatchEffectOnToggle(bool update)
+    {
+        if (lockout) return;
+        Debug.Log($"setting match effect to: {update}");
+        PersistentSettings.MatchEffectEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
     }
 

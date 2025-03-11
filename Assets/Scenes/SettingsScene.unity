@@ -3500,7 +3500,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 53702098, guid: 25b02beaf29d2c94482b334f1a9b46d5, type: 3}
       propertyPath: m_Text
-      value: Match Popup
+      value: Match Effect
       objectReference: {fileID: 0}
     - target: {fileID: 1731924723868467281, guid: 25b02beaf29d2c94482b334f1a9b46d5,
         type: 3}
@@ -3565,7 +3565,7 @@ PrefabInstance:
     - target: {fileID: 1731924723868467282, guid: 25b02beaf29d2c94482b334f1a9b46d5,
         type: 3}
       propertyPath: m_Name
-      value: Match Popup
+      value: Match Effect
       objectReference: {fileID: 0}
     - target: {fileID: 6165321719799751754, guid: 25b02beaf29d2c94482b334f1a9b46d5,
         type: 3}
@@ -3575,7 +3575,7 @@ PrefabInstance:
     - target: {fileID: 6165321719799751754, guid: 25b02beaf29d2c94482b334f1a9b46d5,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: MatchPopupOnToggle
+      value: MatchEffectOnToggle
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4899,7 +4899,7 @@ MonoBehaviour:
   frameRateSlider: {fileID: 1033845133}
   frameRateText: {fileID: 1033845132}
   achievementPopupToggle: {fileID: 617651104}
-  matchPopupToggle: {fileID: 1511468341}
+  matchEffectToggle: {fileID: 1511468341}
   vibrationToggle: {fileID: 1731924724813407140}
   suitArtToggle: {fileID: 750623036}
   deckOrientationToggle: {fileID: 1998535736}
