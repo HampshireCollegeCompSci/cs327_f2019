@@ -7,7 +7,7 @@ public static class Constants
     public static class GameStates
     {
         public const string versionKey = "GameStateVersion";
-        public const string version = "3";
+        public const int version = 4;
 
         public const string saveStatePathInEditor = "Assets/Resources/GameStates/";
         public const string saveStateFileName = "saveState";

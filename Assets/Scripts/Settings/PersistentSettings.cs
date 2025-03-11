@@ -255,9 +255,9 @@ public static class PersistentSettings
 
     public static bool NewGameStateVersion()
     {
-        if (PlayerPrefs.GetString(Constants.GameStates.versionKey, defaultValue: "NULL") != Constants.GameStates.version)
+        if (PlayerPrefs.GetInt(Constants.GameStates.versionKey, defaultValue: 0) != Constants.GameStates.version)
         {
-            PlayerPrefs.SetString(Constants.GameStates.versionKey, Constants.GameStates.version);
+            PlayerPrefs.SetInt(Constants.GameStates.versionKey, Constants.GameStates.version);
             return true;
         }
         return false;
