@@ -18,6 +18,7 @@ public class GameInput : MonoBehaviour
 
     [SerializeField]
     private List<GameObject> selectedCards, selectedCardsCopy;
+    private CardScript selectedCardScript;
     private CardScript topSelectedCopyCardScript;
 
     [SerializeField]
@@ -98,7 +99,13 @@ public class GameInput : MonoBehaviour
             if (!value)
             {
                 showPossibleMoves.HideMoves();
-                UnselectCards();
+                WastepileScript.Instance.DraggingCard = false;
+                selectedCards.ForEach(c => c.GetComponent<CardScript>().Dragging = false);
+                selectedCards.Clear();
+                selectedCardScript = null;
+                selectedCardsCopy.ForEach(c => Destroy(c));
+                selectedCardsCopy.Clear();
+                topSelectedCopyCardScript = null;
                 DraggingStack = false;
             }
         }
@@ -196,16 +203,16 @@ public class GameInput : MonoBehaviour
         SoundEffectsController.Instance.CardPressSound();
         GameObject hitGameObject = hit.collider.gameObject;
         selectedCards.Add(hitGameObject);
-        CardScript hitCardScript = hitGameObject.GetComponent<CardScript>();
+        selectedCardScript = hitGameObject.GetComponent<CardScript>();
 
-        switch (hitCardScript.CurrentContainerType)
+        switch (selectedCardScript.CurrentContainerType)
         {
             case Constants.CardContainerType.WastePile:
                 // disable wastepile scrolling as dragging its cards can cause scrolling
                 WastepileScript.Instance.DraggingCard = true;
                 break;
             case Constants.CardContainerType.Foundation:
-                List<GameObject> foundationCardList = hitCardScript.Container.GetComponent<FoundationScript>().CardList;
+                List<GameObject> foundationCardList = selectedCardScript.Container.GetComponent<FoundationScript>().CardList;
                 // select all cards above the hit one
                 for (int i = foundationCardList.LastIndexOf(hitGameObject) + 1; i < foundationCardList.Count; i++)
                 {
@@ -230,7 +237,7 @@ public class GameInput : MonoBehaviour
         }
 
         topSelectedCopyCardScript = selectedCardsCopy[^1].GetComponent<CardScript>();
-        if (hitCardScript.CurrentContainerType == Constants.CardContainerType.Reactor)
+        if (selectedCardScript.CurrentContainerType == Constants.CardContainerType.Reactor)
         {
             // enable dragged reactor tokens holograms as they are off
             topSelectedCopyCardScript.EnableHologramImmediately();
@@ -238,7 +245,7 @@ public class GameInput : MonoBehaviour
         }
 
         // show everything that we can interact with
-        showPossibleMoves.ShowMoves(hitCardScript);
+        showPossibleMoves.ShowMoves(selectedCardScript);
 
         changedHologramColor = false;
         wasOnMatch = false;
@@ -249,12 +256,6 @@ public class GameInput : MonoBehaviour
     private bool TryToPlaceCards(GameObject newContainer)
     {
         if (!CardPlacement) return false;
-        if (newContainer.Equals(selectedCardsCopy[0].GetComponent<CardScript>().gameObject))
-        {
-            Debug.LogError("tried to place card on its own copy");
-            return false;
-        }
-
         if (!newContainer.TryGetComponent<IGlow>(out var glowObject)
             || !glowObject.Glowing) return false;
 
@@ -263,7 +264,6 @@ public class GameInput : MonoBehaviour
             CardScript hitCardScript = newContainer.GetComponent<CardScript>();
             if (hitCardScript.GlowColor.ColorLevel == Constants.ColorLevel.Match)
             {
-                CardScript selectedCardScript = selectedCards[0].GetComponent<CardScript>();
                 matchCards.Match(selectedCardScript, hitCardScript, selectedCardsCopy[0]);
                 return true;
             }
@@ -272,13 +272,12 @@ public class GameInput : MonoBehaviour
 
         if (!newContainer.TryGetComponent<ICardContainer>(out var cardContainer)) return false;
 
-        Constants.CardContainerType oldContainerType = selectedCards[0].GetComponent<CardScript>().CurrentContainerType;
         Constants.CardContainerType newContainerType = cardContainer.ContainerType;
 
         MoveAllSelectedCards(newContainerType, newContainer);
 
         // if the card was from a foundation and moved into a non foundation container
-        bool checkGameOver = oldContainerType == Constants.CardContainerType.Foundation &&
+        bool checkGameOver = selectedCardScript.CurrentContainerType == Constants.CardContainerType.Foundation &&
             newContainerType != Constants.CardContainerType.Foundation;
         Actions.MoveUpdate(checkGameOver);
 
@@ -305,27 +304,18 @@ public class GameInput : MonoBehaviour
                 Debug.LogError("tried to move an empty selected cards list");
                 break;
             case 1:
-                selectedCards[0].GetComponent<CardScript>().MoveCard(newContainerType, destination);
+                selectedCardScript.MoveCard(newContainerType, destination);
                 break;
             default:
+                selectedCardScript.MoveCard(newContainerType, destination, isStack: true, showHolo: false);
+
                 int bottomCardCount = selectedCards.Count - 1;
-                for (int i = 0; i < bottomCardCount; i++)
-                {
+                for (int i = 1; i < bottomCardCount; i++)
                     selectedCards[i].GetComponent<CardScript>().MoveCard(newContainerType, destination, isStack: true, showHolo: false);
-                }
+                
                 selectedCards[^1].GetComponent<CardScript>().MoveCard(newContainerType, destination, isStack: true, showHolo: true);
                 break;
         }
-    }
-
-    private void UnselectCards()
-    {
-        WastepileScript.Instance.DraggingCard = false;
-        selectedCards.ForEach(c => c.GetComponent<CardScript>().Dragging = false);
-        selectedCards.Clear();
-        selectedCardsCopy.ForEach(c => Destroy(c));
-        selectedCardsCopy.Clear();
-        topSelectedCopyCardScript = null;
     }
 
     private void DragSelectedCards(Vector3 position, RaycastHit2D hit)
@@ -441,8 +431,13 @@ public class GameInput : MonoBehaviour
         }
         else if (showPossibleMoves.foundationIsGlowing)
         {
-            target = showPossibleMoves.foundationMoves[0];
-            endPosition = target.transform.position;
+            // are the cards not all the cards in a foundation?
+            if (selectedCardScript.CurrentContainerType != Constants.CardContainerType.Foundation ||
+                selectedCardScript.Container.GetComponent<FoundationScript>().CardList.Count != selectedCards.Count)
+            {
+                target = showPossibleMoves.foundationMoves[0];
+                endPosition = target.transform.position;
+            }
         }
         else if (showPossibleMoves.reactorIsGlowing)
         {

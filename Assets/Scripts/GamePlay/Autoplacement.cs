@@ -104,17 +104,9 @@ public static class AutoPlacement
 
     public static string SpeedText => speedsText[SpeedIndex];
 
-    public static float SpeedValue
-    {
-        get;
-        private set;
-    }
+    public static float SpeedValue { get; private set; }
 
-    public static float WastePileSpeed
-    {
-        get;
-        private set;
-    }
+    public static float WastePileSpeed { get; private set; }
 
     public static int DistanceIndex
     {
