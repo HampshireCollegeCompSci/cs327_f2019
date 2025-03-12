@@ -11,7 +11,7 @@ public static class PersistentSettings
     /// <summary>
     /// Sets the keys up and stores their values for repeated use.
     /// </summary>
-    public static void TryCheckKeys()
+    public static void OnGameStart()
     {
         if (hasChecked) return;
         Debug.Log("checking keys");
@@ -52,16 +52,16 @@ public static class PersistentSettings
         _deckOrientation = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.deckOrientationKey,
                 Convert.ToInt32(GameValues.Settings.deckOrientationDefault)));
 
-        int maxDeviceScreenRefreshRate = (int)Math.Round(Screen.currentResolution.refreshRateRatio.value);
-        int defaultFrameRate = Application.platform == RuntimePlatform.WebGLPlayer ? -1 : maxDeviceScreenRefreshRate;
+        // refreshRateRatio.value is off from the typical integer by very small amount
+        MaxDeviceFrameRate = (int)Math.Round(Screen.currentResolution.refreshRateRatio.value);
+        int defaultFrameRate = Application.platform == RuntimePlatform.WebGLPlayer ? -1 : MaxDeviceFrameRate;
         _frameRate = PlayerPrefs.GetInt(Constants.Settings.frameRateKey, defaultFrameRate);
-        if (FrameRate == 0 || FrameRate < -1 || maxDeviceScreenRefreshRate % FrameRate != 0)
+        Debug.Log($"max device frame rate: {MaxDeviceFrameRate}, our default: {defaultFrameRate}, saved setting: {FrameRate}");
+        if (FrameRate == 0 || FrameRate < -1 || MaxDeviceFrameRate % FrameRate != 0)
         {
-            Debug.LogError($"the unsupported frame rate of {FrameRate} was saved, defaulting to the device's default");
-            FrameRate = -1;
+            Debug.LogWarning($"the unsupported frame rate of {FrameRate} was saved, defaulting to the device's default");
+            FrameRate = defaultFrameRate;
         }
-
-        Convert.ToBoolean(10);
 
         _saveGameStateEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.saveGameStateKey,
                 Convert.ToInt32(GameValues.Settings.saveGameStateDefault)));
@@ -252,6 +252,8 @@ public static class PersistentSettings
             }
         }
     }
+
+    public static int MaxDeviceFrameRate { get; private set; }
 
     public static bool NewGameStateVersion()
     {

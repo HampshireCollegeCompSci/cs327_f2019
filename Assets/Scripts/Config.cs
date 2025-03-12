@@ -40,7 +40,7 @@ public class Config : MonoBehaviour
         // Setup the Vibration Package
         Vibration.Init();
         // Check Player Preferences
-        PersistentSettings.TryCheckKeys();
+        PersistentSettings.OnGameStart();
         AutoPlacement.GameLaunch();
         // Check if the game state version needs updating and if the save file needs deleting
         SaveFile.CheckNewGameStateVersion();

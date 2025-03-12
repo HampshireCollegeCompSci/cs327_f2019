@@ -50,7 +50,7 @@ public class SettingsScript : MonoBehaviour
     void Start()
     {
         lockout = true;
-        PersistentSettings.TryCheckKeys();
+        PersistentSettings.OnGameStart();
 
         // music volume
         musicSlider.maxValue = GameValues.Settings.musicVolumeDenominator;
@@ -336,9 +336,7 @@ public class SettingsScript : MonoBehaviour
         // make a list of most of the supported target frame rates
         // supported means that the screen's maximum refresh rate is divisible by the target
 
-        // refreshRateRatio.value is off from the typical integer by very small amount
-        int maxFrameRate = (int) Math.Round(Screen.currentResolution.refreshRateRatio.value);
-        frameRates = maxFrameRate switch
+        frameRates = PersistentSettings.MaxDeviceFrameRate switch
         {
             240 => new(7) { -1, 30, 60, 120, 240 },
             144 => new(5) { -1, 36, 48, 72, 144 },
@@ -347,29 +345,26 @@ public class SettingsScript : MonoBehaviour
             60 => new(3) { -1, 30, 60 },
             48 => new(3) { -1, 24, 48 },
             30 => new(3) { -1, 15, 30 },
-            _ => new(3) { -1, maxFrameRate / 2, maxFrameRate },
+            _ => new(3) { -1, PersistentSettings.MaxDeviceFrameRate / 2, PersistentSettings.MaxDeviceFrameRate },
         };
 
-        if (maxFrameRate % 2 != 0)
+        if (PersistentSettings.MaxDeviceFrameRate % 2 != 0)
         {
-            Debug.LogError($"this screen has a max refresh rate of {maxFrameRate}, really?");
-            frameRates = new(2) { -1, maxFrameRate };
+            Debug.LogWarning($"this screen has a max refresh rate of {PersistentSettings.MaxDeviceFrameRate}, really?");
+            frameRates = new(2) { -1, PersistentSettings.MaxDeviceFrameRate };
         }
 
-        // -1 is the default for the platform
-        int frameRateSetting = PersistentSettings.FrameRate;
-
         // figure out if the frame rate setting exists in our list of target frame rates
-        int frameRateIndex = frameRates.IndexOf(frameRateSetting);
+        int frameRateIndex = frameRates.IndexOf(PersistentSettings.FrameRate);
         if (frameRateIndex == -1)
         {
-            Debug.LogWarning($"the frame rate of {frameRateSetting} was not found in our list of target frame rates, adding it to them now.");
+            Debug.LogWarning($"the frame rate of {PersistentSettings.FrameRate} was not found in our list of target frame rates, adding it to them now.");
             bool addedToList = false;
             for (int i = 1; i < frameRates.Count; i++)
             {
-                if (frameRateSetting < frameRates[i])
+                if (PersistentSettings.FrameRate < frameRates[i])
                 {
-                    frameRates.Insert(i, frameRateSetting);
+                    frameRates.Insert(i, PersistentSettings.FrameRate);
                     frameRateIndex = i;
                     addedToList = true;
                     break;
@@ -377,7 +372,7 @@ public class SettingsScript : MonoBehaviour
             }
             if (!addedToList)
             {
-                frameRates.Add(frameRateSetting);
+                frameRates.Add(PersistentSettings.FrameRate);
                 frameRateIndex = frameRates.Count - 1;
             }
         }
@@ -386,7 +381,7 @@ public class SettingsScript : MonoBehaviour
         frameRateSlider.maxValue = frameRates.Count - 1;
         frameRateSlider.value = frameRateIndex;
 
-        UpdateFrameRateText(frameRateSetting);
+        UpdateFrameRateText(PersistentSettings.FrameRate);
     }
 
     private void UpdateFrameRateText(int frameRate)
