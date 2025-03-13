@@ -356,8 +356,10 @@ GameObject:
   m_Component:
   - component: {fileID: 126415476}
   - component: {fileID: 126415475}
+  - component: {fileID: 126415478}
+  - component: {fileID: 126415477}
   m_Layer: 0
-  m_Name: MenuUI Script
+  m_Name: Scripts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -396,6 +398,43 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &126415477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126415474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89198b99871c2c549ad3c36bfc5b8dbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  splashScreen: {fileID: 557706686}
+--- !u!114 &126415478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126415474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 681140569bdef064aa7ee601e60a8a86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraObject: {fileID: 235367410}
+  canvas: {fileID: 1115895158}
+  popupWindow: {fileID: 1927384829}
+  popupContinueButton: {fileID: 706747454}
+  allButtons: {fileID: 435433117}
+  mainButtons: {fileID: 1804416137}
+  playButtons: {fileID: 22712175}
+  spaceShip: {fileID: 153595819}
+  spaceShipOff: {fileID: 21300000, guid: 6882bc7aa6daa9743bf331e519f86362, type: 3}
+  spaceShipWindowObject: {fileID: 267931884}
+  startSequencePanel: {fileID: 1722967935}
+  loadingTextObject: {fileID: 32768401}
 --- !u!1001 &127547920
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -645,7 +684,6 @@ GameObject:
   - component: {fileID: 245724826}
   - component: {fileID: 245724825}
   - component: {fileID: 245724824}
-  - component: {fileID: 245724823}
   - component: {fileID: 245724827}
   m_Layer: 5
   m_Name: Achievement Popup Canvas
@@ -654,23 +692,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &245724823
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 245724822}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
 --- !u!114 &245724824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1401,8 +1422,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1675170367}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 126415477}
+        m_TargetAssemblyTypeName: SplashScreen, Assembly-CSharp
         m_MethodName: SkipSplashScreen
         m_Mode: 1
         m_Arguments:
@@ -1759,62 +1780,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2024726489}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1106077101
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1106077102}
-  - component: {fileID: 1106077103}
-  m_Layer: 0
-  m_Name: Start Sequence Script
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1106077102
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1106077101}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1106077103
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1106077101}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 681140569bdef064aa7ee601e60a8a86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cameraObject: {fileID: 235367410}
-  canvas: {fileID: 1115895158}
-  popupWindow: {fileID: 1927384829}
-  popupContinueButton: {fileID: 706747454}
-  allButtons: {fileID: 435433117}
-  mainButtons: {fileID: 1804416137}
-  playButtons: {fileID: 22712175}
-  spaceShip: {fileID: 153595819}
-  spaceShipOff: {fileID: 21300000, guid: 6882bc7aa6daa9743bf331e519f86362, type: 3}
-  spaceShipWindowObject: {fileID: 267931884}
-  startSequencePanel: {fileID: 1722967935}
-  loadingTextObject: {fileID: 32768401}
 --- !u!223 &1115895158 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 1862857494609637189, guid: 41c96bacc7827e941a91caa3a25bc058,
@@ -1857,7 +1822,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -174.99998, y: 5}
+  m_AnchoredPosition: {x: -175, y: 5}
   m_SizeDelta: {x: 597.18, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1141023922
@@ -3080,51 +3045,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!1 &1675170366
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1675170368}
-  - component: {fileID: 1675170367}
-  m_Layer: 0
-  m_Name: Splash Screen Script
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1675170367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1675170366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89198b99871c2c549ad3c36bfc5b8dbd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  splashScreen: {fileID: 557706686}
---- !u!4 &1675170368
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1675170366}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1685706409 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7084158332299253295, guid: f9e4f3524d2da456180c2be002c8dfd4,
@@ -4538,6 +4458,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 898918914864524906, guid: fc1e978fe6461404ea69f0dcdfd81055,
+        type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 898918914864524907, guid: fc1e978fe6461404ea69f0dcdfd81055,
         type: 3}
       propertyPath: m_RootOrder
@@ -4884,7 +4809,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
   m_OnCullStateChanged:
@@ -4933,11 +4858,9 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1916409456}
-  - {fileID: 243999116220788965}
-  - {fileID: 126415476}
   - {fileID: 1692220247}
   - {fileID: 1182164522}
-  - {fileID: 1675170368}
-  - {fileID: 1106077102}
+  - {fileID: 126415476}
+  - {fileID: 243999116220788965}
   - {fileID: 1862857494819462233}
   - {fileID: 245724826}

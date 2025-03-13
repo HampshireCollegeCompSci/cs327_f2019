@@ -14,7 +14,8 @@ public class Config : MonoBehaviour
     private bool _hintsEnabled;
 
     private ColorMode _currentColorMode;
-    private List<Camera> cameras;
+    private Stack<Camera> cameras;
+    private Camera currentCamera;
 
     // Initialize the singleton instance.
     private void Awake()
@@ -50,7 +51,7 @@ public class Config : MonoBehaviour
         HintsEnabled = PersistentSettings.HintsEnabled;
         CurrentColorMode = GameValues.Colors.Modes.List[PersistentSettings.ColorMode];
 
-        cameras = new List<Camera>(SceneManager.sceneCountInBuildSettings);
+        cameras = new Stack<Camera>(SceneManager.sceneCountInBuildSettings);
     }
 
     public bool IsGamePlayActive { get; set; }
@@ -92,30 +93,24 @@ public class Config : MonoBehaviour
 
     public void AddCamera(Camera newCamera)
     {
-        if (cameras.Count != 0)
-        {
-            cameras[^1].enabled = false;
-        }
-        cameras.Add(newCamera);
+        if (currentCamera != null)
+            cameras.Push(currentCamera);
+        currentCamera = newCamera;
         newCamera.enabled = true;
         AchievementPopup.Instance.CameraChange(newCamera);
     }
 
-    public void RemoveCamera(Camera oldCamera)
+    public void RemoveCamera()
     {
-        if (cameras.Count == 0) return;
-        int oldCameraIndex = cameras.LastIndexOf(oldCamera);
-        if (oldCameraIndex == -1)
+        if (cameras.Count == 0)
         {
-            Debug.LogError("tried to remove a camera that is not being tracked");
+            // the app is closing
+            currentCamera = null;
+            return;
         }
-        else
-        {
-            cameras.RemoveAt(oldCameraIndex);
-        }
-        if (cameras.Count == 0) return;
-        cameras[^1].enabled = true;
-        AchievementPopup.Instance.CameraChange(cameras[^1]);
+        currentCamera = cameras.Pop();
+        currentCamera.enabled = true;
+        AchievementPopup.Instance.CameraChange(currentCamera);
     }
 
     public void SetDifficulty(Difficulty dif)
@@ -126,11 +121,11 @@ public class Config : MonoBehaviour
 
     public void SetDifficulty(string dif)
     {
-        foreach (Difficulty difficlty in Difficulties.difficultyArray)
+        foreach (Difficulty difficulty in Difficulties.difficultyArray)
         {
-            if (dif == difficlty.Name)
+            if (dif == difficulty.Name)
             {
-                SetDifficulty(difficlty);
+                SetDifficulty(difficulty);
                 return;
             }
         }

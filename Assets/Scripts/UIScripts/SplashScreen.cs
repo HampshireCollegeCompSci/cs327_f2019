@@ -38,8 +38,7 @@ public class SplashScreen : MonoBehaviour
         splashScreen.SetActive(false);
     }
 
-    [SerializeField]
-    private void SkipSplashScreen()
+    public void SkipSplashScreen()
     {
         // the splash screen acts as a big button and clicking it calls this
         if (splashScreenFade != null)

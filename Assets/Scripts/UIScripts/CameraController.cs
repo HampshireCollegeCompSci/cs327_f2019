@@ -13,6 +13,6 @@ public class CameraController : MonoBehaviour
     private void OnDestroy()
     {
         if (!loaded) return;
-        Config.Instance.RemoveCamera(this.gameObject.GetComponent<Camera>());
+        Config.Instance.RemoveCamera();
     }
 }
