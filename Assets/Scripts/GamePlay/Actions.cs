@@ -84,7 +84,7 @@
             TryDisableGameCanEnd();
         }
 
-        if (!Actions.GameOver)
+        if (!GameOver)
         {
             StateLoader.Instance.TryWriteState();
         }

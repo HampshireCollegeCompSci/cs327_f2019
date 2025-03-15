@@ -272,16 +272,14 @@ public class GameInput : MonoBehaviour
 
         if (!newContainer.TryGetComponent<ICardContainer>(out var cardContainer)) return false;
 
-        Constants.CardContainerType newContainerType = cardContainer.ContainerType;
-
-        MoveAllSelectedCards(newContainerType, newContainer);
-
         // if the card was from a foundation and moved into a non foundation container
         bool checkGameOver = selectedCardScript.CurrentContainerType == Constants.CardContainerType.Foundation &&
-            newContainerType != Constants.CardContainerType.Foundation;
+            cardContainer.ContainerType != Constants.CardContainerType.Foundation;
+
+        MoveAllSelectedCards(cardContainer.ContainerType, newContainer);
         Actions.MoveUpdate(checkGameOver);
 
-        switch (newContainerType)
+        switch (cardContainer.ContainerType)
         {
             case Constants.CardContainerType.Reactor:
                 SoundEffectsController.Instance.CardToReactorSound();
