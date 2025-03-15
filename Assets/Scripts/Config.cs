@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Config : MonoBehaviour
 {
@@ -14,8 +13,6 @@ public class Config : MonoBehaviour
     private bool _hintsEnabled;
 
     private ColorMode _currentColorMode;
-    private Stack<Camera> cameras;
-    private Camera currentCamera;
 
     // Initialize the singleton instance.
     private void Awake()
@@ -50,8 +47,6 @@ public class Config : MonoBehaviour
 
         HintsEnabled = PersistentSettings.HintsEnabled;
         CurrentColorMode = GameValues.Colors.Modes.List[PersistentSettings.ColorMode];
-
-        cameras = new Stack<Camera>(SceneManager.sceneCountInBuildSettings);
     }
 
     public bool IsGamePlayActive { get; set; }
@@ -90,28 +85,6 @@ public class Config : MonoBehaviour
     public string TutorialFileName { get; private set; }
 
     public Stats OldStats { get; private set; }
-
-    public void AddCamera(Camera newCamera)
-    {
-        if (currentCamera != null)
-            cameras.Push(currentCamera);
-        currentCamera = newCamera;
-        newCamera.enabled = true;
-        AchievementPopup.Instance.CameraChange(newCamera);
-    }
-
-    public void RemoveCamera()
-    {
-        if (cameras.Count == 0)
-        {
-            // the app is closing
-            currentCamera = null;
-            return;
-        }
-        currentCamera = cameras.Pop();
-        currentCamera.enabled = true;
-        AchievementPopup.Instance.CameraChange(currentCamera);
-    }
 
     public void SetDifficulty(Difficulty dif)
     {
