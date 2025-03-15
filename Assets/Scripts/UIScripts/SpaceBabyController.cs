@@ -20,14 +20,9 @@ public class SpaceBabyController : MonoBehaviour, ISound
     // Initialize the singleton instance.
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else if (Instance != this)
-        {
-            Debug.LogWarning("There shouldn't be two of these at a time.");
-        }
+        if (Instance != null)
+            throw new System.ArgumentException("there should not already be an instance of this");
+        Instance = this;
     }
 
     // Start is called before the first frame update

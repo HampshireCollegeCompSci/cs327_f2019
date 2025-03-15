@@ -37,16 +37,10 @@ public class EndGame : MonoBehaviour
 
     private void Awake()
     {
-        // Initialize the singleton instance.
-        if (Instance == null)
-        {
-            Instance = this;
-            gameEndButtonButton = gameEndButton.GetComponent<Button>();
-        }
-        else if (Instance != this)
-        {
-            throw new System.Exception("two of these scripts should not exist at the same time");
-        }
+        if (Instance != null)
+            throw new System.ArgumentException("there should not already be an instance of this");
+        Instance = this;
+        gameEndButtonButton = gameEndButton.GetComponent<Button>();
     }
 
     public void TrySetInteraction(bool setTo)

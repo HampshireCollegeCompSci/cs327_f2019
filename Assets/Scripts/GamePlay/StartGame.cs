@@ -15,10 +15,7 @@ public class StartGame : MonoBehaviour
     private void Awake()
     {
         if (Instance != null)
-        {
-            throw new ArgumentException("there should not already be an instance of this");
-        }
-
+            throw new System.ArgumentException("there should not already be an instance of this");
         Instance = this;
 
         // disable the camera and audio listener because the previous scene is still loaded

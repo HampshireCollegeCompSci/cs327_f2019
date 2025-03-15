@@ -28,18 +28,13 @@ public class StateLoader : MonoBehaviour
     // Initialize the singleton instance.
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
+        if (Instance != null)
+            throw new System.ArgumentException("there should not already be an instance of this");
+        Instance = this;
 
-            #if !UNITY_WEBGL
-                tokenSource = new CancellationTokenSource();
-            #endif
-        }
-        else if (Instance != this)
-        {
-            throw new System.Exception("two of these scripts should not exist at the same time");
-        }
+#if !UNITY_WEBGL
+        tokenSource = new CancellationTokenSource();
+#endif
     }
 
     private void Start()

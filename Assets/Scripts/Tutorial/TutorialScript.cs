@@ -36,10 +36,7 @@ public class TutorialScript : MonoBehaviour
     private void Awake()
     {
         if (Instance != null)
-        {
-            throw new ArgumentException("there should not already be an instance of this");
-        }
-
+            throw new System.ArgumentException("there should not already be an instance of this");
         Instance = this;
 
         // this is the gateway to turn the tutorial on

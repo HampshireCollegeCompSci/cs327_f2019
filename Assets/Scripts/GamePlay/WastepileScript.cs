@@ -30,10 +30,7 @@ public class WastepileScript : MonoBehaviour, ICardContainer
     void Awake()
     {
         if (Instance != null)
-        {
             throw new System.ArgumentException("there should not already be an instance of this");
-        }
-        
         Instance = this;
 
         cardList = new List<GameObject>(GameValues.GamePlay.cardCount);

@@ -41,11 +41,9 @@ public class GameInput : MonoBehaviour
     void Awake()
     {
         if (Instance != null)
-        {
             throw new System.ArgumentException("there should not already be an instance of this");
-        }
-
         Instance = this;
+
         selectedCards = new(GameValues.GamePlay.rankCount);
         selectedCardsCopy = new(GameValues.GamePlay.rankCount);
         CardPlacement = true;

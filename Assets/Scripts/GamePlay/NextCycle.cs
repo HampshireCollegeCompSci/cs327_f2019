@@ -41,15 +41,10 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            ButtonReady = true;
-        }
-        else if (Instance != this)
-        {
-            throw new System.ArgumentException("there should not already be an instance of this");
-        }
+        if (Instance != null)
+            throw new System.Exception("there should not already be an instance of this");
+        Instance = this;
+        ButtonReady = true;
     }
 
     public void OnPointerEnter(PointerEventData eventData)

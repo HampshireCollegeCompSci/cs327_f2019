@@ -18,10 +18,7 @@ public class DeckScript : MonoBehaviour, ICardContainer
     void Awake()
     {
         if (Instance != null)
-        {
             throw new System.ArgumentException("there should not already be an instance of this");
-        }
-
         Instance = this;
     }
 

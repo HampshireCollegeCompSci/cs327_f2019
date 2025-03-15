@@ -23,10 +23,7 @@ public class DeckCounterScript : MonoBehaviour
     private void Awake()
     {
         if (Instance != null)
-        {
             throw new System.ArgumentException("there should not already be an instance of this");
-        }
-
         Instance = this;
         counterText = GetComponent<Text>();
     }

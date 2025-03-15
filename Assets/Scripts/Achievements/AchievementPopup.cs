@@ -20,16 +20,9 @@ public class AchievementPopup : MonoBehaviour
     // Initialize the singleton instance.
     void Awake()
     {
-        // If there is an instance, and it's not me, delete myself.
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-            return;
-        }
-
+        if (Instance != null) return;
         Instance = this;
-        // make instance persist across scenes
-        DontDestroyOnLoad(this.gameObject);
+
         popupCG = popup.GetComponent<CanvasGroup>();
         canvas = GetComponent<Canvas>();
         popupQueue = new Queue<Achievement>(Achievements.achievementList.Count);
