@@ -20,6 +20,7 @@ Assets/Resources/GameStates/saveState.json.meta
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
 /WebGLBuilds/
+/.utmp
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
