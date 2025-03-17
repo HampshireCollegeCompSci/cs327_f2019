@@ -34,6 +34,7 @@ public class Config : MonoBehaviour
 #endif
 
         // These must be done in this order
+        SaveFile.SetPath();
         // Setup the Vibration Package
         Vibration.Init();
         // Check Player Preferences

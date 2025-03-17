@@ -42,6 +42,7 @@ public class StateLoader : MonoBehaviour
         saveMoveLog = new();
         movesUntilSave = PersistentSettings.MovesUntilSave;
         saveMovesDisabled = !PersistentSettings.SaveGameStateEnabled;
+        ResetValues();
     }
 
     void OnApplicationFocus(bool hasFocus)
@@ -79,6 +80,7 @@ public class StateLoader : MonoBehaviour
     {
         saveMoveLog.Clear();
         movesSinceLastSave = 0;
+        lastSavedMove = 0; // set to -1 if you want to be able to save at the start of the game
     }
 
     public void AddMove(Move newMove)
@@ -172,7 +174,7 @@ public class StateLoader : MonoBehaviour
         // again, WebGL has no thread support
         #if !UNITY_WEBGL
             Debug.Log("starting the task to write the save file");
-            saveTask = File.WriteAllTextAsync(SaveFile.GetPath(), content, tokenSource.Token);
+            saveTask = File.WriteAllTextAsync(SaveFile.SaveFilePath, content, tokenSource.Token);
         #else
             Debug.Log("writing the save file");
             File.WriteAllText(SaveFile.GetPath(), content);
@@ -184,7 +186,7 @@ public class StateLoader : MonoBehaviour
         Debug.Log("loading save state");
 
         // load the save file from the save path and unpack it
-        string jsonTextFile = File.ReadAllText(SaveFile.GetPath());
+        string jsonTextFile = File.ReadAllText(SaveFile.SaveFilePath);
         GameState<int> saveState = JsonUtility.FromJson<GameState<int>>(jsonTextFile);
         AchievementsManager.LoadAchievementValues(saveState.achievements);
         UnpackGameState(saveState);

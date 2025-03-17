@@ -11,7 +11,7 @@ public class About : MonoBehaviour
             $"Game Version: {Application.version}\n" +
             $"Unity Version: {Application.unityVersion}\n" +
             $"Device Vibration: {Vibration.HasVibrator}\n" +
-            $"Save File Path: {SaveFile.GetPath()}";
+            $"Save File Path: {SaveFile.SaveFilePath}";
     }
 
     public void OpenProjectWebsite()
