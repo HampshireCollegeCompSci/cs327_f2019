@@ -36,9 +36,19 @@ public class AchievementPopup : MonoBehaviour
 
     public void ShowAchievement(Achievement achievement)
     {
+        if (!PersistentSettings.AchievementPopupsEnabled) return;
         popupQueue.Enqueue(achievement);
         if (achievementCoroutine != null) return;
         achievementCoroutine = StartCoroutine(AnimateAchievements());
+    }
+
+    public void StopPopups()
+    {
+        if (achievementCoroutine == null) return;
+        StopCoroutine(achievementCoroutine);
+        achievementCoroutine = null;
+        popup.SetActive(false);
+        popupQueue.Clear();
     }
 
     private IEnumerator AnimateAchievements()

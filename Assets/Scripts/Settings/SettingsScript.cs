@@ -146,6 +146,8 @@ public class SettingsScript : MonoBehaviour
         Debug.Log($"setting achievement popups to: {update}");
         PersistentSettings.AchievementPopupsEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
+        if (update == false)
+            AchievementPopup.Instance.StopPopups();
     }
 
     public void MatchEffectOnToggle(bool update)

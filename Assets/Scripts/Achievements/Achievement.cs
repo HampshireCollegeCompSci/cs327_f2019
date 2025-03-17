@@ -71,7 +71,7 @@ public class Achievement
             {
                 if (!value) return;
                 Tracker = Actions.MoveTracker;
-                TryShowPopup();
+                AchievementPopup.Instance.ShowAchievement(this);
             }
             else
             {
@@ -105,14 +105,9 @@ public class Achievement
     {
         if (!Status) return;
         Debug.Log($"achieved {Name}");
-        if (IsFailureBased) TryShowPopup();
+        if (IsFailureBased)
+            AchievementPopup.Instance.ShowAchievement(this);
         if (Config.Instance.CurrentDifficulty.Equals(Difficulties.cheat)) return;
         Value++;
-    }
-
-    private void TryShowPopup()
-    {
-        if (!PersistentSettings.AchievementPopupsEnabled) return;
-        AchievementPopup.Instance.ShowAchievement(this);
     }
 }
