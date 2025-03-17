@@ -280,6 +280,7 @@ public class MusicController : MonoBehaviour, ISound
 
     private IEnumerator PauseDelay()
     {
+        pauseDelay.Reset();
         audioMixer.SetFloat(Constants.AudioMixerNames.track1, -80);
         audioMixer.SetFloat(Constants.AudioMixerNames.track2, -80);
         // to prevent audio blips lower the volume first and then pause the music

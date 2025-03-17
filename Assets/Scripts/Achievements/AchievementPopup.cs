@@ -53,6 +53,8 @@ public class AchievementPopup : MonoBehaviour
 
     private IEnumerator AnimateAchievements()
     {
+        popupDelay.Reset();
+        popupDuration.Reset();
         yield return popupDelay;
         popupCG.alpha = 0;
         popup.SetActive(true);
