@@ -27,7 +27,7 @@ public class WinSequence : MonoBehaviour
 
     private Vector3 babyScale;
     private float babyScaleIncrease;
-    private const float feedDuration = 0.85f;
+    private const float feedDuration = 0.84f;
 
     public void StartWinSequence()
     {
@@ -68,14 +68,12 @@ public class WinSequence : MonoBehaviour
             yield return feedWait;
         }
 
-        yield return new WaitForSeconds(0.7f);
+        spaceBabyController.PlayDoneEatingAnimation();
+        yield return new WaitForSeconds(0.9f);
+        spaceBabyController.PlayBabyHappySound();
         if (Actions.MatchCounter == GameValues.GamePlay.matchCount)
         {
             StartCoroutine(WinTransition());
-        }
-        else
-        {
-            spaceBabyController.BabyHappy();
         }
     }
 
@@ -105,7 +103,6 @@ public class WinSequence : MonoBehaviour
 
     private IEnumerator WinTransition()
     {
-        spaceBabyController.BabyHappy();
         panelOverlay.SetActive(true);
         Image panelImage = panelOverlay.GetComponent<Image>();
         yield return Animate.FadeImage(panelImage, GameValues.FadeColors.grayFadeIn, GameValues.AnimationDurataions.gameSummaryBabyFade);

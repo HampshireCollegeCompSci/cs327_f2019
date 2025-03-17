@@ -98,6 +98,8 @@ public static class Constants
         }
 
         public static readonly int loseExplosionID = Animator.StringToHash("LoseExplosionAnim");
+        public const string loseTransitionID = "IsLosing";
+        public const string doneEatingTransitionID = "IsDoneEating";
     }
 
     public static class SortingLayerIDs
