@@ -12,9 +12,9 @@ public static class AutoPlacement
     public const float timeDefault = 2; // seconds
 
     public const int speedIndexDefault = 2; // an index from speeds
-    private static readonly float[] speeds = { 0.24f, 0.18f, 0.12f, 0.08f, 0 };
+    private static readonly float[] speeds = { 0.20f, 0.15f, 0.1f, 0.07f, 0 };
     private static readonly string[] speedsText = { "Slower", "Slow", "Default", "Fast", "Instant" };
-    private static readonly float[] wastePileSpeedMulti = { 1.5f, 1.2f, 1, 0.5f, 0 };
+    private static readonly float[] wastePileSpeedMulti = { 1.4f, 1.2f, 1, 0.6f, 0 };
 
     public const int distanceIndexDefault = 1; // an index from distances
     private static readonly float[] distances = { 0.1f, 0.25f, 0.5f };

@@ -259,9 +259,13 @@ public class SettingsScript : MonoBehaviour
     public void AutoPlacementTime(string update)
     {
         if (lockout) return;
-        if (float.TryParse(update, out float value) && value > 0)
+        // the input is limited to 3 characters and can take ".01" but displays it as "0.0"
+        // so limit and round values to the closet tenth 
+        if (float.TryParse(update, out float value) && value >= 0.1)
         {
-            Debug.Log($"setting the auto placement time to: {update}");
+            value = (float)Math.Round(value, 1);
+            Debug.Log($"setting the auto placement time to: {value}");
+            autoPlacementTime.text = value.ToString();
             AutoPlacement.Time = value;
         }
         else

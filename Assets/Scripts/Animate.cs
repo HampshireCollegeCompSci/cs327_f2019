@@ -44,7 +44,7 @@ public static class Animate
     public static IEnumerator MoveTransformSmoothDamp(Transform transform, Vector2 targetPosition, float smoothTime)
     {
         Vector2 velocity = Vector2.zero;
-        while (Vector2.Distance(transform.position, targetPosition) > 0.05)
+        while (Vector2.Distance(transform.position, targetPosition) > 0.01)
         {
             transform.position = Vector2.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
             yield return null;
@@ -59,7 +59,7 @@ public static class Animate
         Vector2 velocity = Vector2.zero;
         Vector2 currentPosition = transforms[0].position;
         Vector3 newPosition;
-        while (Vector2.Distance(currentPosition, targetPosition) > 0.05)
+        while (Vector2.Distance(currentPosition, targetPosition) > 0.01)
         {
             currentPosition = Vector2.SmoothDamp(currentPosition, targetPosition, ref velocity, smoothTime);
             newPosition = currentPosition;
