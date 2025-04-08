@@ -9,7 +9,7 @@ public static class AutoPlacement
         distanceIndexKey = "AutoPlacementDistance";
     
     public const bool enabledDefault = true;
-    public const float timeDefault = 2; // seconds
+    public const float timeDefault = 0.5f; // seconds
 
     public const int speedIndexDefault = 2; // an index from speeds
     private static readonly float[] speeds = { 0.20f, 0.15f, 0.1f, 0.07f, 0 };

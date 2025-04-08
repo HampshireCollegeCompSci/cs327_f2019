@@ -127,7 +127,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
 
     public void AchievementSound()
     {
-        soundController.PlayOneShot(achievementSound, 1);
+        soundController.PlayOneShot(achievementSound, 0.7f);
     }
 
     public void FoodMatch(Suit suit)

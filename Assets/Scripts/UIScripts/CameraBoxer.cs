@@ -121,7 +121,6 @@ public class CameraBoxer : MonoBehaviour
         if (screenAspectRatio < minRatio)
         {
             // add letter boxer
-            Debug.Log("adding letter box");
             float scaleheight = screenAspectRatio / minRatio;
             rect.width = 1;
             rect.height = scaleheight;
@@ -131,7 +130,6 @@ public class CameraBoxer : MonoBehaviour
         else if (screenAspectRatio > maxRatio)
         {
             // add pillar boxer
-            Debug.Log("adding pillar box");
             float scaleWidth = 1 / (screenAspectRatio / maxRatio);
             rect.width = scaleWidth;
             rect.height = 1;
@@ -141,7 +139,6 @@ public class CameraBoxer : MonoBehaviour
         else if (again)
         {
             // resize back to supported ratio
-            Debug.Log("resetting camera");
             rect.width = 1;
             rect.height = 1;
             rect.x = 0;

@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
     public static NextCycle Instance { get; private set; }
-    private static readonly WaitForSeconds endCycleDelay = new(0.1f),
+    private static readonly WaitForSeconds cycleDelay = new(0.2f),
         emptyCycleDelay = new(2.2f);
 
     [SerializeField]
@@ -107,6 +107,7 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     private IEnumerator Cycle()
     {
+        yield return cycleDelay;
         foreach (FoundationScript foundationScript in GameInput.Instance.foundationScripts)
         {
             if (foundationScript.CardList.Count == 0) continue;
@@ -160,7 +161,7 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
                 yield break;
             }
         }
-        yield return endCycleDelay;
+        yield return cycleDelay;
         EndCycle();
     }
 
