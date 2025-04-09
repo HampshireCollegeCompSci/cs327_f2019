@@ -1,4 +1,8 @@
 ﻿using System.IO;
+#if !UNITY_WEBGL
+using System.Threading;
+using System.Threading.Tasks;
+#endif
 using UnityEngine;
 
 public static class SaveFile
@@ -25,15 +29,13 @@ public static class SaveFile
         if(PersistentSettings.NewGameStateVersion())
         {
             Debug.Log("a new game state version was detected");
-            if (Exists())
-            {
-                Delete();
-            }
+            Delete();
         }
     }
 
     public static void Delete()
     {
+        if (!Exists()) return;
         Debug.Log("deleting save state");
         #if (UNITY_EDITOR)
             File.Delete(Constants.GameStates.saveStateFilePathJsonInEditor);
@@ -41,5 +43,24 @@ public static class SaveFile
         #else
             File.Delete(SaveFilePath);
         #endif
+    }
+
+#if UNITY_WEBGL
+    public static void SaveGame(string content)
+    {
+        Debug.Log("writing the save file");
+        File.WriteAllText(SaveFilePath, content);
+    }
+#else
+    public static Task SaveGame(string content, CancellationToken token)
+    {
+        Debug.Log("starting the task to write the save file");
+        return File.WriteAllTextAsync(SaveFilePath, content, token);
+    }
+#endif
+
+    public static string GetGameSave()
+    {
+        return File.ReadAllText(SaveFilePath);
     }
 }

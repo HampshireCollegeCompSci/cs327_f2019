@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 
 #if !UNITY_WEBGL
     using System.Threading;
@@ -149,36 +148,15 @@ public class StateLoader : MonoBehaviour
         lastSavedMove = Actions.MoveCounter;
         Debug.Log("writing state");
 
-        // if this isn't running on WebGL (no thread support)
-#if !UNITY_WEBGL
-        if (saveTask != null && !saveTask.IsCompleted)
-        {
-            Debug.LogWarning("canceling the previous save task");
-            tokenSource.Cancel();
-            try
-            {
-                saveTask.Wait();
-            }
-            // TaskCanceledException is being thrown as expected, but I can't catch it for some reason
-            catch (Exception)
-            {
-                Debug.LogWarning("the save task was successfully canceled");
-            }
-            tokenSource = new CancellationTokenSource();
-            saveTask = null;
-        }
-#endif
-
         string content = JsonUtility.ToJson(CreateGameState(), Application.isEditor);
 
-        // again, WebGL has no thread support
-        #if !UNITY_WEBGL
-            Debug.Log("starting the task to write the save file");
-            saveTask = File.WriteAllTextAsync(SaveFile.SaveFilePath, content, tokenSource.Token);
-        #else
-            Debug.Log("writing the save file");
-            File.WriteAllText(SaveFile.GetPath(), content);
-        #endif
+#if UNITY_WEBGL
+        // WebGL has no thread support
+        SaveFile.SaveGame(content);
+#else
+        TryCancelSaveTask();
+        saveTask = SaveFile.SaveGame(content, tokenSource.Token);
+#endif
     }
 
     public void LoadSaveState()
@@ -186,7 +164,7 @@ public class StateLoader : MonoBehaviour
         Debug.Log("loading save state");
 
         // load the save file from the save path and unpack it
-        string jsonTextFile = File.ReadAllText(SaveFile.SaveFilePath);
+        string jsonTextFile = SaveFile.GetGameSave();
         GameState<int> saveState = JsonUtility.FromJson<GameState<int>>(jsonTextFile);
         AchievementsManager.LoadAchievementValues(saveState.achievements);
         UnpackGameState(saveState);
@@ -415,4 +393,25 @@ public class StateLoader : MonoBehaviour
         }
         return null;
     }
+
+#if !UNITY_WEBGL
+    private void TryCancelSaveTask()
+    {
+        if (saveTask == null || saveTask.IsCompleted) return;
+
+        Debug.Log("canceling the previous save task");
+        tokenSource.Cancel();
+        try
+        {
+            saveTask.Wait();
+        }
+        // TaskCanceledException is being thrown as expected, but I can't catch it for some reason
+        catch (Exception)
+        {
+            Debug.Log("the save task was successfully canceled");
+        }
+        tokenSource = new CancellationTokenSource();
+        saveTask = null;
+    }
+#endif
 }
