@@ -5,6 +5,7 @@ public class UndoScript : MonoBehaviour
 {
     // Singleton instance.
     public static UndoScript Instance { get; private set; }
+    public static bool Undoing { get; private set; }
 
     private Stack<Move> moveLog;
 
@@ -63,8 +64,13 @@ public class UndoScript : MonoBehaviour
 
     private void Undo()
     {
+        Undoing = true;
         //only run if there's something in the stack
-        if (moveLog.Count == 0) return;
+        if (moveLog.Count == 0)
+        {
+            Undoing = false;
+            return;
+        }
 
         SoundEffectsController.Instance.UndoPressSound();
         Move lastMove;
@@ -173,6 +179,7 @@ public class UndoScript : MonoBehaviour
             default:
                 throw new System.Exception("invalid move log move type");
         }
+        Undoing = false;
     }
 
     private void MoveFoundationCard(Move toMove)

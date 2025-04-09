@@ -16,6 +16,19 @@ public static class Animate
         toUpdate.color = fadeColor.endColor;
     }
 
+    public static IEnumerator FadeSprite(SpriteRenderer toUpdate, Color endColor, float duration)
+    {
+        Color startColor = toUpdate.color;
+        float timeElapsed = 0;
+        while (timeElapsed < duration)
+        {
+            toUpdate.color = Color.Lerp(startColor, endColor, timeElapsed / duration);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        toUpdate.color = endColor;
+    }
+
     public static IEnumerator FadeCanvasGroup(CanvasGroup toUpdate, float start, float end, float duration)
     {
         float timeElapsed = 0;

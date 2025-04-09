@@ -105,6 +105,7 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         {
             CardScript cardScript = cardList[^1].GetComponent<CardScript>();
             cardScript.Hologram = false;
+            cardScript.obstructedFadeOff = true;
             cardScript.Obstructed = true;
         }
 
@@ -161,6 +162,7 @@ public class WastepileScript : MonoBehaviour, ICardContainer
 
         if (cardList.Count == 0) return;
         CardScript newTopCardScript = cardList[^1].GetComponent<CardScript>();
+        newTopCardScript.obstructedFadeOff = true;
         newTopCardScript.Obstructed = false;
 
         if (!showHolo) return;
