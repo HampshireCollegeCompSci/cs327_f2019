@@ -62,7 +62,7 @@ public class UndoScript : MonoBehaviour
         Undo();
     }
 
-    private void Undo()
+    private void Undo(bool again = false)
     {
         Undoing = true;
         //only run if there's something in the stack
@@ -72,7 +72,9 @@ public class UndoScript : MonoBehaviour
             return;
         }
 
-        SoundEffectsController.Instance.UndoPressSound();
+        if (!again)
+            SoundEffectsController.Instance.UndoPressSound();
+
         Move lastMove;
         switch (moveLog.Peek().moveType)
         {
@@ -170,7 +172,7 @@ public class UndoScript : MonoBehaviour
                     }
                     else
                     {
-                        Undo();
+                        Undo(true);
                         return;
                     }
                 }

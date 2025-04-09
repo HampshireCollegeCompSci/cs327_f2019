@@ -79,12 +79,7 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         }
         cards[^1].GetComponent<CardScript>().MoveCard(Constants.CardContainerType.WastePile, this.gameObject, doLog);
 
-        if (doLog)
-        {
-            Actions.MoveUpdate();
-        }
-
-        StartCoroutine(ScrollBarAdding(cards.Count, wastePileWasEmpty));
+        StartCoroutine(ScrollBarAdding(cards.Count, wastePileWasEmpty, doLog));
     }
 
     public void AddCard(GameObject card, bool showHolo)
@@ -181,7 +176,7 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         StartCoroutine(DeckReset());
     }
 
-    private IEnumerator ScrollBarAdding(int numCardsAdded, bool wastePileWasEmpty)
+    private IEnumerator ScrollBarAdding(int numCardsAdded, bool wastePileWasEmpty, bool doLog)
     {
         SetScrolling(true);
 
@@ -207,6 +202,9 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         yield return Animate.MoveRectTransformSmoothStep(contentRectTransform, endPosition, scrollDuration);
 
         DeckButtonScript.Instance.StartButtonUp();
+
+        if (doLog)
+            Actions.MoveUpdate();
 
         SetScrolling(false);
     }
