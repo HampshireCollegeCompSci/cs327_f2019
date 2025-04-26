@@ -15,7 +15,7 @@ public class AchievementSceneScript : MonoBehaviour
     {
         bool gameIsActive = SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay);
 
-        foreach (Achievement achievement in Achievements.achievementList)
+        foreach (Achievement achievement in AchievementList.achievements)
         {
             GameObject newAchievement = Instantiate(achievementSectionPrefab, menuContentTransform);
             Text[] achievementTexts = newAchievement.GetComponentsInChildren<Text>();

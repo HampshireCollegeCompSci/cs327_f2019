@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public static class Achievements
+public static class AchievementList
 {
     public static readonly Achievement cardStack = new(
         "Stacker",
@@ -113,7 +113,7 @@ public static class Achievements
     //    "Achievement Pretty Colors",
     //    Achievement.AchieveType.Achieve);
 
-    public static readonly List<Achievement> achievementList = new() {
+    public static readonly List<Achievement> achievements = new() {
         matchAll,
         cardStack,
         tripleCombo,

@@ -25,7 +25,7 @@ public class AchievementPopup : MonoBehaviour
 
         popupCG = popup.GetComponent<CanvasGroup>();
         canvas = GetComponent<Canvas>();
-        popupQueue = new Queue<Achievement>(Achievements.achievementList.Count);
+        popupQueue = new Queue<Achievement>(AchievementList.achievements.Count);
     }
 
     public void CameraChange(Camera newCam)
