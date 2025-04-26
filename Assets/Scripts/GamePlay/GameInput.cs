@@ -425,15 +425,13 @@ public class GameInput : MonoBehaviour
             endPosition = target.transform.position;
             endPosition.y += 0.4f;
         }
-        else if (showPossibleMoves.foundationIsGlowing)
+        else if (showPossibleMoves.foundationIsGlowing &&
+            (selectedCardScript.CurrentContainerType != Constants.CardContainerType.Foundation ||
+            selectedCardScript.Container.GetComponent<FoundationScript>().CardList.Count != selectedCards.Count))
         {
             // are the cards not all the cards in a foundation?
-            if (selectedCardScript.CurrentContainerType != Constants.CardContainerType.Foundation ||
-                selectedCardScript.Container.GetComponent<FoundationScript>().CardList.Count != selectedCards.Count)
-            {
-                target = showPossibleMoves.foundationMoves[0];
-                endPosition = target.transform.position;
-            }
+            target = showPossibleMoves.foundationMoves[0];
+            endPosition = target.transform.position;
         }
         else if (showPossibleMoves.reactorIsGlowing)
         {
@@ -484,9 +482,8 @@ public class GameInput : MonoBehaviour
                 AutoPlacement.SpeedValue);
         }
 
-        yield return null;
         UpdateDragGlow(target);
-        yield return null;
+        DragGlowRevert(isPlacing: true);
         TryToPlaceCards(target);
         DraggingCard = false;
         autoPlacing = false;
