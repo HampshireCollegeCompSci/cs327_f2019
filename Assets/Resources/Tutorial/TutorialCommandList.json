@@ -383,13 +383,6 @@
 		},
 		{
 			"argumentList": [
-				"ChangeObjectHighlight",
-				"reactors",
-				"OFF"
-			]
-		},
-		{
-			"argumentList": [
 				"ChangeTokenMoveability",
 				"ON"
 			]
@@ -465,6 +458,13 @@
 			"argumentList": [
 				"ChangeShownText",
 				"Another thing to watch out for is the move counter.\n\nAll card moves except for eliminations/combinations decrease the move counter by one."
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"reactors",
+				"OFF"
 			]
 		},
 		{

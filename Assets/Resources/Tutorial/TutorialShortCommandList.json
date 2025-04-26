@@ -120,13 +120,6 @@
 		},
 		{
 			"argumentList": [
-				"ChangeObjectHighlight",
-				"Reactors",
-				"OFF"
-			]
-		},
-		{
-			"argumentList": [
 				"ChangeContainerHighlight",
 				"reactor",
 				"ON",
@@ -187,6 +180,20 @@
 		},
 		{
 			"argumentList": [
+				"ChangeObjectHighlight",
+				"Reactors",
+				"OFF"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"Foundations",
+				"OFF"
+			]
+		},
+		{
+			"argumentList": [
 				"ChangeShownText",
 				"This effect can also be triggered manually by pressing the button on the side of the move counter."
 			]
@@ -200,13 +207,20 @@
 		{
 			"argumentList": [
 				"ChangeObjectHighlight",
-				"Foundations",
-				"OFF"
+				"NextCycle",
+				"ON"
 			]
 		},
 		{
 			"argumentList": [
 				"WaitForTouch"
+			]
+		},
+		{
+			"argumentList": [
+				"ChangeObjectHighlight",
+				"NextCycle",
+				"OFF"
 			]
 		},
 		{

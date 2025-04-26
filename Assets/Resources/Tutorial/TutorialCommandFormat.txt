@@ -42,7 +42,7 @@ Commands for the argumentList:
 -----------------------------------------
 
 	Change Object Highlight: changes the highlight state of a game object
-		object(s) to highlight: reactors, foundations, deck, wastepile, scoreboard, movecounter, undo, pause
+		object(s) to highlight: reactors, foundations, deck, wastepile, scoreboard, movecounter, nextcycle, undo, pause
 		highlight: on, off
 
 -----------------------------------------

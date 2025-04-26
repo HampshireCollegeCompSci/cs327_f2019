@@ -151,5 +151,6 @@ public class Config : MonoBehaviour
                 _ => throw new System.ArgumentException($"the color level of {level} is not supported")
             };
         }
+        TutorialHighlighting.Instance.UpdateFadeColor();
     }
 }

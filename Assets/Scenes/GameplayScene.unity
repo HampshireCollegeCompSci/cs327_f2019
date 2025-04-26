@@ -4867,6 +4867,7 @@ GameObject:
   - component: {fileID: 1202057895}
   - component: {fileID: 1202057896}
   - component: {fileID: 1202057893}
+  - component: {fileID: 1202057900}
   - component: {fileID: 1202057898}
   - component: {fileID: 1202057899}
   m_Layer: 0
@@ -5069,6 +5070,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   conveyorSystem: {fileID: 716306640}
   deckCounter: {fileID: 1865176402}
+--- !u!114 &1202057900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1202057892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3facf6cebe55f0f47b8390e28bcb7d38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1204289923
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5508,11 +5521,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1554683629}
     m_Modifications:
-    - target: {fileID: 5618528428882561717, guid: 29bba013dfd45e3428db6c52347e47be,
-        type: 3}
-      propertyPath: m_SortingOrder
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 7973480419762086745, guid: 29bba013dfd45e3428db6c52347e47be,
         type: 3}
       propertyPath: m_Name
