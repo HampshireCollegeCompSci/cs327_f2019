@@ -1081,7 +1081,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 6dd1904fe2eb648e6b8f30936512e7f8, type: 3}
+    m_Font: {fileID: 12800000, guid: 8229317429a3d4abdb1d85c7ea8d4a2c, type: 3}
     m_FontSize: 40
     m_FontStyle: 0
     m_BestFit: 0
@@ -1161,7 +1161,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 6dd1904fe2eb648e6b8f30936512e7f8, type: 3}
+    m_Font: {fileID: 12800000, guid: 8229317429a3d4abdb1d85c7ea8d4a2c, type: 3}
     m_FontSize: 40
     m_FontStyle: 0
     m_BestFit: 0
@@ -1240,7 +1240,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 6dd1904fe2eb648e6b8f30936512e7f8, type: 3}
+    m_Font: {fileID: 12800000, guid: 8229317429a3d4abdb1d85c7ea8d4a2c, type: 3}
     m_FontSize: 50
     m_FontStyle: 0
     m_BestFit: 0
@@ -1248,7 +1248,7 @@ MonoBehaviour:
     m_MaxSize: 53
     m_Alignment: 7
     m_AlignByGeometry: 0
-    m_RichText: 1
+    m_RichText: 0
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
@@ -1737,7 +1737,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 6dd1904fe2eb648e6b8f30936512e7f8, type: 3}
+    m_Font: {fileID: 12800000, guid: 8229317429a3d4abdb1d85c7ea8d4a2c, type: 3}
     m_FontSize: 40
     m_FontStyle: 0
     m_BestFit: 0
