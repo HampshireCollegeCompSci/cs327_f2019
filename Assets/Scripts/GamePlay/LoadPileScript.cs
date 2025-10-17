@@ -17,15 +17,12 @@ public class LoadPileScript : MonoBehaviour, ICardContainer
     // Initialize the singleton instance.
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else if (Instance != this)
-        {
+        if (Instance != null)
             throw new System.ArgumentException("there should not already be an instance of this");
-        }
+        Instance = this;
     }
+
+    public Constants.CardContainerType ContainerType => Constants.CardContainerType.Loadpile;
 
     public List<GameObject> CardList => cardList;
 

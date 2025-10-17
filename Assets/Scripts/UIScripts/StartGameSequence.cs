@@ -45,16 +45,9 @@ public class StartGameSequence : MonoBehaviour
     // Initialize the singleton instance.
     private void Awake()
     {
-        // If there is not already an instance, set it to this.
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        //If an instance already exists, destroy whatever this object is to enforce the singleton.
-        else if (Instance != this)
-        {
-            throw new System.Exception("two of these scripts should not exist at the same time");
-        }
+        if (Instance != null)
+            throw new System.ArgumentException("there should not already be an instance of this");
+        Instance = this;
     }
 
     void Start()
@@ -68,16 +61,14 @@ public class StartGameSequence : MonoBehaviour
 
     public void StartLoadingGame()
     {
+        startSequencePanel.SetActive(true);
         sequenceDone = false;
         MusicController.Instance.FadeMusicOut();
-
-        allButtons.interactable = false;
-        spaceShip.GetComponent<Button>().interactable = false;
         canvas.renderMode = RenderMode.WorldSpace;
 
-        SceneManager.LoadSceneAsync(Constants.ScenesNames.gameplay, LoadSceneMode.Additive);
         StartCoroutine(Animate.FadeCanvasGroup(allButtons, 1, 0, GameValues.AnimationDurataions.buttonFadeOut));
         StartCoroutine(PanAndZoom());
+        SceneManager.LoadSceneAsync(Constants.ScenesNames.gameplay, LoadSceneMode.Additive);
     }
 
     public void GameplayLoaded()
@@ -113,8 +104,6 @@ public class StartGameSequence : MonoBehaviour
         playButtons.SetActive(false);
         mainButtons.SetActive(true);
         allButtons.alpha = 1;
-        allButtons.interactable = true;
-        spaceShip.GetComponent<Button>().interactable = true;
         spaceShip.GetComponent<Image>().sprite = spaceShipOff;
 
         startSequencePanel.SetActive(false);
@@ -126,6 +115,7 @@ public class StartGameSequence : MonoBehaviour
 
     private IEnumerator PanAndZoom()
     {
+        yield return new WaitForSeconds(0.2f);
         float startingSize = originalCameraSize;
         float targetSize = GameValues.Transforms.zoomFactor;
 
@@ -133,23 +123,18 @@ public class StartGameSequence : MonoBehaviour
         Vector3 endingPosition = spaceShipWindowObject.transform.position;
         endingPosition.z = startingPosition.z;
         
-        startSequencePanel.SetActive(true);
-        Color startColor = GameValues.FadeColors.blackA0;
-        Color endColor = GameValues.FadeColors.blackA1;
-
         float duration = GameValues.AnimationDurataions.zoomAndFade;
-        float timeElapsed = 0;
+        float timeElapsed = 0, durationFraction;
         while (timeElapsed < duration)
         {
-            float t = timeElapsed / duration;
-            sequenceImage.color = Color.Lerp(startColor, endColor, t);
-            t = t * t * (3f - 2f * t); // Smoothstep formula
-            cameraObject.transform.position = Vector3.Lerp(startingPosition, endingPosition, t);
-            cam.orthographicSize = Mathf.Lerp(startingSize, targetSize, t);
+            durationFraction = timeElapsed / duration;
+            sequenceImage.color = Color.Lerp(GameValues.FadeColors.blackA0, GameValues.FadeColors.blackA1, durationFraction);
+            cameraObject.transform.position = Animate.Vector3SmoothStep(startingPosition, endingPosition, durationFraction);
+            cam.orthographicSize = Mathf.SmoothStep(startingSize, targetSize, durationFraction);
             timeElapsed += Time.deltaTime;
             yield return null;
         }
-        sequenceImage.color = endColor;
+        sequenceImage.color = GameValues.FadeColors.blackA1;
 
         Debug.Log("start game sequence done");
         sequenceDone = true;

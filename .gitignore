@@ -1,6 +1,6 @@
 # Save States for the game
-Assets/Resources/GameStates/saveState.json
-Assets/Resources/GameStates/saveState.json.meta
+Assets/Resources/GameStates/*.json
+Assets/Resources/GameStates/*.json.meta
 
 # Visual Studio Config file for this project
 .vsconfig
@@ -19,6 +19,8 @@ Assets/Resources/GameStates/saveState.json.meta
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+/WebGLBuilds/
+/.utmp
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data

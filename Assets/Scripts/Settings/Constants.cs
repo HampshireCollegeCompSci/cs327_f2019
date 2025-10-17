@@ -7,7 +7,7 @@ public static class Constants
     public static class GameStates
     {
         public const string versionKey = "GameStateVersion";
-        public const string version = "3";
+        public const int version = 4;
 
         public const string saveStatePathInEditor = "Assets/Resources/GameStates/";
         public const string saveStateFileName = "saveState";
@@ -37,7 +37,9 @@ public static class Constants
         public const string musicVolumeKey = "MusicVolume";
         public const string vibrationEnabledKey = "VibrationEnabled";
         public const string achievementPopupsEnabledKey = "AchievementPopupsEnabled";
+        public const string matchEffectEnabledKey = "MatchEffectEnabled";
         public const string foodSuitsEnabledKey = "FoodSuitsEnabled";
+        public const string deckOrientationKey = "DeckOrientation";
         public const string frameRateKey = "FrameRate";
         public const string saveGameStateKey = "SaveGameState";
         public const string movesUntilSaveKey = "MovesUntilSave";
@@ -96,6 +98,8 @@ public static class Constants
         }
 
         public static readonly int loseExplosionID = Animator.StringToHash("LoseExplosionAnim");
+        public const string loseTransitionID = "IsLosing";
+        public const string doneEatingTransitionID = "IsDoneEating";
     }
 
     public static class SortingLayerIDs

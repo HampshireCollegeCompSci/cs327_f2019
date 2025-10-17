@@ -10,11 +10,12 @@ public class Achievement
         Failure
     }
 
-    public Achievement(string name, string description, string key, AchieveType type)
+    public Achievement(string name, string description, string key, int id, AchieveType type)
     {
         this.Name = name;
         this.Description = description;
         this.Key = key;
+        this.ID = id;
         _value = PlayerPrefs.GetInt(Key, 0);
         if (Value < 0) Value = 0;
         this.Type = type;
@@ -25,15 +26,17 @@ public class Achievement
     public void LoadValues(Achievement toCopy)
     {
         // do not set by Property!
-        _status = toCopy.Status;
+        _status = IsAchieveBased;
         _tracker = toCopy.Tracker;
     }
 
     public string Name { get; }
     public string Description { get; }
 
-    [field: SerializeField]
     public string Key { get; private set; }
+
+    [field: SerializeField]
+    public int ID { get; private set; }
 
     private int _value;
     public int Value
@@ -52,7 +55,6 @@ public class Achievement
     public bool IsFailureBased { get; private set;}
     public bool IsAchieveBased { get; private set; }
 
-    [SerializeField]
     private bool _status;
     /// <summary>
     /// The current status of the achievement which depends on the achievement's type.
@@ -69,12 +71,12 @@ public class Achievement
             {
                 if (!value) return;
                 Tracker = Actions.MoveTracker;
-                TryShowPopup();
+                AchievementPopup.Instance.ShowAchievement(this);
             }
             else
             {
                 if (value) return;
-                Debug.Log($"failed {Name}");
+                AchievementsManager.AddFailedAchievement(this);
             }
         }
     }
@@ -103,14 +105,9 @@ public class Achievement
     {
         if (!Status) return;
         Debug.Log($"achieved {Name}");
-        if (IsFailureBased) TryShowPopup();
+        if (IsFailureBased)
+            AchievementPopup.Instance.ShowAchievement(this);
         if (Config.Instance.CurrentDifficulty.Equals(Difficulties.cheat)) return;
         Value++;
-    }
-
-    private void TryShowPopup()
-    {
-        if (!PersistentSettings.AchievementPopupsEnabled) return;
-        AchievementPopup.Instance.ShowAchievement(this);
     }
 }

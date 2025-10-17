@@ -28,16 +28,8 @@ public class SoundEffectsController : MonoBehaviour, ISound
     // Initialize the singleton instance.
     private void Awake()
     {
-        // If there is an instance, and it's not me, delete myself.
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-            return;
-        }
-
+        if (Instance != null) return;
         Instance = this;
-        // make instance persist across scenes
-        DontDestroyOnLoad(this.gameObject);
     }
 
     private void Start()
@@ -135,7 +127,7 @@ public class SoundEffectsController : MonoBehaviour, ISound
 
     public void AchievementSound()
     {
-        soundController.PlayOneShot(achievementSound, 1);
+        soundController.PlayOneShot(achievementSound, 0.7f);
     }
 
     public void FoodMatch(Suit suit)

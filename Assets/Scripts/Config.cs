@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Config : MonoBehaviour
 {
@@ -12,16 +11,15 @@ public class Config : MonoBehaviour
     public bool prettyColors;
 
     private bool _hintsEnabled;
+
     private ColorMode _currentColorMode;
-    private List<Camera> cameras;
 
     // Initialize the singleton instance.
     private void Awake()
     {
-        // If there is an instance, and it's not me, delete myself.
-        if (Instance != null && Instance != this)
+        if (Instance != null)
         {
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
 
@@ -36,10 +34,12 @@ public class Config : MonoBehaviour
 #endif
 
         // These must be done in this order
+        SaveFile.SetPath();
         // Setup the Vibration Package
         Vibration.Init();
         // Check Player Preferences
-        PersistentSettings.TryCheckKeys();
+        PersistentSettings.OnGameStart();
+        AutoPlacement.GameLaunch();
         // Check if the game state version needs updating and if the save file needs deleting
         SaveFile.CheckNewGameStateVersion();
         // Set the application frame rate to what was saved
@@ -48,7 +48,7 @@ public class Config : MonoBehaviour
         HintsEnabled = PersistentSettings.HintsEnabled;
         CurrentColorMode = GameValues.Colors.Modes.List[PersistentSettings.ColorMode];
 
-        cameras = new List<Camera>(SceneManager.sceneCountInBuildSettings);
+        Input.multiTouchEnabled = false;
     }
 
     public bool IsGamePlayActive { get; set; }
@@ -88,34 +88,6 @@ public class Config : MonoBehaviour
 
     public Stats OldStats { get; private set; }
 
-    public void AddCamera(Camera newCamera)
-    {
-        if (cameras.Count != 0)
-        {
-            cameras[^1].enabled = false;
-        }
-        cameras.Add(newCamera);
-        newCamera.enabled = true;
-        AchievementPopup.Instance.CameraChange(newCamera);
-    }
-
-    public void RemoveCamera(Camera oldCamera)
-    {
-        if (cameras.Count == 0) return;
-        int oldCameraIndex = cameras.LastIndexOf(oldCamera);
-        if (oldCameraIndex == -1)
-        {
-            Debug.LogError("tried to remove a camera that is not being tracked");
-        }
-        else
-        {
-            cameras.RemoveAt(oldCameraIndex);
-        }
-        if (cameras.Count == 0) return;
-        cameras[^1].enabled = true;
-        AchievementPopup.Instance.CameraChange(cameras[^1]);
-    }
-
     public void SetDifficulty(Difficulty dif)
     {
         Debug.Log($"setting difficulty to: {dif.Name}");
@@ -124,11 +96,11 @@ public class Config : MonoBehaviour
 
     public void SetDifficulty(string dif)
     {
-        foreach (Difficulty difficlty in Difficulties.difficultyArray)
+        foreach (Difficulty difficulty in Difficulties.difficultyArray)
         {
-            if (dif == difficlty.Name)
+            if (dif == difficulty.Name)
             {
-                SetDifficulty(difficlty);
+                SetDifficulty(difficulty);
                 return;
             }
         }
@@ -181,5 +153,6 @@ public class Config : MonoBehaviour
                 _ => throw new System.ArgumentException($"the color level of {level} is not supported")
             };
         }
+        TutorialHighlighting.Instance.UpdateFadeColor();
     }
 }

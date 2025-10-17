@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 
 #if !UNITY_WEBGL
     using System.Threading;
@@ -28,17 +27,13 @@ public class StateLoader : MonoBehaviour
     // Initialize the singleton instance.
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            #if !UNITY_WEBGL
-                tokenSource = new CancellationTokenSource();
-            #endif
-        }
-        else if (Instance != this)
-        {
-            throw new System.Exception("two of these scripts should not exist at the same time");
-        }
+        if (Instance != null)
+            throw new System.ArgumentException("there should not already be an instance of this");
+        Instance = this;
+
+#if !UNITY_WEBGL
+        tokenSource = new CancellationTokenSource();
+#endif
     }
 
     private void Start()
@@ -46,6 +41,7 @@ public class StateLoader : MonoBehaviour
         saveMoveLog = new();
         movesUntilSave = PersistentSettings.MovesUntilSave;
         saveMovesDisabled = !PersistentSettings.SaveGameStateEnabled;
+        ResetValues();
     }
 
     void OnApplicationFocus(bool hasFocus)
@@ -83,6 +79,7 @@ public class StateLoader : MonoBehaviour
     {
         saveMoveLog.Clear();
         movesSinceLastSave = 0;
+        lastSavedMove = 0; // set to -1 if you want to be able to save at the start of the game
     }
 
     public void AddMove(Move newMove)
@@ -151,26 +148,41 @@ public class StateLoader : MonoBehaviour
         lastSavedMove = Actions.MoveCounter;
         Debug.Log("writing state");
 
-        // if this isn't running on WebGL (no thread support)
-#if !UNITY_WEBGL
-            if (saveTask != null && !saveTask.IsCompleted)
-            {
-                Debug.LogWarning("canceling the previous save task");
-                tokenSource.Cancel();
-                try
-                {
-                    saveTask.Wait();
-                }
-                // TaskCanceledException is being thrown as expected, but I can't catch it for some reason
-                catch (Exception)
-                {
-                    Debug.LogWarning("the save task was successfully canceled");
-                }
-                tokenSource = new CancellationTokenSource();
-                saveTask = null;
-            }
-#endif
+        string content = JsonUtility.ToJson(CreateGameState(), Application.isEditor);
 
+#if UNITY_WEBGL
+        // WebGL has no thread support
+        SaveFile.SaveGame(content);
+#else
+        TryCancelSaveTask();
+        saveTask = SaveFile.SaveGame(content, tokenSource.Token);
+#endif
+    }
+
+    public void LoadSaveState()
+    {
+        Debug.Log("loading save state");
+
+        // load the save file from the save path and unpack it
+        string jsonTextFile = SaveFile.GetGameSave();
+        GameState<int> saveState = JsonUtility.FromJson<GameState<int>>(jsonTextFile);
+        AchievementsManager.LoadAchievementValues(saveState.achievements);
+        UnpackGameState(saveState);
+    }
+
+    public void LoadTutorialState(string fileName)
+    {
+        Debug.Log($"loading tutorial state: {fileName}");
+        string filePath = Constants.Tutorial.tutorialResourcePath + fileName;
+
+        // load the asset from resources and unpack it
+        string jsonTextFile = Resources.Load<TextAsset>(filePath).ToString();
+        GameState<string> tutorialState = JsonUtility.FromJson<GameState<string>>(jsonTextFile);
+        UnpackGameState(tutorialState, isTutorial: true);
+    }
+
+    private GameState<int> CreateGameState()
+    {
         GameState<int> gameState = new()
         {
             difficulty = Config.Instance.CurrentDifficulty.Name,
@@ -185,7 +197,7 @@ public class StateLoader : MonoBehaviour
             deck = ConvertCardListToStringList(DeckScript.Instance.CardList),
             matches = ConvertCardListToStringList(MatchedPileScript.Instance.CardList),
             moveLog = saveMoveLog,
-            achievements = Achievements.achievementList
+            achievements = AchievementsManager.GetCurrentAchievements
         };
 
         for (int i = 0; i < GameInput.Instance.foundationScripts.Length; i++)
@@ -203,43 +215,13 @@ public class StateLoader : MonoBehaviour
                 }
             }
         }
+
         for (int i = 0; i < GameInput.Instance.reactorScripts.Length; i++)
         {
             gameState.reactors[i].cards = ConvertCardListToStringList(GameInput.Instance.reactorScripts[i].CardList);
         }
 
-        string content = JsonUtility.ToJson(gameState, Application.isEditor);
-
-        // again, WebGL has no thread support
-        #if !UNITY_WEBGL
-            Debug.Log("starting the task to write the save file");
-            saveTask = File.WriteAllTextAsync(SaveFile.GetPath(), content, tokenSource.Token);
-        #else
-            Debug.Log("writing the save file");
-            File.WriteAllText(SaveFile.GetPath(), content);
-        #endif
-    }
-
-    public void LoadSaveState()
-    {
-        Debug.Log("loading save state");
-
-        // load the save file from the save path and unpack it
-        string jsonTextFile = File.ReadAllText(SaveFile.GetPath());
-        GameState<int> saveState = JsonUtility.FromJson<GameState<int>>(jsonTextFile);
-        AchievementsManager.LoadAchievementValues(saveState.achievements);
-        UnpackGameState(saveState);
-    }
-
-    public void LoadTutorialState(string fileName)
-    {
-        Debug.Log($"loading tutorial state: {fileName}");
-        string filePath = Constants.Tutorial.tutorialResourcePath + fileName;
-
-        // load the asset from resources and unpack it
-        string jsonTextFile = Resources.Load<TextAsset>(filePath).ToString();
-        GameState<string> tutorialState = JsonUtility.FromJson<GameState<string>>(jsonTextFile);
-        UnpackGameState(tutorialState, isTutorial: true);
+        return gameState;
     }
 
     private void UnpackGameState<T>(GameState<T> state, bool isTutorial = false)
@@ -263,10 +245,7 @@ public class StateLoader : MonoBehaviour
             throw new NullReferenceException("there are no cards in the load pile when starting to load the game");
         }
 
-        if (!isTutorial)
-        {
-            SetUpMoveLog(state.moveLog, LoadPileScript.Instance.CardList);
-        }
+        SetUpMoveLog(state.moveLog, LoadPileScript.Instance.CardList);
 
         //set up foundations
         for (int i = 0; i < state.foundations.Length; i++)
@@ -317,7 +296,7 @@ public class StateLoader : MonoBehaviour
         }
 
         Actions.StartSavedGameUpdate(state.actions);
-        DeckScript.Instance.UpdateDeckCounter();
+        DeckCounterScript.Instance.UpdateCounterInstantly();
     }
 
     private List<int> ConvertCardListToStringList(List<GameObject> cardList)
@@ -414,4 +393,25 @@ public class StateLoader : MonoBehaviour
         }
         return null;
     }
+
+#if !UNITY_WEBGL
+    private void TryCancelSaveTask()
+    {
+        if (saveTask == null || saveTask.IsCompleted) return;
+
+        Debug.Log("canceling the previous save task");
+        tokenSource.Cancel();
+        try
+        {
+            saveTask.Wait();
+        }
+        // TaskCanceledException is being thrown as expected, but I can't catch it for some reason
+        catch (Exception)
+        {
+            Debug.Log("the save task was successfully canceled");
+        }
+        tokenSource = new CancellationTokenSource();
+        saveTask = null;
+    }
+#endif
 }

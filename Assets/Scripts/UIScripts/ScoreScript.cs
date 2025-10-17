@@ -17,14 +17,9 @@ public class ScoreScript : MonoBehaviour
     // Initialize the singleton instance.
     void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else if (Instance != this)
-        {
+        if (Instance != null)
             throw new System.ArgumentException("there should not already be an instance of this");
-        }
+        Instance = this;
     }
 
     public void SetScore(int setTo)

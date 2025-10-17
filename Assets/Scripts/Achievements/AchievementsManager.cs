@@ -4,31 +4,64 @@ using UnityEngine;
 
 public static class AchievementsManager
 {
-    private static readonly Stack<Achievement> achievementStack = new(Achievements.achievementList.Count);
+    private static readonly Stack<Achievement> achievementStack = new(AchievementList.achievements.Count);
+    private static readonly List<Achievement> achievementFailList = new(AchievementList.achievements.Count);
+
+    public static List<Achievement> GetCurrentAchievements
+    {
+        get 
+        {
+            List<Achievement> result = new(achievementStack);
+            result.AddRange(achievementFailList);
+            return result;
+        }
+    }
 
     public static void LoadAchievementValues(List<Achievement> savedAchievements)
     {
+        // achievements that need to be sorted though to put in order at the end
         List<Achievement> trackedAchievements = new(savedAchievements.Count);
+
         foreach (Achievement savedAchievement in savedAchievements)
         {
-            Achievement achievementToLoad = Achievements.achievementList.Find(x => x.Key == savedAchievement.Key);
-            achievementToLoad?.LoadValues(savedAchievement);
-            if (achievementToLoad.Tracker != 0)
+            Achievement achievementToLoad = AchievementList.achievements.Find(x => x.ID == savedAchievement.ID);
+            if (achievementToLoad == null)
+            {
+                Debug.LogWarning($"Achievement not found, Name: {savedAchievement.Name}, ID: {savedAchievement.ID}");
+                continue;
+            }
+
+            achievementToLoad.LoadValues(savedAchievement);
+
+            if (achievementToLoad.IsAchieveBased)
             {
                 trackedAchievements.Add(achievementToLoad);
             }
+            else
+            {
+                AddFailedAchievement(achievementToLoad);
+            }
         }
+
         trackedAchievements.Sort((x, y) => x.Tracker.CompareTo(y.Tracker));
         trackedAchievements.ForEach(achievement => PushAchievement(achievement));
 
-        if (Achievements.noHints.Status && Config.Instance.HintsEnabled)
-            Achievements.noHints.Status = false;
+        if (AchievementList.noHints.Status)
+            AchievementList.noHints.Status = !(Config.Instance.HintsEnabled || AutoPlacement.Enabled);
+        if (AchievementList.superHard.Status)
+            AchievementList.superHard.Status = AchievementList.noHints.Status;
     }
 
     public static void PushAchievement(Achievement achievement)
     {
         Debug.Log($"adding achievement to the stack: {achievement.Name}, {achievement.Tracker}");
         achievementStack.Push(achievement);
+    }
+
+    public static void AddFailedAchievement(Achievement achievement)
+    {
+        Debug.Log($"failed {achievement.Name}");
+        achievementFailList.Add(achievement);
     }
 
     public static void TryRemoveAchievement(int move)
@@ -43,12 +76,18 @@ public static class AchievementsManager
 
     public static void ClearAchievements()
     {
-        foreach (Achievement achievement in Achievements.achievementList)
+        foreach (Achievement achievement in AchievementList.achievements)
         {
             achievement.Reset();
         }
         achievementStack.Clear();
-        Achievements.noHints.Status = !Config.Instance.HintsEnabled;
+        achievementFailList.Clear();
+    }
+
+    public static void NewGameSetAchievements()
+    {
+        AchievementList.noHints.Status = !(Config.Instance.HintsEnabled || AutoPlacement.Enabled);
+        AchievementList.superHard.Status = AchievementList.noHints.Status && Config.Instance.CurrentDifficulty.Equals(Difficulties.hard);
     }
 
     public static void GameWinLogAchievements()
@@ -59,90 +98,96 @@ public static class AchievementsManager
         //}
         if (Actions.MatchCounter == GameValues.GamePlay.matchCount)
         {
-            Achievements.matchAll.Status = true;
+            AchievementList.matchAll.Status = true;
         }
 
         TimeSpan timeSpan = Timer.GetTimeSpan();
         if (timeSpan.CompareTo(TimeSpan.FromMinutes(2)) <= 0)
         {
-            Achievements.speedrun2.Status = true;
-            Achievements.speedrun5.Status = true;
+            AchievementList.speedrun2.Status = true;
+            AchievementList.speedrun5.Status = true;
         }
         else if (timeSpan.CompareTo(TimeSpan.FromMinutes(5)) <= 0)
         {
-            Achievements.speedrun5.Status = true;
+            AchievementList.speedrun5.Status = true;
         }
 
         if (Config.Instance.CurrentDifficulty.Equals(Difficulties.hard) &&
-            Achievements.noHints.Status == true &&
-            Achievements.noUndo.Status == true)
+            AchievementList.noHints.Status == true &&
+            AchievementList.noUndo.Status == true)
         {
-            Achievements.superHard.Status = true;
+            AchievementList.superHard.Status = true;
         }
 
-        Achievements.achievementList.ForEach(achievement => achievement.TryGameWinAchieved());
+        AchievementList.achievements.ForEach(achievement => achievement.TryGameWinAchieved());
     }
 
     public static void TryTripleCombo()
     {
-        if (Achievements.tripleCombo.Status) return;
+        if (AchievementList.tripleCombo.Status) return;
         if (Actions.ConsecutiveMatches != 3) return;
-        Achievements.tripleCombo.Status = true;
+        AchievementList.tripleCombo.Status = true;
     }
 
     public static void TryCardStack(List<GameObject> cards)
     {
-        if (Achievements.cardStack.Status) return;
+        if (AchievementList.cardStack.Status) return;
         if (cards.Count < 13) return;
         if (cards[^1].GetComponent<CardScript>().Card.Rank.Value != 1) return;
         if (cards[^13].GetComponent<CardScript>().Hidden) return;
-        Achievements.cardStack.Status = true;
+        AchievementList.cardStack.Status = true;
     }
 
-    public static void TryReactorAtLimit(int reactorValue)
+    public static void TryReactorsAtLimit()
     {
-        if (Achievements.reactorAtLimit.Status) return;
-        if (reactorValue != Config.Instance.CurrentDifficulty.ReactorLimit) return;
-        Achievements.reactorAtLimit.Status = true;
+        if (AchievementList.reactorsAtLimit.Status) return;
+        foreach (ReactorScript script in GameInput.Instance.reactorScripts)
+        {
+            if (script.CardValueCount != Config.Instance.CurrentDifficulty.ReactorLimit)
+                return;
+        }
+        AchievementList.reactorsAtLimit.Status = true;
     }
 
     public static void AchievedAllReactorsHighAlert()
     {
-        Achievements.allReactorsHighAlert.Status = true;
+        AchievementList.allReactorsHighAlert.Status = true;
     }
 
     public static void FailedNeverReactorHighAlert()
     {
-        Achievements.neverReactorHighAlert.Status = false;
+        AchievementList.neverReactorHighAlert.Status = false;
     }
 
     public static void FailedReactorSize()
     {
-        Achievements.reactorSize.Status = false;
+        AchievementList.reactorSize.Status = false;
     }
 
     public static void FailedNoUndo()
     {
-        Achievements.noUndo.Status = false;
+        AchievementList.noUndo.Status = false;
+        AchievementList.noUndo.Status = false;
     }
 
     public static void FailedNoDeckFlip()
     {
-        Achievements.noDeckFlip.Status = false;
+        AchievementList.noDeckFlip.Status = false;
     }
 
     public static void FailedNeverMoves()
     {
-        Achievements.neverMoves.Status = false;
+        AchievementList.neverMoves.Status = false;
     }
 
     public static void FailedAlwaysMoves()
     {
-        Achievements.alwaysMoves.Status = false;
+        AchievementList.alwaysMoves.Status = false;
     }
 
     public static void FailedNoHints()
     {
-        Achievements.noHints.Status = false;
+        AchievementList.noHints.Status = false;
+        AchievementList.superHard.Status = false;
     }
 }

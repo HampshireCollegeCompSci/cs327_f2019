@@ -31,16 +31,8 @@ public class MusicController : MonoBehaviour, ISound
     // Initialize the singleton instance.
     void Awake()
     {
-        // If there is an instance, and it's not me, delete myself.
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-            return;
-        }
-
+        if (Instance != null) return;
         Instance = this;
-        // make instance persist across scenes
-        DontDestroyOnLoad(this.gameObject);
 
         audioClips = new AudioClip[7]
         {
@@ -288,6 +280,7 @@ public class MusicController : MonoBehaviour, ISound
 
     private IEnumerator PauseDelay()
     {
+        pauseDelay.Reset();
         audioMixer.SetFloat(Constants.AudioMixerNames.track1, -80);
         audioMixer.SetFloat(Constants.AudioMixerNames.track2, -80);
         // to prevent audio blips lower the volume first and then pause the music

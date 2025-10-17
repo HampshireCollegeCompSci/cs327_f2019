@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,7 +17,7 @@ public class SettingsScript : MonoBehaviour
     private Text frameRateText;
 
     [SerializeField]
-    private Toggle achievementPopupToggle, vibrationToggle, foodSuitsToggle;
+    private Toggle achievementPopupToggle, matchEffectToggle, vibrationToggle, suitArtToggle, deckOrientationToggle;
 
     private List<int> frameRates;
 
@@ -28,18 +27,22 @@ public class SettingsScript : MonoBehaviour
     private InputField movesUntilSaveInputField;
 
     [SerializeField]
+    private Toggle autoPlacementToggle;
+    [SerializeField]
+    private InputField autoPlacementTime;
+    [SerializeField]
+    private Slider autoPlacementSpeedIndexes, autoPlacementDistanceIndexes;
+    [SerializeField]
+    private Text autoPlacementSpeedText, autoPlacementDistanceText;
+
+    [SerializeField]
     private Toggle hintsToggle;
     [SerializeField]
     private Dropdown colorModeDropdown;
     [SerializeField]
     private Image colorModeMatch, colorModeMove, colorModeOver, colorModeNotify;
 
-    [SerializeField]
-    private Button confirmYesButton;
-
     private bool lockout;
-    private Coroutine clearButtonCoroutine;
-
     private int musicMultiplier;
     private int soundEffectsMultiplier;
 
@@ -47,7 +50,7 @@ public class SettingsScript : MonoBehaviour
     void Start()
     {
         lockout = true;
-        PersistentSettings.TryCheckKeys();
+        PersistentSettings.OnGameStart();
 
         // music volume
         musicSlider.maxValue = GameValues.Settings.musicVolumeDenominator;
@@ -64,24 +67,38 @@ public class SettingsScript : MonoBehaviour
         soundEffectsVolumeText.text = $"{volume * soundEffectsMultiplier}%";
 
         achievementPopupToggle.isOn = PersistentSettings.AchievementPopupsEnabled;
+        matchEffectToggle.isOn = PersistentSettings.MatchEffectEnabled;
 
-        if (Vibration.HasVibrator())
+        if (Vibration.HasVibrator)
         {
             vibrationToggle.isOn = PersistentSettings.VibrationEnabled;
         }
         else
         {
-            // disable vibration toggle
-            vibrationToggle.interactable = false;
-            vibrationToggle.isOn = false;
+            // disable vibration toggle section
+            vibrationToggle.gameObject.transform.parent.gameObject.SetActive(false);
         }
 
-        foodSuitsToggle.isOn = PersistentSettings.FoodSuitsEnabled;
+        suitArtToggle.isOn = PersistentSettings.FoodSuitsEnabled;
+        deckOrientationToggle.isOn = PersistentSettings.DeckOrientation;
 
         SetupFrameRateSettings();
 
         saveGameStateToggle.isOn = PersistentSettings.SaveGameStateEnabled;
         movesUntilSaveInputField.text = PersistentSettings.MovesUntilSave.ToString();
+
+        autoPlacementToggle.isOn = AutoPlacement.Enabled;
+        autoPlacementTime.text = AutoPlacement.Time.ToString();
+
+        autoPlacementSpeedIndexes.minValue = 0;
+        autoPlacementSpeedIndexes.maxValue = AutoPlacement.SpeedsLength - 1;
+        autoPlacementSpeedIndexes.value = AutoPlacement.SpeedIndex;
+        autoPlacementSpeedText.text = AutoPlacement.SpeedText;
+
+        autoPlacementDistanceIndexes.minValue = 0;
+        autoPlacementDistanceIndexes.maxValue = AutoPlacement.DistancesLength - 1;
+        autoPlacementDistanceIndexes.value = AutoPlacement.DistanceIndex;
+        autoPlacementDistanceText.text = AutoPlacement.DistanceText;
 
         hintsToggle.isOn = PersistentSettings.HintsEnabled;
 
@@ -126,48 +143,53 @@ public class SettingsScript : MonoBehaviour
     public void AchievementPopupOnToggle(bool update)
     {
         if (lockout) return;
-
+        Debug.Log($"setting achievement popups to: {update}");
         PersistentSettings.AchievementPopupsEnabled = update;
+        SoundEffectsController.Instance.ButtonPressSound();
+        if (update == false)
+            AchievementPopup.Instance.StopPopups();
+    }
+
+    public void MatchEffectOnToggle(bool update)
+    {
+        if (lockout) return;
+        Debug.Log($"setting match effect to: {update}");
+        PersistentSettings.MatchEffectEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
     }
 
     public void VibrationEnabledOnToggle(bool update)
     {
         if (lockout) return;
-
+        Debug.Log($"setting vibration to: {update}");
         PersistentSettings.VibrationEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
     }
 
-    public void ThematicSuitArt(bool update)
+    public void SuitArtOnToggle(bool update)
     {
         if (lockout) return;
-        Debug.Log($"seting food suits to: {update}");
+        Debug.Log($"setting food suits to: {update}");
         PersistentSettings.FoodSuitsEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
 
-        if (SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
+        if (IsGamePlaySceneActive())
         {
             GameLoader.Instance.ChangeSuitSprites();
         }
     }
 
-    public void TryToClearRecordsButton()
+    public void DeckOrientationOnToggle(bool update)
     {
         if (lockout) return;
+        Debug.Log($"setting deck orientation to: {update}");
+        PersistentSettings.DeckOrientation = update;
+        SoundEffectsController.Instance.ButtonPressSound();
 
-        confirmYesButton.interactable = false;
-        Debug.Log("trying to clear records");
-        if (clearButtonCoroutine != null)
+        if (IsGamePlaySceneActive())
         {
-            StopCoroutine(clearButtonCoroutine);
+            DeckOrientation.Instance.Flip = update;
         }
-        clearButtonCoroutine = StartCoroutine(ButtonDelay());
-    }
-
-    public void ClearRecordsConfirmationButton()
-    {
-        Debug.LogWarning("This doesn't do anything!");
     }
 
     public void FrameRateChange(float update)
@@ -182,7 +204,7 @@ public class SettingsScript : MonoBehaviour
         }
 
         int frameRateSetting = frameRates[frameRateIndex];
-        Debug.Log($"seting the targetFrameRate to: {frameRateSetting}");
+        Debug.Log($"setting the targetFrameRate to: {frameRateSetting}");
         Application.targetFrameRate = frameRateSetting;
         PersistentSettings.FrameRate = frameRateSetting;
         UpdateFrameRateText(frameRateSetting);
@@ -191,11 +213,11 @@ public class SettingsScript : MonoBehaviour
     public void SaveGameStateOnToggle(bool update)
     {
         if (lockout) return;
-        Debug.Log($"seting save game state to: {update}");
+        Debug.Log($"setting save game state to: {update}");
         PersistentSettings.SaveGameStateEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
 
-        if (SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
+        if (IsGamePlaySceneActive())
         {
             StateLoader.Instance.SetGameStateSaving(update);
         }
@@ -209,27 +231,86 @@ public class SettingsScript : MonoBehaviour
     {
         if (lockout) return;
 
-        if (Int32.TryParse(update, out int movesUntilSave) && movesUntilSave > 0)
+        if (int.TryParse(update, out int movesUntilSave) &&
+            movesUntilSave > 0 && movesUntilSave < 1000)
         {
-            if (PersistentSettings.MovesUntilSave == movesUntilSave) return;
-            Debug.Log($"seting moves until save to: {movesUntilSave}");
+            Debug.Log($"setting moves until save to: {movesUntilSave}");
             PersistentSettings.MovesUntilSave = movesUntilSave;
-            if (SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay))
+            if (IsGamePlaySceneActive())
             {
                 StateLoader.Instance.UpdateMovesUntilSave(movesUntilSave);
             }
         }
         else
         {
-            Debug.LogWarning($"invalid moves until save detected: {update}");
+            Debug.LogWarning($"invalid moves until save input detected: {update}");
             movesUntilSaveInputField.text = PersistentSettings.MovesUntilSave.ToString();
         }
+    }
+
+    public void AutoPlacementEnabledOnToggle(bool update)
+    {
+        if (lockout) return;
+        Debug.Log($"setting auto placement to: {update}");
+        AutoPlacement.Enabled = update;
+        SoundEffectsController.Instance.ButtonPressSound();
+    }
+
+    public void AutoPlacementTime(string update)
+    {
+        if (lockout) return;
+        // the input is limited to 3 characters and can take ".01" but displays it as "0.0"
+        // so limit and round values to the closet tenth 
+        if (float.TryParse(update, out float value) && value >= 0.1)
+        {
+            value = (float)Math.Round(value, 1);
+            Debug.Log($"setting the auto placement time to: {value}");
+            autoPlacementTime.text = value.ToString();
+            AutoPlacement.Time = value;
+        }
+        else
+        {
+            Debug.LogWarning($"invalid auto placement time input detected: {update}");
+            autoPlacementTime.text = AutoPlacement.Time.ToString();
+        }
+    }
+
+    public void AutoPlacementSpeedIndex(float update)
+    {
+        if (lockout) return;
+        int value = (int)update;
+        if (value < 0 || value >= AutoPlacement.SpeedsLength)
+        {
+            Debug.LogWarning($"invalid auto placement speed index input detected: {update}");
+            autoPlacementSpeedIndexes.value = AutoPlacement.SpeedIndex;
+            autoPlacementSpeedText.text = AutoPlacement.SpeedText;
+            return;
+        }
+        Debug.Log($"setting the auto placement speed index to: {update}");
+        AutoPlacement.SpeedIndex = value;
+        autoPlacementSpeedText.text = AutoPlacement.SpeedText;
+    }
+
+    public void AutoPlacementDistanceIndex(float update)
+    {
+        if (lockout) return;
+        int value = (int)update;
+        if (value < 0 || value >= AutoPlacement.DistancesLength)
+        {
+            Debug.LogWarning($"invalid auto placement distance index input detected: {update}");
+            autoPlacementDistanceIndexes.value = AutoPlacement.DistanceIndex;
+            autoPlacementDistanceText.text = AutoPlacement.DistanceText;
+            return;
+        }
+        Debug.Log($"setting the auto placement distance index to: {update}");
+        AutoPlacement.DistanceIndex = value;
+        autoPlacementDistanceText.text = AutoPlacement.DistanceText;
     }
 
     public void HintsEnabledOnToggle(bool update)
     {
         if (lockout) return;
-        Debug.Log($"seting hints enabled to: {update}");
+        Debug.Log($"setting hints enabled to: {update}");
         PersistentSettings.HintsEnabled = update;
         Config.Instance.HintsEnabled = update;
         SoundEffectsController.Instance.ButtonPressSound();
@@ -238,7 +319,7 @@ public class SettingsScript : MonoBehaviour
     public void ColorModeOnValueChange(int update)
     {
         if (lockout) return;
-        Debug.Log($"seting color mode to: {update}");
+        Debug.Log($"setting color mode to: {update}");
         if (update < 0 || update >= GameValues.Colors.Modes.List.Count)
         {
             update = 0;
@@ -261,34 +342,35 @@ public class SettingsScript : MonoBehaviour
         // make a list of most of the supported target frame rates
         // supported means that the screen's maximum refresh rate is divisible by the target
 
-        // refreshRateRatio.value is off from the typical integer by very small amount
-        int maxFrameRate = (int) Math.Round(Screen.currentResolution.refreshRateRatio.value);
-        frameRates = maxFrameRate switch
+        frameRates = PersistentSettings.MaxDeviceFrameRate switch
         {
-            240 => new List<int>(7) { -1, 30, 40, 60, 80, 120, 240 },
-            144 => new List<int>(5) { -1, 36, 48, 72, 144 },
-            120 => new List<int>(5) { -1, 30, 40, 60, 120 },
-            90 => new List<int>(4) { -1, 30, 45, 90 },
-            60 => new List<int>(3) { -1, 30, 60 },
-            48 => new List<int>(3) { -1, 24, 48 },
-            30 => new List<int>(3) { -1, 15, 30 },
-            _ => new List<int>(2) { -1, maxFrameRate },
+            240 => new(7) { -1, 30, 60, 120, 240 },
+            144 => new(5) { -1, 36, 48, 72, 144 },
+            120 => new(5) { -1, 30, 40, 60, 120 },
+            90 => new(4) { -1, 30, 45, 90 },
+            60 => new(3) { -1, 30, 60 },
+            48 => new(3) { -1, 24, 48 },
+            30 => new(3) { -1, 15, 30 },
+            _ => new(3) { -1, PersistentSettings.MaxDeviceFrameRate / 2, PersistentSettings.MaxDeviceFrameRate },
         };
 
-        // -1 is the default for the platform
-        int frameRateSetting = PersistentSettings.FrameRate;
+        if (PersistentSettings.MaxDeviceFrameRate % 2 != 0)
+        {
+            Debug.LogWarning($"this screen has a max refresh rate of {PersistentSettings.MaxDeviceFrameRate}, really?");
+            frameRates = new(2) { -1, PersistentSettings.MaxDeviceFrameRate };
+        }
 
         // figure out if the frame rate setting exists in our list of target frame rates
-        int frameRateIndex = frameRates.IndexOf(frameRateSetting);
+        int frameRateIndex = frameRates.IndexOf(PersistentSettings.FrameRate);
         if (frameRateIndex == -1)
         {
-            Debug.LogWarning($"the frame rate of {frameRateSetting} was not found in our list of target frame rates, adding it to them now.");
+            Debug.LogWarning($"the frame rate of {PersistentSettings.FrameRate} was not found in our list of target frame rates, adding it to them now.");
             bool addedToList = false;
             for (int i = 1; i < frameRates.Count; i++)
             {
-                if (frameRateSetting < frameRates[i])
+                if (PersistentSettings.FrameRate < frameRates[i])
                 {
-                    frameRates.Insert(i, frameRateSetting);
+                    frameRates.Insert(i, PersistentSettings.FrameRate);
                     frameRateIndex = i;
                     addedToList = true;
                     break;
@@ -296,7 +378,7 @@ public class SettingsScript : MonoBehaviour
             }
             if (!addedToList)
             {
-                frameRates.Add(frameRateSetting);
+                frameRates.Add(PersistentSettings.FrameRate);
                 frameRateIndex = frameRates.Count - 1;
             }
         }
@@ -305,7 +387,7 @@ public class SettingsScript : MonoBehaviour
         frameRateSlider.maxValue = frameRates.Count - 1;
         frameRateSlider.value = frameRateIndex;
 
-        UpdateFrameRateText(frameRateSetting);
+        UpdateFrameRateText(PersistentSettings.FrameRate);
     }
 
     private void UpdateFrameRateText(int frameRate)
@@ -325,10 +407,8 @@ public class SettingsScript : MonoBehaviour
         colorModeNotify.color = update.Notify.Color;
     }
 
-    private IEnumerator ButtonDelay()
+    private bool IsGamePlaySceneActive()
     {
-        yield return new WaitForSecondsRealtime(2);
-        confirmYesButton.interactable = true;
-        clearButtonCoroutine = null;
+        return SceneManager.GetActiveScene().name.Equals(Constants.ScenesNames.gameplay);
     }
 }

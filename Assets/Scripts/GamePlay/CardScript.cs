@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class CardScript : MonoBehaviour, IGlow
 {
+    public bool obstructedFadeOff;
+
     [SerializeField]
     private Card _card;
 
@@ -27,7 +29,7 @@ public class CardScript : MonoBehaviour, IGlow
     [SerializeField]
     private HighLightColor _glowColor;
 
-    private Coroutine holoCoroutine;
+    private Coroutine holoCoroutine, obstructedCoroutine;
     private Color originalColor;
     private Color draggingColor;
     private Constants.CardContainerType _currentContainerType;
@@ -121,9 +123,32 @@ public class CardScript : MonoBehaviour, IGlow
         set
         {
             HitBox = !value;
-            if (_obstructed == value) return;
+            if (_obstructed == value)
+            {
+                obstructedFadeOff = false;
+                return;
+            }
+
             _obstructed = value;
-            thisSR.color = value ? GameValues.Colors.cardObstructedColor : originalColor;
+
+            if (obstructedCoroutine != null)
+                StopCoroutine(obstructedCoroutine);
+
+            if (value)
+            {
+                if (obstructedFadeOff || UndoScript.Undoing || Config.Instance.TutorialOn)
+                    thisSR.color = GameValues.Colors.cardObstructedColor;
+                else
+                    obstructedCoroutine = StartCoroutine(Animate.FadeSprite(thisSR, GameValues.Colors.cardObstructedColor, 0.3f));
+            }
+            else
+            {
+                if (obstructedFadeOff || UndoScript.Undoing || CurrentContainerType == Constants.CardContainerType.Loadpile)
+                    thisSR.color = originalColor;
+                else
+                    obstructedCoroutine = StartCoroutine(Animate.FadeSprite(thisSR, originalColor, 0.3f));
+            }
+            obstructedFadeOff = false;
         }
     }
 
@@ -407,11 +432,11 @@ public class CardScript : MonoBehaviour, IGlow
             case Constants.CardContainerType.WastePile:
                 if (!doLog || newContainerType == Constants.CardContainerType.Deck)
                 {
-                    WastepileScript.Instance.RemoveCard(gameObject, undoingOrDeck: true, showHolo: showHolo);
+                    WastepileScript.Instance.RemoveCardInstantly(gameObject, showHolo: showHolo);
                 }
                 else
                 {
-                    WastepileScript.Instance.RemoveCard(gameObject, showHolo: showHolo);
+                    WastepileScript.Instance.RemoveCardAndScroll(gameObject);
                 }
                 break;
             case Constants.CardContainerType.Deck:
@@ -457,7 +482,12 @@ public class CardScript : MonoBehaviour, IGlow
                     }
                 }
 
+                bool tryDeckCounter = _currentContainerType != Constants.CardContainerType.Deck;
                 WastepileScript.Instance.AddCard(gameObject, showHolo: showHolo);
+                if (tryDeckCounter)
+                {
+                    DeckCounterScript.Instance.TryChangeStatus();
+                }
                 break;
             case Constants.CardContainerType.Deck:
                 if (doLog)

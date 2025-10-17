@@ -11,7 +11,7 @@ public static class PersistentSettings
     /// <summary>
     /// Sets the keys up and stores their values for repeated use.
     /// </summary>
-    public static void TryCheckKeys()
+    public static void OnGameStart()
     {
         if (hasChecked) return;
         Debug.Log("checking keys");
@@ -33,7 +33,10 @@ public static class PersistentSettings
         _achievementPopupsEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.achievementPopupsEnabledKey,
                 Convert.ToInt32(GameValues.Settings.achievementPopupsEnabledDefault)));
 
-        if (Vibration.HasVibrator())
+        _matchEffectEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.matchEffectEnabledKey,
+            Convert.ToInt32(GameValues.Settings.matchEffectEnabledDefault)));
+
+        if (Vibration.HasVibrator)
         {
             _vibrationEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.vibrationEnabledKey,
                 Convert.ToInt32(GameValues.Settings.vibrationEnabledDefault)));
@@ -46,16 +49,19 @@ public static class PersistentSettings
         _foodSuitsEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.foodSuitsEnabledKey,
                 Convert.ToInt32(GameValues.Settings.foodSuitsEnabledDefault)));
 
-        int maxDeviceScreenRefreshRate = (int)Math.Round(Screen.currentResolution.refreshRateRatio.value);
-        int defaultFrameRate = Application.platform == RuntimePlatform.WebGLPlayer ? -1 : maxDeviceScreenRefreshRate;
-        _frameRate = PlayerPrefs.GetInt(Constants.Settings.frameRateKey, defaultFrameRate);
-        if (FrameRate == 0 || FrameRate < -1 || maxDeviceScreenRefreshRate % FrameRate != 0)
-        {
-            Debug.LogError($"the unsupported frame rate of {FrameRate} was saved, defaulting to the device's default");
-            FrameRate = -1;
-        }
+        _deckOrientation = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.deckOrientationKey,
+                Convert.ToInt32(GameValues.Settings.deckOrientationDefault)));
 
-        Convert.ToBoolean(10);
+        // refreshRateRatio.value is off from the typical integer by very small amount
+        MaxDeviceFrameRate = (int)Math.Round(Screen.currentResolution.refreshRateRatio.value);
+        int defaultFrameRate = Application.platform == RuntimePlatform.WebGLPlayer ? -1 : MaxDeviceFrameRate;
+        _frameRate = PlayerPrefs.GetInt(Constants.Settings.frameRateKey, defaultFrameRate);
+        Debug.Log($"max device frame rate: {MaxDeviceFrameRate}, our default: {defaultFrameRate}, saved setting: {FrameRate}");
+        if (FrameRate == 0 || FrameRate < -1 || MaxDeviceFrameRate % FrameRate != 0)
+        {
+            Debug.LogWarning($"the unsupported frame rate of {FrameRate} was saved, defaulting to the device's default");
+            FrameRate = defaultFrameRate;
+        }
 
         _saveGameStateEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.saveGameStateKey,
                 Convert.ToInt32(GameValues.Settings.saveGameStateDefault)));
@@ -117,6 +123,21 @@ public static class PersistentSettings
         }
     }
 
+    private static bool _matchEffectEnabled;
+    public static bool MatchEffectEnabled
+    {
+        get => _matchEffectEnabled;
+        set
+        {
+            if (_matchEffectEnabled != value)
+            {
+                _matchEffectEnabled = value;
+                PlayerPrefs.SetInt(Constants.Settings.matchEffectEnabledKey,
+                    Convert.ToInt32(value));
+            }
+        }
+    }
+
     private static bool _vibrationEnabled;
     public static bool VibrationEnabled
     {
@@ -142,6 +163,21 @@ public static class PersistentSettings
             {
                 _foodSuitsEnabled = value;
                 PlayerPrefs.SetInt(Constants.Settings.foodSuitsEnabledKey,
+                    Convert.ToInt32(value));
+            }
+        }
+    }
+
+    private static bool _deckOrientation;
+    public static bool DeckOrientation
+    {
+        get => _deckOrientation;
+        set
+        {
+            if (_deckOrientation != value)
+            {
+                _deckOrientation = value;
+                PlayerPrefs.SetInt(Constants.Settings.deckOrientationKey,
                     Convert.ToInt32(value));
             }
         }
@@ -182,11 +218,9 @@ public static class PersistentSettings
         get => _movesUntilSave;
         set
         {
-            if (_movesUntilSave != value)
-            {
-                _movesUntilSave = value;
-                PlayerPrefs.SetInt(Constants.Settings.movesUntilSaveKey, value);
-            }
+            if (_movesUntilSave == value) return;
+            _movesUntilSave = value;
+            PlayerPrefs.SetInt(Constants.Settings.movesUntilSaveKey, value);
         }
     }
 
@@ -219,11 +253,13 @@ public static class PersistentSettings
         }
     }
 
+    public static int MaxDeviceFrameRate { get; private set; }
+
     public static bool NewGameStateVersion()
     {
-        if (PlayerPrefs.GetString(Constants.GameStates.versionKey, defaultValue: "NULL") != Constants.GameStates.version)
+        if (PlayerPrefs.GetInt(Constants.GameStates.versionKey, defaultValue: 0) != Constants.GameStates.version)
         {
-            PlayerPrefs.SetString(Constants.GameStates.versionKey, Constants.GameStates.version);
+            PlayerPrefs.SetInt(Constants.GameStates.versionKey, Constants.GameStates.version);
             return true;
         }
         return false;

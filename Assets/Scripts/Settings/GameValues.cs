@@ -47,6 +47,7 @@ public static class GameValues
 
         public const float draggedCardScale = 0.15f;
         public const float draggedCardYOffset = 0.4f;
+        public const float draggedCardZOffset = -0.01f;
 
         public const float zoomFactor = 0.3f;
     }
@@ -81,8 +82,10 @@ public static class GameValues
         public const int soundEffectsVolumeDenominator = 20; // how many steps
 
         public const bool achievementPopupsEnabledDefault = true;
-        public const bool vibrationEnabledDefault = true;
+        public const bool matchEffectEnabledDefault = true;
+        public const bool vibrationEnabledDefault = false;
         public const bool foodSuitsEnabledDefault = false;
+        public const bool deckOrientationDefault = true;
 
         public const bool saveGameStateDefault = true;
         public const int movesUntilSaveDefault = 50;
@@ -149,8 +152,8 @@ public static class GameValues
         // all durations are in seconds
 
         // main menu
-        public const float logoDelay = 2;
-        public const float buttonFadeOut = 0.3f;
+        public const float logoDelay = 1;
+        public const float buttonFadeOut = 0.5f;
         public const float zoomAndFade = 1.5f;
 
         // screen fades 
@@ -164,7 +167,7 @@ public static class GameValues
 
         // gameplay
         public const float cardHologramFadeIn = 2; // fades in the cards holograms
-        public const float cardsToReactor = 0.5f; // movement of the cards to reactor during a nextcycle
+
         // match effect
         public const float comboPointsFadeIn = 0.5f; // fade in and scale up the point text
         public const float comboWait = 0.5f; // wait a bit

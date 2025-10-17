@@ -16,43 +16,98 @@ public static class Animate
         toUpdate.color = fadeColor.endColor;
     }
 
+    public static IEnumerator FadeSprite(SpriteRenderer toUpdate, Color endColor, float duration)
+    {
+        Color startColor = toUpdate.color;
+        float timeElapsed = 0;
+        while (timeElapsed < duration)
+        {
+            toUpdate.color = Color.Lerp(startColor, endColor, timeElapsed / duration);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        toUpdate.color = endColor;
+    }
+
     public static IEnumerator FadeCanvasGroup(CanvasGroup toUpdate, float start, float end, float duration)
     {
         float timeElapsed = 0;
         while (timeElapsed < duration)
         {
             toUpdate.alpha = Mathf.Lerp(start, end, timeElapsed / duration);
-            timeElapsed += Time.deltaTime;
+            timeElapsed += Time.unscaledDeltaTime; // avoid being effected by setting timeScale = 0 when pausing
             yield return null;
         }
         toUpdate.alpha = end;
     }
 
-    public static IEnumerator SmoothstepRectTransform(RectTransform toUpdate, Vector2 start, Vector2 end, float duration)
+    public static IEnumerator MoveRectTransformSmoothStep(RectTransform rectTransform, Vector2 targetPosition, float duration)
     {
+        Vector2 startPosition = rectTransform.anchoredPosition;
         float timeElapsed = 0;
         while (timeElapsed < duration)
         {
-            float t = timeElapsed / duration;
-            t = t * t * (3f - 2f * t); // Smoothstep formula
-            toUpdate.anchoredPosition = Vector2.Lerp(start, end, t);
+            rectTransform.anchoredPosition = Vector2SmoothStep(startPosition, targetPosition, timeElapsed / duration);
             timeElapsed += Time.deltaTime;
             yield return null;
         }
-        toUpdate.anchoredPosition = end;
+        rectTransform.anchoredPosition = targetPosition;
     }
 
-    public static IEnumerator SmoothstepTransform(Transform toUpdate, Vector2 start, Vector2 end, float duration)
+    public static IEnumerator MoveTransformSmoothDamp(Transform transform, Vector2 targetPosition, float smoothTime)
     {
-        float timeElapsed = 0;
-        while (timeElapsed < duration)
+        Vector2 velocity = Vector2.zero;
+        while (Vector2.Distance(transform.position, targetPosition) > 0.01)
         {
-            float t = timeElapsed / duration;
-            t = t * t * (3f - 2f * t); // Smoothstep formula
-            toUpdate.position = Vector2.Lerp(start, end, t);
-            timeElapsed += Time.deltaTime;
+            transform.position = Vector2.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
             yield return null;
         }
-        toUpdate.position = end;
+        transform.position = targetPosition;
+    }
+
+    public static IEnumerator MoveTransformsSmoothDamp(Transform[] transforms, Vector2 targetPosition, float smoothTime)
+    {
+        if (transforms.Length == 0) yield break;
+
+        Vector2 velocity = Vector2.zero;
+        Vector2 currentPosition = transforms[0].position;
+        Vector3 newPosition;
+        while (Vector2.Distance(currentPosition, targetPosition) > 0.01)
+        {
+            currentPosition = Vector2.SmoothDamp(currentPosition, targetPosition, ref velocity, smoothTime);
+            newPosition = currentPosition;
+            for (int i = 0; i < transforms.Length; i++)
+            {
+                transforms[i].position = newPosition;
+                newPosition.y += GameValues.Transforms.draggedCardYOffset;
+                newPosition.z += GameValues.Transforms.draggedCardZOffset;
+            }
+            yield return null;
+        }
+
+        newPosition = targetPosition;
+        for (int i = 0; i < transforms.Length; i++)
+        {
+            transforms[i].position = newPosition;
+            newPosition.y += GameValues.Transforms.draggedCardYOffset;
+            newPosition.z += GameValues.Transforms.draggedCardZOffset;
+        }
+    }
+
+    public static Vector2 Vector2SmoothStep(Vector2 start, Vector2 end, float durationFraction)
+    {
+        return new Vector2(
+            Mathf.SmoothStep(start.x, end.x, durationFraction),
+            Mathf.SmoothStep(start.y, end.y, durationFraction)
+        );
+    }
+
+    public static Vector3 Vector3SmoothStep(Vector3 start, Vector3 end, float durationFraction)
+    {
+        return new Vector3(
+            Mathf.SmoothStep(start.x, end.x, durationFraction),
+            Mathf.SmoothStep(start.y, end.y, durationFraction),
+            start.z
+        );
     }
 }

@@ -29,23 +29,20 @@ public class WastepileScript : MonoBehaviour, ICardContainer
     // Initialize the singleton instance.
     void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-
-            cardList = new List<GameObject>(GameValues.GamePlay.cardCount);
-            cardContainers = new List<GameObject>(GameValues.GamePlay.cardCount);
-
-            cardSpacing = contentPanel.GetComponent<HorizontalLayoutGroup>().spacing + 
-                cardContainerPrefab.GetComponent<RectTransform>().sizeDelta.x;
-            scrollRect = this.gameObject.GetComponent<ScrollRect>();
-            contentRectTransform = contentPanel.GetComponent<RectTransform>();
-        }
-        else if (Instance != this)
-        {
+        if (Instance != null)
             throw new System.ArgumentException("there should not already be an instance of this");
-        }
+        Instance = this;
+
+        cardList = new List<GameObject>(GameValues.GamePlay.cardCount);
+        cardContainers = new List<GameObject>(GameValues.GamePlay.cardCount);
+
+        cardSpacing = contentPanel.GetComponent<HorizontalLayoutGroup>().spacing + 
+            cardContainerPrefab.GetComponent<RectTransform>().sizeDelta.x;
+        scrollRect = this.gameObject.GetComponent<ScrollRect>();
+        contentRectTransform = contentPanel.GetComponent<RectTransform>();
     }
+
+    public Constants.CardContainerType ContainerType => Constants.CardContainerType.WastePile;
 
     public List<GameObject> CardList => cardList;
 
@@ -54,17 +51,10 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         get => _draggingCard;
         set
         {
+            if (_draggingCard == value) return;
             _draggingCard = value;
-            if (value)
-            {
-                scrollRect.horizontal = false;
-                //scrollRect.horizontalScrollbar.interactable = false;
-            }
-            else
-            {
-                scrollRect.horizontal = true;
-                //scrollRect.horizontalScrollbar.interactable = true;
-            }
+            scrollRect.horizontal = !value;
+            //scrollRect.horizontalScrollbar.interactable = !value;
         }
     }
 
@@ -89,29 +79,18 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         }
         cards[^1].GetComponent<CardScript>().MoveCard(Constants.CardContainerType.WastePile, this.gameObject, doLog);
 
-        if (doLog)
-        {
-            Actions.MoveUpdate();
-        }
-
-        StartCoroutine(ScrollBarAdding(cards.Count, wastePileWasEmpty));
+        StartCoroutine(ScrollBarAdding(cards.Count, wastePileWasEmpty, doLog));
     }
 
     public void AddCard(GameObject card, bool showHolo)
     {
         AddCard(card);
 
-        if (showHolo)
-        {
-            CardScript cardScript = card.GetComponent<CardScript>();
-            cardScript.Hologram = true;
-            cardScript.HitBox = true;
+        if (!showHolo) return;
 
-            if (cardList.Count == GameValues.GamePlay.cardsToDeal + 1)
-            {
-                DeckScript.Instance.TryUpdateDeckCounter(true);
-            }
-        }
+        CardScript cardScript = card.GetComponent<CardScript>();
+        cardScript.Hologram = true;
+        cardScript.HitBox = true;
     }
 
     public void AddCard(GameObject card)
@@ -121,6 +100,7 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         {
             CardScript cardScript = cardList[^1].GetComponent<CardScript>();
             cardScript.Hologram = false;
+            cardScript.obstructedFadeOff = true;
             cardScript.Obstructed = true;
         }
 
@@ -136,56 +116,53 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         card.transform.localPosition = new Vector3(0, 0, -cardList.Count * 0.01f);
     }
 
-    public void RemoveCard(GameObject card, bool showHolo)
+    public void RemoveCardAndScroll(GameObject card)
     {
-        RemoveCard(card, false, showHolo);
+        if (cardList.Count == 1)
+        {
+            RemoveCardInstantly(card);
+            return;
+        }
+
+        // get cards wastepile container before removal
+        GameObject parentCardContainer = card.transform.parent.gameObject;
+        RemoveCard(card);
+
+        CardScript newTopCardScript = cardList[^1].GetComponent<CardScript>();
+
+        if (!Config.Instance.TutorialOn)
+        {
+            newTopCardScript.Obstructed = false;
+        }
+        newTopCardScript.Hologram = true;
+
+        if (cardList.Count == GameValues.GamePlay.cardsToDeal)
+        {
+            DeckCounterScript.Instance.TryChangeStatus();
+        }
+
+        // move the conveyor belt around to simulate card removal
+        StartCoroutine(ScrollBarRemoving(parentCardContainer));
     }
 
-    public void RemoveCard(GameObject card, bool undoingOrDeck, bool showHolo)
+    /// <summary>
+    /// When a card is removed via an undo or deck reset
+    /// </summary>
+    public void RemoveCardInstantly(GameObject card, bool showHolo = false)
     {
         // get cards wastepile container before removal
         GameObject parentCardContainer = card.transform.parent.gameObject;
-
         RemoveCard(card);
+        Destroy(parentCardContainer);
 
-        if (cardList.Count != 0)
-        {
-            CardScript cardScript = cardList[^1].GetComponent<CardScript>();
+        if (cardList.Count == 0) return;
+        CardScript newTopCardScript = cardList[^1].GetComponent<CardScript>();
+        newTopCardScript.obstructedFadeOff = true;
+        newTopCardScript.Obstructed = false;
 
-            // during the tutorial we don't want the next card avalible for user interaction
-            // save for when the deck deal button is unlocked as that can cause a deck flip
-            if (undoingOrDeck || !Config.Instance.TutorialOn)
-            {
-                // set obstruction to false as it isn't accounted for elsewhere
-                cardScript.Obstructed = false;
-            }
-
-            // will the new top card stay
-            if (showHolo)
-            {
-                if (undoingOrDeck)
-                {
-                    cardScript.EnableHologramImmediately();
-                }
-                cardScript.Hologram = true;
-
-                if (cardList.Count == GameValues.GamePlay.cardsToDeal)
-                {
-                    DeckScript.Instance.TryUpdateDeckCounter(false);
-                }
-            }
-        }
-
-        if (undoingOrDeck || cardList.Count == 0)
-        {
-            // immediately remove 
-            Destroy(parentCardContainer);
-        }
-        else
-        {
-            // move the conveyor belt around to simulate card removal
-            StartCoroutine(ScrollBarRemoving(parentCardContainer));
-        }
+        if (!showHolo) return;
+        newTopCardScript.EnableHologramImmediately();
+        newTopCardScript.Hologram = true;
     }
 
     public void RemoveCard(GameObject card)
@@ -199,7 +176,7 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         StartCoroutine(DeckReset());
     }
 
-    private IEnumerator ScrollBarAdding(int numCardsAdded, bool wastePileWasEmpty)
+    private IEnumerator ScrollBarAdding(int numCardsAdded, bool wastePileWasEmpty, bool doLog)
     {
         SetScrolling(true);
 
@@ -220,9 +197,14 @@ public class WastepileScript : MonoBehaviour, ICardContainer
 
         // get the number of cards that have been scrolled away from
         float numCardsFromStart = -contentRectTransform.anchoredPosition.x / cardSpacing;
-        yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, GetScrollDuration(numCardsFromStart));
+        float scrollDuration = GetScrollDuration(numCardsFromStart);
+        DeckCounterScript.Instance.UpdateCounter(-numCardsAdded, scrollDuration);
+        yield return Animate.MoveRectTransformSmoothStep(contentRectTransform, endPosition, scrollDuration);
 
-        DeckScript.Instance.StartButtonUp();
+        DeckButtonScript.Instance.StartButtonUp();
+
+        if (doLog)
+            Actions.MoveUpdate();
 
         SetScrolling(false);
     }
@@ -231,14 +213,13 @@ public class WastepileScript : MonoBehaviour, ICardContainer
     {
         SetScrolling(true);
 
-        Vector2 startPosition = contentRectTransform.anchoredPosition;
         // back 1 token distance
         Vector2 endPosition = contentRectTransform.anchoredPosition;
         endPosition.x = -cardSpacing;
+        
+        float scrollDuration = AutoPlacement.WastePileSpeed * (cardSpacing + contentRectTransform.anchoredPosition.x) / (cardSpacing * 6);
 
-        float duration = (cardSpacing + contentRectTransform.anchoredPosition.x) / (cardSpacing * 6);
-
-        yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, duration);
+        yield return Animate.MoveRectTransformSmoothStep(contentRectTransform, endPosition, scrollDuration);
 
         Destroy(parentCardContainer);
         SetScrolling(false);
@@ -249,12 +230,13 @@ public class WastepileScript : MonoBehaviour, ICardContainer
         SetScrolling(true);
 
         // move the scroll rect's content so that the new cards are hidden to the left side of the belt
-        Vector2 startPosition = contentRectTransform.anchoredPosition;
         Vector2 endPosition = contentRectTransform.anchoredPosition;
         endPosition.x = -cardSpacing * (cardList.Count + 1);
 
         double numCardsFromEnd = cardList.Count + (contentRectTransform.anchoredPosition.x / cardSpacing);
-        yield return Animate.SmoothstepRectTransform(contentRectTransform, startPosition, endPosition, GetScrollDuration(numCardsFromEnd));
+        float scrollDuration = GetScrollDuration(numCardsFromEnd);
+        DeckCounterScript.Instance.UpdateCounter(cardList.Count, scrollDuration);
+        yield return Animate.MoveRectTransformSmoothStep(contentRectTransform, endPosition, scrollDuration);
 
         // move all the tokens
         while (cardList.Count > 0)
@@ -302,6 +284,6 @@ public class WastepileScript : MonoBehaviour, ICardContainer
     private float GetScrollDuration(double numCardsToScroll)
     {
         // for the more cards to scroll, the shorter the duration per card
-        return (float) (0.25 * Math.Pow(numCardsToScroll, 0.4));
+        return (float) (AutoPlacement.WastePileSpeed * 0.25 * Math.Pow(numCardsToScroll, 0.4));
     }
 }

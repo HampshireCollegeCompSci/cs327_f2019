@@ -24,6 +24,8 @@ public class FoundationScript : MonoBehaviour, ICardContainer, IGlow
         _glowColor = GameValues.Colors.normal;
     }
 
+    public Constants.CardContainerType ContainerType => Constants.CardContainerType.Foundation;
+
     public List<GameObject> CardList => cardList;
 
     public bool Glowing

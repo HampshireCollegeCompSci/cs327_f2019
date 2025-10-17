@@ -12,6 +12,8 @@ public class SplashScreen : MonoBehaviour
 
     [SerializeField]
     private GameObject splashScreen;
+    [SerializeField]
+    private CanvasGroup splashScreenGroup, logoGroup;
     private Coroutine splashScreenFade;
 
     // Start is called before the first frame update
@@ -21,25 +23,28 @@ public class SplashScreen : MonoBehaviour
         {
             firstRun = false;
             splashScreen.SetActive(true);
+            logoGroup.alpha = 0;
             splashScreenFade = StartCoroutine(DisplayLogo());
         }
     }
 
     private IEnumerator DisplayLogo()
     {
-        yield return new WaitForSeconds(2);
-        #if UNITY_WEBGL
-            TryStartMusic();
-        #else
-            MusicController.Instance.MainMenuMusic();
-        #endif
-        yield return Animate.FadeCanvasGroup(splashScreen.GetComponent<CanvasGroup>(),
+        yield return new WaitForSeconds(0.25f);
+        yield return Animate.FadeCanvasGroup(logoGroup,
+            0, 1, GameValues.AnimationDurataions.logoDelay);
+        yield return new WaitForSeconds(GameValues.AnimationDurataions.logoDelay);
+#if UNITY_WEBGL
+        TryStartMusic();
+#else
+        MusicController.Instance.MainMenuMusic();
+#endif
+        yield return Animate.FadeCanvasGroup(splashScreenGroup,
             1, 0, GameValues.AnimationDurataions.logoDelay);
         splashScreen.SetActive(false);
     }
 
-    [SerializeField]
-    private void SkipSplashScreen()
+    public void SkipSplashScreen()
     {
         // the splash screen acts as a big button and clicking it calls this
         if (splashScreenFade != null)

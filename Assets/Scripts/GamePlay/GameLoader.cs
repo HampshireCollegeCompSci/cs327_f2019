@@ -18,15 +18,9 @@ public class GameLoader : MonoBehaviour
 
     private void Awake()
     {
-        // Initialize the singleton instance.
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else if (Instance != this)
-        {
-            throw new Exception("two of these scripts should not exist at the same time");
-        }
+        if (Instance != null)
+            throw new System.ArgumentException("there should not already be an instance of this");
+        Instance = this;
     }
 
     public bool LoadGame()
@@ -50,6 +44,7 @@ public class GameLoader : MonoBehaviour
                 Config.Instance.prettyColors = false;
             }
             LoadTutorial(Constants.Tutorial.tutorialStateStartFileName, gameStart: true);
+            TutorialScript.Instance.StartTutorial();
         }
         else if (Config.Instance.continuing)
         {
@@ -194,6 +189,7 @@ public class GameLoader : MonoBehaviour
     {
         // the game difficultuy should already be set to what is desired for things to work properly
         SaveFile.Delete();
+        AchievementsManager.NewGameSetAchievements();
         Actions.StartNewGameUpdate();
         Timer.LoadTimerOffset(TimeSpan.Zero);
 
@@ -214,7 +210,7 @@ public class GameLoader : MonoBehaviour
         };
 
         MoveCardsToDeck(cards);
-
+        DeckCounterScript.Instance.UpdateCounterInstantly();
         DeckScript.Instance.Deal(false);
     }
 

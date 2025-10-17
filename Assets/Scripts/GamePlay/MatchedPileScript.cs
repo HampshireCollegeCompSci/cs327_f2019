@@ -17,15 +17,12 @@ public class MatchedPileScript : MonoBehaviour, ICardContainer
     // Initialize the singleton instance.
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else if (Instance != this)
-        {
+        if (Instance != null)
             throw new System.ArgumentException("there should not already be an instance of this");
-        }
+        Instance = this;
     }
+
+    public Constants.CardContainerType ContainerType => Constants.CardContainerType.MatchedPile;
 
     public List<GameObject> CardList => cardList;
 

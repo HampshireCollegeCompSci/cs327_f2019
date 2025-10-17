@@ -109,8 +109,5 @@ public class SummaryTransition : MonoBehaviour
         SoundEffectsController.Instance.ExplosionSound();
         spaceShipObject.GetComponent<Image>().sprite = spaceShipDebrisSprite;
         spaceShipObject.transform.localScale = new Vector3(1.5f, 1.5f, 1);
-
-        yield return new WaitForSeconds(1);
-        Destroy(explosions[3]);
     }
 }

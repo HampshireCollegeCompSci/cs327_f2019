@@ -5,20 +5,16 @@ public class UndoScript : MonoBehaviour
 {
     // Singleton instance.
     public static UndoScript Instance { get; private set; }
+    public static bool Undoing { get; private set; }
 
     private Stack<Move> moveLog;
 
     // Initialize the singleton instance.
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else if (Instance != this)
-        {
-            throw new System.Exception("two of these scripts should not exist at the same time");
-        }
+        if (Instance != null)
+            throw new System.ArgumentException("there should not already be an instance of this");
+        Instance = this;
     }
 
     private void Start()
@@ -66,17 +62,24 @@ public class UndoScript : MonoBehaviour
         Undo();
     }
 
-    private void Undo()
+    private void Undo(bool again = false)
     {
+        Undoing = true;
         //only run if there's something in the stack
-        if (moveLog.Count == 0) return;
+        if (moveLog.Count == 0)
+        {
+            Undoing = false;
+            return;
+        }
 
-        Debug.Log("undoing move");
-        SoundEffectsController.Instance.UndoPressSound();
+        if (!again)
+            SoundEffectsController.Instance.UndoPressSound();
+
         Move lastMove;
         switch (moveLog.Peek().moveType)
         {
             case Constants.LogMoveType.Stack:
+                Debug.Log("undoing stack");
                 // the undoList is ordered such that [0] is the top of the stack
                 Move topCardMove = moveLog.Pop();
 
@@ -106,6 +109,7 @@ public class UndoScript : MonoBehaviour
                 Actions.UndoUpdate(topCardMove.remainingActions);
                 break;
             case Constants.LogMoveType.Move:
+                Debug.Log("undoing move");
                 // standard behavior, move a single token back where it was
                 lastMove = moveLog.Pop();
                 StateLoader.Instance.RemoveMove();
@@ -117,6 +121,7 @@ public class UndoScript : MonoBehaviour
                 }
                 break;
             case Constants.LogMoveType.Match:
+                Debug.Log("undoing match");
                 // undo a match, removing the score gained and moving both cards back to their original locations
                 MoveFoundationCard(moveLog.Pop());
                 StateLoader.Instance.RemoveMove();
@@ -129,6 +134,7 @@ public class UndoScript : MonoBehaviour
                 Actions.MatchUndoUpdate();
                 break;
             case Constants.LogMoveType.Draw:
+                Debug.Log("undoing draw");
                 // move the drawn cards back to the deck (assuming the last action was to draw from the deck)
                 while (true)
                 {
@@ -144,8 +150,10 @@ public class UndoScript : MonoBehaviour
 
                     lastMove.card.GetComponent<CardScript>().MoveCard(lastMove.containerType, lastMove.origin, doLog: false, showHolo: false);
                 }
+                DeckCounterScript.Instance.UpdateCounterInstantly();
                 break;
             case Constants.LogMoveType.Cycle:
+                Debug.Log("undoing cycle");
                 // undo a cycle turning over, resets all tokens moved up, along with the move counter
                 lastMove = moveLog.Pop();
                 StateLoader.Instance.RemoveMove();
@@ -164,7 +172,7 @@ public class UndoScript : MonoBehaviour
                     }
                     else
                     {
-                        Undo();
+                        Undo(true);
                         return;
                     }
                 }
@@ -173,6 +181,7 @@ public class UndoScript : MonoBehaviour
             default:
                 throw new System.Exception("invalid move log move type");
         }
+        Undoing = false;
     }
 
     private void MoveFoundationCard(Move toMove)
