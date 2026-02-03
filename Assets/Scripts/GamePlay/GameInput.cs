@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameInput : MonoBehaviour
 {
@@ -31,7 +32,9 @@ public class GameInput : MonoBehaviour
     [SerializeField]
     private int inputStopRequests;
 
-    private Vector3 clickPosition, oldPointerPosition;
+    private InputAction clickAction, positionAction;
+
+    private Vector2 clickPosition, oldPointerPosition;
     private float clickStartTime;
     private ShowPossibleMoves showPossibleMoves;
 
@@ -53,6 +56,8 @@ public class GameInput : MonoBehaviour
     void Start()
     {
         InputStopped = true;
+        clickAction = InputSystem.actions.FindAction("Click");
+        positionAction = InputSystem.actions.FindAction("Position");
     }
 
     public ShowPossibleMoves ShowPossibleMoves => showPossibleMoves;
@@ -112,13 +117,13 @@ public class GameInput : MonoBehaviour
     void Update()
     {
         if (autoPlacing) return;
-        if (!InputStopped && Input.GetMouseButtonDown(0))
+        if (!InputStopped && clickAction.WasPressedThisFrame())
         {
             InputStart();
         }
         else if (DraggingCard)
         {
-            if (Input.GetMouseButtonUp(0))
+            if (clickAction.WasReleasedThisFrame())
                 InputStop();
             else
                 InputContinue();
@@ -127,7 +132,7 @@ public class GameInput : MonoBehaviour
 
     private void InputStart()
     {
-        Vector3 pointerPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 pointerPosition = Camera.main.ScreenToWorldPoint(positionAction.ReadValue<Vector2>());
         oldPointerPosition = pointerPosition;
 
         if (AutoPlacement.Enabled)
@@ -153,7 +158,7 @@ public class GameInput : MonoBehaviour
 
     private void InputContinue()
     {
-        Vector3 pointerPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 pointerPosition = Camera.main.ScreenToWorldPoint(positionAction.ReadValue<Vector2>());
         if (pointerPosition == oldPointerPosition) return;
         RaycastHit2D hit = GetCardPlacementHit(pointerPosition);
         DragSelectedCards(pointerPosition, hit);
@@ -162,7 +167,7 @@ public class GameInput : MonoBehaviour
 
     private void InputStop()
     {
-        Vector3 pointerPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 pointerPosition = Camera.main.ScreenToWorldPoint(positionAction.ReadValue<Vector2>());
         RaycastHit2D hit = GetCardPlacementHit(pointerPosition);
 
         DragGlowRevert(isPlacing: true);

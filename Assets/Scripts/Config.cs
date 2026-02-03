@@ -47,8 +47,6 @@ public class Config : MonoBehaviour
 
         HintsEnabled = PersistentSettings.HintsEnabled;
         CurrentColorMode = GameValues.Colors.Modes.List[PersistentSettings.ColorMode];
-
-        Input.multiTouchEnabled = false;
     }
 
     public bool IsGamePlayActive { get; set; }
