@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -52,15 +53,23 @@ public static class PersistentSettings
         _deckOrientation = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.deckOrientationKey,
                 Convert.ToInt32(GameValues.Settings.deckOrientationDefault)));
 
-        // refreshRateRatio.value is off from the typical integer by very small amount
-        MaxDeviceFrameRate = (int)Math.Round(Screen.currentResolution.refreshRateRatio.value);
-        int defaultFrameRate = Application.platform == RuntimePlatform.WebGLPlayer ? -1 : MaxDeviceFrameRate;
-        _frameRate = PlayerPrefs.GetInt(Constants.Settings.frameRateKey, defaultFrameRate);
-        Debug.Log($"max device frame rate: {MaxDeviceFrameRate}, our default: {defaultFrameRate}, saved setting: {FrameRate}");
-        if (FrameRate == 0 || FrameRate < -1 || MaxDeviceFrameRate % FrameRate != 0)
+        SupportedFrameRates = GetSupportedRefreshRates();
+        DefaultFrameRate = Application.platform == RuntimePlatform.WebGLPlayer ? -1 : SupportedFrameRates[^1];
+        int savedFrameRate = PlayerPrefs.GetInt(Constants.Settings.frameRateKey, DefaultFrameRate);
+        Debug.Log($"max device frame rate: {SupportedFrameRates[^1]}, our default: {DefaultFrameRate}, saved setting: {FrameRate}");
+
+        Application.targetFrameRate = -1;
+        QualitySettings.vSyncCount = 2;
+
+        if (IsFrameRateSupported(savedFrameRate))
         {
-            Debug.LogWarning($"the unsupported frame rate of {FrameRate} was saved, defaulting to the device's default");
-            FrameRate = defaultFrameRate;
+            _frameRate = savedFrameRate;
+            Application.targetFrameRate = savedFrameRate;
+        }
+        else
+        {
+            Debug.LogWarning($"the unsupported frame rate of {FrameRate} was saved, setting to our default");
+            FrameRate = DefaultFrameRate;
         }
 
         _saveGameStateEnabled = Convert.ToBoolean(PlayerPrefs.GetInt(Constants.Settings.saveGameStateKey,
@@ -183,17 +192,29 @@ public static class PersistentSettings
         }
     }
 
+    public static int[] SupportedFrameRates { get; private set; }
+
+    public static int DefaultFrameRate;
+
     private static int _frameRate;
     public static int FrameRate
     {
         get => _frameRate;
         set
         {
-            if (_frameRate != value)
+            if (value == _frameRate) return;
+            if (IsFrameRateSupported(value))
             {
                 _frameRate = value;
-                PlayerPrefs.SetInt(Constants.Settings.frameRateKey, value);
             }
+            else
+            {
+                Debug.LogWarning($"the frame rate of {value} was not found in our list of supported frame rates, switching to default.");
+                _frameRate = DefaultFrameRate;
+            }
+            PlayerPrefs.SetInt(Constants.Settings.frameRateKey, value);
+            Debug.Log($"setting the targetFrameRate to: {value}");
+            Application.targetFrameRate = value;
         }
     }
 
@@ -253,8 +274,6 @@ public static class PersistentSettings
         }
     }
 
-    public static int MaxDeviceFrameRate { get; private set; }
-
     public static bool NewGameStateVersion()
     {
         if (PlayerPrefs.GetInt(Constants.GameStates.versionKey, defaultValue: 0) != Constants.GameStates.version)
@@ -264,4 +283,28 @@ public static class PersistentSettings
         }
         return false;
     }
+
+    public static bool IsFrameRateSupported(int value)
+    {
+        return Array.IndexOf(SupportedFrameRates, value) != -1;
+    }
+
+    private static int[] GetSupportedRefreshRates()
+    {
+        Resolution[] resolutions = Screen.resolutions;
+        List<int> uniqueRates = new(resolutions.Length) { -1 }; // -1 is device default, typically 30hz
+
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            int hz = (int)Math.Round(resolutions[i].refreshRateRatio.value);
+            if (hz > 0 && !uniqueRates.Contains(hz))
+            {
+                uniqueRates.Add(hz);
+            }
+        }
+
+        uniqueRates.Sort();
+        return uniqueRates.ToArray();
+    }
+
 }

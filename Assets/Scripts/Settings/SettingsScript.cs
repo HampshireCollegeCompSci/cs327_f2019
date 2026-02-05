@@ -19,8 +19,6 @@ public class SettingsScript : MonoBehaviour
     [SerializeField]
     private Toggle achievementPopupToggle, matchEffectToggle, vibrationToggle, suitArtToggle, deckOrientationToggle;
 
-    private List<int> frameRates;
-
     [SerializeField]
     private Toggle saveGameStateToggle;
     [SerializeField]
@@ -197,17 +195,16 @@ public class SettingsScript : MonoBehaviour
         if (lockout) return;
 
         int frameRateIndex = (int)update;
-        if (frameRateIndex < 0 || frameRateIndex >= frameRates.Count)
+        if (frameRateIndex < 0 || frameRateIndex >= PersistentSettings.SupportedFrameRates.Length)
         {
             Debug.LogError($"an invalid frame rate index update of {frameRateIndex} was inputted.");
-            frameRateIndex = 0;
+            PersistentSettings.FrameRate = PersistentSettings.DefaultFrameRate;
         }
-
-        int frameRateSetting = frameRates[frameRateIndex];
-        Debug.Log($"setting the targetFrameRate to: {frameRateSetting}");
-        Application.targetFrameRate = frameRateSetting;
-        PersistentSettings.FrameRate = frameRateSetting;
-        UpdateFrameRateText(frameRateSetting);
+        else
+        {
+            PersistentSettings.FrameRate = PersistentSettings.SupportedFrameRates[frameRateIndex];
+        }
+        UpdateFrameRateText();
     }
 
     public void SaveGameStateOnToggle(bool update)
@@ -337,65 +334,18 @@ public class SettingsScript : MonoBehaviour
 
     private void SetupFrameRateSettings()
     {
-        // target frame rate settings
-        // https://docs.unity3d.com/ScriptReference/Application-targetFrameRate.html
-        // make a list of most of the supported target frame rates
-        // supported means that the screen's maximum refresh rate is divisible by the target
-
-        frameRates = PersistentSettings.MaxDeviceFrameRate switch
-        {
-            240 => new(7) { -1, 30, 60, 120, 240 },
-            144 => new(5) { -1, 36, 48, 72, 144 },
-            120 => new(5) { -1, 30, 40, 60, 120 },
-            90 => new(4) { -1, 30, 45, 90 },
-            60 => new(3) { -1, 30, 60 },
-            48 => new(3) { -1, 24, 48 },
-            30 => new(3) { -1, 15, 30 },
-            _ => new(3) { -1, PersistentSettings.MaxDeviceFrameRate / 2, PersistentSettings.MaxDeviceFrameRate },
-        };
-
-        if (PersistentSettings.MaxDeviceFrameRate % 2 != 0)
-        {
-            Debug.LogWarning($"this screen has a max refresh rate of {PersistentSettings.MaxDeviceFrameRate}, really?");
-            frameRates = new(2) { -1, PersistentSettings.MaxDeviceFrameRate };
-        }
-
-        // figure out if the frame rate setting exists in our list of target frame rates
-        int frameRateIndex = frameRates.IndexOf(PersistentSettings.FrameRate);
-        if (frameRateIndex == -1)
-        {
-            Debug.LogWarning($"the frame rate of {PersistentSettings.FrameRate} was not found in our list of target frame rates, adding it to them now.");
-            bool addedToList = false;
-            for (int i = 1; i < frameRates.Count; i++)
-            {
-                if (PersistentSettings.FrameRate < frameRates[i])
-                {
-                    frameRates.Insert(i, PersistentSettings.FrameRate);
-                    frameRateIndex = i;
-                    addedToList = true;
-                    break;
-                }
-            }
-            if (!addedToList)
-            {
-                frameRates.Add(PersistentSettings.FrameRate);
-                frameRateIndex = frameRates.Count - 1;
-            }
-        }
-
         frameRateSlider.minValue = 0;
-        frameRateSlider.maxValue = frameRates.Count - 1;
-        frameRateSlider.value = frameRateIndex;
-
-        UpdateFrameRateText(PersistentSettings.FrameRate);
+        frameRateSlider.maxValue = PersistentSettings.SupportedFrameRates.Length - 1;
+        frameRateSlider.value = Array.IndexOf(PersistentSettings.SupportedFrameRates, PersistentSettings.FrameRate);
+        UpdateFrameRateText();
     }
 
-    private void UpdateFrameRateText(int frameRate)
+    private void UpdateFrameRateText()
     {
-        frameRateText.text = frameRate switch
+        frameRateText.text = PersistentSettings.FrameRate switch
         {
             -1 => "Default",
-            _ => frameRate.ToString()
+            _ => PersistentSettings.FrameRate.ToString()
         };
     }
 

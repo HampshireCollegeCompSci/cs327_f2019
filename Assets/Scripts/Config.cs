@@ -42,8 +42,6 @@ public class Config : MonoBehaviour
         AutoPlacement.GameLaunch();
         // Check if the game state version needs updating and if the save file needs deleting
         SaveFile.CheckNewGameStateVersion();
-        // Set the application frame rate to what was saved
-        Application.targetFrameRate = PersistentSettings.FrameRate;
 
         HintsEnabled = PersistentSettings.HintsEnabled;
         CurrentColorMode = GameValues.Colors.Modes.List[PersistentSettings.ColorMode];
