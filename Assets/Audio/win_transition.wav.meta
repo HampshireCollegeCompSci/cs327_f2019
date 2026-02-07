@@ -2,7 +2,7 @@ fileFormatVersion: 2
 guid: 4865eb42e8a92534face6c77b8874af0
 AudioImporter:
   externalObjects: {}
-  serializedVersion: 7
+  serializedVersion: 8
   defaultSettings:
     serializedVersion: 2
     loadType: 0
@@ -11,8 +11,17 @@ AudioImporter:
     compressionFormat: 1
     quality: 0.79999995
     conversionMode: 0
-    preloadAudioData: 1
-  platformSettingOverrides: {}
+    preloadAudioData: 0
+  platformSettingOverrides:
+    Android:
+      serializedVersion: 2
+      loadType: 0
+      sampleRateSetting: 2
+      sampleRateOverride: 48000
+      compressionFormat: 1
+      quality: 0.79999995
+      conversionMode: 0
+      preloadAudioData: 0
   forceToMono: 0
   normalize: 1
   loadInBackground: 0
