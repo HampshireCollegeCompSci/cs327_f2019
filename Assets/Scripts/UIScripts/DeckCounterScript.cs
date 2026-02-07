@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Text))]
 public class DeckCounterScript : MonoBehaviour
 {
     // Singleton instance.
@@ -35,6 +36,12 @@ public class DeckCounterScript : MonoBehaviour
         {
             if (_counterNumber == value) return;
             _counterNumber = value;
+            if (value < 0)
+            {
+                Debug.LogError("Why is the deck reading less than 0?");
+                ChangeStatus();
+                value = 0;
+            }
             counterText.text = value.ToString();
         }
     }

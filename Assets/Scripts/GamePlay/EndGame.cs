@@ -223,7 +223,7 @@ public class EndGame : MonoBehaviour
         {
             card.SetActive(false);
         }
-        SoundEffectsController.Instance.ExplosionSound();
+        CardSounds.Instance.ExplosionSound(reactorScript.gameObject.transform.position);
 
         GameObject reactorExplosion = Instantiate(explosionPrefab, reactorScript.gameObject.transform.position, Quaternion.Euler(0, 0, Random.Range(0, 360)));
         reactorExplosion.transform.localScale = new Vector3(GameValues.Transforms.matchExplosionScale / 2, GameValues.Transforms.matchExplosionScale / 2);

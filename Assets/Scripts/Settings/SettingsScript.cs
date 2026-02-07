@@ -118,8 +118,14 @@ public class SettingsScript : MonoBehaviour
 
         int volumeUpdate = (int)update;
         musicVolumeText.text = $"{volumeUpdate * musicMultiplier}%";
-        PersistentSettings.MusicVolume = volumeUpdate;
         MusicController.Instance.UpdateMaxVolume(volumeUpdate);
+    }
+
+    public void MusicVolumeDone()
+    {
+        int volumeUpdate = (int)musicSlider.value;
+        Debug.Log($"setting music volume setting to: {volumeUpdate}");
+        PersistentSettings.MusicVolume = volumeUpdate;
     }
 
     public void SoundEffectsVolumeChange(float update)
@@ -128,14 +134,15 @@ public class SettingsScript : MonoBehaviour
 
         int volumeUpdate = (int)update;
         soundEffectsVolumeText.text = $"{volumeUpdate * soundEffectsMultiplier}%";
-        PersistentSettings.SoundEffectsVolume = volumeUpdate;
-        SoundEffectsController.Instance.UpdateMaxVolume(volumeUpdate);
-        SoundEffectsController.Instance.ButtonPressSound(vibrate: false);
 
-        if (SpaceBabyController.Instance != null)
-        {
-            SpaceBabyController.Instance.UpdateMaxVolume(volumeUpdate);
-        }
+        SoundEffectsController.Instance.UserVolumeUpdate(volumeUpdate);
+    }
+
+    public void SoundEffectsVolumeDone()
+    {
+        int volumeUpdate = (int)soundEffectsSlider.value;
+        Debug.Log($"setting sound effects volume setting to: {volumeUpdate}");
+        PersistentSettings.SoundEffectsVolume = volumeUpdate;
     }
 
     public void AchievementPopupOnToggle(bool update)

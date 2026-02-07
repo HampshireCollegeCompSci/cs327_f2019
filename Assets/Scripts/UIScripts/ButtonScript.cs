@@ -28,10 +28,7 @@ public class ButtonScript : MonoBehaviour
         }
         SceneManager.LoadScene(Constants.ScenesNames.mainMenu);
         MusicController.Instance.MainMenuMusic();
-        if (MusicController.Instance.Paused)
-        {
-            MusicController.Instance.Paused = false;
-        }
+        MusicController.Instance.Paused = false;
     }
 
     public void SettingsButton()
@@ -65,10 +62,7 @@ public class ButtonScript : MonoBehaviour
         }
         MusicController.Instance.GameMusic();
         GameLoader.Instance.RestartGame();
-        if (MusicController.Instance.Paused)
-        {
-            MusicController.Instance.Paused = false;
-        }
+        MusicController.Instance.Paused = false;
         GameInput.Instance.InputStopped = false;
     }
 

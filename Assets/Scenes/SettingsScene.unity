@@ -4077,6 +4077,41 @@ PrefabInstance:
       propertyPath: m_Text
       value: 'Effects Volume: '
       objectReference: {fileID: 0}
+    - target: {fileID: 3287116595261224505, guid: 79be1d4cfd1a6bd44a9af5f45fa688eb,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3287116595261224505, guid: 79be1d4cfd1a6bd44a9af5f45fa688eb,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3287116595261224505, guid: 79be1d4cfd1a6bd44a9af5f45fa688eb,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2124440266}
+    - target: {fileID: 3287116595261224505, guid: 79be1d4cfd1a6bd44a9af5f45fa688eb,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3287116595261224505, guid: 79be1d4cfd1a6bd44a9af5f45fa688eb,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SoundEffectsVolumeDone
+      objectReference: {fileID: 0}
+    - target: {fileID: 3287116595261224505, guid: 79be1d4cfd1a6bd44a9af5f45fa688eb,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SettingsScript, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3287116595261224505, guid: 79be1d4cfd1a6bd44a9af5f45fa688eb,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 3767309748611526649, guid: 79be1d4cfd1a6bd44a9af5f45fa688eb,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -5004,6 +5039,41 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Text
       value: 'Music Volume: '
+      objectReference: {fileID: 0}
+    - target: {fileID: 3287116595261224505, guid: 79be1d4cfd1a6bd44a9af5f45fa688eb,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3287116595261224505, guid: 79be1d4cfd1a6bd44a9af5f45fa688eb,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3287116595261224505, guid: 79be1d4cfd1a6bd44a9af5f45fa688eb,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2124440266}
+    - target: {fileID: 3287116595261224505, guid: 79be1d4cfd1a6bd44a9af5f45fa688eb,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3287116595261224505, guid: 79be1d4cfd1a6bd44a9af5f45fa688eb,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: MusicVolumeDone
+      objectReference: {fileID: 0}
+    - target: {fileID: 3287116595261224505, guid: 79be1d4cfd1a6bd44a9af5f45fa688eb,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SettingsScript, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3287116595261224505, guid: 79be1d4cfd1a6bd44a9af5f45fa688eb,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 3767309748611526649, guid: 79be1d4cfd1a6bd44a9af5f45fa688eb,
         type: 3}

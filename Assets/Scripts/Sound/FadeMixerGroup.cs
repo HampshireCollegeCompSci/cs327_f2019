@@ -12,7 +12,7 @@ public static class FadeMixerGroup
         persist
     }
 
-    public static IEnumerator StartFade(AudioMixer audioMixer, string exposedParam, float duration, float targetVolume,
+    public static IEnumerator StartFade(AudioMixer audioMixer, string exposedParam, float duration, float targetVol,
         AudioSource audioSource, FadeType type)
     {
         if (type == FadeType.play)
@@ -24,21 +24,51 @@ public static class FadeMixerGroup
             audioSource.UnPause();
         }
 
+        yield return null;
+
         float currentTime = 0;
-        audioMixer.GetFloat(exposedParam, out float currentVol);
-        currentVol = Mathf.Pow(10, currentVol / 20);
-        float targetValue = Mathf.Clamp(targetVolume, 0.0001f, 1);
+        audioMixer.GetFloat(exposedParam, out float startVol);
+        startVol = Mathf.Pow(10, startVol / 20);
+        float targetValue = Mathf.Clamp(targetVol, 0.0001f, 1);
         while (currentTime < duration)
         {
-            currentTime += Time.deltaTime;
-            float newVol = Mathf.Lerp(currentVol, targetValue, currentTime / duration);
+            currentTime += Time.unscaledDeltaTime;
+            float newVol = Mathf.Lerp(startVol, targetValue, currentTime / duration);
             audioMixer.SetFloat(exposedParam, Mathf.Log10(newVol) * 20);
             yield return null;
         }
 
+        if (targetVol < 0.0002f)
+            audioMixer.SetFloat(exposedParam, -80);
+        else
+            audioMixer.SetFloat(exposedParam, Mathf.Log10(targetVol) * 20);
+
         if (type == FadeType.stop)
         {
+            yield return null;
             audioSource.Pause();
         }
+    }
+
+    public static IEnumerator VolumeChange(AudioMixer audioMixer, string exposedParam, float duration, float targetVolume)
+    {
+        yield return null;
+        float currentTime = 0;
+        audioMixer.GetFloat(exposedParam, out float startVol);
+        startVol = Mathf.Pow(10, startVol / 20f);
+        float targetVol = Mathf.Clamp(targetVolume, 0.0001f, 1);
+
+        while (currentTime < duration)
+        {
+            currentTime += Time.unscaledDeltaTime;
+            float newVol = Mathf.Lerp(startVol, targetVol, currentTime / duration);
+            audioMixer.SetFloat(exposedParam, Mathf.Log10(newVol) * 20);
+            yield return null;
+        }
+
+        if (targetVol < 0.0002f)
+            audioMixer.SetFloat(exposedParam, -80);
+        else
+            audioMixer.SetFloat(exposedParam, Mathf.Log10(targetVol) * 20);
     }
 }

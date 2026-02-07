@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class SpaceBabyController : MonoBehaviour, ISound
+public class SpaceBabyController : MonoBehaviour
 {
     // Singleton instance.
     public static SpaceBabyController Instance { get; private set; }
@@ -20,20 +20,9 @@ public class SpaceBabyController : MonoBehaviour, ISound
         Instance = this;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        UpdateMaxVolume(PersistentSettings.SoundEffectsVolume);
-    }
-
     public void SetInstanceNull()
     {
         Instance = null;
-    }
-
-    public void UpdateMaxVolume(int newVolume)
-    {
-        audioSource.volume = ((float)newVolume) / GameValues.Settings.soundEffectsVolumeDenominator;
     }
 
     public void ResetBaby()

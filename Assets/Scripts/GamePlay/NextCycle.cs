@@ -86,7 +86,7 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     private void ManualStartCycleButton()
     {
         AchievementsManager.FailedAlwaysMoves();
-        SoundEffectsController.Instance.VibrateMedium();
+        VibrationController.Instance.VibrateMedium();
         StartCycle();
     }
 
@@ -143,7 +143,7 @@ public class NextCycle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
             topFoundationCard.GetComponent<SpriteRenderer>().sortingLayerID = Constants.SortingLayerIDs.cards;
             topCardScript.Values.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingLayerID = Constants.SortingLayerIDs.cards;
 
-            SoundEffectsController.Instance.CardToReactorSound();
+            CardSounds.Instance.CardToReactorSound(reactorScript.gameObject.transform.position);
             topCardScript.MoveCard(Constants.CardContainerType.Reactor, reactorScript.gameObject, isCycle: true);
             
             if (Config.Instance.TutorialOn)

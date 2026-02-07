@@ -65,6 +65,11 @@ public static class GameValues
         public const float fadeDuration = 0.5f;
     }
 
+    public static class Audio
+    {
+        public const float volumeDelay = 0.2f;
+    }
+
     public static class Music
     {
         public const float musicLimit = 0.7f;

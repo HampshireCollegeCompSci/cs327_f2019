@@ -203,7 +203,6 @@ public class GameInput : MonoBehaviour
 
     private void SelectCards(RaycastHit2D hit)
     {
-        SoundEffectsController.Instance.CardPressSound();
         GameObject hitGameObject = hit.collider.gameObject;
         selectedCards.Add(hitGameObject);
         selectedCardScript = hitGameObject.GetComponent<CardScript>();
@@ -227,6 +226,8 @@ public class GameInput : MonoBehaviour
                 }
                 break;
         }
+
+        CardSounds.Instance.CardPressSound(hit.point, selectedCards.Count);
 
         // make a copy of the selected cards to move around
         GameObject cardCopy;
@@ -285,10 +286,10 @@ public class GameInput : MonoBehaviour
         switch (cardContainer.ContainerType)
         {
             case Constants.CardContainerType.Reactor:
-                SoundEffectsController.Instance.CardToReactorSound();
+                CardSounds.Instance.CardToReactorSound(newContainer.transform.position);
                 break;
             case Constants.CardContainerType.Foundation:
-                SoundEffectsController.Instance.CardStackSound();
+                CardSounds.Instance.CardStackSound(newContainer.transform.position, selectedCards.Count);
                 break;
             default:
                 throw new System.ArgumentException($"{newContainer} is an unexpected card container");

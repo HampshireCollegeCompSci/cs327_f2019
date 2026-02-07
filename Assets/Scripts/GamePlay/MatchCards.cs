@@ -26,7 +26,7 @@ public class MatchCards : MonoBehaviour
         card1Script.MoveCard(Constants.CardContainerType.MatchedPile, MatchedPileScript.Instance.gameObject);
 
         ScoreScript.Instance.UpdateScore(points);
-        SoundEffectsController.Instance.FoodMatch(card1Script.Card.Suit);
+        CardSounds.Instance.FoodMatch(card1Script.Card.Suit, matchExplosion.transform.position);
         SpaceBabyController.Instance.BabyEat();
         Actions.MatchUpdate(cardFromFoundation);
     }
