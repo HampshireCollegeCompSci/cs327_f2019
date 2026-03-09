@@ -74,6 +74,7 @@ public class GameInput : MonoBehaviour
                 {
                     _inputStopped = true;
                     EndGame.Instance.TrySetInteraction(false);
+                    PauseGameScript.Instance.DisablePause();
                 }
             }
             else
@@ -83,6 +84,7 @@ public class GameInput : MonoBehaviour
                 {
                     _inputStopped = false;
                     EndGame.Instance.TrySetInteraction(true);
+                    PauseGameScript.Instance.EnablePause();
                 }
             }
         }
